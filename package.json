@@ -1,0 +1,25 @@
+{
+  "name": "rf-js-sdk",
+  "version": "0.1.0",
+  "license": "MIT",
+  "scripts": {
+    "start": "webpack-dev-server --open --config webpack.dev.js",
+    "build": "webpack --config webpack.prod.js"
+  },
+  "devDependencies": {
+    "clean-webpack-plugin": "^0.1.18",
+    "html-webpack-plugin": "^2.30.1",
+    "uglifyjs-webpack-plugin": "^1.2.2",
+    "webpack": "^3.11.0",
+    "webpack-dev-server": "^2.11.1",
+    "webpack-merge": "^4.1.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rocketforms/rf-js-sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rocketforms/rf-js-sdk/issues"
+  },
+  "homepage": "https://github.com/rocketforms/rf-js-sdk#readme"
+}
