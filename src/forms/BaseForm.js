@@ -33,6 +33,8 @@ class BaseForm {
           console.error(`Error sending submission:`, errMessage);
           this.comp.setFormError(errMessage);
         }
+
+        throw err;
       });
   }
 
@@ -50,14 +52,14 @@ class BaseForm {
     };
 
     this.comp.disable();
-    this.comp.clearErrors();
+    this.comp.clearState();
 
     this.beforeSubmit(submission);
 
     return this._submit(submission)
       .then(() => this.afterSubmit(null, submission))
       .catch((err) => this.afterSubmit(err))
-      .finally(() => this.comp.enable());
+      .then(() => this.comp.enable());
   }
 
   _init () {

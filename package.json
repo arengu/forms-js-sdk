@@ -7,15 +7,16 @@
     "build": "webpack --config webpack.prod.js"
   },
   "dependencies": {
-    "lodash": "4.17.5"
+    "lodash": "4.x"
   },
   "devDependencies": {
-    "clean-webpack-plugin": "^0.1.18",
-    "html-webpack-plugin": "^2.30.1",
-    "uglifyjs-webpack-plugin": "^1.2.2",
-    "webpack": "^3.11.0",
-    "webpack-dev-server": "^2.11.1",
-    "webpack-merge": "^4.1.2"
+    "clean-webpack-plugin": "0.x",
+    "html-webpack-plugin": "3.x",
+    "uglifyjs-webpack-plugin": "1.x",
+    "webpack": "4.x",
+    "webpack-cli": "2.x",
+    "webpack-dev-server": "3.x",
+    "webpack-merge": "4.x"
   },
   "repository": {
     "type": "git",

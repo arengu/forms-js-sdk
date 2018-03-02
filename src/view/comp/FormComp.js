@@ -39,7 +39,7 @@ class FormComp {
     const fieldsHtml = this.fieldComps.map((f) => f.render());
     const submitHtml = this.submitComp.render();
 
-    const elems = [successHtml, errorHtml, ...fieldsHtml, submitHtml];
+    const elems = [...fieldsHtml, successHtml, errorHtml, submitHtml];
 
     this.html = htmlFactory.form(elems, () => {
       this.callback(this.getData());
@@ -52,7 +52,7 @@ class FormComp {
     const parent = htmlUtils.getElement(parentSelector);
   
     if (!parent) {
-      throw new SDKError(`Selector [${selector}] not found`);
+      throw new SDKError(`Selector [${parentSelector}] not found`);
     }
 
     const form = this.render();
@@ -75,7 +75,8 @@ class FormComp {
     });
   }
 
-  clearErrors () {
+  clearState () {
+    this.setSuccess();
     this.setFormError();
     this.setInvalidFields();
   }

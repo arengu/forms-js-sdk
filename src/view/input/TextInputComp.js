@@ -17,7 +17,7 @@ class TextInputComp extends BaseInputComp {
   get value () {
     const curValue = this.html.value;
 
-    if (!_.isString(curValue) || _.isEmpty(curValue)) {
+    if (!isString(curValue) || isEmpty(curValue)) {
       return null;
     } else {
       return curValue;
