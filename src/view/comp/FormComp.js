@@ -75,7 +75,8 @@ class FormComp {
     });
   }
 
-  clearErrors () {
+  clearState () {
+    this.setSuccess();
     this.setFormError();
     this.setInvalidFields();
   }

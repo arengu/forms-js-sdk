@@ -50,7 +50,7 @@ class BaseForm {
     };
 
     this.comp.disable();
-    this.comp.clearErrors();
+    this.comp.clearState();
 
     this.beforeSubmit(submission);
 

@@ -24,6 +24,7 @@ class HTTPClient {
         } else if (AppError.matches(body)) {
           throw new AppError(body);
         } else {
+          console.error('Unexpected response', body);
           throw new SDKError('Unexpected model');
         }
       });
@@ -52,6 +53,7 @@ class HTTPClient {
         } else if (AppError.matches(body)) {
           throw new AppError(body);
         } else {
+          console.error('Unexpected response', body);
           throw new SDKError('Unexpected model');
         }
       });
