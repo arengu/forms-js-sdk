@@ -33,6 +33,8 @@ class BaseForm {
           console.error(`Error sending submission:`, errMessage);
           this.comp.setFormError(errMessage);
         }
+
+        throw err;
       });
   }
 
@@ -57,7 +59,7 @@ class BaseForm {
     return this._submit(submission)
       .then(() => this.afterSubmit(null, submission))
       .catch((err) => this.afterSubmit(err))
-      .finally(() => this.comp.enable());
+      .then(() => this.comp.enable());
   }
 
   _init () {

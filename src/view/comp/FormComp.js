@@ -52,7 +52,7 @@ class FormComp {
     const parent = htmlUtils.getElement(parentSelector);
   
     if (!parent) {
-      throw new SDKError(`Selector [${selector}] not found`);
+      throw new SDKError(`Selector [${parentSelector}] not found`);
     }
 
     const form = this.render();
