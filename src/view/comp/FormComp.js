@@ -39,7 +39,7 @@ class FormComp {
     const fieldsHtml = this.fieldComps.map((f) => f.render());
     const submitHtml = this.submitComp.render();
 
-    const elems = [successHtml, errorHtml, ...fieldsHtml, submitHtml];
+    const elems = [...fieldsHtml, successHtml, errorHtml, submitHtml];
 
     this.html = htmlFactory.form(elems, () => {
       this.callback(this.getData());
