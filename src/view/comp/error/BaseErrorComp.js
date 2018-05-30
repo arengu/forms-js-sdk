@@ -15,7 +15,7 @@ class BaseErrorComp {
     this.html = htmlFactory.error();
     this.html.style.display = 'none';
 
-    return this.html;
+    return htmlFactory.rowContainer([this.html]);
   }
 
 }

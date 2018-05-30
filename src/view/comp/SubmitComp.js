@@ -7,9 +7,12 @@ class SubmitComp {
   }
 
   render () {
-    this.html = htmlFactory.submit();
+    const nameHtml = htmlFactory.fieldName();
 
-    const container = htmlFactory.rowContainer([this.html]);
+    this.html = htmlFactory.submit();
+    const fieldHtml = htmlFactory.fieldContainer([this.html]);
+
+    const container = htmlFactory.rowContainer([nameHtml, fieldHtml]);
 
     return container;
   }

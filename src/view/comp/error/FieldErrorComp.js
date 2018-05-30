@@ -1,18 +1,13 @@
 const BaseErrorComp = require('./BaseErrorComp');
-const htmlFactory = require('../../html-factory');
-
-const ERROR_FIELD_CONTAINER = 'rf-field-error-container';
 
 class FieldErrorComp extends BaseErrorComp {
 
   render () {
     const output = super.render();
 
-    this.html.classList.add('rf-field-error-text');
+    this.html.classList.add('rf-field-error');
 
-    const container = htmlFactory.errorFieldContainer([output]);
-
-    return container;
+    return output;
   }
 
   static create () {
