@@ -46,8 +46,29 @@ module.exports = {
     return document.createElement('p');
   },
 
+  errorFieldContainer: function createErrorFieldContainer (children) {
+    const container = this.container(children);
+    container.classList.add('rf-field-error-container');
+
+    return container;
+  },
+
+  errorFormContainer: function createErrorFormContainer (children) {
+    const container = this.container(children);
+    container.classList.add('rf-form-error-container');
+
+    return container;
+  },
+
   success: function createSuccess () {
     return document.createElement('p');
+  },
+
+  successContainer: function createSuccessContainer (children) {
+    const container = this.container(children);
+    container.classList.add('rf-form-success-container');
+
+    return container;
   },
 
   form: function createForm (children, callback) {
@@ -81,11 +102,15 @@ module.exports = {
     return elem;
   },
 
-  label: function createLabel (text, inputId) {
+  label: function createLabel (text, inputId, required) {
     const elem = document.createElement('label');
     
     if (inputId) {
       elem.setAttribute('for', inputId);
+    }
+
+    if (required) {
+      elem.classList.add('rf-required');
     }
 
     elem.innerText = text || null;
@@ -100,13 +125,10 @@ module.exports = {
     return container;
   },
 
-  fieldName: function createFieldName (text, inputId) {
-    const label = this.label(text, inputId);
+  fieldName: function createFieldName (text, inputId, required) {
+    const label = this.label(text, inputId, required);
 
-    const wrapper = this.container([label]);
-    wrapper.classList.add('rf-name');
-
-    return wrapper;
+    return label;
   },
 
   rowContainer: function createRowContainer (children) {

@@ -27,15 +27,15 @@ class FieldComp {
   }
 
   render () {
-    const { id, name, type } = this.model;
+    const { id, name, type, required } = this.model;
 
     const errorHtml = this.errorComp.render();
     const inputHtml = this.inputComp.render();
     
-    const nameHtml = htmlFactory.fieldName(name, id);
-    const fieldHtml = htmlFactory.fieldContainer([errorHtml, inputHtml]);
+    const nameHtml = htmlFactory.fieldName(name, id, required);
+    const fieldHtml = htmlFactory.fieldContainer([nameHtml, inputHtml, errorHtml]);
 
-    const container = htmlFactory.rowContainer([nameHtml, fieldHtml]);
+    const container = htmlFactory.rowContainer([fieldHtml]);
 
     return container;
   }

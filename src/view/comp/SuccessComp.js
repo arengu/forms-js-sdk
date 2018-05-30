@@ -14,9 +14,9 @@ class SuccessComp {
   render () {
     this.html = htmlFactory.success();
     this.html.style.display = 'none';
-    this.html.classList.add('rf-form-success');
+    this.html.classList.add('rf-form-success-text');
 
-    return htmlFactory.rowContainer([this.html]);
+    return htmlFactory.successContainer([this.html]);
   }
 
   static create () {
