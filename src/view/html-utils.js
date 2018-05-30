@@ -38,6 +38,11 @@ module.exports = {
 
   getElement: function getElement (selector) {
     return document.querySelector(selector);
+  },
+
+  triggerEvent: function triggerEvent (name, data){
+    const event = new CustomEvent(name, data);
+    return document.dispatchEvent(event);
   }
 
 };
