@@ -8,7 +8,7 @@ class SubmissionModel extends BaseModel {
     super(data);
     this.id = data.id;
     this.formId = data.formId;
-    this.message = data.message;
+    this.onSubmit = data.onSubmit;
   }
 
   static create () {

@@ -1,6 +1,8 @@
 const errorUtils = require('./error-utils');
 const htmlUtils = require('../view/html-utils');
 
+const SchemaError = require('../models/SchemaError');
+
 class BaseForm {
 
   constructor (sdk, formId) {
@@ -13,19 +15,31 @@ class BaseForm {
     this.compFactory = sdk.compFactory;
   }
 
+  _handleOnSubmit (os) {
+    switch (os.action) {
+      case 'redirect':
+        location = os.target;
+        break;
+
+      case 'message':
+        this.comp.setSuccess(os.message);
+    }
+  }
+
   _submit (submission) {
     const { formId, formData } = submission;
 
     return this.repository.createSubmission(submission)
       .then((confirmation) => {
         console.log(`Submission registered with id [${confirmation.id}]`);
-        this.comp.setSuccess(confirmation.message);
         htmlUtils.triggerEvent('rf-submitSuccess', submission);
+
+        this._handleOnSubmit(confirmation.onSubmit);
 
         return submission;
       })
       .catch((err) => {
-        if (err.name === 'SchemaError') {
+        if (err instanceof SchemaError) {
           console.error(`Error validating data:`, err.extra);
           const invalidFields = errorUtils.getInvalidFields(err);
           this.comp.setInvalidFields(invalidFields);

@@ -2,17 +2,15 @@ const htmlFactory = require('../html-factory');
 
 class SubmitComp {
 
-  constructor () {
+  constructor (text) {
+    this.text = text;
     this.html = null;
   }
 
   render () {
-    const nameHtml = htmlFactory.fieldName();
+    this.html = htmlFactory.submit(this.text);
 
-    this.html = htmlFactory.submit();
-    const fieldHtml = htmlFactory.fieldContainer([this.html]);
-
-    const container = htmlFactory.rowContainer([nameHtml, fieldHtml]);
+    const container = htmlFactory.rowContainer([this.html]);
 
     return container;
   }

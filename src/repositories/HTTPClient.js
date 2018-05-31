@@ -1,7 +1,7 @@
 const FormModel = require('../models/FormModel');
 const SubmissionModel = require('../models/SubmissionModel');
 
-const AppError = require('../models/AppError');
+const SchemaError = require('../models/SchemaError');
 const SDKError = require('../models/SDKError');
 
 class HTTPClient {
@@ -21,8 +21,6 @@ class HTTPClient {
       .then((body) => {
         if (FormModel.matches(body)) {
           return new FormModel(body);
-        } else if (AppError.matches(body)) {
-          throw new AppError(body);
         } else {
           console.error('Unexpected response', body);
           throw new SDKError('Unexpected model');
@@ -50,8 +48,8 @@ class HTTPClient {
       .then((body) => {
         if (SubmissionModel.matches(body)) {
           return new SubmissionModel(body);
-        } else if (AppError.matches(body)) {
-          throw new AppError(body);
+        } else if (SchemaError.matches(body)) {
+          throw new SchemaError(body);
         } else {
           console.error('Unexpected response', body);
           throw new SDKError('Unexpected model');

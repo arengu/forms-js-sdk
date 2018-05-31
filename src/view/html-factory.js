@@ -1,7 +1,5 @@
 const htmlUtils = require('./html-utils');
 
-const SDKError = require('../models/SDKError');
-
 module.exports = {
 
   checkbox: function createCheckbox (fieldId, optionId, value, checked) {
@@ -116,10 +114,11 @@ module.exports = {
     return container;
   },
 
-  submit: function createSubmit () {
+  submit: function createSubmit (text) {
     const button = document.createElement('input');
     button.setAttribute('type', 'submit');
     button.classList.add('rf-submit');
+    button.value = text;
 
     return button;
   }

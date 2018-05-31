@@ -1,14 +1,17 @@
 const MODEL_NAME = 'AppError';
 
-function AppError (data) {
-  Error.call(this, data.message);
-  Object.assign(this, data);
-};
+class AppError extends Error {
 
-AppError.prototype = Object.create(Error.prototype);
+  constructor (body) {
+    super(body.message);
+    this.status = body.status;
+    this.extra = body.extra;
+  };
 
-AppError.matches = function matchesModel (obj) {
-  return obj && obj.model === MODEL_NAME;
+  static matches (body) {
+    return body && body.model === MODEL_NAME;
+  }
+
 }
 
 module.exports = AppError;

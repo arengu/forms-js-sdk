@@ -1,14 +1,5 @@
-const MODEL_NAME = 'SDKError';
+class AppError extends Error {
 
-function SDKError (message) {
-  Error.call(this, message);
-  this.message = message;
-};
-
-SDKError.prototype = Object.create(Error.prototype);
-
-SDKError.matches = function matchesModel (obj) {
-  return obj && obj.model === MODEL_NAME;
 }
 
-module.exports = SDKError;
+module.exports = AppError;
