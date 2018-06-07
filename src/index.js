@@ -1,6 +1,9 @@
-const SDK = require('./SDK');
-const htmlUtils = require('./view/html-utils');
+const SDK = require('./sdk');
 
-module.exports = SDK.create();
+const instance = SDK.create();
 
-htmlUtils.triggerEvent('rf-init');
+global.ArenguForms = instance; // async
+
+instance.init();
+
+module.exports = instance; // sync
