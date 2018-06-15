@@ -1,5 +1,5 @@
 {
-  "name": "rf-js-sdk",
+  "name": "arengu-forms-js-sdk",
   "version": "0.1.0",
   "license": "MIT",
   "scripts": {
@@ -20,10 +20,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rocketforms/rf-js-sdk.git"
+    "url": "git+https://github.com/arengu/forms-js-sdk.git"
   },
   "bugs": {
-    "url": "https://github.com/rocketforms/rf-js-sdk/issues"
+    "url": "https://github.com/arengu/forms-js-sdk/issues"
   },
-  "homepage": "https://github.com/rocketforms/rf-js-sdk#readme"
+  "homepage": "https://github.com/arengu/forms-js-sdk#readme"
 }
