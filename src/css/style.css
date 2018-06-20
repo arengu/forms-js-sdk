@@ -142,6 +142,9 @@
   background-color: #fbfbfb;
   color: #444444;
   font-size: 15px;
+}
+
+.af-dropdown select:not([multiple]){
   padding: 8px 10px;
   height: 35px;
 }
