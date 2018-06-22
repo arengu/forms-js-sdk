@@ -55,7 +55,7 @@ class Checkbox extends BaseView {
 
   build () {
     const container = document.createElement('div');
-    container.classList.add('af-checkbox');
+    container.classList.add('af-checkbox-option');
 
     const check = this._buildCheckbox(this.fieldId, this.optionId, this.optionValue, this.checked);
     container.appendChild(check);

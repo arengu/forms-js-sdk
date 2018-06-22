@@ -84,13 +84,15 @@ class FieldView extends BaseView {
   }
 
   build () {
-    const { id, hint } = this.fieldM;
+    const { id, hint, label } = this.fieldM;
 
     const container = document.createElement('div');
     container.classList.add(`af-field-${id}`);
     container.classList.add('af-field');
 
-    container.appendChild(this._buildLabel());
+    if (label && label.length > 0) {
+      container.appendChild(this._buildLabel());
+    }
 
     if (hint && hint.length > 0) {
       container.appendChild(this._buildHint());

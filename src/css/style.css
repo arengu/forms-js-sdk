@@ -25,7 +25,7 @@
   margin-bottom: 3px;
   font-weight: 500;
   display: block;
-  font-size: 0.92857143em;
+  font-size: 15px;
   color: rgba(0, 0, 0, 0.87);
 }
 
@@ -50,7 +50,7 @@
 .af-field-input input:not([type=checkbox]):not([type=radio]),
 .af-field-input textarea {
   border-radius: 3px;
-  border: 1px solid #d6dde4;
+  border: 1px solid #dadada;
   background-color: #fbfbfb;
   width: 100%;
   color: #444444;
@@ -62,83 +62,107 @@
   height: 35px;
 }
 
-.af-radio label,
-.af-checkbox label {
-  font-size: 14px;
-  margin: 5px 0;
+.af-checkbox-option:first-child label,
+.af-radio-option:first-child label {
+  margin: 0;
+}
+
+.af-radio-option label,
+.af-checkbox-option label,
+.af-boolean-option label {
+  font-size: 15px;
+  margin: 6px 0;
   box-sizing: border-box;
   line-height: 22px;
-  text-align: left;
   height: 35px;
-  border: 1px solid #d6dde4;
-  border-radius: 3px;
+  border: 1px solid #dadada;
   display: flex;
   align-items: center;
   padding: 5px;
   cursor: pointer;
 }
 
-.af-radio label:hover,
-.af-checkbox label:hover {
-  background: #f7f7f7;
+.af-radio-option label,
+.af-checkbox-option label {
+  text-align: left;
+  border-radius: 3px;
 }
 
-.af-radio span,
-.af-checkbox span {
-  margin-left: 8px;
+.af-radio-option label:hover,
+.af-checkbox-option label:hover,
+.af-boolean-option label:hover {
+  background: #eaeaea;
 }
 
-.af-radio input,
-.af-checkbox input {
+.af-radio-option span,
+.af-checkbox-option span {
+  margin-left: 10px;
+}
+
+.af-radio-option input,
+.af-checkbox-option input,
+.af-boolean-option input,
+.af-legal input {
   display: none;
 }
 
-.af-radio input:checked+label,
-.af-checkbox input:checked+label {
-  border: 1px solid #1398b3;
-  transition: all 0.5s ease;
+.af-radio-option input:checked+label,
+.af-checkbox-option input:checked+label {
+  transition: all 0.1s ease;
+  border-color:#1398b3;
 }
 
-.af-radio label:before,
-.af-checkbox label:before {
+.af-radio-option input:checked+label:before,
+.af-checkbox-option input:checked+label:before,
+.af-legal input:checked+label:before {
+  background: #1398b3;
+}
+
+.af-radio-option label:before,
+.af-checkbox-option label:before {
   content: "";
   background: #fff;
-  border: 1px solid #d6dde4;
-  width: 12px;
-  height: 12px;
+  border: 1px solid #dadada;
+  width: 18px;
+  height: 18px;
+  box-sizing: border-box;
   margin-left: 4px;
 }
 
-.af-radio label:after,
-.af-checkbox label:after {
+.af-radio-option label:after,
+.af-checkbox-option label:after {
   content: "";
   position: absolute;
-  background: #1398b3;
   opacity: 0;
-  width: 8px;
+  width: 5px;
   height: 8px;
-  margin-left: 7px;
+  margin-left: 9px;
+  margin-top: -1px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
 }
 
-.af-radio input:checked+label:after,
-.af-checkbox input:checked+label:after {
+.af-radio-option input:checked+label:after,
+.af-checkbox-option input:checked+label:after,
+.af-legal input:checked+label:after {
   opacity: 1;
-  transition: all 0.5s ease;
+  transition: all 0.1s ease;
 }
 
-.af-radio input:checked+label:before,
-.af-checkbox input:checked+label:before {
+.af-radio-option input:checked+label:before,
+.af-checkbox-option input:checked+label:before,
+.af-legal input:checked+label:before {
   border-color: #1398b3;
 }
 
-.af-radio label:before,
-.af-radio label:after {
+.af-radio-option label:before {
   border-radius: 50%;
 }
 
 .af-dropdown select {
   width: 100%;
-  border: 1px solid #d6dde4;
+  border: 1px solid #dadada;
   background-color: #fbfbfb;
   color: #444444;
   font-size: 15px;
@@ -149,8 +173,105 @@
   height: 35px;
 }
 
-.af-button button[type=submit] {
+.af-rating {
+  display: flex;
+  margin-top:15px;
+}
+
+.af-rating-option {
+  display: inline-flex;
+  justify-content: center;
+  flex: auto;
+  cursor:pointer;
+}
+.af-rating-option svg {
+  max-width: 35px;
+  padding: 0 5px;
+  cursor:pointer;
+}
+
+.af-rating:hover .af-rating-option svg, .af-rating-option.af-checked svg {
+  fill: #1398b3;
+}
+
+.af-rating-option:hover ~ .af-rating-option svg, .af-rating-option svg {
+  fill: #cccccc;
+}
+
+.af-boolean-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.af-boolean-option label{
+  min-width: 70px;
+  justify-content: center;
+}
+
+.af-boolean-option input:checked+label {
+  transition: all 0.1s ease;
+  background:#1398b3;
+  border-color: #1398b3;
+  color: #fff;
+}
+.af-boolean-option:first-child {
+  margin-right: -1px;
+}
+.af-boolean-option:first-child label {
+  border-radius: 3px 0 0 3px;
+}
+.af-boolean-option:last-child label {
+  border-radius: 0 3px 3px 0;
+}
+
+.af-boolean-option label {
+  font-size: 15px;
+  margin: 6px 0;
+  box-sizing: border-box;
+  line-height: 22px;
+  height: 35px;
+  border: 1px solid #dadada;
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.af-legal label:before {
+  content: "";
+  background: #fff;
+  border: 1px solid #dadada;
+  width: 15px;
+  height: 15px;
+  box-sizing: border-box;
+  margin-right: 6px;
+}
+
+.af-legal label:after {
+  content: "";
+  position: absolute;
+  opacity: 0;
+  width: 3px;
+  height: 8px;
+  margin-left: 5px;
+  margin-top: -1px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.af-legal label {
   font-size: 14px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  line-height: 22px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.af-button button[type=submit] {
+  font-size: 15px;
   padding: 12px 24px;
   text-align: center;
   font-weight: 500;
@@ -202,7 +323,7 @@
 }
 
 .af-step-messages {
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .af-step-message {

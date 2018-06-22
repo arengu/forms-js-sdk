@@ -17,14 +17,14 @@ class Radiogroup extends BaseView {
    */
   get value () {
     return this.nodes
-      .filter((o) => o.checked)
       .map((o) => o.value)
+      .filter((v) => v)
       .toString();
   }
 
   build () {
     const container = document.createElement('div');
-    container.className = 'af-radiogroup';
+    container.className = 'af-radio';
 
     const options = Radio.fromGroup(this.model);
     options
