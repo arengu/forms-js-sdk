@@ -265,3 +265,26 @@
 .af-button button[disabled] {
   cursor: not-allowed;
 }
+
+.af-rating div label {
+  display:inline-block;
+  width:30px;
+  height:30px;
+  text-align:center;
+  color:#FFF;
+  background:#ccc;
+  font-size:20px;
+  margin-right:3px;
+  line-height:30px;
+}
+
+.af-checked label{
+  background:#F90 !important;
+  color:#FFF;
+}
+
+.af-rating div:hover ~ div label,
+.af-rating div:hover label{
+  background:#F90;
+  color:#FFF;
+}
