@@ -13,6 +13,7 @@ class Rating extends BaseView{
    this.icon = {
       'stars' : '⭐',
       'thumbsup' : '👍',
+      'heart': '❤️',
     };
     
   }
@@ -20,7 +21,7 @@ class Rating extends BaseView{
  /*
   * Internal Methods
   */
-
+  
   _buildOptions (type, numberOfButton){
     const rateButtons = [];
 
@@ -50,6 +51,10 @@ class Rating extends BaseView{
 
     this.nodes.slice(0 ,numChecked).forEach( (n) => n.classList.add('af-checked'));
     this.nodes.slice(numChecked).forEach( (n) => n.classList.remove('af-checked'));
+  }
+
+  get value () {
+    return this.value;
   }
 
   build (){
