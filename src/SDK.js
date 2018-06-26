@@ -6,6 +6,8 @@ const HTTPClient = require('./repository/HTTPClient');
 const CSSInjector = require('./css/CSSInjector');
 const EventsFactory = require('./lib/EventsFactory');
 
+const MAGIC_SELECTOR = 'data-arengu-form-id';
+
 class SDK {
 
   constructor () {
@@ -14,12 +16,17 @@ class SDK {
     this.repository = HTTPClient.create();
   }
 
-  init () {
-    this.cssInjector.injectDefault();
-    this.eventsFactory.sdkInit(this);
+  _findNode (selector) {
+    const node = document.querySelector(selector);
+
+    if (!node) {
+      throw SDKError.create(`There is not any node for the provided criteria [${selector}]`);
+    }
+
+    return node;
   }
 
-  embed (formId, parentSelector) {
+  _getForm (formId) {
     this.eventsFactory.getForm(formId);
     return this.repository.getForm((formId))
       .catch((err) => {
@@ -28,26 +35,51 @@ class SDK {
         throw err;
       })
       .then((form) => {
-        try {
           this.eventsFactory.getFormSuccess(formId, form);
+          return form;
+      });
+  }
+
+  embed (formId, parent) {
+    if (!formId) {
+      throw new SDKError('Specify the form you want to embed');
+    }
+    if (!parent) {
+      throw new SDKError('Specify the node where you want to embed the form');
+    }
+
+    const parentNode = parent.length ? this._findNode(parent) : parent;
+
+    return this._getForm(formId)
+      .then((form) => {
+        try {
+          this.eventsFactory.embedForm(formId, parent.length ? parent : null);
+
           const presenter = FormPresenter.create(form);
+          const formNode = presenter.render();
 
-          this.eventsFactory.embedForm(formId, parentSelector);
-          const parent = document.querySelector(parentSelector);
-
-          if (!parent) {
-            throw SDKError.create(`Selector [${parentSelector}] not found`);
-          }
-
-          const node = presenter.render();
-          parent.appendChild(node);
-          this.eventsFactory.embedFormSuccess(formId, parent,node);
+          parentNode.appendChild(formNode);
+          this.eventsFactory.embedFormSuccess(formId, parentNode, formNode);
         } catch (err) {
           console.error('Error embedding form', err);
           this.eventsFactory.embedFormError(formId, err);
           throw err;
         }
       });
+  }
+
+  _auto () {
+    document.querySelectorAll(`[${MAGIC_SELECTOR}]`)
+      .forEach((node) => {
+        const formId = node.dataset.arenguFormId;
+        this.embed(formId, node);
+      });
+  }
+
+  init () {
+    this.cssInjector.injectDefault();
+    this.eventsFactory.sdkInit(this);
+    this._auto();
   }
 
   static create () {
