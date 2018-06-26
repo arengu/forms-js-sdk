@@ -5,7 +5,7 @@ const TextInput = require('./input/TextInput');
 const Textarea = require('./input/Textarea');
 const Rating = require('./input/Rating');
 const Legal = require('./input/Legal');
-const Boolean = require('./input/Boolean');
+const BooleanField = require('./input/BooleanField');
 
 const SDKError = require('../../error/SDKError');
 
@@ -31,7 +31,7 @@ module.exports = {
         return Rating.create(model);
       
       case 'boolean':
-        return Boolean.create(model);
+        return BooleanField.create(model);
 
       case 'legal':
         return Legal.create(model);

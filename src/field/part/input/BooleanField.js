@@ -1,6 +1,6 @@
 const BaseView = require('../../../base/BaseView');
 
-class Boolean extends BaseView {
+class BooleanField extends BaseView {
     
   constructor (model) {
     super();
@@ -71,8 +71,8 @@ class Boolean extends BaseView {
   }
 
   static create (){
-    return new Boolean(...arguments);
+    return new BooleanField(...arguments);
   }
 }
 
-module.exports = Boolean;
+module.exports = BooleanField;
