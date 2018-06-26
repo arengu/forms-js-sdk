@@ -1,4 +1,5 @@
 const BaseView = require('../../../base/BaseView');
+const RatingIcons = require('./RatingIcons');
 
 class Rating extends BaseView{
 
@@ -8,13 +9,7 @@ class Rating extends BaseView{
     this.model = model;
     this.nodes = null;
     this.html = null;
-    this.value = 0;
-
-   this.icon = {
-      'stars' : '⭐',
-      'thumbsup' : '👍',
-      'heart': '❤️',
-    };
+    this._value = 0;
     
   }
 
@@ -27,6 +22,8 @@ class Rating extends BaseView{
 
     for(let i = 1; i <= numberOfButton ; i++){
       const container = document.createElement('div');
+      container.classList.add('af-rating-option');
+
       const label = this._buildLabel(type, i);
       container.appendChild(label);
       rateButtons.push(container);
@@ -34,10 +31,15 @@ class Rating extends BaseView{
 
     return rateButtons;
   }
+
+  _buildIcon(type){
+    return RatingIcons.render(type);
+  }
   
   _buildLabel (type , value){
     const node = document.createElement('label');
-    node.innerText = this.icon[type];
+    const icon = this._buildIcon(type);
+    node.appendChild(icon);
     node.onclick = () => {
       this.setValue(value);
     };
@@ -47,14 +49,14 @@ class Rating extends BaseView{
 
   setValue(value){
     const numChecked = value;
-    this.value = value;
+    this._value = value;
 
     this.nodes.slice(0 ,numChecked).forEach( (n) => n.classList.add('af-checked'));
     this.nodes.slice(numChecked).forEach( (n) => n.classList.remove('af-checked'));
   }
 
   get value () {
-    return this.value;
+    return this._value;
   }
 
   build (){
