@@ -20,6 +20,7 @@ class BooleanField extends BaseView {
 
   _buildOption(id, name, value, required, text){
     const container = document.createElement('div');
+    container.classList.add('af-boolean-option');
     const radio = document.createElement('input');
 
     radio.setAttribute('id', id);
@@ -31,8 +32,8 @@ class BooleanField extends BaseView {
       radio.setAttribute('required', required);
     }
 
-    container.appendChild(this._buildLabel(text, id));
     container.appendChild(radio);
+    container.appendChild(this._buildLabel(text, id));
 
     return container;
   }
@@ -52,7 +53,7 @@ class BooleanField extends BaseView {
 
   build (){
     const container = document.createElement('div');
-    container.classList.add('af-rating');
+    container.classList.add('af-boolean');
 
     const {id, required} = this.model;
     
