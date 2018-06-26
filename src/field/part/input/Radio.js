@@ -55,7 +55,7 @@ class Radio extends BaseView {
 
   build () {
     const container = document.createElement('div');
-    container.classList.add('af-radio');
+    container.classList.add('af-radio-option');
 
     const radio = this._buildRadio(this.fieldId, this.optionId, this.optionValue, this.checked);
     container.appendChild(radio);
