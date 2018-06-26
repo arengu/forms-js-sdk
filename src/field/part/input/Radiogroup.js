@@ -24,7 +24,7 @@ class Radiogroup extends BaseView {
 
   build () {
     const container = document.createElement('div');
-    container.className = 'af-radiogroup';
+    container.className = 'af-radio';
 
     const options = Radio.fromGroup(this.model);
     options

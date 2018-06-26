@@ -23,7 +23,7 @@ class Checkgroup extends BaseView {
 
   build () {
     const container = document.createElement('div');
-    container.className = 'af-checkgroup';
+    container.className = 'af-check';
 
     const options = Checkbox.fromGroup(this.model);
     options
