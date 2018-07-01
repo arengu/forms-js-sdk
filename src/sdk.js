@@ -68,6 +68,23 @@ class SDK {
       });
   }
 
+  _waitForDom (fn) {
+    const VALID_STATES = ['interactive', 'complete'];
+
+    if (VALID_STATES.includes(document.readyState)) {
+      fn();
+      return;
+    }
+
+    let executed = false;
+    document.addEventListener('readystatechange', function listenState (event) {
+      if (VALID_STATES.includes(event.target.readyState) && !executed) {
+        executed = true;
+        fn();
+      }
+    });
+  }
+
   _auto () {
     document.querySelectorAll(`[${MAGIC_SELECTOR}]`)
       .forEach((node) => {
@@ -79,7 +96,7 @@ class SDK {
   init () {
     this.cssInjector.injectDefault();
     this.eventsFactory.sdkInit(this);
-    this._auto();
+    this._waitForDom(this._auto.bind(this));
   }
 
   static create () {
