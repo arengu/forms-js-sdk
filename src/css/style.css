@@ -18,7 +18,9 @@
 .af-field-input select:focus {
   outline: none;
   border-color: #1398b3;
-  transition: all 0.5s ease;
+  transition: all .5s ease;
+  resize: vertical;
+  min-height: 50px;
 }
 
 .af-field-label label {
