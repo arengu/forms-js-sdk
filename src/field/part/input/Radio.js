@@ -79,7 +79,7 @@ class Radio extends BaseView {
     const {validValues, defaultValue} = config;
 
     return validValues.map((val, i) => {
-      const checked = defaultValue.includes(val);
+      const checked = defaultValue === val;
       const optionId = `${fieldId}-${i}`;
 
       return Radio.create(fieldId, optionId, val, checked);

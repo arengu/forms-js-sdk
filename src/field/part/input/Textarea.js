@@ -14,7 +14,10 @@ class Textarea extends BaseInput {
 
     node.setAttribute('id', id);
     node.setAttribute('name', id);
-    node.setAttribute('placeholder', placeholder);
+
+    if (placeholder) {
+      node.setAttribute('placeholder', placeholder);
+    }
 
     inputRules.parseDef(model)
       .forEach((a) => node.setAttribute(a.name, a.value));

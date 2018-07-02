@@ -19,8 +19,6 @@
   outline: none;
   border-color: #1398b3;
   transition: all .5s ease;
-  resize: vertical;
-  min-height: 50px;
 }
 
 .af-field-label label {
@@ -47,6 +45,11 @@
 .af-field-input textarea,
 .af-field-input select {
   box-sizing: border-box;
+}
+
+.af-field-input textarea {
+  resize: vertical;
+  min-height: 50px;
 }
 
 .af-field-input input:not([type=checkbox]):not([type=radio]),

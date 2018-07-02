@@ -80,7 +80,7 @@ class Checkbox extends BaseView {
     const {validValues, defaultValue} = config;
 
     return validValues.map((val, i) => {
-      const checked = defaultValue.includes(val);
+      const checked = defaultValue ? defaultValue.includes(val) : false;
       const optionId = `${fieldId}-${i}`;
 
       return Checkbox.create(fieldId, optionId, val, checked);

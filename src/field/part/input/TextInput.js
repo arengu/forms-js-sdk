@@ -25,7 +25,10 @@ class TextInput extends BaseInput {
     node.setAttribute('id', id);
     node.setAttribute('name', id);
     node.setAttribute('type', this._getInputType(type));
-    node.setAttribute('placeholder', placeholder);
+
+    if (placeholder) {
+      node.setAttribute('placeholder', placeholder);
+    }
 
     inputRules.parseDef(model)
       .forEach((a) => node.setAttribute(a.name, a.value));
