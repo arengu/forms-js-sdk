@@ -67,6 +67,11 @@
   height: 35px;
 }
 
+.af-checkbox-option,
+.af-radio-option {
+  position: relative;
+}
+
 .af-checkbox-option:first-child label,
 .af-radio-option:first-child label {
   margin: 0;
@@ -105,16 +110,27 @@
 }
 
 .af-radio-option input,
-.af-checkbox-option input,
-.af-boolean-option input,
-.af-legal input {
-  display: none;
+.af-checkbox-option input {
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  border: 1px solid transparent;
+  margin: 8px 0 0 10px;
+  padding: 0px;
+  opacity: 0;
 }
 
 .af-radio-option input:checked+label,
 .af-checkbox-option input:checked+label {
   transition: all 0.1s ease;
   border-color:#1398b3;
+}
+
+.af-radio-option input:focus+label:before,
+.af-checkbox-option input:focus+label:before {
+  transition: all 0.1s ease;
+  border-color:#1398b3;
+  outline: #1398b3 auto 5px;
 }
 
 .af-radio-option input:checked+label:before,
@@ -283,6 +299,10 @@
   cursor: pointer;
   border: 1px solid transparent;
   border-radius: 3px;
+}
+
+.af-step-next button[type=submit]:focus {
+  outline-color: #1398b3;
 }
 
 .af-step-next button[type=submit] {
