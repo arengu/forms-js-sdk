@@ -36,10 +36,14 @@ module.exports = {
       case 'legal':
         return Legal.create(model);
 
-      case 'text':
+      case 'date':
+      case 'datetime':
       case 'email':
       case 'number':
       case 'tel':
+      case 'time':
+      case 'text':
+      case 'url':
         return TextInput.create(model);
 
       default:

@@ -4,6 +4,16 @@ const BaseInput = require('./BaseInput');
 
 class TextInput extends BaseInput {
 
+  _getInputType (type) {
+    switch (type) {
+      case 'datetime':
+        return 'datetime-local';
+
+      default:
+        return type;
+    }
+  }
+
   /*
    * Private methods
    */
@@ -14,7 +24,7 @@ class TextInput extends BaseInput {
 
     node.setAttribute('id', id);
     node.setAttribute('name', id);
-    node.setAttribute('type', type);
+    node.setAttribute('type', this._getInputType(type));
     node.setAttribute('placeholder', placeholder);
 
     inputRules.parseDef(model)
