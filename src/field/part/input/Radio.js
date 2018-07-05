@@ -2,13 +2,14 @@ const BaseView = require('../../../base/BaseView');
 
 class Radio extends BaseView {
 
-  constructor (fieldId, optionId, optionValue, checked) {
+  constructor (fieldId, optionId, optionValue, checked, required) {
     super();
 
     this.fieldId = fieldId;
     this.optionId = optionId;
     this.optionValue = optionValue;
     this.checked = checked;
+    this.required = required;
 
     this.node = null;
     this.html = null;
@@ -79,14 +80,14 @@ class Radio extends BaseView {
   }
 
   static fromGroup (group) {
-    const {id: fieldId, config} = group;
+    const {id: fieldId, required, config} = group;
     const {validValues, defaultValue} = config;
 
     return validValues.map((val, i) => {
       const checked = defaultValue === val;
       const optionId = `${fieldId}-${i}`;
 
-      return Radio.create(fieldId, optionId, val, checked);
+      return Radio.create(fieldId, optionId, val, checked, required);
     });
   }
 
