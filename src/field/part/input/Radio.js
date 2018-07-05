@@ -17,30 +17,34 @@ class Radio extends BaseView {
   /*
    * Internal methods
    */
-  _buildLabel (id) {
+  _buildLabel () {
     const node = document.createElement('label');
-    node.setAttribute('for', id);
+    node.setAttribute('for', this.optionId);
 
     return node;
   }
 
-  _buildRadio (fieldId, optionId, value, checked) {
+  _buildRadio () {
     const node = document.createElement('input');
-    node.setAttribute('id', optionId);
-    node.setAttribute('type', 'radio');
-    node.setAttribute('name', fieldId);
-    node.setAttribute('value', value);
+    node.setAttribute('id', this.optionId);
+    node.setAttribute('type', 'radio'); 
+    node.setAttribute('name', this.fieldId);
+    node.setAttribute('value', this.optionValue);
 
-    if (checked) {
+    if (this.checked) {
       node.setAttribute('checked', 'true');
+    }
+
+    if (this.required) {
+      node.setAttribute('required', 'true');
     }
 
     return node;
   }
 
-  _builText (text) {
+  _builText () {
     const node = document.createElement('span');
-    node.innerText = text
+    node.innerText = this.optionValue;
 
     return node;
   } 
@@ -57,13 +61,13 @@ class Radio extends BaseView {
     const container = document.createElement('div');
     container.classList.add('af-radio-option');
 
-    const radio = this._buildRadio(this.fieldId, this.optionId, this.optionValue, this.checked);
+    const radio = this._buildRadio();
     container.appendChild(radio);
 
-    const label = this._buildLabel(this.optionId);
+    const label = this._buildLabel();
     container.appendChild(label);
 
-    const text = this._builText(this.optionValue);
+    const text = this._builText();
     label.appendChild(text);
 
     this.node = radio;
