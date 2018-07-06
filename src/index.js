@@ -1,3 +1,9 @@
-const SDK = require('./SDK');
+const SDK = require('./sdk');
 
-module.exports = SDK.create();
+const instance = SDK.create();
+
+global.ArenguForms = instance; // async
+
+instance.init();
+
+module.exports = instance; // sync
