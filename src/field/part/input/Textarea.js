@@ -8,11 +8,11 @@ class Textarea extends BaseInput {
    * Private methods
    */
   _buildInput (model) {
-    const { id, placeholder } = model;
+    const { id, uid, placeholder } = model;
 
     const node = document.createElement('textarea');
 
-    node.setAttribute('id', id);
+    node.setAttribute('id', uid);
     node.setAttribute('name', id);
 
     if (placeholder) {

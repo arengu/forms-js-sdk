@@ -76,12 +76,12 @@ class Checkbox extends BaseView {
   }
 
   static fromGroup (group) {
-    const {id: fieldId, config} = group;
+    const {id: fieldId, uid, config} = group;
     const {validValues, defaultValue} = config;
 
     return validValues.map((val, i) => {
-      const checked = defaultValue ? defaultValue.includes(val) : false;
-      const optionId = `${fieldId}-${i}`;
+      const checked = defaultValue && defaultValue.includes(val);
+      const optionId = `${uid}-${i}`;
 
       return Checkbox.create(fieldId, optionId, val, checked);
     });

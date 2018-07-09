@@ -10,9 +10,9 @@ class Legal extends BaseView{
     this.html = null;
   }
 
-  _buildCheckbox (name, required) {
+  _buildCheckbox (id, name, required) {
     const node = document.createElement('input');
-    node.setAttribute('id', name);
+    node.setAttribute('id', id);
     node.setAttribute('type', 'checkbox');
     node.setAttribute('name', name);
     node.setAttribute('value', true);
@@ -41,13 +41,13 @@ class Legal extends BaseView{
     const container = document.createElement('div');
     container.classList.add('af-legal');
 
-    const {id, required} = this.model;
+    const {id, uid, required} = this.model;
     const {text} = this.model.config;
 
-    const checkbox = this._buildCheckbox(id, required);
+    const checkbox = this._buildCheckbox(uid, id, required);
     container.appendChild(checkbox);
 
-    const label = this._buildLabel(id, text);
+    const label = this._buildLabel(uid, text);
     container.appendChild(label);
     
     this.node = checkbox;

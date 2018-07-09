@@ -38,11 +38,11 @@ class BooleanField extends BaseView {
     return container;
   }
 
-  _buildInputs (id, required) {
+  _buildInputs (id, name, required) {
     const nodes = [];
 
-    nodes.push(this._buildOption(`${id}-yes`, id, 'true', required, "Yes"));
-    nodes.push(this._buildOption(`${id}-no`, id, 'false', required, "No"));
+    nodes.push(this._buildOption(`${id}-yes`, name, 'true', required, "Yes"));
+    nodes.push(this._buildOption(`${id}-no`, name, 'false', required, "No"));
 
     return nodes;
   }
@@ -59,9 +59,8 @@ class BooleanField extends BaseView {
     const container = document.createElement('div');
     container.classList.add('af-boolean');
 
-    const {id, required} = this.model;
-
-    const nodes = this._buildInputs(id, required);
+    const {id, uid, required} = this.model;
+    const nodes = this._buildInputs(uid, id, required);
 
     nodes.forEach((n) => container.appendChild(n));
 

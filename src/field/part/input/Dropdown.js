@@ -43,8 +43,8 @@ class Dropdown extends BaseView {
     const dropdown = document.createElement('select');
     container.appendChild(dropdown);
 
-    const { optionValues, defaultValue } = this.model.config;
-    const fieldId = this.model.id;
+    const { validValues, defaultValue } = this.model.config;
+    const { id, uid } = this.model;
 
     if (this.multiple) {
       dropdown.setAttribute('multiple', 'multiple');
@@ -54,11 +54,11 @@ class Dropdown extends BaseView {
       dropdown.setAttribute('required', true);
     }
 
-    const options = optionValues
+    const options = validValues
       .map((value, i) => {
-        const optionId = `${fieldId}-${i}`;
-        const selected = defaultValue.includes(value);
-        return this._buildOption(fieldId, optionId, value, selected)
+        const optionId = `${uid}-${i}`;
+        const selected = defaultValue && defaultValue.includes(value);
+        return this._buildOption(id, optionId, value, selected);
       });
     
     options.forEach((n) => dropdown.appendChild(n));

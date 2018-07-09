@@ -18,11 +18,11 @@ class TextInput extends BaseInput {
    * Private methods
    */
   _buildInput (model) {
-    const { id, type, placeholder } = model;
+    const { id, uid, type, placeholder } = model;
 
     const node = document.createElement('input');
 
-    node.setAttribute('id', id);
+    node.setAttribute('id', uid);
     node.setAttribute('name', id);
     node.setAttribute('type', this._getInputType(type));
 

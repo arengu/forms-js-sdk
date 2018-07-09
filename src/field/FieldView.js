@@ -20,13 +20,13 @@ class FieldView extends BaseView {
    * Internal methods
    */
   _buildLabel () {
-    const { id, label, required } = this.fieldM;
+    const { uid, label, required } = this.fieldM;
 
     const container = document.createElement('div');
     container.classList.add('af-field-label');
 
     const node = document.createElement('label');
-    node.setAttribute('for', id);
+    node.setAttribute('for', uid);
     node.innerText = label;
     container.appendChild(node);
     
