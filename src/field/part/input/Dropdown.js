@@ -12,12 +12,10 @@ class Dropdown extends BaseView {
     this.html = null;
   }
 
-  _buildOption (fieldId, optionId, value, selected) {
+  _buildOption (optionId, value, selected) {
     const node = document.createElement('option');
     node.setAttribute('id', optionId);
-    node.setAttribute('name', fieldId);
     node.setAttribute('value', value);
-    node.setAttribute('label', value);
     node.innerText = value;
 
     if (selected) {
@@ -46,6 +44,8 @@ class Dropdown extends BaseView {
     const { validValues, defaultValue } = this.model.config;
     const { id, uid } = this.model;
 
+    dropdown.setAttribute('name', id);
+
     if (this.multiple) {
       dropdown.setAttribute('multiple', 'multiple');
     }
@@ -58,7 +58,7 @@ class Dropdown extends BaseView {
       .map((value, i) => {
         const optionId = `${uid}-${i}`;
         const selected = defaultValue && defaultValue.includes(value);
-        return this._buildOption(id, optionId, value, selected);
+        return this._buildOption(optionId, value, selected);
       });
     
     options.forEach((n) => dropdown.appendChild(n));
