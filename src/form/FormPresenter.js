@@ -131,6 +131,14 @@ class FormPresenter extends BasePresenter {
   }
 
   onNext () {
+    const errors = this.stepsP[this.currStep].validate();
+
+    if (Object.keys(errors).length) {
+      console.error(`Error validating data:`, errors);
+      this.onInvalidFields(errors);
+      return;
+    }
+
     if (this._isLastStep()) {
       this._submit();
       this._enableLoading();

@@ -72,14 +72,20 @@ class FieldView extends BaseView {
     return node;
   }
 
+
   /*
    * Public methods
    */
-  getId () {
+
+  validate () {
+    return this.inputV.validate();
+  }
+
+  get id () {
     return this.fieldM.id;
   }
 
-  getValue () {
+  get value () {
     return this.inputV.value;
   }
 

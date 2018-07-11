@@ -4,9 +4,6 @@ class BaseView {
     this.html = null;
   }
 
-  getId () {
-  }
-
   build () {
   }
 

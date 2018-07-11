@@ -1,7 +1,7 @@
+const BaseInput = require('./BaseInput');
 const Checkbox = require('./Checkbox');
-const BaseView = require('../../../base/BaseView');
 
-class Checkgroup extends BaseView {
+class Checkgroup extends BaseInput {
 
   constructor (model) {
     super();

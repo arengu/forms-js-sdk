@@ -1,7 +1,7 @@
+const BaseInput = require('./BaseInput');
 const Radio = require('./Radio');
-const BaseView = require('../../../base/BaseView');
 
-class Radiogroup extends BaseView {
+class Radiogroup extends BaseInput {
 
   constructor (model) {
     super();

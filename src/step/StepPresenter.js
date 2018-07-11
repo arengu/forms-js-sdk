@@ -28,7 +28,7 @@ class StepPresenter extends BasePresenter {
 
   onInvalidFields (errors = {}) {
     this.componentsV.forEach((cv) => {
-      const errMessage = errors[cv.getId()];
+      const errMessage = errors[cv.id];
       cv.setError(errMessage)
     });
   }
@@ -48,10 +48,23 @@ class StepPresenter extends BasePresenter {
     const data = {};
 
     this.componentsV.forEach((c) => {
-      data[c.getId()] = c.getValue();
+      data[c.id] = c.value;
     });
 
     return data;
+  }
+
+  validate () {
+    const errors = {};
+
+    this.componentsV.forEach((c) => {
+      const error = c.validate();
+      if (error) {
+        errors[c.id] = error;
+      }
+    });
+
+    return errors;
   }
 
   render () {
