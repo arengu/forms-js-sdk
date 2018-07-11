@@ -1,76 +1,69 @@
+:root {
+  --primary-color: #1398b3;
+  --primary-hover-color: #5BBBCD;
+  --input-padding: 8px 10px;
+  --input-background:#fafbfb;
+  --input-background-disabled:"";
+  --input-color:#444444;
+  --input-border:1px solid #dadada;
+  --input-border-radius: 3px;
+  --input-height:40px;
+  --input-font-size: 15px;
+  --font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
+  --border-focus-color: #1398b3;
+  --label-color: rgba(0, 0, 0, 0.87);
+  --label-font-size: 0.95em;
+  --label-font-weight: 500;
+  --label-background-color:"";
+  --label-background-hover-color:#eaeaea;
+  --hint-color:#9e9e9e;;
+  --hint-font-size:0.9em;
+  --placeholder-color: rgba(191, 191, 191, 0.87);
+  --placeholder-focus-color: rgba(115, 115, 115, 0.87);
+  --button-font-size:15px;
+  --button-font-weight:500;
+  --button-border-radius:3px;
+  --button-padding: 12px 24px;
+  --message-fail-color:#d2383f;
+  --message-fail-background-color:#fff6f6;
+  --message-success-color:#318233;
+  --message-success-background-color:#fcfff5;
+}
+
+/*******************************
+            Elements
+*******************************/
+
+/*--------------------
+        Form
+---------------------*/
+
 .af-form {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: var(--font-family);
   max-width: 500px;
 }
+
+/*--------------------
+        Field
+---------------------*/
 
 .af-field {
-  margin-bottom: 20px;
-  max-width: 500px;
+  margin: 0 0 1.25em;
 }
 
-.af-field-input input::placeholder {
-  color: rgba(191, 191, 191, 0.87);
-  font-size: 14px;
-}
-
-.af-field-input input:not([type=checkbox]):not([type=radio]):focus,
-.af-field-input textarea:focus,
-.af-field-input select:focus {
-  outline: none;
-  border-color: #1398b3;
-  transition: all .5s ease;
-}
+/*--------------------
+        Labels
+---------------------*/
 
 .af-field-label label {
-  margin-bottom: 3px;
-  font-weight: 500;
   display: block;
-  font-size: 15px;
-  color: rgba(0, 0, 0, 0.87);
+  font-weight: var(--label-font-weight);
+  font-size: var(--label-font-size);
+  margin: 0 0 0.3em 0;
+  color: var(--label-color);
 }
 
-.af-required:after {
-  content: "*";
-  color: #d2383f;
-  margin-left: 3px;
-}
-
-.af-field-hint p {
-  margin: 0px 0px 6px;
-  font-size: 13px;
-  color: #9e9e9e;
-}
-
-.af-field-input input,
-.af-field-input textarea,
-.af-field-input select {
-  box-sizing: border-box;
-}
-
-.af-field-input textarea {
-  resize: vertical;
-  min-height: 50px;
-}
-
-.af-field-input input:not([type=checkbox]):not([type=radio]),
-.af-field-input textarea {
-  border-radius: 3px;
-  border: 1px solid #dadada;
-  background-color: #fbfbfb;
-  width: 100%;
-  color: #444444;
-  font-size: 15px;
-  padding: 8px 10px;
-}
-
-.af-field-input input:not([type=checkbox]):not([type=radio]) {
-  height: 35px;
-}
-
-.af-checkbox-option,
-.af-radio-option {
-  position: relative;
-}
+/* Checkbox/Radio/Boolean */
 
 .af-checkbox-option:first-child label,
 .af-radio-option:first-child label {
@@ -80,78 +73,57 @@
 .af-radio-option label,
 .af-checkbox-option label,
 .af-boolean-option label {
-  font-size: 15px;
+  font-size: var(--label-font-size);
   margin: 6px 0;
   box-sizing: border-box;
-  line-height: 22px;
-  height: 35px;
-  border: 1px solid #dadada;
+  border: var(--input-border);
   display: flex;
   align-items: center;
   padding: 5px;
+  height: var(--input-height);
+  cursor: pointer;
+}
+
+.af-legal label {
+  font-size: var(--label-font-size);
+  margin: 8px 0;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
   cursor: pointer;
 }
 
 .af-radio-option label,
 .af-checkbox-option label {
   text-align: left;
-  border-radius: 3px;
-}
-
-.af-radio-option label:hover,
-.af-checkbox-option label:hover,
-.af-boolean-option label:hover {
-  background: #eaeaea;
-}
-
-.af-radio-option span,
-.af-checkbox-option span {
-  margin-left: 10px;
-}
-
-.af-radio-option input,
-.af-checkbox-option input {
-  position: absolute;
-  height: 20px;
-  width: 20px;
-  border: 1px solid transparent;
-  margin: 8px 0 0 10px;
-  padding: 0px;
-  opacity: 0;
-}
-
-.af-radio-option input:checked+label,
-.af-checkbox-option input:checked+label {
-  transition: all 0.1s ease;
-  border-color:#1398b3;
-}
-
-.af-radio-option input:focus+label:before,
-.af-checkbox-option input:focus+label:before {
-  transition: all 0.1s ease;
-  border-color:#1398b3;
-  outline: #1398b3 auto 5px;
-}
-
-.af-radio-option input:checked+label:before,
-.af-checkbox-option input:checked+label:before,
-.af-legal input:checked+label:before {
-  background: #1398b3;
+  border-radius: var(--input-border-radius);
 }
 
 .af-radio-option label:before,
 .af-checkbox-option label:before {
   content: "";
   background: #fff;
-  border: 1px solid #dadada;
+  border: var(--input-border);
   width: 18px;
   height: 18px;
   box-sizing: border-box;
   margin-left: 4px;
 }
 
+.af-legal label:before{
+  content: "";
+  background: #fff;
+  border: var(--input-border);
+  width: 18px;
+  height: 18px;
+  box-sizing: border-box;
+  margin-left: 3px;
+  margin-right: 8px;
+}
+
 .af-radio-option label:after,
-.af-checkbox-option label:after {
+.af-checkbox-option label:after,
+.af-legal label:after {
   content: "";
   position: absolute;
   opacity: 0;
@@ -164,22 +136,131 @@
   transform: rotate(45deg);
 }
 
-.af-radio-option input:checked+label:after,
-.af-checkbox-option input:checked+label:after,
-.af-legal input:checked+label:after {
-  opacity: 1;
-  transition: all 0.1s ease;
-}
-
-.af-radio-option input:checked+label:before,
-.af-checkbox-option input:checked+label:before,
-.af-legal input:checked+label:before {
-  border-color: #1398b3;
-}
-
 .af-radio-option label:before {
   border-radius: 50%;
 }
+
+.af-boolean-option label{
+  min-width: 70px;
+  justify-content: center;
+}
+
+.af-boolean-option:first-child label {
+  border-radius: 3px 0 0 3px;
+  margin-right: -1px;
+}
+
+.af-boolean-option:last-child label {
+  border-radius: 0 3px 3px 0;
+}
+
+/*--------------------
+        Hint
+---------------------*/
+
+.af-field-hint p{
+  margin: 0 0 0.4em 0;
+  font-size: var(--hint-font-size);
+  color: var(--hint-color);
+}
+
+/*--------------------
+    Standard Inputs
+---------------------*/
+.af-field-input input:not([type]),
+.af-field-input input[type="date"],
+.af-field-input input[type="datetime-local"],
+.af-field-input input[type="email"],
+.af-field-input input[type="number"],
+.af-field-input input[type="password"],
+.af-field-input input[type="search"],
+.af-field-input input[type="tel"],
+.af-field-input input[type="time"],
+.af-field-input input[type="text"],
+.af-field-input input[type="file"],
+.af-field-input input[type="url"] {
+  width: 100%;
+  vertical-align: top;
+  border: var(--input-border);
+  border-radius: var(--input-border-radius);
+  background-color: var(--input-background);
+  font-size: var(--input-font-size);
+  padding: var(--input-padding);
+  color: var(--input-color);
+  box-sizing: border-box;
+  font-family: var(--font-family);
+  height: var(--input-height);
+}
+
+/* Textarea */
+
+.af-field-input textarea {
+  resize: vertical;
+  width: 100%;
+  vertical-align: top;
+  border: var(--input-border);
+  border-radius: var(--input-border-radius);
+  background-color: var(--input-background);
+  font-size: var(--input-font-size);
+  padding: var(--input-padding);
+  color: var(--input-color);
+  box-sizing: border-box;
+  font-family: var(--font-family);
+  min-height: 65px;
+}
+
+/* Checkbox/Radio/Legal/Boolean */
+
+.af-boolean-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.af-checkbox-option,
+.af-radio-option {
+  position: relative;
+}
+
+.af-radio-option span,
+.af-checkbox-option span {
+  margin-left: 10px;
+}
+
+.af-radio-option input,
+.af-checkbox-option input,
+.af-legal input,
+.af-boolean input {
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  border: 1px solid transparent;
+  margin: 8px 0 0 10px;
+  padding: 0px;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Rating */
+.af-rating {
+  display: flex;
+  margin-top:15px;
+}
+.af-rating-option {
+  display: inline-flex;
+  justify-content: center;
+  flex: auto;
+  cursor:pointer;
+}
+.af-rating-option svg {
+  max-width: 35px;
+  padding: 0 5px;
+  cursor:pointer;
+}
+
+/*--------------------
+       Dropdown
+---------------------*/
 
 .af-dropdown select {
   width: 100%;
@@ -194,23 +275,75 @@
   height: 35px;
 }
 
-.af-rating {
-  display: flex;
-  margin-top:15px;
+/*******************************
+            States
+*******************************/
+
+/*--------------------
+      Placeholder
+---------------------*/
+
+/* browsers require these rules separate */
+
+.af-form ::-webkit-input-placeholder {
+  color: var(--placeholder-color);
+}
+.af-form :-ms-input-placeholder {
+  color: var(--placeholder-color);
+}
+.af-form ::-moz-placeholder {
+  color: var(--placeholder-color);
+}
+.af-form :focus::-webkit-input-placeholder {
+  color: var(--placeholder-focus-color);
+}
+.af-form :focus:-ms-input-placeholder {
+  color: var(--placeholder-focus-color);
+}
+.af-form :focus::-moz-placeholder {
+  color: var(--placeholder-focus-color);
 }
 
-.af-rating-option {
-  display: inline-flex;
-  justify-content: center;
-  flex: auto;
-  cursor:pointer;
-}
-.af-rating-option svg {
-  max-width: 35px;
-  padding: 0 5px;
-  cursor:pointer;
+/*--------------------
+        Focus
+---------------------*/
+
+.af-form input:not([type]):focus,
+.af-form input[type="date"]:focus,
+.af-form input[type="datetime-local"]:focus,
+.af-form input[type="email"]:focus,
+.af-form input[type="number"]:focus,
+.af-form input[type="password"]:focus,
+.af-form input[type="search"]:focus,
+.af-form input[type="tel"]:focus,
+.af-form input[type="time"]:focus,
+.af-form input[type="text"]:focus,
+.af-form input[type="file"]:focus,
+.af-form input[type="url"]:focus,
+.af-form textarea:focus {
+  outline: none;
+  border-color: var(--border-focus-color);
 }
 
+/* Checkbox/Radio/Boolean */
+.af-radio-option input:focus+label:before,
+.af-checkbox-option input:focus+label:before {
+  transition: all 0.1s ease;
+  border-color:#1398b3;
+}
+
+/*--------------------
+        Hover
+---------------------*/
+
+/* Checkbox/Radio/Boolean */
+.af-radio-option label:hover,
+.af-checkbox-option label:hover,
+.af-boolean-option label:hover {
+  background: var(--label-background-hover-color);
+}
+
+/* Rating */
 .af-rating:hover .af-rating-option svg, .af-rating-option.af-checked svg {
   fill: #1398b3;
 }
@@ -219,159 +352,47 @@
   fill: #cccccc;
 }
 
-.af-boolean-option {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+/*--------------------
+        Checked
+---------------------*/
+
+/* Checkbox/Radio/Boolean/Legal */
+
+.af-radio-option input:checked+label,
+.af-checkbox-option input:checked+label {
+  transition: all 0.1s ease;
+  border-color:var(--primary-color);
 }
-.af-boolean-option label{
-  min-width: 70px;
-  justify-content: center;
+
+.af-radio-option input:checked+label:before,
+.af-checkbox-option input:checked+label:before,
+.af-legal input:checked+label:before {
+  border-color:var(--primary-color);
+}
+
+.af-radio-option input:checked+label:before,
+.af-checkbox-option input:checked+label:before,
+.af-legal input:checked+label:before {
+  background: var(--primary-color);
+}
+
+.af-radio-option input:checked+label:after,
+.af-checkbox-option input:checked+label:after,
+.af-legal input:checked+label:after {
+  opacity: 1;
+  transition: all 0.1s ease;
 }
 
 .af-boolean-option input:checked+label {
   transition: all 0.1s ease;
-  background:#1398b3;
-  border-color: #1398b3;
+  background: var(--primary-color);
+  border-color: var(--primary-color);
   color: #fff;
 }
-.af-boolean-option:first-child {
-  margin-right: -1px;
-}
-.af-boolean-option:first-child label {
-  border-radius: 3px 0 0 3px;
-}
-.af-boolean-option:last-child label {
-  border-radius: 0 3px 3px 0;
-}
 
-.af-boolean-option label {
-  font-size: 15px;
-  margin: 6px 0;
-  box-sizing: border-box;
-  line-height: 22px;
-  height: 35px;
-  border: 1px solid #dadada;
-  display: flex;
-  align-items: center;
-  padding: 5px;
-  cursor: pointer;
-}
-
-.af-legal label:before {
-  content: "";
-  background: #fff;
-  border: 1px solid #dadada;
-  width: 15px;
-  height: 15px;
-  box-sizing: border-box;
-  margin-right: 6px;
-}
-
-.af-legal label:after {
-  content: "";
-  position: absolute;
-  opacity: 0;
-  width: 3px;
-  height: 8px;
-  margin-left: 5px;
-  margin-top: -1px;
-  border: solid #fff;
-  border-width: 0 2px 2px 0;
-  transform: rotate(45deg);
-}
-
-.af-legal label {
-  font-size: 14px;
-  margin: 8px 0;
-  box-sizing: border-box;
-  line-height: 22px;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-}
-
-.af-button button[type=submit] {
-  font-size: 15px;
-  padding: 12px 24px;
-  text-align: center;
-  font-weight: 500;
-  cursor: pointer;
-  border: 1px solid transparent;
-  border-radius: 3px;
-}
-
-.af-step-next button[type=submit]:focus {
-  outline-color: #1398b3;
-}
-
-.af-step-next button[type=submit] {
-  background-color: #1398b3;
-  border-color: #1398b3;
-  color: #fff;
-  position: relative;
-}
-
-.af-step-next button[type=submit]:hover {
-  color: #fff;
-  background-color: #5BBBCD;
-  border-color: #5BBBCD;
-  transition: all 0.5s ease;
-}
-
-.af-step-back button[type=submit] {
-  background-color: #e0e1e2;
-  border-color: #e0e1e2;
-  color: rgba(0, 0, 0, 0.6)
-}
-
-.af-step-back button[type=submit]:hover {
-  color: rgba(0, 0, 0, 0.8);
-  background-color: #cacbcd;
-  border-color: #cacbcd;
-  transition: all 0.5s ease;
-}
-
-.af-field-error p {
-  color: #d2383f;
-  font-size: 12px;
-  margin-top: 4px;
-  padding-left: 2px;
-}
-
-.af-step-failure {
-  color: #d2383f;
-  padding: 0 1em;
-  border: 1px solid #d2383f;
-  background: #fff6f6;
-  border-radius: 3px;
-}
-
-.af-step-messages {
-  font-size: 15px;
-}
-
-.af-step-message {
-  margin: 10px 0;
-}
-
-.af-step-success {
-  color: #318233;
-  padding: 0 1em;
-  border: 1px solid #2c662d;
-  background: #fcfff5;
-  border-radius: 3px;
-}
-
-.af-step-button {
-  display: inline-block;
-  margin: 0 15px;
-}
-
-.af-step-navigation {
-  margin-top: 20px;
-  text-align: center;
-}
+/*--------------------
+        Loading
+---------------------*/
 
 .af-button-ladda {
   position: absolute;
@@ -407,10 +428,112 @@
   margin-left: -10px;
   border-radius: 50%;
   border: 2px solid #fff;
-  border-top-color: #1398b3;
+  border-top-color: var(--primary-color);
   animation: af-button-ladda .6s linear infinite;
+}
+
+
+/*******************************
+         Element Types
+*******************************/
+
+
+/*--------------------
+     Required Field
+---------------------*/
+
+.af-required:after {
+  content: "*";
+  color: #d2383f;
+  margin-left: 3px;
+}
+
+/*--------------------
+        Buttons
+---------------------*/
+
+.af-step-navigation {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.af-button button[type=submit] {
+  font-size: var(--button-font-size);
+  padding: var(--button-padding);
+  text-align: center;
+  font-weight: var(--button-font-weight);
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: var(--button-border-radius);
+}
+
+.af-step-next button[type=submit] {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: #fff;
+  position: relative;
+}
+
+.af-step-next button[type=submit]:hover {
+  color: #fff;
+  background-color: var(--primary-hover-color);
+  border-color: var(--primary-hover-color);
+  transition: all 0.3s ease;
+}
+
+.af-step-back button[type=submit] {
+  background-color: #e0e1e2;
+  border-color: #e0e1e2;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.af-step-back button[type=submit]:hover {
+  color: rgba(0, 0, 0, 0.8);
+  background-color: #cacbcd;
+  border-color: #cacbcd;
+  transition: all 0.3s ease;
+}
+
+.af-step-button {
+  display: inline-block;
+  margin: 0 15px;
 }
 
 .af-button button[disabled] {
   cursor: not-allowed;
+}
+
+/*--------------------
+        Messages
+---------------------*/
+
+.af-field-error p {
+  color: var(--message-fail-color);
+  font-size: 12px;
+  margin-top: 4px;
+  padding-left: 2px;
+}
+
+.af-step-failure {
+  color: var(--message-fail-color);
+  padding: 0 1em;
+  border: 1px solid var(--message-fail-color);
+  background: #fff6f6;
+  border-radius: var(--button-border-radius);
+}
+
+.af-step-messages {
+  font-size: var(--input-font-size);
+}
+
+.af-step-message {
+  margin: 10px 0;
+}
+
+.af-step-success {
+  color: var(--message-success-color);
+  padding: 0 1em;
+  border: 1px solid var(--message-success-color);
+  background: var(--message-success-background-color);
+  border-radius: var(--button-border-radius);
 }
