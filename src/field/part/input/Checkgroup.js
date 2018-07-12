@@ -12,6 +12,19 @@ class Checkgroup extends BaseInput {
     this.html = null;
   }
 
+  /**
+   * Custom validation for this field
+   * @returns {*}
+   */
+  validate () {
+    let error;
+
+    if (this.model.required && !this.value.length) {
+       error = 'You have to check at least one option';
+    }
+
+    return error;
+  }
   /*
    * View actions
    */
