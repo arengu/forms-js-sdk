@@ -5,10 +5,11 @@ const ErrorMessage = require('./part/ErrorMessage');
 
 class FieldView extends BaseView {
 
-  constructor (model) {
+  constructor (model, presenter) {
     super();
 
     this.fieldM = model;
+    this.fieldP = presenter
 
     this.errorV = null;
     this.inputV = null;
@@ -54,14 +55,33 @@ class FieldView extends BaseView {
     return container;
   }
 
+  _addListeners (field) {
+    const presenter = this.fieldP;
+    const self = this;
+
+    field.onblur = function (evt) {
+      presenter.onBlur(self);
+    };
+
+    field.onfocus = function (evt) {
+      presenter.onFocus(self);
+    };
+
+    field.onchange = function (evt) {
+      presenter.onChange(self);
+    };
+  }
+
   _buildInput () {
     const container = document.createElement('div');
     container.classList.add('af-field-input');
 
     this.inputV = InputView.create(this.fieldM);
-    const node = this.inputV.render();
-    container.appendChild(node);
 
+    const node = this.inputV.render();
+    this._addListeners(node);
+
+    container.appendChild(node);
     return container;
   }
 

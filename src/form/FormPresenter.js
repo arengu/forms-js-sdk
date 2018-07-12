@@ -170,6 +170,10 @@ class FormPresenter extends BasePresenter {
     return new FormPresenter(...arguments);
   }
 
+  getModel () {
+    return this.formM;
+  }
+
 }
 
 module.exports = FormPresenter;
