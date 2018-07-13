@@ -76,10 +76,12 @@ class FormPresenter extends BasePresenter {
   _submit () {
     const formId = this.formM.id;
     const data = this._getFormData();
+    const meta = this.formV.getMetaData();
+
     this._disableForm();
     this._enableLoading();
 
-    this.formI.submit(formId, data, this);
+    this.formI.submit(formId, data, meta, this);
   }
 
   _handleOnSubmit (os) {
