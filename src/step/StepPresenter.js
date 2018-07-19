@@ -48,7 +48,11 @@ class StepPresenter extends BasePresenter {
     const data = {};
 
     this.componentsP.forEach((c) => {
-      data[c.id] = c.value;
+      const { id, value } = c;
+
+      if (value && value.length > 0) {
+        data[id] = value;
+      }
     });
 
     return data;
