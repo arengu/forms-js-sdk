@@ -54,7 +54,7 @@ class Rating extends BaseInput {
   }
 
   get value () {
-    return this._value;
+    return this._value ? String(this._value) : null;
   }
 
   build () {

@@ -34,7 +34,7 @@ class Legal extends BaseInput {
 
 
   get value () {
-    return this.node.checked;
+    return String(this.node.checked);
   }
 
   build (){
