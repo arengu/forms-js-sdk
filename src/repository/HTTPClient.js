@@ -6,7 +6,11 @@ const SDKError = require('../error/SDKError');
 
 const API_URL = WEBPACK_API_URL;
 
-const NOT_FOUND_CODE = 404;
+const STATUS = {
+  OK: 200,
+  BAD_REQUEST: 400,
+  NOT_FOUND: 404,
+};
 
 class HTTPClient {
 
@@ -18,17 +22,13 @@ class HTTPClient {
         throw SDKError.create(err.message || 'Internal error');
       })
       .then((res) => {
-        if (res.status === NOT_FOUND_CODE) {
-          throw new SDKError('Form not found');
-        }
-        return res.json()
-      })
-      .then((body) => {
-        if (FormModel.matches(body)) {
-          return FormModel.create(body);
-        } else {
-          console.error('Unexpected response', body);
-          throw SDKError.create('Unexpected response');
+        switch (res.status) {
+          case STATUS.OK:
+            return res.json().then(FormModel.create);
+          case STATUS.NOT_FOUND:
+            throw new SDKError('Form not found');
+          default:
+            throw SDKError.create('Unexpected response');
         }
       });
   }
@@ -46,18 +46,17 @@ class HTTPClient {
         body: JSON.stringify(submission),
       }
     )
-      .then((data) => data.json())
       .catch((err) => {
         throw SDKError.create(err.message || 'Internal error');
       })
-      .then((body) => {
-        if (SubmissionModel.matches(body)) {
-          return SubmissionModel.create(body);
-        } else if (SchemaError.matches(body)) {
-          throw SchemaError.create(body);
-        } else {
-          console.error('Unexpected response', body);
-          throw SDKError.create('Unexpected model');
+      .then((res) => {
+        switch (res.status) {
+          case STATUS.OK:
+            return res.json().then(SubmissionModel.create);
+          case STATUS.BAD_REQUEST:
+            return res.json().then((body) => { throw SchemaError.create(body) });
+          default:
+            throw SDKError.create('Unexpected response');
         }
       });
   }

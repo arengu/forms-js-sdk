@@ -22,10 +22,6 @@ class SchemaError extends AppError {
     return invalidFields;
   }
 
-  static matches (body) {
-    return body && body.model === MODEL_NAME;
-  }
-
   static create () {
     return new SchemaError(...arguments);
   }

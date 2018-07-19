@@ -12,10 +12,6 @@ class FormModel extends BaseModel {
     this.steps = data.steps.map(StepModel.create);
   }
 
-  static matches (obj) {
-    return obj && obj.model === MODEL_NAME;
-  }
-
   static create () {
     return new FormModel(...arguments);
   }

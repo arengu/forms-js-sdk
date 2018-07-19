@@ -10,10 +10,6 @@ class AppError extends SDKError {
     this.extra = body.extra;
   };
 
-  static matches (body) {
-    return body && body.model === MODEL_NAME;
-  }
-
   static create () {
     return new AppError(...arguments);
   }
