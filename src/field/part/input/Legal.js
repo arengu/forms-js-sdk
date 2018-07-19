@@ -1,6 +1,6 @@
-const BaseView = require('../../../base/BaseView');
+const BaseInput = require('./BaseInput');
 
-class Legal extends BaseView{
+class Legal extends BaseInput {
 
   constructor (model){
     super();

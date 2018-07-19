@@ -1,7 +1,7 @@
-const BaseView = require('../../../base/BaseView');
+const BaseInput = require('./BaseInput');
 const RatingIcons = require('./RatingIcons');
 
-class Rating extends BaseView{
+class Rating extends BaseInput {
 
   constructor (model) {
     super();

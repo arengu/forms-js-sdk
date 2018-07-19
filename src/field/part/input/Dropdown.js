@@ -1,6 +1,6 @@
-const BaseView = require('../../../base/BaseView');
+const BaseInput = require('./BaseInput');
 
-class Dropdown extends BaseView {
+class Dropdown extends BaseInput {
 
   constructor (model) {
     super();

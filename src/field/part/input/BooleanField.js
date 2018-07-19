@@ -1,6 +1,6 @@
-const BaseView = require('../../../base/BaseView');
+const BaseInput = require('./BaseInput');
 
-class BooleanField extends BaseView {
+class BooleanField extends BaseInput {
 
   constructor (model) {
     super();
