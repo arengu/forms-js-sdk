@@ -16,6 +16,10 @@
   --label-font-weight: 500;
   --label-background-color:"";
   --label-background-hover-color:#eaeaea;
+  --counter-font-size: 0.75em;
+  --counter-text-color: #444444;
+  --counter-warning-color: #f5b800;
+  --counter-high-color: #d2383f;
   --hint-color:#9e9e9e;;
   --hint-font-size:0.9em;
   --placeholder-color: rgba(191, 191, 191, 0.87);
@@ -501,6 +505,35 @@
 
 .af-button button[disabled] {
   cursor: not-allowed;
+}
+
+/*--------------------
+        Counter
+---------------------*/
+
+.af-counter {
+  text-align: right;
+  margin: 4px;
+  color: var(--counter-text-color);
+  float: right;
+  font-size: var(--counter-font-size);
+  transition: color .3s ease;
+}
+
+.af-counter div {
+  display: inline-block;
+}
+
+.af-counter-separator {
+  margin: 0 4px;
+}
+
+.af-counter.af-counter-alert {
+  color: var(--counter-high-color);
+}
+
+.af-counter.af-counter-warning{
+  color: var(--counter-warning-color);
 }
 
 /*--------------------

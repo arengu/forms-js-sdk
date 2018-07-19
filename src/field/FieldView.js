@@ -30,10 +30,10 @@ class FieldView extends BaseView {
     node.setAttribute('for', uid);
     node.innerText = label;
     container.appendChild(node);
-    
-    if(required){
+
+    if (required) {
       node.classList.add('af-required');
-    } 
+    }
 
     return container;
   }
@@ -95,7 +95,6 @@ class FieldView extends BaseView {
   /*
    * Public methods
    */
-
   validate () {
     return this.inputV.validate();
   }
