@@ -72,7 +72,6 @@ class FieldView extends BaseView {
     return node;
   }
 
-
   /*
    * Public methods
    */

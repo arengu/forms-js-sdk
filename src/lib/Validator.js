@@ -28,7 +28,7 @@ class Validator {
    */
   static validateMinLength (value, length) {
     if(value == null || value.toString().length < length){
-      throw new ValidationError(`Minimum length : ${length}`);
+      throw new ValidationError(`Must have at least ${length} character(s)`);
     }
 
     return true;
@@ -42,7 +42,7 @@ class Validator {
    */
   static validateMaxLength (value, length) {
     if(value == null || value.toString().length > length){
-      throw new ValidationError(`Maximum length : ${length}`);
+      throw new ValidationError(`Must have at most ${length} character(s)`);
     }
 
     return true;
@@ -55,7 +55,7 @@ class Validator {
    */
   static validateEmail (value) {
     if(!EMAIL_REGEX.test(value)){
-      throw new ValidationError('Email format is not valid');
+      throw new ValidationError('Must be a valid email');
     }
 
     return true;
@@ -68,7 +68,7 @@ class Validator {
    */
   static validateUrl (value) {
     if(!URI_REGEX.test(value)){
-      throw new ValidationError('URL format is not valid');
+      throw new ValidationError('Must be a valid URL');
     }
 
     return true;
@@ -81,7 +81,7 @@ class Validator {
    */
   static validateInteger (value) {
     if(!INTEGER_REGEX.test(value)){
-      throw new ValidationError('Should be Integer');
+      throw new ValidationError('Must be an integer');
     }
 
     return true;
@@ -94,7 +94,7 @@ class Validator {
    */
   static validateBoolean (value) {
     if(!BOOLEAN_REGEX.test(value)){
-      throw new ValidationError('Should be Boolean');
+      throw new ValidationError('Must be a boolean');
     }
 
     return true;
@@ -107,10 +107,33 @@ class Validator {
    */
   static validateNumber (value) {
     if(!NUMBER_REGEX.test(value)){
-      throw new ValidationError('Should be Number');
+      throw new ValidationError('Must be a number');
     }
 
     return true;
+  }
+
+  static validateFormat(type, value) {
+    if (!value) {
+      return true;
+    }
+
+    switch (type) {
+      case 'email':
+        return Validator.validateEmail(value);
+
+      case 'number':
+        return Validator.validateNumber(value);
+
+      case 'boolean':
+        return Validator.validateBoolean(value);
+
+      case 'url':
+        return Validator.validateUrl(value);
+
+      default:
+        return true;
+    }
   }
 
 }
