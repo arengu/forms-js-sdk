@@ -20,7 +20,8 @@ class FormView extends BaseView {
    */
   _buildForm () {
     const form = document.createElement('form');
-    form.method = 'POST';
+    form.setAttribute('method', 'POST');
+    form.setAttribute('novalidate', 'novalidate');
 
     const presenter = this.formP;
     form.onsubmit = function onSubmit (evt) {
