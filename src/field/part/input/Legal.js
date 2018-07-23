@@ -32,9 +32,14 @@ class Legal extends BaseInput {
     return node;
   }
 
-
   get value () {
     return String(this.node.checked);
+  }
+
+  validate () {
+    if (this.value === 'false') {
+       return 'This consent is required';
+    }
   }
 
   build (){

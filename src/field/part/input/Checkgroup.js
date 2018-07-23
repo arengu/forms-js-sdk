@@ -25,6 +25,7 @@ class Checkgroup extends BaseInput {
 
     return error;
   }
+
   /*
    * View actions
    */

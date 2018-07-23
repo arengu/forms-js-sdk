@@ -13,7 +13,7 @@ class Validator {
    * @returns {String, null}
    */
   static validateRequire (value) {
-    if(value == null){
+    if (value === null) {
       throw new ValidationError('Is required');
     }
 
