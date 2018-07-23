@@ -33,7 +33,9 @@ class FormView extends BaseView {
       .map((s) => s.render())
       .forEach((n) => form.appendChild(n));
 
-    this.currStep.show();
+    if (this.currStep) {
+      this.currStep.show();
+    }
 
     return form;
   }
