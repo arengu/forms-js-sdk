@@ -1,4 +1,5 @@
 const FormPresenter = require('./form/FormPresenter');
+const FormModel = require('./form/FormModel');
 const SDKError = require('./error/SDKError');
 
 const HTTPClient = require('./repository/HTTPClient');
@@ -27,6 +28,10 @@ class SDK {
   }
 
   _getForm (formId) {
+    if (typeof(formId) === 'object') {
+      return Promise.resolve(FormModel.create(formId))
+    }
+
     this.eventsFactory.getForm(formId);
     return this.repository.getForm((formId))
       .catch((err) => {
@@ -40,8 +45,8 @@ class SDK {
       });
   }
 
-  embed (formId, parent) {
-    if (!formId) {
+  embed (form, parent) {
+    if (!form) {
       throw new SDKError('Specify the form you want to embed');
     }
     if (!parent) {
@@ -50,12 +55,14 @@ class SDK {
 
     const parentNode = parent.length ? this._findNode(parent) : parent;
 
-    return this._getForm(formId)
-      .then((form) => {
+    return this._getForm(form)
+      .then((formData) => {
+        const formId = formData.id;
+
         try {
           this.eventsFactory.embedForm(formId, parent.length ? parent : null);
 
-          const presenter = FormPresenter.create(form);
+          const presenter = FormPresenter.create(formData);
           const formNode = presenter.render();
 
           parentNode.appendChild(formNode);

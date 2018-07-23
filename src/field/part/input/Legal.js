@@ -4,7 +4,7 @@ class Legal extends BaseInput {
 
   constructor (model){
     super();
-    
+
     this.model = model;
     this.node = null;
     this.html = null;
@@ -54,7 +54,7 @@ class Legal extends BaseInput {
 
     const label = this._buildLabel(uid, text);
     container.appendChild(label);
-    
+
     this.node = checkbox;
     this.html = container;
   }
