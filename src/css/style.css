@@ -222,8 +222,8 @@
   position: relative;
 }
 
-.af-radio-option span,
-.af-checkbox-option span {
+.af-radio-option .label,
+.af-checkbox-option .label {
   margin-left: 10px;
 }
 

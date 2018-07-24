@@ -17,9 +17,15 @@ class Checkbox extends BaseView {
   /*
    * Internal methods
    */
-  _buildLabel (id) {
+  _buildLabel (id, text) {
     const node = document.createElement('label');
     node.setAttribute('for', id);
+
+    const span = document.createElement('span');
+    span.classList.add('label');
+    span.innerText = text;
+
+    node.appendChild(span);
 
     return node;
   }
@@ -38,13 +44,6 @@ class Checkbox extends BaseView {
     return node;
   }
 
-  _builText (text) {
-    const node = document.createElement('span');
-    node.innerText = text
-
-    return node;
-  } 
-
   /*
    * View actions
    */
@@ -60,12 +59,8 @@ class Checkbox extends BaseView {
     const check = this._buildCheckbox(this.fieldId, this.optionId, this.optionValue, this.checked);
     container.appendChild(check);
 
-    const label = this._buildLabel(this.optionId);
+    const label = this._buildLabel(this.optionId, this.optionValue);
     container.appendChild(label);
-
-    const text = this._builText(this.optionValue);
-    label.appendChild(text);
-
 
     this.node = check;
     this.html = container;
