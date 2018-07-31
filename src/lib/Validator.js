@@ -27,7 +27,7 @@ class Validator {
    * @returns {String, null}
    */
   static validateMinLength (value, length) {
-    if(value == null || value.toString().length < length){
+    if (value && value.length < length){
       throw new ValidationError(`Must have at least ${length} character(s)`);
     }
 
@@ -41,7 +41,7 @@ class Validator {
    * @returns {String, null}
    */
   static validateMaxLength (value, length) {
-    if(value == null || value.toString().length > length){
+    if (value && value.length > length){
       throw new ValidationError(`Must have at most ${length} character(s)`);
     }
 
