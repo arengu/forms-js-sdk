@@ -18,7 +18,7 @@ class BooleanField extends BaseInput {
     return node;
   }
 
-  _buildOption (id, name, value, required, text) {
+  _buildOption (id, name, value, required, text, checked) {
     const container = document.createElement('div');
     container.classList.add('af-boolean-option');
     const radio = document.createElement('input');
@@ -32,17 +32,27 @@ class BooleanField extends BaseInput {
       radio.setAttribute('required', required);
     }
 
+    if (checked) {
+      radio.setAttribute('checked', 'true');
+    }
+
     container.appendChild(radio);
     container.appendChild(this._buildLabel(text, id));
 
     return container;
   }
 
-  _buildInputs (id, name, required) {
+  _buildInputs (id, name, required, defValue) {
     const nodes = [];
 
-    nodes.push(this._buildOption(`${id}-yes`, name, 'true', required, "Yes"));
-    nodes.push(this._buildOption(`${id}-no`, name, 'false', required, "No"));
+    nodes.push(
+      this._buildOption(`${id}-yes`, name, 'true', required,
+        "Yes", defValue === 'true')
+    );
+    nodes.push(
+      this._buildOption(`${id}-no`, name, 'false', required,
+        "No", defValue === 'false')
+    );
 
     return nodes;
   }
@@ -59,8 +69,8 @@ class BooleanField extends BaseInput {
     const container = document.createElement('div');
     container.classList.add('af-boolean');
 
-    const {id, uid, required} = this.model;
-    const nodes = this._buildInputs(uid, id, required);
+    const {id, uid, required, config} = this.model;
+    const nodes = this._buildInputs(uid, id, required, config.defaultValue);
 
     nodes.forEach((n) => container.appendChild(n));
 
