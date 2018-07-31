@@ -36,7 +36,7 @@ The `embed` call has the following fields:
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | formId _(required)_| [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) | The **Form ID** of your form. You can find it in your form settings or share page. |
-| selector _(required)_ | [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)\|[Element](https://developer.mozilla.org/en-US/docs/Web/API/Element) | Query selector or DOM  that the form will be appended to. |
+| selector _(required)_ | [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)\|[Element](https://developer.mozilla.org/en-US/docs/Web/API/Element) | Query selector or DOM element that the form will be appended to. |
 
 Example using the query selector:
 
@@ -49,7 +49,7 @@ That snippet will embed the form with ID `5073697614331904` into the element wit
 Another example using the element directly:
 
 ```javascript
-const container = document.querySelector('.form-container'
+const container = document.querySelector('.form-container');
 ArenguForms.embed('5073697614331904', container);
 ```
 In this case, the snippet gets a reference to the element and passes it directly to the `embed()` method.
