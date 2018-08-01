@@ -76,10 +76,12 @@ class FormPresenter extends BasePresenter {
   _submit () {
     const formId = this.formM.id;
     const data = this._getFormData();
+    const meta = this.formV.getMetaData();
+
     this._disableForm();
     this._enableLoading();
 
-    this.formI.submit(formId, data, this);
+    this.formI.submit(formId, data, meta, this);
   }
 
   _handleOnSubmit (os) {
@@ -131,6 +133,14 @@ class FormPresenter extends BasePresenter {
   }
 
   onNext () {
+    const errors = this.stepsP[this.currStep].validate();
+
+    if (Object.keys(errors).length) {
+      console.error(`Error validating data:`, errors);
+      this.onInvalidFields(errors);
+      return;
+    }
+
     if (this._isLastStep()) {
       this._submit();
       this._enableLoading();
@@ -158,6 +168,10 @@ class FormPresenter extends BasePresenter {
 
   static create () {
     return new FormPresenter(...arguments);
+  }
+
+  getModel () {
+    return this.formM;
   }
 
 }

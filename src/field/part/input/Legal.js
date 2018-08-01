@@ -1,18 +1,18 @@
-const BaseView = require('../../../base/BaseView');
+const BaseInput = require('./BaseInput');
 
-class Legal extends BaseView{
+class Legal extends BaseInput {
 
   constructor (model){
     super();
-    
+
     this.model = model;
     this.node = null;
     this.html = null;
   }
 
-  _buildCheckbox (name, required) {
+  _buildCheckbox (id, name, required) {
     const node = document.createElement('input');
-    node.setAttribute('id', name);
+    node.setAttribute('id', id);
     node.setAttribute('type', 'checkbox');
     node.setAttribute('name', name);
     node.setAttribute('value', true);
@@ -32,24 +32,29 @@ class Legal extends BaseView{
     return node;
   }
 
-
   get value () {
-    return this.node.checked;
+    return String(this.node.checked);
+  }
+
+  validate () {
+    if (this.value === 'false') {
+       return 'This consent is required';
+    }
   }
 
   build (){
     const container = document.createElement('div');
     container.classList.add('af-legal');
 
-    const {id, required} = this.model;
+    const {id, uid, required} = this.model;
     const {text} = this.model.config;
 
-    const checkbox = this._buildCheckbox(id, required);
+    const checkbox = this._buildCheckbox(uid, id, required);
     container.appendChild(checkbox);
 
-    const label = this._buildLabel(id, text);
+    const label = this._buildLabel(uid, text);
     container.appendChild(label);
-    
+
     this.node = checkbox;
     this.html = container;
   }

@@ -9,7 +9,10 @@ const KEYS = {
   SUBMIT_FORM: 'af-submitForm',
   SUBMIT_FORM_ERROR: 'af-submitForm-error',
   SUBMIT_FORM_SUCCESS: 'af-submitForm-success',
-  INVALID_FIELDS_ERROR: 'af-invalidFields-error'
+  INVALID_FIELDS_ERROR: 'af-invalidFields-error',
+  BLUR_FIELD: 'af-blurField',
+  FOCUS_FIELD: 'af-focusField',
+  CHANGE_FIELD: 'af-changeField',
 };
 
 class EventsFactory {
@@ -93,6 +96,18 @@ class EventsFactory {
       formId: formId,
       fields
     });
+  }
+
+  onBlurField (formId, field) {
+    this.triggerEvent(KEYS.BLUR_FIELD, { formId, field });
+  }
+
+  onChangeField (formId, field) {
+    this.triggerEvent(KEYS.CHANGE_FIELD, { formId, field });
+  }
+
+  onFocusField (formId, field) {
+    this.triggerEvent(KEYS.FOCUS_FIELD, { formId, field });
   }
 
   static create () {

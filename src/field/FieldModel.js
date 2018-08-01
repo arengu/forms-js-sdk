@@ -1,10 +1,13 @@
 const BaseModel = require('../base/BaseModel');
 
+let UID = 0;
+
 class FieldModel extends BaseModel {
 
   constructor (data) {
     super(data);
     this.id = data.id;
+    this.uid = this._getUID(this.id);
     this.label = data.label;
     this.hint = data.hint;
     this.placeholder = data.placeholder;
@@ -15,6 +18,11 @@ class FieldModel extends BaseModel {
 
   static create () {
     return new FieldModel(...arguments);
+  }
+
+  _getUID (id) {
+    UID++;
+    return `${id}-${UID}`;
   }
 
 }

@@ -1,7 +1,6 @@
 class BaseModel {
 
   constructor (data) {
-    this.model = data.model;
   }
 
 }

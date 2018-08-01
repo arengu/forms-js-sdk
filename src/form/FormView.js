@@ -20,7 +20,8 @@ class FormView extends BaseView {
    */
   _buildForm () {
     const form = document.createElement('form');
-    form.method = 'POST';
+    form.setAttribute('method', 'POST');
+    form.setAttribute('novalidate', 'novalidate');
 
     const presenter = this.formP;
     form.onsubmit = function onSubmit (evt) {
@@ -32,10 +33,25 @@ class FormView extends BaseView {
       .map((s) => s.render())
       .forEach((n) => form.appendChild(n));
 
-    this.currStep.show();
+    if (this.currStep) {
+      this.currStep.show();
+    }
 
     return form;
   }
+
+  // use URLSearchParams() when IE will hasn't use
+  _gup(name, url) {
+    if (!url) {
+      url = location.href;
+    }
+    name = name.replace(/[[]/, '\\[').replace(/[\]]/, '\\]');
+    const regexS = '[\\?&]' + name + '=([^&#]*)';
+    const regex = new RegExp(regexS);
+    const results = regex.exec(url);
+    return results == null ? null : results[1];
+  }
+
 
   /*
    * View actions
@@ -59,6 +75,45 @@ class FormView extends BaseView {
     this.currStep = this.stepsP[index];
 
     this.currStep.show();
+  }
+
+  getMetaData () {
+    return {
+      navigator: {
+        userAgent: navigator.userAgent,
+        language: navigator.language,
+      },
+      navigation: {
+        referer: document.referrer,
+        location: {
+          url: document.location.href,
+          protocol: document.location.protocol,
+          host: document.location.host,
+          path: document.location.pathname,
+          parameters: document.location.search,
+        },
+        analytics: {
+          ga: {
+            utm_source: this._gup('utm_source'),
+            utm_medium: this._gup('utm_medium'),
+            utm_campaign: this._gup('utm_campaign'),
+            utm_term: this._gup('utm_term'),
+            utm_content: this._gup('utm_content'),
+          },
+        },
+      },
+      view: {
+        screen: {
+          height: screen.height,
+          width: screen.width,
+          orientation: screen.orientation.type,
+        },
+        window: {
+          height: window.innerHeight,
+          width: window.innerWidth,
+        },
+      },
+    };
   }
 
   static create () {

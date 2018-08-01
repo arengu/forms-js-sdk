@@ -14,10 +14,6 @@ class SubmissionModel extends BaseModel {
   static create () {
     return new SubmissionModel(...arguments);
   }
-
-  static matches (obj) {
-    return obj && obj.model === MODEL_NAME;
-  }
 }
 
 module.exports = SubmissionModel;

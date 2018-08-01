@@ -1,7 +1,7 @@
+const BaseInput = require('./BaseInput');
 const Checkbox = require('./Checkbox');
-const BaseView = require('../../../base/BaseView');
 
-class Checkgroup extends BaseView {
+class Checkgroup extends BaseInput {
 
   constructor (model) {
     super();
@@ -10,6 +10,20 @@ class Checkgroup extends BaseView {
 
     this.nodes = null;
     this.html = null;
+  }
+
+  /**
+   * Custom validation for this field
+   * @returns {*}
+   */
+  validate () {
+    let error;
+
+    if (this.model.required && !this.value.length) {
+       error = 'You have to check at least one option';
+    }
+
+    return error;
   }
 
   /*

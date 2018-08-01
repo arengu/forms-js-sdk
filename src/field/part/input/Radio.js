@@ -22,6 +22,12 @@ class Radio extends BaseView {
     const node = document.createElement('label');
     node.setAttribute('for', this.optionId);
 
+    const span = document.createElement('span');
+    span.innerText = this.optionValue;
+    span.classList.add('label');
+
+    node.appendChild(span);
+
     return node;
   }
 
@@ -43,13 +49,6 @@ class Radio extends BaseView {
     return node;
   }
 
-  _builText () {
-    const node = document.createElement('span');
-    node.innerText = this.optionValue;
-
-    return node;
-  } 
-
   /*
    * View actions
    */
@@ -68,9 +67,6 @@ class Radio extends BaseView {
     const label = this._buildLabel();
     container.appendChild(label);
 
-    const text = this._builText();
-    label.appendChild(text);
-
     this.node = radio;
     this.html = container;
   }
@@ -80,12 +76,12 @@ class Radio extends BaseView {
   }
 
   static fromGroup (group) {
-    const {id: fieldId, required, config} = group;
+    const {id: fieldId, uid, required, config} = group;
     const {validValues, defaultValue} = config;
 
     return validValues.map((val, i) => {
-      const checked = defaultValue === val;
-      const optionId = `${fieldId}-${i}`;
+      const checked = defaultValue && defaultValue === val;
+      const optionId = `${uid}-${i}`;
 
       return Radio.create(fieldId, optionId, val, checked, required);
     });

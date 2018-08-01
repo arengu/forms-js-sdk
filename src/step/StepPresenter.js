@@ -1,7 +1,7 @@
 const BasePresenter = require('../base/BasePresenter');
 const StepView = require('./StepView');
 
-const FieldView = require('../field/FieldView');
+const FieldPresenter = require('../field/FieldPresenter');
 
 class StepPresenter extends BasePresenter {
 
@@ -11,8 +11,8 @@ class StepPresenter extends BasePresenter {
     this.stepM = model;
     this.formP = form;
 
-    this.componentsV = model.components.map((c) => FieldView.create(c));
-    this.stepV = StepView.create(model, this.componentsV, this);
+    this.componentsP = model.components.map((c) => FieldPresenter.create(c, form.getModel()));
+    this.stepV = StepView.create(model, this.componentsP, this);
   }
 
   /*
@@ -27,8 +27,8 @@ class StepPresenter extends BasePresenter {
   }
 
   onInvalidFields (errors = {}) {
-    this.componentsV.forEach((cv) => {
-      const errMessage = errors[cv.getId()];
+    this.componentsP.forEach((cv) => {
+      const errMessage = errors[cv.id];
       cv.setError(errMessage)
     });
   }
@@ -47,11 +47,28 @@ class StepPresenter extends BasePresenter {
   getStepData () {
     const data = {};
 
-    this.componentsV.forEach((c) => {
-      data[c.getId()] = c.getValue();
+    this.componentsP.forEach((c) => {
+      const { id, value } = c;
+
+      if (value && value.length > 0) {
+        data[id] = value;
+      }
     });
 
     return data;
+  }
+
+  validate () {
+    const errors = {};
+
+    this.componentsP.forEach((c) => {
+      const error = c.validate();
+      if (error) {
+        errors[c.id] = error;
+      }
+    });
+
+    return errors;
   }
 
   render () {

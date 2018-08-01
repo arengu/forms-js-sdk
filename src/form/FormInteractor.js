@@ -17,11 +17,11 @@ class FormInteractor extends BaseInteractor {
   /*
    * Interactor actions
    */
-  submit (formId, data, presenter) {
+  submit (formId, data, meta, presenter) {
     const submission = {
       formId: formId,
-      metaData: {},
-      formData: data
+      metaData: meta,
+      formData: data,
     };
 
     this.eventsFactory.submitForm(formId, data);

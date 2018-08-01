@@ -5,10 +5,11 @@ const ErrorMessage = require('./part/ErrorMessage');
 
 class FieldView extends BaseView {
 
-  constructor (model) {
+  constructor (model, presenter) {
     super();
 
     this.fieldM = model;
+    this.fieldP = presenter
 
     this.errorV = null;
     this.inputV = null;
@@ -20,19 +21,19 @@ class FieldView extends BaseView {
    * Internal methods
    */
   _buildLabel () {
-    const { id, label, required } = this.fieldM;
+    const { uid, label, required } = this.fieldM;
 
     const container = document.createElement('div');
     container.classList.add('af-field-label');
 
     const node = document.createElement('label');
-    node.setAttribute('for', id);
+    node.setAttribute('for', uid);
     node.innerText = label;
     container.appendChild(node);
-    
-    if(required){
+
+    if (required) {
       node.classList.add('af-required');
-    } 
+    }
 
     return container;
   }
@@ -54,14 +55,33 @@ class FieldView extends BaseView {
     return container;
   }
 
+  _addListeners (field) {
+    const presenter = this.fieldP;
+    const self = this;
+
+    field.onblur = function (evt) {
+      presenter.onBlur(self);
+    };
+
+    field.onfocus = function (evt) {
+      presenter.onFocus(self);
+    };
+
+    field.onchange = function (evt) {
+      presenter.onChange(self);
+    };
+  }
+
   _buildInput () {
     const container = document.createElement('div');
     container.classList.add('af-field-input');
 
     this.inputV = InputView.create(this.fieldM);
-    const node = this.inputV.render();
-    container.appendChild(node);
 
+    const node = this.inputV.render();
+    this._addListeners(node);
+
+    container.appendChild(node);
     return container;
   }
 
@@ -75,11 +95,15 @@ class FieldView extends BaseView {
   /*
    * Public methods
    */
-  getId () {
+  validate () {
+    return this.inputV.validate();
+  }
+
+  get id () {
     return this.fieldM.id;
   }
 
-  getValue () {
+  get value () {
     return this.inputV.value;
   }
 
