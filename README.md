@@ -1,4 +1,4 @@
-# ArenguForms JavaScript SDK
+# Arengu Forms JavaScript SDK
 Embed ours forms easily into your website with our JavaScript SDK.
 
 ## Getting started
