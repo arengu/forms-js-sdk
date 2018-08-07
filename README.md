@@ -1,8 +1,8 @@
 # Arengu Forms JavaScript SDK
-Embed ours forms easily into your website with our JavaScript SDK.
+Embed our forms easily into your website with our JavaScript SDK.
 
 ## Getting started
-On the first hand, paste this snippet into the `head` tag of your website:
+To get started, paste this snippet into the `head` tag of your website:
 
 ```html
 <script async src="https://sdk.arengu.com/forms.js"></script>
@@ -10,7 +10,7 @@ On the first hand, paste this snippet into the `head` tag of your website:
 
 This snippet will load our JavaScript SDK into your website asynchronously, so it won’t affect your website load speed.
 
-On the other hand, specify where you want to embed our form using any of the following strategies.
+Specify where you want to embed our form using any of the following techniques.
 
 ### **Method 1: Using a HTML tag** (Recommended)
 Place the following HTML tag where you want your form to appear:
