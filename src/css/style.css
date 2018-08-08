@@ -3,12 +3,12 @@
   --primary-hover-color: #5BBBCD;
   --input-padding: 8px 10px;
   --input-background:#fafbfb;
-  --input-background-disabled:"";
   --input-color:#444444;
   --input-border:1px solid #dadada;
   --input-border-radius: 3px;
   --input-height:40px;
   --input-font-size: 15px;
+  --boolean-background-color: #efefef;
   --dropdown-padding: 2px 40px 2px 10px;
   --dropdown-icon-color: #444444;
   --dropdown-option-background-color: #9e9e9e;
@@ -19,7 +19,6 @@
   --label-color: rgba(0, 0, 0, 0.87);
   --label-font-size: 0.95em;
   --label-font-weight: 500;
-  --label-background-color:"";
   --label-background-hover-color:#eaeaea;
   --counter-font-size: 0.75em;
   --counter-text-color: #444444;
@@ -72,25 +71,26 @@
   color: var(--label-color);
 }
 
-/* Checkbox/Radio/Boolean */
+/* Choice/Boolean */
 
-.af-checkbox-option:first-child label,
-.af-radio-option:first-child label {
+.af-choice-option:first-child label {
   margin: 0;
 }
 
-.af-radio-option label,
-.af-checkbox-option label,
+.af-choice-option label,
 .af-boolean-option label {
   font-size: var(--label-font-size);
   margin: 6px 0;
   box-sizing: border-box;
-  border: var(--input-border);
   display: flex;
   align-items: center;
   padding: 5px;
   height: var(--input-height);
   cursor: pointer;
+}
+
+.af-boolean-option label {
+  background: var(--boolean-background-color);
 }
 
 .af-legal label {
@@ -102,19 +102,17 @@
   cursor: pointer;
 }
 
-.af-radio-option label,
-.af-checkbox-option label {
+.af-choice-option label {
   text-align: left;
   border-radius: var(--input-border-radius);
 }
 
-.af-radio-option label:before,
-.af-checkbox-option label:before {
+.af-choice-option label:before {
   content: "";
   background: #fff;
   border: var(--input-border);
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   box-sizing: border-box;
   margin-left: 4px;
 }
@@ -126,26 +124,31 @@
   min-width: 18px;
   height: 18px;
   box-sizing: border-box;
-  margin-left: 3px;
   margin-right: 8px;
 }
 
-.af-radio-option label:after,
-.af-checkbox-option label:after,
+.af-choice-option label:after,
 .af-legal label:after {
   content: "";
   position: absolute;
   opacity: 0;
   width: 5px;
   height: 8px;
-  margin-left: 9px;
   margin-top: -1px;
   border: solid #fff;
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
 }
 
-.af-radio-option label:before {
+.af-choice-option label:after {
+  margin-left: 10px;
+}
+
+.af-legal label:after {
+  margin-left: 5px;
+}
+
+.af-choice label:before {
   border-radius: 50%;
 }
 
@@ -217,7 +220,7 @@
   min-height: 65px;
 }
 
-/* Checkbox/Radio/Legal/Boolean */
+/* Choice/Legal/Boolean */
 
 .af-boolean-option {
   display: inline-flex;
@@ -225,18 +228,15 @@
   justify-content: center;
 }
 
-.af-checkbox-option,
-.af-radio-option {
+.af-choice-option {
   position: relative;
 }
 
-.af-radio-option .label,
-.af-checkbox-option .label {
+.af-choice-option span {
   margin-left: 10px;
 }
 
-.af-radio-option input,
-.af-checkbox-option input,
+.af-choice-option input,
 .af-legal input,
 .af-boolean input {
   position: absolute;
@@ -247,6 +247,7 @@
   padding: 0px;
   opacity: 0;
   cursor: pointer;
+  z-index: -1;
 }
 
 /* Rating */
@@ -502,13 +503,6 @@
   border-color: var(--border-focus-color);
 }
 
-/* Checkbox/Radio/Boolean */
-.af-radio-option input:focus+label:before,
-.af-checkbox-option input:focus+label:before {
-  transition: all 0.1s ease;
-  border-color:#1398b3;
-}
-
 /* Search */
 .af-field-input input[type="search"]:focus{
   outline:none;
@@ -518,9 +512,8 @@
         Hover
 ---------------------*/
 
-/* Checkbox/Radio/Boolean */
-.af-radio-option label:hover,
-.af-checkbox-option label:hover,
+/* Choice/Boolean */
+.af-choice-option label:hover,
 .af-boolean-option label:hover {
   background: var(--label-background-hover-color);
 }
@@ -538,35 +531,32 @@
         Checked
 ---------------------*/
 
-/* Checkbox/Radio/Boolean/Legal */
+/* Choice/Boolean/Legal */
 
-.af-radio-option input:checked+label,
-.af-checkbox-option input:checked+label {
+.af-choice-option input:checked+label {
   transition: all 0.1s ease;
   border-color:var(--primary-color);
 }
 
-.af-radio-option input:checked+label:before,
-.af-checkbox-option input:checked+label:before,
+.af-choice-option input:checked+label:before,
 .af-legal input:checked+label:before {
   border-color:var(--primary-color);
 }
 
-.af-radio-option input:checked+label:before,
-.af-checkbox-option input:checked+label:before,
+.af-choice-option input:checked+label:before,
 .af-legal input:checked+label:before {
   background: var(--primary-color);
+  transition: all .2s ease;
 }
 
-.af-radio-option input:checked+label:after,
-.af-checkbox-option input:checked+label:after,
+.af-choice-option input:checked+label:after,
 .af-legal input:checked+label:after {
   opacity: 1;
-  transition: all 0.1s ease;
+  transition: all .2s ease;
 }
 
 .af-boolean-option input:checked+label {
-  transition: all 0.1s ease;
+  transition: all .2s ease;
   background: var(--primary-color);
   border-color: var(--primary-color);
   color: #fff;
