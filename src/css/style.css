@@ -181,7 +181,6 @@
 ---------------------*/
 .af-field-input input:not([type]),
 .af-field-input input[type="date"],
-.af-field-input input[type="datetime-local"],
 .af-field-input input[type="email"],
 .af-field-input input[type="number"],
 .af-field-input input[type="password"],
@@ -489,7 +488,6 @@
 
 .af-form input:not([type]):focus,
 .af-form input[type="date"]:focus,
-.af-form input[type="datetime-local"]:focus,
 .af-form input[type="email"]:focus,
 .af-form input[type="number"]:focus,
 .af-form input[type="password"]:focus,

@@ -1,6 +1,7 @@
 const Choice = require('./input/Choice');
 const Dropdown = require('./input/Dropdown');
 const TextInput = require('./input/TextInput');
+const DateInput = require('./input/DateInput');
 const Rating = require('./input/Rating');
 const Legal = require('./input/Legal');
 const BooleanField = require('./input/BooleanField');
@@ -29,10 +30,11 @@ module.exports = {
         return Legal.create(model);
 
       case 'date':
+        return DateInput.create(model);
+
       case 'email':
       case 'number':
       case 'tel':
-      case 'time':
       case 'text':
       case 'url':
         return TextInput.create(model);
