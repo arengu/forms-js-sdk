@@ -1,37 +1,59 @@
+const CharCounter = require('./CharCounter');
+
 const inputRules = require('./input-rules');
 
 const BaseInput = require('./BaseInput');
 
 class TextInput extends BaseInput {
 
-  _getInputType (type) {
-    switch (type) {
-      case 'datetime':
-        return 'datetime-local';
+  constructor (model) {
+    super(model);
 
-      default:
-        return type;
-    }
+    this.model = model;
+
+    this.node = null;
+    this.html = null;
   }
 
   /*
    * Private methods
    */
-  _buildInput (model) {
-    const { id, uid, type, placeholder } = model;
 
-    const node = document.createElement('input');
+  _buildCharCounter (input) {
+    const { config: { maxLength, defaultValue } } = this.model;
+    const node = CharCounter.create(maxLength, defaultValue);
 
+    input.onkeyup = function () {
+      node.setValue(input);
+    }
+
+    return node.render();
+  }
+  
+  _buildInput () {
+    const { id, uid, type, placeholder, config: { defaultValue, multiline } } = this.model;
+
+    const node = document.createElement(multiline ? 'textarea' : 'input');
     node.setAttribute('id', uid);
     node.setAttribute('name', id);
-    node.setAttribute('type', this._getInputType(type));
+    
+    if (!multiline) {
+      node.setAttribute('type', type);
+    }
 
     if (placeholder) {
       node.setAttribute('placeholder', placeholder);
     }
 
-    inputRules.parseDef(model)
-      .forEach((a) => node.setAttribute(a.name, a.value));
+    if (multiline && defaultValue) {
+      node.innerText = defaultValue;
+    }
+
+    inputRules.parseDef(this.model)
+      .filter((a) => !multiline || a.name != 'value')
+      .forEach((a) => {
+        node.setAttribute(a.name, a.value);
+      });
 
     return node;
   }
@@ -40,11 +62,25 @@ class TextInput extends BaseInput {
    * View actions
    */
   build () {
-    this.html = this._buildInput(this.model);
+    const { config: { maxLength } } = this.model;
+
+    const container = document.createElement('div');
+    container.classList.add('af-field-wrapper');
+
+    const node = this._buildInput();
+    container.appendChild(node);
+
+    if (maxLength) {
+      const counter = this._buildCharCounter(node);
+      container.appendChild(counter);
+    }
+
+    this.node = node;
+    this.html = container;
   }
 
   get value () {
-    return this.html.value;
+    return this.node.value;
   }
 
   static create () {

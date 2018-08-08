@@ -2,7 +2,6 @@ const Checkgroup = require('./input/Checkgroup');
 const Radiogroup = require('./input/Radiogroup');
 const Dropdown = require('./input/Dropdown');
 const TextInput = require('./input/TextInput');
-const Textarea = require('./input/Textarea');
 const Rating = require('./input/Rating');
 const Legal = require('./input/Legal');
 const BooleanField = require('./input/BooleanField');
@@ -20,9 +19,6 @@ module.exports = {
 
       case 'radio':
         return Radiogroup.create(model);
-      
-      case 'textarea':
-        return Textarea.create(model);
 
       case 'dropdown':
         return Dropdown.create(model);
