@@ -202,6 +202,11 @@
   height: var(--input-height);
 }
 
+/* Remove inner shadow from inputs on mobile iOS */
+textarea, input[type="text"] {
+  -webkit-appearance: none;
+}
+
 /* Textarea */
 
 .af-field-input textarea {
@@ -336,6 +341,10 @@
    height: calc(var(--input-height) - 2px);
    top: 0;
    left: 0;
+   display: inline-block;
+   overflow: hidden;
+   text-overflow: ellipsis;
+   white-space: pre;
    display: inline-block;
    width: 100%;
    padding: 8px 40px 8px 10px;

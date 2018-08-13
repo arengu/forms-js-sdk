@@ -103,7 +103,8 @@ class CustomDropdown extends BaseView {
 
     node.onfocus = function () {
       self._showDropdownOptions();
-      self.dropdownText.style.opacity = '0.5';
+      const tagOptions = self.html.querySelectorAll('a');
+      self.dropdownText.style.opacity = tagOptions.length > 0 ? '0' : '0.5';
     }
 
     node.onblur = function () {
@@ -111,7 +112,8 @@ class CustomDropdown extends BaseView {
       self._showDropdownText();
       node.value = null;
       self._filterDropdownOptions(node);
-      self.dropdownText.style.opacity = '1';
+      const tagOptions = self.html.querySelectorAll('a');
+      self.dropdownText.style.opacity = tagOptions.length > 0 ? '0' : '1';
     }
 
     node.onkeyup = function () {
@@ -131,9 +133,9 @@ class CustomDropdown extends BaseView {
         case KEY_CODE.ENTER:
           return self._selectHoverDropdownOption(e);
         case KEY_CODE.DOWN_ARROW:
-          return self._hoverNextDropdownOption();
+          return self._hoverNextDropdownOption(e);
         case KEY_CODE.UP_ARROW:
-          return self._hoverPrevDropdownOption();
+          return self._hoverPrevDropdownOption(e);
         case KEY_CODE.LEFT_ARROW:
           return self._hoverPrevDropdownTag(e);
         case KEY_CODE.RIGHT_ARROW:
@@ -144,17 +146,25 @@ class CustomDropdown extends BaseView {
 
   _hoverPrevDropdownTag(e) {
     let caretPosition = e.target.selectionStart;
-    if(caretPosition === 0){
+    if(caretPosition === 0 || !caretPosition){
       const activeOption = this.html.querySelector(`a.${CLASSES.ACTIVE}`);
       const selectedOptions = this.html.querySelectorAll('a');
       if (activeOption) {
         const prev = activeOption.previousElementSibling;
         if(prev.getAttribute(INDEX_ATTRIBUTE)){
           activeOption.classList.remove(CLASSES.ACTIVE);
+          activeOption.removeAttribute('tabindex');
           prev.classList.add(CLASSES.ACTIVE);
+          prev.setAttribute('tabindex', '0');
+          prev.focus();
+          this._showDropdownOptions();
         }
       } else if (selectedOptions.length > 0) {
-        selectedOptions[selectedOptions.length - 1].classList.add(CLASSES.ACTIVE);
+        const prev = selectedOptions[selectedOptions.length - 1];
+        prev.classList.add(CLASSES.ACTIVE);
+        prev.setAttribute('tabindex', '0');
+        prev.focus();
+        this._showDropdownOptions();
       }
     } else {
       caretPosition--;
@@ -164,12 +174,18 @@ class CustomDropdown extends BaseView {
   _hoverNextDropdownTag(e) {
     const caretPosition = e.target.selectionStart;
     const activeOption = this.html.querySelector(`a.${CLASSES.ACTIVE}`);
-    if (caretPosition === 0 && activeOption) {
+    if ((caretPosition === 0 || !caretPosition) && activeOption) {
       e.preventDefault();
       const next = activeOption.nextElementSibling;
       activeOption.classList.remove(CLASSES.ACTIVE);
+      activeOption.removeAttribute('tabindex');
       if(next.getAttribute(INDEX_ATTRIBUTE)){
         next.classList.add(CLASSES.ACTIVE);
+        next.setAttribute('tabindex', '0');
+        next.focus();
+        this._showDropdownOptions();
+      } else {
+        this.search.focus();
       }
     }
   } 
@@ -191,7 +207,8 @@ class CustomDropdown extends BaseView {
     }
   } 
 
-  _hoverNextDropdownOption() {
+  _hoverNextDropdownOption(e) {
+    e.preventDefault();
     const hover = this.dropdown.querySelector(`.${CLASSES.HOVER}`);
 
     if (hover) {
@@ -209,7 +226,8 @@ class CustomDropdown extends BaseView {
     }
   }
   
-  _hoverPrevDropdownOption() {
+  _hoverPrevDropdownOption(e) {
+    e.preventDefault();
     const hover = this.dropdown.querySelector(`.${CLASSES.HOVER}`);
 
     if (hover) {
@@ -263,6 +281,11 @@ class CustomDropdown extends BaseView {
     const selectedOptions = this.html.querySelectorAll('a');
     const activeOption = this.html.querySelector(`a.${CLASSES.ACTIVE}`);
     const caretPosition = e.target.selectionStart;
+    const noResultsMessage = this._doesNoResultsMessageExists();
+
+    if (noResultsMessage) {
+      this._removeNoResultsMessage();
+    } 
 
     if (activeOption) {
       const index = activeOption.getAttribute(INDEX_ATTRIBUTE)
@@ -270,6 +293,10 @@ class CustomDropdown extends BaseView {
       const nextIndex = activeOption.nextElementSibling.getAttribute(INDEX_ATTRIBUTE);
       if(activeOption && nextIndex){
         activeOption.nextElementSibling.classList.add(CLASSES.ACTIVE);
+        activeOption.nextElementSibling.setAttribute('tabindex', '0');
+        activeOption.nextElementSibling.focus();
+      } else {
+        this.search.focus();
       }
       activeOption.remove();
       this._showDropdownOptions();
@@ -417,6 +444,7 @@ class CustomDropdown extends BaseView {
 
     if(this.multiple) {
       const tag = this._buildDropdownOptionTag(index, value);
+      this.dropdownText.style.opacity = '0';
       this.html.insertBefore(tag, this.search);
     } else {
       this.search.blur();
@@ -483,19 +511,46 @@ class CustomDropdown extends BaseView {
     }
 
     node.onclick = () => {
-      self._setActiveDropdownTag(node);
+      this._setActiveDropdownTag(node);
+      this.search.blur();
     }
 
-    icon.onclick = () => {
+    node.onkeydown = (e) => {
+      switch(e.keyCode){
+        case KEY_CODE.DELETE:
+        case KEY_CODE.BACKSPACE:
+          return self._removeDropdownTag(e);
+        case KEY_CODE.LEFT_ARROW:
+          return self._hoverPrevDropdownTag(e);
+        case KEY_CODE.RIGHT_ARROW:
+          return self._hoverNextDropdownTag(e);
+        case KEY_CODE.DOWN_ARROW:
+          return self._hoverNextDropdownOption(e);
+        case KEY_CODE.UP_ARROW:
+          return self._hoverPrevDropdownOption(e);
+        case KEY_CODE.ESCAPE:
+          return node.blur();
+        case KEY_CODE.ENTER:
+          return self._selectHoverDropdownOption(e);
+      }
+    }
+
+    node.onblur = () => {
+      this._removeAllActiveDropdownTags();
+      this._hideDropdownOptions();
+    }
+
+    icon.onmousedown = (e) => {
+      e.preventDefault();
       const index = node.getAttribute(INDEX_ATTRIBUTE);
       const noResultsMessage = this._doesNoResultsMessageExists();
 
-      self._unselectDropdownOption(index);
+      this._unselectDropdownOption(index);
       node.remove();
 
       if (noResultsMessage) {
         this._removeNoResultsMessage();
-      } 
+      }
     }
   }
 
@@ -503,10 +558,23 @@ class CustomDropdown extends BaseView {
     const activeTag = this.html.querySelector(`a.${CLASSES.ACTIVE}`);
 
     if(activeTag) {
+      activeTag.removeAttribute('tabindex');
       activeTag.classList.remove(CLASSES.ACTIVE)
     }
     
-    return node.classList.add(CLASSES.ACTIVE);
+    node.classList.add(CLASSES.ACTIVE);
+    node.setAttribute('tabindex', '0');
+    this._showDropdownOptions();
+    return node.focus();
+  }
+
+  _removeAllActiveDropdownTags() {
+    const activeTag = this.html.querySelector(`a.${CLASSES.ACTIVE}`);
+
+    if(activeTag) {
+      activeTag.removeAttribute('tabindex');
+      activeTag.classList.remove(CLASSES.ACTIVE)
+    }
   }
 
   _filterDropdownOptions(node) {
@@ -611,7 +679,7 @@ class CustomDropdown extends BaseView {
         break;
       }
     }
-  } 
+  }
 
   /*
    * View actions
