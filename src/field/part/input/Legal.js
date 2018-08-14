@@ -37,7 +37,7 @@ class Legal extends BaseInput {
   }
 
   validate () {
-    if (this.value === 'false') {
+    if (this.model.required && this.value === 'false') {
        return 'This consent is required';
     }
   }

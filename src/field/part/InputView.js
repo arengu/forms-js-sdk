@@ -1,8 +1,7 @@
-const Checkgroup = require('./input/Checkgroup');
-const Radiogroup = require('./input/Radiogroup');
+const Choice = require('./input/Choice');
 const Dropdown = require('./input/Dropdown');
 const TextInput = require('./input/TextInput');
-const Textarea = require('./input/Textarea');
+const DateInput = require('./input/DateInput');
 const Rating = require('./input/Rating');
 const Legal = require('./input/Legal');
 const BooleanField = require('./input/BooleanField');
@@ -15,14 +14,8 @@ module.exports = {
     const { type } = model;
 
     switch (type) {
-      case 'check':
-        return Checkgroup.create(model);
-
-      case 'radio':
-        return Radiogroup.create(model);
-      
-      case 'textarea':
-        return Textarea.create(model);
+      case 'choice':
+        return Choice.create(model);
 
       case 'dropdown':
         return Dropdown.create(model);
@@ -37,11 +30,11 @@ module.exports = {
         return Legal.create(model);
 
       case 'date':
-      case 'datetime':
+        return DateInput.create(model);
+
       case 'email':
       case 'number':
       case 'tel':
-      case 'time':
       case 'text':
       case 'url':
         return TextInput.create(model);
