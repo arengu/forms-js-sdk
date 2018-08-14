@@ -203,7 +203,12 @@
 }
 
 /* Remove inner shadow from inputs on mobile iOS */
-textarea, input[type="text"] {
+.af-field-input textarea,
+.af-field-input input[type="text"],
+.af-field-input input[type="email"],
+.af-field-input input[type="number"],
+.af-field-input input[type="tel"],
+.af-field-input input[type="url"] {
   -webkit-appearance: none;
 }
 
