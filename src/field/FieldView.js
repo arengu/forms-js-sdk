@@ -28,7 +28,7 @@ class FieldView extends BaseView {
 
     const node = document.createElement('label');
     node.setAttribute('for', uid);
-    node.innerText = label;
+    node.innerHTML = label;
     container.appendChild(node);
 
     if (required) {
@@ -45,7 +45,7 @@ class FieldView extends BaseView {
     container.classList.add('af-field-hint');
 
     const node = document.createElement('p');
-    node.innerText = hint;
+    node.innerHTML = hint;
     container.appendChild(node);
 
     if (!hint || hint.length < 1) {
