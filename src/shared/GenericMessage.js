@@ -20,7 +20,7 @@ class GenericMessage extends BaseView {
   }
 
   setText (msg) {
-    this.node.innerText = msg || null;
+    this.node.innerHTML = msg || null;
 
     if (msg) {
       this._show();
