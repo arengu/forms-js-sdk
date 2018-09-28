@@ -2,7 +2,6 @@ const Validator = require('../lib/Validator');
 
 class FieldValidator {
 
-
   /**
    * Validate Form Fields
    * @param field

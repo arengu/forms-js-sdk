@@ -2,10 +2,11 @@ const BaseInput = require('./BaseInput');
 
 class BooleanField extends BaseInput {
 
-  constructor (model) {
+  constructor (model, presenter) {
     super();
 
     this.model = model;
+    this.presenter = presenter;
     this.nodes = null;
     this.html = null;
   }
@@ -65,6 +66,9 @@ class BooleanField extends BaseInput {
       return values[0];
   }
 
+  /*
+   * View actions
+   */
   build () {
     const container = document.createElement('div');
     container.classList.add('af-boolean');

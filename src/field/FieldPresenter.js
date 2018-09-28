@@ -5,11 +5,14 @@ const EventsFactory = require('../lib/EventsFactory');
 
 class FieldPresenter extends BasePresenter {
 
-  constructor (fieldModel, formModel) {
+  constructor (fieldModel, formModel, stepPresenter) {
     super();
 
     this.fieldM = fieldModel;
     this.formM = formModel;
+    this.stepP = stepPresenter;
+
+    this.hasError = false;
 
     this.fieldV = FieldView.create(fieldModel, this);
 
@@ -28,7 +31,15 @@ class FieldPresenter extends BasePresenter {
   }
 
   setError (msg) {
+    this.hasError = true;
+    this.stepP.onInvalidField(msg, this);
     return this.fieldV.setError(msg);
+  }
+
+  removeError () {
+    this.hasError = false;
+    this.stepP.onValidField(this);
+    return this.fieldV.removeError();
   }
 
   /*
@@ -46,6 +57,18 @@ class FieldPresenter extends BasePresenter {
 
   onBlur (fieldV) {
     this._fireFieldEvent(this.eventsFactory.onBlurField, fieldV);
+
+    if (!this.hasError) {
+      return;
+    }
+
+    const error = this.validate();
+
+    if (error) {
+      this.setError(error);
+    } else {
+      this.removeError();
+    }
   }
 
   onChange (fieldV) {

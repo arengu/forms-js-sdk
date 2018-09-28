@@ -10,6 +10,14 @@ class NextButton extends GenericButton {
     super(text, BUTTON_TYPE, null, CSS_CLASSES);
   }
 
+  showLoading () {
+    this.node.classList.add('af-button-loading');
+  }
+
+  hideLoading () {
+    this.node.classList.remove('af-button-loading');
+  }
+
   static create () {
     return new NextButton(...arguments);
   }

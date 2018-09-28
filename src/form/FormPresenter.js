@@ -26,19 +26,19 @@ class FormPresenter extends BasePresenter {
    * Internal methods
    */
   _enableForm () {
-    this.stepsP.forEach((p) => p.enable());
+    this.stepsP[this.currStep].enable();
   }
 
   _disableForm () {
-    this.stepsP.forEach((p) => p.disable());
+    this.stepsP[this.currStep].disable();
   }
 
-  _enableLoading () {
-    this.stepsP.forEach((p) => p.stepV.submitV.node.classList.add('af-button-loading'));
+  _showLoading () {
+    this.stepsP[this.currStep].showLoading();
   }
 
-  _disableLoading () {
-    this.stepsP.forEach((p) => p.stepV.submitV.node.classList.remove('af-button-loading'));
+  _hideLoading () {
+    this.stepsP[this.currStep].hideLoading();
   }
 
   _isFirstStep () {
@@ -50,7 +50,7 @@ class FormPresenter extends BasePresenter {
   }
 
   _setInvalidFields (invalidFields) {
-    this.stepsP.forEach((sp) => sp.onInvalidFields(invalidFields));
+    this.stepsP.forEach((sp) => sp.onInvalidStep(invalidFields));
   }
 
   _setFormError (msg) {
@@ -79,7 +79,7 @@ class FormPresenter extends BasePresenter {
     const meta = this.formV.getMetaData();
 
     this._disableForm();
-    this._enableLoading();
+    this._showLoading();
 
     this.formI.submit(formId, data, meta, this);
   }
@@ -99,28 +99,26 @@ class FormPresenter extends BasePresenter {
    * Submit events
    */
   onSuccess (conf) {
-    this._setInvalidFields();
-    this._setFormError();
     this._enableForm();
-    this._disableLoading();
+    this._hideLoading();
+
+    this.formReset();
 
     this._handleOnSubmit(conf.onSubmit);
   }
 
   onInvalidFields (invalidFields) {
     this._setInvalidFields(invalidFields);
-    this._setFormError('Some fields are not valid');
-    this._setFormSuccess();
+
     this._enableForm();
-    this._disableLoading();
+    this._hideLoading();
   }
 
   onFormError (msg) {
-    this._setInvalidFields();
     this._setFormError(msg);
-    this._setFormSuccess();
+
     this._enableForm();
-    this._disableLoading();
+    this._hideLoading();
   }
 
   /*
@@ -137,13 +135,13 @@ class FormPresenter extends BasePresenter {
 
     if (Object.keys(errors).length) {
       console.error(`Error validating data:`, errors);
-      this.onInvalidFields(errors);
+      this.stepsP[this.currStep].onInvalidStep(errors);
       return;
     }
 
     if (this._isLastStep()) {
       this._submit();
-      this._enableLoading();
+      this._showLoading();
     } else {
       this.goNext();
     }
@@ -152,6 +150,10 @@ class FormPresenter extends BasePresenter {
   /*
    * Form actions
    */
+  formReset () {
+    return this.formV.reset();
+  }
+
   render () {
     return this.formV.render();
   }

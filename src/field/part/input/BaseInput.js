@@ -3,9 +3,10 @@ const FieldValidator = require('../../FieldValidator');
 
 class BaseInput extends BaseView {
 
-  constructor (model) {
+  constructor (model, presenter) {
     super();
     this.model = model;
+    this.presenter = presenter;
   }
 
   get id () {

@@ -2,6 +2,7 @@ const BaseView = require('../base/BaseView');
 
 const FailureMessage = require('./part/FailureMessage');
 const NextButton = require('./part/NextButton');
+const PreviousButton = require('./part/PreviousButton');
 const SuccessMessage = require('./part/SuccessMessage');
 
 class StepView extends BaseView {
@@ -15,7 +16,8 @@ class StepView extends BaseView {
 
     this.successV = null;
     this.errorV = null;
-    this.submitV = null;
+    this.previousV = null;
+    this.nextV = null;
 
     this.html = null;
   }
@@ -42,8 +44,13 @@ class StepView extends BaseView {
     const container = document.createElement('div');
     container.classList.add('af-step-navigation');
 
-    this.submitV = NextButton.create(buttons.next);
-    container.appendChild(this.submitV.render());
+    if (buttons.previous) {
+      this.previousV = PreviousButton.create(buttons.previous, this.stepP);
+      container.appendChild(this.previousV.render());
+    }
+
+    this.nextV = NextButton.create(buttons.next);
+    container.appendChild(this.nextV.render());
 
     return container;
   }
@@ -56,6 +63,7 @@ class StepView extends BaseView {
 
     const container = document.createElement('div');
     container.classList.add(`af-step-${id}`);
+    container.classList.add('af-step-hide');
     container.classList.add('af-step');
 
     this.componentsP
@@ -70,19 +78,29 @@ class StepView extends BaseView {
   }
 
   show () {
-    this.html.style.display = 'initial';
+    this.html.classList.add('af-step-current');
+    this.html.classList.remove('af-step-hide');
   }
 
   hide () {
-    this.html.style.display = 'none';
+    this.html.classList.remove('af-step-current');
+    this.html.classList.add('af-step-hide');
   }
 
   enable () {
-    this.submitV.enable();
+    this.nextV.enable();
   }
 
   disable () {
-    this.submitV.disable();
+    this.nextV.disable();
+  }
+
+  showLoading () {
+    this.nextV.showLoading();
+  }
+
+  hideLoading () {
+    this.nextV.hideLoading();
   }
 
   setInvalidFields (errors = {}) {
@@ -96,8 +114,16 @@ class StepView extends BaseView {
     return this.successV.setText(msg);
   }
 
+  removeSuccess () {
+    return this.successV.removeText();
+  }
+
   setError (msg) {
     return this.errorV.setText(msg);
+  }
+
+  removeError () {
+    return this.errorV.removeText();
   }
 
   static create () {

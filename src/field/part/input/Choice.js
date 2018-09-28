@@ -2,10 +2,11 @@ const BaseInput = require('./BaseInput');
 
 class Choice extends BaseInput {
 
-  constructor (model) {
+  constructor (model, presenter) {
     super();
 
     this.model = model;
+    this.presenter = presenter;
 
     this.nodes = [];
     this.html = null;
@@ -63,22 +64,6 @@ class Choice extends BaseInput {
     });
   }
 
-  /**
-   * Custom validation for this field
-   * @returns {*}
-   */
-  validate () {
-    let error;
-
-    if (this.model.required && !this.value.length && this.model.config.multiple) {
-       error = this.model.config.multiple
-       ? 'You have to choose at least one option'
-       : 'You have to choose one option';
-    }
-
-    return error;
-  }
-
   /*
    * View actions
    */
@@ -90,6 +75,14 @@ class Choice extends BaseInput {
       .map((o) => o.value);
 
     return multiple ? value : value.toString();
+  }
+
+  validate () {
+    if (this.model.required && !this.value.length) {
+       return this.model.config.multiple
+       ? 'You have to select at least one option'
+       : 'You have to select one option';
+    }
   }
 
   build () {

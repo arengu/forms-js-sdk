@@ -12,6 +12,7 @@ class FormView extends BaseView {
 
     this.currStep = this.stepsP[defaultStep];
 
+    this.node = null;
     this.html = null;
   }
 
@@ -40,7 +41,6 @@ class FormView extends BaseView {
     return form;
   }
 
-  // use URLSearchParams() when IE will hasn't use
   _gup(name, url) {
     if (!url) {
       url = location.href;
@@ -66,6 +66,7 @@ class FormView extends BaseView {
     const node = this._buildForm();
     container.appendChild(node);
 
+    this.node = node;
     this.html = container;
   }
 
@@ -75,6 +76,10 @@ class FormView extends BaseView {
     this.currStep = this.stepsP[index];
 
     this.currStep.show();
+  }
+
+  reset () {
+    this.node.reset();
   }
 
   getMetaData () {

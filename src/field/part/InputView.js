@@ -11,34 +11,34 @@ const SDKError = require('../../error/SDKError');
 
 module.exports = {
 
-  create: function createInput (model) {
+  create: function createInput (model, presenter) {
     const { type } = model;
 
     switch (type) {
       case 'choice':
-        return Choice.create(model);
+        return Choice.create(model, presenter);
 
       case 'dropdown':
-        return Dropdown.create(model);
+        return Dropdown.create(model, presenter);
 
       case 'rating':
-        return Rating.create(model);
+        return Rating.create(model, presenter);
       
       case 'boolean':
-        return BooleanField.create(model);
+        return BooleanField.create(model, presenter);
 
       case 'legal':
-        return Legal.create(model);
+        return Legal.create(model, presenter);
 
       case 'date':
-        return DateInput.create(model);
+        return DateInput.create(model, presenter);
 
       case 'email':
       case 'number':
       case 'tel':
       case 'text':
       case 'url':
-        return TextInput.create(model);
+        return TextInput.create(model, presenter);
 
       case 'password':
         return PasswordInput.create(model);

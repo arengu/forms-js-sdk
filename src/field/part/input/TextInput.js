@@ -6,10 +6,11 @@ const BaseInput = require('./BaseInput');
 
 class TextInput extends BaseInput {
 
-  constructor (model) {
+  constructor (model, presenter) {
     super(model);
 
     this.model = model;
+    this.presenter = presenter;
 
     this.node = null;
     this.html = null;
@@ -58,6 +59,23 @@ class TextInput extends BaseInput {
     return node;
   }
 
+  _addListeners (node) {
+    const presenter = this.presenter;
+    const self = this;
+
+    node.onblur = function () {
+      presenter.onBlur(self);
+    };
+
+    node.onfocus = function () {
+      presenter.onFocus(self);
+    };
+
+    node.onchange = function () {
+      presenter.onChange(self);
+    };
+  }
+
   /*
    * View actions
    */
@@ -74,6 +92,8 @@ class TextInput extends BaseInput {
       const counter = this._buildCharCounter(node);
       container.appendChild(counter);
     }
+
+    this._addListeners(node);
 
     this.node = node;
     this.html = container;

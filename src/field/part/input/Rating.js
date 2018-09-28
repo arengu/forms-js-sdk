@@ -3,10 +3,11 @@ const RatingIcons = require('./RatingIcons');
 
 class Rating extends BaseInput {
 
-  constructor (model) {
+  constructor (model, presenter) {
     super();
 
     this.model = model;
+    this.presenter = presenter;
     this.nodes = null;
     this.html = null;
     this._value = null;
@@ -53,10 +54,9 @@ class Rating extends BaseInput {
     this.nodes.slice(numChecked).forEach((n) => n.classList.remove('af-checked'));
   }
 
-  get value () {
-    return this._value ? String(this._value) : null;
-  }
-
+  /*
+   * View actions
+   */
   build () {
     const container = document.createElement('div');
     container.classList.add('af-rating');
@@ -68,6 +68,10 @@ class Rating extends BaseInput {
 
     this.nodes = rateButtons;
     this.html = container;
+  }
+
+  get value () {
+    return this._value ? String(this._value) : null;
   }
 
   static create (){

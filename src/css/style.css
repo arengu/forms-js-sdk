@@ -32,7 +32,9 @@
   --button-font-weight:500;
   --button-border-radius:3px;
   --button-padding: 12px 24px;
+  --previous-button-hover-background: #eaeaea;
   --message-fail-color:#d2383f;
+  --message-fail-font-size: 14px;
   --message-fail-background-color:#fff6f6;
   --message-success-color:#318233;
   --message-success-background-color:#fcfff5;
@@ -545,7 +547,7 @@
 /* Choice/Boolean/Legal */
 
 .af-choice-option input:checked+label {
-  transition: all 0.1s ease;
+  transition: border-color 0.1s ease;
   border-color:var(--primary-color);
 }
 
@@ -557,13 +559,13 @@
 .af-choice-option input:checked+label:before,
 .af-legal input:checked+label:before {
   background: var(--primary-color);
-  transition: all .2s ease;
+  transition: background-color .2s ease;
 }
 
 .af-choice-option input:checked+label:after,
 .af-legal input:checked+label:after {
   opacity: 1;
-  transition: all .2s ease;
+  transition: opacity .2s ease;
 }
 
 .af-boolean-option input:checked+label {
@@ -581,12 +583,12 @@
   position: absolute;
   width: 100%;
   height: 100%;
-  border: 1px solid transparent;
-  background: #e0e1e2;
+  border: none;
+  background: var(--primary-color);
   border-radius: 3px;
-  left: -1px;
+  left: 0;
   opacity: 0;
-  top: -1px;
+  top: 0;
 }
 
 @keyframes af-button-ladda {
@@ -640,41 +642,34 @@
   text-align: center;
 }
 
-.af-button button[type=submit] {
+.af-button button[type=submit], .af-button button[type=button] {
   font-size: var(--button-font-size);
   padding: var(--button-padding);
   text-align: center;
   font-weight: var(--button-font-weight);
   cursor: pointer;
-  border: 1px solid transparent;
+  border: none;
   border-radius: var(--button-border-radius);
 }
 
 .af-step-next button[type=submit] {
   background-color: var(--primary-color);
-  border-color: var(--primary-color);
   color: #fff;
   position: relative;
 }
 
 .af-step-next button[type=submit]:hover {
   color: #fff;
-  background-color: var(--primary-hover-color);
-  border-color: var(--primary-hover-color);
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease;
 }
 
-.af-step-back button[type=submit] {
-  background-color: #e0e1e2;
-  border-color: #e0e1e2;
-  color: rgba(0, 0, 0, 0.6);
-}
-
-.af-step-back button[type=submit]:hover {
+.af-step-previous button[type=button] {
   color: rgba(0, 0, 0, 0.8);
-  background-color: #cacbcd;
-  border-color: #cacbcd;
-  transition: all 0.3s ease;
+}
+
+.af-step-previous button[type=button]:hover {
+  background: var(--previous-button-hover-background);
+  transition: background-color 0.3s ease;
 }
 
 .af-step-button {
@@ -684,6 +679,17 @@
 
 .af-button button[disabled] {
   cursor: not-allowed;
+}
+
+/*--------------------
+         Steps
+---------------------*/
+
+.af-step-current.af-step {
+  display: block;
+} 
+.af-step-hide.af-step {
+  display: none;
 }
 
 /*--------------------
@@ -721,8 +727,8 @@
 
 .af-field-error p {
   color: var(--message-fail-color);
-  font-size: 12px;
-  margin-top: 4px;
+  font-size: var(--message-fail-font-size);
+  margin-top: 6px;
   padding-left: 2px;
 }
 
