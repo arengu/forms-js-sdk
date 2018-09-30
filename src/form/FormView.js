@@ -80,17 +80,17 @@ class FormView extends BaseView {
   getMetaData () {
     return {
       navigator: {
-        userAgent: navigator.userAgent,
-        language: navigator.language,
+        userAgent: window.navigator.userAgent,
+        language: window.navigator.language,
       },
       navigation: {
-        referer: document.referrer,
+        referer: window.referrer,
         location: {
-          url: document.location.href,
-          protocol: document.location.protocol,
-          host: document.location.host,
-          path: document.location.pathname,
-          parameters: document.location.search,
+          url: window.location.href,
+          protocol: window.location.protocol,
+          host: window.location.host,
+          path: window.location.pathname,
+          parameters: window.location.search,
         },
         analytics: {
           ga: {
@@ -104,9 +104,8 @@ class FormView extends BaseView {
       },
       view: {
         screen: {
-          height: screen.height,
-          width: screen.width,
-          orientation: screen.orientation.type,
+          height: window.screen.height,
+          width: window.screen.width,
         },
         window: {
           height: window.innerHeight,
