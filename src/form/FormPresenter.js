@@ -1,6 +1,8 @@
 const BasePresenter = require('../base/BasePresenter');
 const FormView = require('./FormView');
 
+const HiddenFields = require('../field/HiddenFields');
+
 const FormInteractor = require('./FormInteractor');
 
 const StepPresenter = require('../step/StepPresenter');
@@ -9,11 +11,15 @@ const DEFAULT_STEP = 0;
 
 class FormPresenter extends BasePresenter {
 
-  constructor (model) {
+  constructor (model, initValues) {
     super();
+
+    this.initialValues = initValues || {};
 
     this.formM = model;
     this.formI = FormInteractor.create();
+
+    this.hiddenFields = HiddenFields.create(model.hiddenFields, this.initialValues);
 
     this.stepsP = model.steps.map((s) => StepPresenter.create(s, this));
 
@@ -68,10 +74,16 @@ class FormPresenter extends BasePresenter {
   }
 
   _getFormData () {
-    return this.stepsP.reduce((data, p) => {
+    const data = this.stepsP.reduce((data, p) => {
       return Object.assign(data, p.getStepData());
     }, {});
+
+    const hiddenData = this.hiddenFields.getAll();
+    Object.assign(data, hiddenData);
+
+    return data;
   }
+
 
   _submit () {
     const formId = this.formM.id;
@@ -94,6 +106,19 @@ class FormPresenter extends BasePresenter {
         this._setFormSuccess(os.message);
     }
   }
+
+  /**
+   *Public methods
+   */
+
+  getHiddenFields () {
+    return this.hiddenFields;
+  }
+
+  getFormId () {
+    return this.formM.id;
+  }
+
 
   /*
    * Submit events
