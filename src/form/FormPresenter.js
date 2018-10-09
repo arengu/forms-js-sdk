@@ -69,8 +69,11 @@ class FormPresenter extends BasePresenter {
     current.onSuccess(msg);
   }
 
-  _redirectUser (url) {
-    window.location = url;
+  _redirectUser (url, delayS) {
+    const delayMS = delayS * 1000;
+    setTimeout(() => {
+      window.location = url;
+    }, delayMS);
   }
 
   _getFormData () {
@@ -96,14 +99,13 @@ class FormPresenter extends BasePresenter {
     this.formI.submit(formId, data, meta, this);
   }
 
-  _handleOnSubmit (os) {
-    switch (os.action) {
-      case 'redirect':
-        this._redirectUser(os.target);
-        break;
+  _handleOnSubmit (res) {
+    if (res._message) {
+      this._setFormSuccess(res._message);
+    }
 
-      case 'message':
-        this._setFormSuccess(os.message);
+    if (res._target) {
+      this._redirectUser(res._target, res._delay);
     }
   }
 
@@ -123,13 +125,13 @@ class FormPresenter extends BasePresenter {
   /*
    * Submit events
    */
-  onSuccess (conf) {
+  onSuccess (res) {
     this._enableForm();
     this._hideLoading();
 
     this.formReset();
 
-    this._handleOnSubmit(conf.onSubmit);
+    this._handleOnSubmit(res);
   }
 
   onInvalidFields (invalidFields) {

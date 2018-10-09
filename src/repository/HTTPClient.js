@@ -52,7 +52,7 @@ class HTTPClient {
       .then((res) => {
         switch (res.status) {
           case STATUS.OK:
-            return res.json().then(SubmissionModel.create);
+            return res.json();
           case STATUS.BAD_REQUEST:
             return res.json().then((body) => { throw SchemaError.create(body) });
           default:

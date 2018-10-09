@@ -25,11 +25,11 @@ class FormInteractor extends BaseInteractor {
 
     this.eventsFactory.submitForm(formId, data);
     return this.repository.createSubmission(formId, submission)
-      .then((conf) => {
-        this.eventsFactory.submitFormSuccess(formId, conf);
-        presenter.onSuccess(conf);
+      .then((res) => {
+        this.eventsFactory.submitFormSuccess(formId, res);
+        presenter.onSuccess(res);
 
-        return conf;
+        return res;
       })
       .catch((err) => {
         if (err instanceof SchemaError) {
@@ -40,7 +40,7 @@ class FormInteractor extends BaseInteractor {
           presenter.onInvalidFields(invalidFields);
 
         } else {
-          const errMessage = err.message;
+          const errMessage = err._message || err.message;
           console.error(`Error sending submission:`, errMessage);
 
           this.eventsFactory.submitFormError(formId, err);
