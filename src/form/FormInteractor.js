@@ -19,13 +19,12 @@ class FormInteractor extends BaseInteractor {
    */
   submit (formId, data, meta, presenter) {
     const submission = {
-      formId: formId,
       metaData: meta,
       formData: data,
     };
 
     this.eventsFactory.submitForm(formId, data);
-    return this.repository.createSubmission(submission)
+    return this.repository.createSubmission(formId, submission)
       .then((conf) => {
         this.eventsFactory.submitFormSuccess(formId, conf);
         presenter.onSuccess(conf);

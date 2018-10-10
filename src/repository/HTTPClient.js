@@ -15,7 +15,7 @@ const STATUS = {
 class HTTPClient {
 
   getForm (formId) {
-    const opUrl = `${API_URL}/public/forms/${formId}`;
+    const opUrl = `${API_URL}/forms/${formId}`;
 
     return fetch(opUrl)
       .catch((err) => {
@@ -33,8 +33,8 @@ class HTTPClient {
       });
   }
 
-  createSubmission (submission) {
-    const opUrl = `${API_URL}/public/submissions/`;
+  createSubmission (formId, submission) {
+    const opUrl = `${API_URL}/forms/${formId}/submissions/`;
 
     return fetch(
       opUrl,
