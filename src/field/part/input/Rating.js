@@ -17,14 +17,14 @@ class Rating extends BaseInput {
   * Internal Methods
   */
   
-  _buildOptions (type, numberOfButton) {
+  _buildComponent (type, numberOfButton) {
     const rateButtons = [];
 
     for( let i = 1; i <= numberOfButton ; i++) {
       const container = document.createElement('div');
       container.classList.add('af-rating-option');
 
-      const label = this._buildLabel(type, i);
+      const label = this._buildOption(type, i);
       container.appendChild(label);
       rateButtons.push(container);
     }
@@ -36,7 +36,7 @@ class Rating extends BaseInput {
     return RatingIcons.render(type);
   }
   
-  _buildLabel (type , value) {
+  _buildOption (type , value) {
     const node = document.createElement('label');
     node.onclick = () => this.setValue(value);
 
@@ -62,7 +62,7 @@ class Rating extends BaseInput {
     container.classList.add('af-rating');
 
     const {maxValue, icon} = this.model.config;
-    const rateButtons = this._buildOptions(icon, maxValue);
+    const rateButtons = this._buildComponent(icon, maxValue);
 
     rateButtons.forEach((b) => container.appendChild(b));
 
