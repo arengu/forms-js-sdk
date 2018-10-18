@@ -32,14 +32,16 @@ class TextInput extends BaseInput {
   }
   
   _buildInput () {
-    const { id, uid, type, placeholder, config: { defaultValue, multiline } } = this.model;
+    const { id, uid, placeholder, config: { defaultValue, multiline } } = this.model;
 
     const node = document.createElement(multiline ? 'textarea' : 'input');
     node.setAttribute('id', uid);
     node.setAttribute('name', id);
     
     if (!multiline) {
-      node.setAttribute('type', type);
+      const fieldType = this.model.type;
+      const inputType = fieldType.toLowerCase();
+      node.setAttribute('type', inputType);
     }
 
     if (placeholder) {

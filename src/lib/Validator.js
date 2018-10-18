@@ -113,22 +113,22 @@ class Validator {
     return true;
   }
 
-  static validateFormat(type, value) {
+  static validateFormat(fieldType, value) {
     if (!value) {
       return true;
     }
 
-    switch (type) {
-      case 'email':
+    switch (fieldType) {
+      case 'EMAIL':
         return Validator.validateEmail(value);
 
-      case 'number':
+      case 'NUMBER':
         return Validator.validateNumber(value);
 
-      case 'boolean':
+      case 'BOOLEAN':
         return Validator.validateBoolean(value);
 
-      case 'url':
+      case 'URL':
         return Validator.validateUrl(value);
 
       default:

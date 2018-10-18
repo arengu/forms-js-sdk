@@ -15,32 +15,32 @@ module.exports = {
     const { type } = model;
 
     switch (type) {
-      case 'choice':
+      case 'CHOICE':
         return Choice.create(model, presenter);
 
-      case 'dropdown':
+      case 'DROPDOWN':
         return Dropdown.create(model, presenter);
 
-      case 'rating':
+      case 'RATING':
         return Rating.create(model, presenter);
       
-      case 'boolean':
+      case 'BOOLEAN':
         return BooleanField.create(model, presenter);
 
-      case 'legal':
+      case 'LEGAL':
         return Legal.create(model, presenter);
 
-      case 'date':
+      case 'DATE':
         return DateInput.create(model, presenter);
 
-      case 'email':
-      case 'number':
-      case 'tel':
-      case 'text':
-      case 'url':
+      case 'EMAIL':
+      case 'NUMBER':
+      case 'TEL':
+      case 'TEXT':
+      case 'URL':
         return TextInput.create(model, presenter);
 
-      case 'password':
+      case 'PASSWORD':
         return PasswordInput.create(model);
 
       default:
