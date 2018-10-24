@@ -17,52 +17,52 @@ const KEYS = {
 
 class EventsFactory {
 
-  triggerEvent (name, data) {
+  static triggerEvent (name, data) {
     const event = new CustomEvent(name, {detail: data});
     return document.dispatchEvent(event);
   }
 
-  sdkInit (sdk) {
+  static sdkInit (sdk) {
     this.triggerEvent(KEYS.SDK_INIT, {
       sdk
     });
   }
 
-  getForm (formId) {
+  static getForm (formId) {
     this.triggerEvent(KEYS.GET_FORM, {
       formId: formId,
     });
   }
 
-  getFormError (formId, err) {
+  static getFormError (formId, err) {
     this.triggerEvent(KEYS.GET_FORM_ERROR, {
       formId: formId,
       error: err
     });
   }
 
-  getFormSuccess (formId, data) {
+  static getFormSuccess (formId, data) {
     this.triggerEvent(KEYS.GET_FORM_SUCCESS, {
       formId: formId,
       data
     });
   }
 
-  embedForm (formId, parentSelector) {
+  static embedForm (formId, parentSelector) {
     this.triggerEvent(KEYS.EMBED_FORM, {
       formId: formId,
       selector: parentSelector
     });
   }
 
-  embedFormError (formId, err) {
+  static embedFormError (formId, err) {
     this.triggerEvent(KEYS.EMBED_FORM_ERROR, {
       formId: formId,
       error: err
     });
   }
 
-  embedFormSuccess (formId, parentNode, formNode) {
+  static embedFormSuccess (formId, parentNode, formNode) {
     this.triggerEvent(KEYS.EMBED_FORM_SUCCESS, {
       formId: formId,
       parent: parentNode,
@@ -70,48 +70,44 @@ class EventsFactory {
     });
   }
 
-  submitForm (formId, data) {
+  static submitForm (formId, data) {
     this.triggerEvent(KEYS.SUBMIT_FORM, {
       formId: formId,
       data
     });
   }
 
-  submitFormError (formId, err) {
+  static submitFormError (formId, err) {
     this.triggerEvent(KEYS.SUBMIT_FORM_ERROR, {
       formId: formId,
       error: err
     });
   }
 
-  submitFormSuccess (formId, confirmation) {
+  static submitFormSuccess (formId, confirmation) {
     this.triggerEvent(KEYS.SUBMIT_FORM_SUCCESS, {
       formId: formId,
       confirmation
     });
   }
 
-  invalidFieldsError (formId, fields) {
+  static invalidFieldsError (formId, fields) {
     this.triggerEvent(KEYS.INVALID_FIELDS_ERROR, {
       formId: formId,
       fields
     });
   }
 
-  onBlurField (formId, field) {
+  static onBlurField (formId, field) {
     this.triggerEvent(KEYS.BLUR_FIELD, { formId, field });
   }
 
-  onChangeField (formId, field) {
+  static onChangeField (formId, field) {
     this.triggerEvent(KEYS.CHANGE_FIELD, { formId, field });
   }
 
-  onFocusField (formId, field) {
+  static onFocusField (formId, field) {
     this.triggerEvent(KEYS.FOCUS_FIELD, { formId, field });
-  }
-
-  static create () {
-    return new EventsFactory();
   }
 
 }

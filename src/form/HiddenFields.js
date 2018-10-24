@@ -6,7 +6,7 @@ const MISSING_KEY_ERROR = 'The provided key does not belong to a hidden field';
 class HiddenFields {
   constructor (fields, initValues) {
     this.fields = Utilities.indexObject(fields, 'key');
-    this.data = this._initAllFields(fields, initValues);
+    this.data = this._initAllFields(fields, initValues || {});
   }
 
   /**

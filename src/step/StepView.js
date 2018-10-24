@@ -7,19 +7,23 @@ const SuccessMessage = require('./part/SuccessMessage');
 
 class StepView extends BaseView {
 
-  constructor (model, components, presenter) {
+  constructor (stepM, stepP) {
     super();
 
-    this.stepM = model;
-    this.componentsP = components;
-    this.stepP = presenter;
+    this.stepM = stepM;
+    this.stepP = stepP;
 
+    this.compsV = [];
     this.successV = null;
     this.errorV = null;
     this.previousV = null;
     this.nextV = null;
 
     this.html = null;
+  }
+
+  addComponent (fieldV) {
+    this.compsV.push(fieldV);
   }
 
   /*
@@ -66,9 +70,8 @@ class StepView extends BaseView {
     container.classList.add('af-step-hide');
     container.classList.add('af-step');
 
-    this.componentsP
-      .map((cp) => cp.render())
-      .forEach((n) => container.appendChild(n));
+    this.compsV
+      .forEach((fV) => container.appendChild(fV));
 
     container.appendChild(this._buildMessage());
 

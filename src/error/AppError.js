@@ -1,13 +1,10 @@
 const SDKError = require('./SDKError');
 
-const MODEL_NAME = 'AppError';
-
 class AppError extends SDKError {
 
-  constructor (body) {
-    super(body.message);
-    this.status = body.status;
-    this.extra = body.extra;
+  constructor (code, message) {
+    super(message);
+    this.code = code;
   };
 
   static create () {

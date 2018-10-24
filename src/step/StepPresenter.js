@@ -1,5 +1,8 @@
-const BasePresenter = require('../base/BasePresenter');
 const StepView = require('./StepView');
+
+const ValidateStep = require('./interactor/ValidateStep');
+
+const BasePresenter = require('../base/BasePresenter');
 
 const FieldPresenter = require('../field/FieldPresenter');
 
@@ -7,30 +10,28 @@ const INVALID_FIELDS_ERROR = 'One or more fields have an error. Please check and
 
 class StepPresenter extends BasePresenter {
 
-  constructor (model, form) {
+  constructor (stepM, formM, formP) {
     super();
 
-    this.stepM = model;
-    this.formP = form;
+    this.stepM = stepM;
+    this.formP = formP;
 
     this.invalidFields = [];
 
-    this.componentsP = model.components.map((c) => FieldPresenter.create(c, form.getModel(), this));
-    this.stepV = StepView.create(model, this.componentsP, this);
+    this.componentsP = stepM.components
+      .map((cM) => FieldPresenter.create(cM, formM, this));
+
+    this.stepV = StepView.create(stepM, this);
+
+    this.componentsP
+      .map((cP) => cP.render())
+      .forEach((cV) => this.stepV.addComponent(cV));
   }
 
   /*
    * Step events
    */
-  onBack () {
-    this.formP.onBack();
-  }
-
-  onNext () {
-    this.formP.onNext();
-  }
-
-  onInvalidStep (errors = {}) {
+  onSeveralInvalidFields (errors = {}) {
     this.componentsP.forEach((cp) => {
       const errMessage = errors[cp.id];
 
@@ -40,6 +41,19 @@ class StepPresenter extends BasePresenter {
         cp.removeError();
       }
     });
+  }
+
+  onGoPrevious () {
+    this.formP.onPreviousStep(this, this.stepM);
+  }
+
+  onGoNext () {
+    try {
+      ValidateStep.execute(this.componentsP);
+      this.formP.onNextStep(this, this.stepM);
+    } catch (err) {
+      this.onSeveralInvalidFields(err.fields);
+    }
   }
 
   onInvalidField (error, fieldPresenter) {
@@ -110,25 +124,8 @@ class StepPresenter extends BasePresenter {
     return data;
   }
 
-  validate () {
-    const errors = {};
-
-    this.componentsP.forEach((c) => {
-      const error = c.validate();
-      if (error) {
-        errors[c.id] = error;
-      }
-    });
-
-    return errors;
-  }
-
   render () {
     return this.stepV.render();
-  }
-
-  enable () {
-    this.stepV.enable();
   }
 
   showLoading () {
@@ -137,6 +134,10 @@ class StepPresenter extends BasePresenter {
 
   hideLoading () {
     this.stepV.hideLoading();
+  }
+
+  enable () {
+    this.stepV.enable();
   }
 
   disable () {

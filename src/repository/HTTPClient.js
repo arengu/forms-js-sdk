@@ -1,7 +1,7 @@
 const FormModel = require('../form/FormModel');
-const SubmissionModel = require('../form/SubmissionModel');
 
-const SchemaError = require('../error/SchemaError');
+const NotFound = require('../error/NotFound');
+const InvalidFields = require('../error/InvalidFields');
 const SDKError = require('../error/SDKError');
 
 const API_URL = WEBPACK_API_URL;
@@ -14,55 +14,71 @@ const STATUS = {
 
 class HTTPClient {
 
-  getForm (formId) {
+  static async getForm (formId) {
     const opUrl = `${API_URL}/forms/${formId}`;
 
-    return fetch(opUrl)
-      .catch((err) => {
-        throw SDKError.create(err.message || 'Internal error');
-      })
-      .then((res) => {
-        switch (res.status) {
-          case STATUS.OK:
-            return res.json().then(FormModel.create);
-          case STATUS.NOT_FOUND:
-            throw new SDKError('Form not found');
-          default:
-            throw SDKError.create('Unexpected response');
-        }
-      });
+    try {
+      const res = await fetch(opUrl);
+
+      const body = await res.json();
+      const statusCode = res.status;
+
+      if (statusCode === STATUS.OK) {
+        return FormModel.create(body);
+      }
+
+      if (statusCode === STATUS.NOT_FOUND) {
+        throw NotFound.create(body.message);
+      }
+
+      throw SDKError('Unexpected response');
+
+    } catch (err) {
+      if (err instanceof SDKError) {
+        throw err;
+      } else {
+        console.error('Error retrieving form', err);
+        throw SDKError.create('Error retrieving form');
+      }
+    }
   }
 
-  createSubmission (formId, submission) {
+  static async createSubmission (formId, submission) {
     const opUrl = `${API_URL}/forms/${formId}/submissions/`;
 
-    return fetch(
-      opUrl,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(submission),
-      }
-    )
-      .catch((err) => {
-        throw SDKError.create(err.message || 'Internal error');
-      })
-      .then((res) => {
-        switch (res.status) {
-          case STATUS.OK:
-            return res.json();
-          case STATUS.BAD_REQUEST:
-            return res.json().then((body) => { throw SchemaError.create(body) });
-          default:
-            throw SDKError.create('Unexpected response');
+    try {
+      const res = await fetch(
+        opUrl,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(submission),
         }
-      });
-  }
+      );
 
-  static create () {
-    return new HTTPClient(...arguments);
+      const body = await res.json();
+      const statusCode = res.status;
+
+      if (statusCode === STATUS.OK) {
+        return body;
+      }
+
+      if (statusCode === STATUS.BAD_REQUEST) {
+        throw InvalidFields.fromResponse(body);
+      }
+
+      throw SDKError('Unexpected response');
+
+    } catch (err) {
+      if (err instanceof SDKError) {
+        throw err;
+      } else {
+        console.error('Error creating submission', err);
+        throw SDKError.create('Error creating submission');
+      }
+    }
   }
 
 };

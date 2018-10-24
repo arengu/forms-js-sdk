@@ -9,6 +9,7 @@ class StepModel extends BaseModel {
     this.name = data.name;
     this.components = data.components.map(FieldModel.create);
     this.buttons = data.buttons;
+    this.onNext = data.onNext;
   }
 
   static create () {

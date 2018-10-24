@@ -1,20 +1,19 @@
-
 class Form {
-  constructor (presenter) {
-    this._presenter = presenter;
+
+  static create(presenter, hiddenFields) {
+    return {
+
+      getId () {
+        return presenter.getFormId();
+      },
+
+      setHiddenField (key, value) {
+        hiddenFields.set(key, value);
+      }
+
+    };
   }
 
-  getId () {
-    return this._presenter.getFormId();
-  }
-
-  setHiddenField (key, value) {
-    this._presenter.getHiddenFields().set(key, value);
-  }
-
-  static create() {
-    return new Form(...arguments);
-  }
 }
 
 module.exports = Form;

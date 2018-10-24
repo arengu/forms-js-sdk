@@ -2,9 +2,11 @@ const FormPresenter = require('./form/FormPresenter');
 const FormModel = require('./form/FormModel');
 const Form = require('./form/Form');
 
+const HiddenFields = require('./form/HiddenFields');
+
 const SDKError = require('./error/SDKError');
 
-const HTTPClient = require('./repository/HTTPClient');
+const Repository = require('./repository/HTTPClient');
 
 const CSSInjector = require('./css/CSSInjector');
 const EventsFactory = require('./lib/EventsFactory');
@@ -15,8 +17,6 @@ class SDK {
 
   constructor () {
     this.cssInjector = CSSInjector.create();
-    this.eventsFactory = EventsFactory.create();
-    this.repository = HTTPClient.create();
   }
 
   _findNode (selector) {
@@ -34,20 +34,19 @@ class SDK {
       return Promise.resolve(FormModel.create(formId))
     }
 
-    this.eventsFactory.getForm(formId);
-    return this.repository.getForm((formId))
+    EventsFactory.getForm(formId);
+    return Repository.getForm((formId))
       .catch((err) => {
-        console.error('Error retrieving form', err);
-        this.eventsFactory.getFormError(formId, err);
+        EventsFactory.getFormError(formId, err);
         throw err;
       })
       .then((form) => {
-          this.eventsFactory.getFormSuccess(formId, form);
-          return form;
+        EventsFactory.getFormSuccess(formId, form);
+        return form;
       });
   }
 
-  embed (form, parent, initValues) {
+  async embed (form, parent, initValues) {
     if (!form) {
       throw new SDKError('Specify the form you want to embed');
     }
@@ -57,26 +56,27 @@ class SDK {
 
     const parentNode = parent.length ? this._findNode(parent) : parent;
 
-    return this._getForm(form)
-      .then((formData) => {
-        const formId = formData.id;
+    const formId = form.id || form;
 
-        try {
-          this.eventsFactory.embedForm(formId, parent.length ? parent : null);
+    try {
+      const formData = await this._getForm(form)
 
-          const presenter = FormPresenter.create(formData, initValues);
-          const formNode = presenter.render();
+      EventsFactory.embedForm(formId, parent.length ? parent : null);
 
-          parentNode.appendChild(formNode);
-          this.eventsFactory.embedFormSuccess(formId, parentNode, formNode);
+      const hiddenFields = HiddenFields.create(formData.hiddenFields, initValues);
+      const presenter = FormPresenter.create(formData, hiddenFields);
 
-          return presenter;
-        } catch (err) {
-          console.error('Error embedding form', err);
-          this.eventsFactory.embedFormError(formId, err);
-          throw err;
-        }
-      }).then((presenter) => Form.create(presenter));
+      const formNode = presenter.render();
+
+      parentNode.appendChild(formNode);
+      EventsFactory.embedFormSuccess(formId, parentNode, formNode);
+
+      return Form.create(presenter, hiddenFields);
+    } catch (err) {
+      console.error('Error embedding form', err);
+      EventsFactory.embedFormError(formId, err);
+      throw err;
+    }
   }
 
   _waitForDom (fn) {
@@ -106,7 +106,7 @@ class SDK {
 
   init () {
     this.cssInjector.injectDefault();
-    this.eventsFactory.sdkInit(this);
+    EventsFactory.sdkInit(this);
     this._waitForDom(this._auto.bind(this));
   }
 
