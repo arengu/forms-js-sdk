@@ -1,3 +1,4 @@
+const MD5 = require('crypto-js/md5');
 const BaseInput = require('./BaseInput');
 
 class PasswordInput extends BaseInput {
@@ -42,7 +43,15 @@ class PasswordInput extends BaseInput {
   }
 
   get value () {
-    return this.node.value;
+    const { config: { hash } } = this.model;
+
+    switch(hash) {
+      case 'MD5':
+        return MD5(this.node.value).toString();
+      case 'NONE':
+      default:
+        return this.node.value;
+    }
   }
 
   static create () {
