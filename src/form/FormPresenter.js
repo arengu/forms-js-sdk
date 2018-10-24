@@ -17,7 +17,6 @@ class FormPresenter extends BasePresenter {
     this.initialValues = initValues || {};
 
     this.formM = model;
-    this.formI = FormInteractor.create();
 
     this.hiddenFields = HiddenFields.create(model.hiddenFields, this.initialValues);
 
@@ -96,7 +95,7 @@ class FormPresenter extends BasePresenter {
     this._disableForm();
     this._showLoading();
 
-    this.formI.submit(formId, data, meta, this);
+    FormInteractor.submit(formId, data, meta, this);
   }
 
   _handleOnSubmit (res) {
