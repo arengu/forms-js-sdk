@@ -67,6 +67,7 @@ class FormPresenter extends BasePresenter {
   onPreviousStep (stepP, stepM) {
     if (this.hasPreviousStep()) {
       this.goPreviousStep();
+      stepP.removeSuccess();
     }
   }
 
