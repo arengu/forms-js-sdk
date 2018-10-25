@@ -6,6 +6,8 @@ const BasePresenter = require('../base/BasePresenter');
 
 const FieldPresenter = require('../field/FieldPresenter');
 
+const InvalidFields = require('../error/InvalidFields');
+
 const INVALID_FIELDS_ERROR = 'One or more fields have an error. Please check and try again.';
 
 class StepPresenter extends BasePresenter {
@@ -52,7 +54,11 @@ class StepPresenter extends BasePresenter {
       ValidateStep.execute(this.componentsP);
       this.formP.onNextStep(this, this.stepM);
     } catch (err) {
-      this.onSeveralInvalidFields(err.fields);
+      if (err instanceof InvalidFields) {
+        this.onSeveralInvalidFields(err.fields);
+      } else {
+        this.onError(err.message);
+      }
     }
   }
 

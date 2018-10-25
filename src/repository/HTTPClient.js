@@ -1,15 +1,28 @@
 const FormModel = require('../form/FormModel');
 
+const Forbidden = require('../error/Forbidden');
+const InternalError = require('../error/InternalError');
 const NotFound = require('../error/NotFound');
 const InvalidFields = require('../error/InvalidFields');
 const SDKError = require('../error/SDKError');
 
 const API_URL = WEBPACK_API_URL;
 
+const HEADER = {
+  CONTENT_TYPE: 'Content-Type',
+  AUTHORIZATION: 'Authorization',
+};
+
+const CONTENT_TYPE = {
+  JSON: 'application/json',
+};
+
 const STATUS = {
   OK: 200,
   BAD_REQUEST: 400,
+  FORBIDDEN: 403,
   NOT_FOUND: 404,
+  SERVER_ERROR: 500,
 };
 
 class HTTPClient {
@@ -31,7 +44,11 @@ class HTTPClient {
         throw NotFound.create(body.message);
       }
 
-      throw SDKError('Unexpected response');
+      if (statusCode === STATUS.SERVER_ERROR) {
+        throw InternalError.create('Error getting form');
+      }
+
+      throw SDKError.create('Unexpected response');
 
     } catch (err) {
       if (err instanceof SDKError) {
@@ -52,7 +69,7 @@ class HTTPClient {
         {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            [HEADER.CONTENT_TYPE]: CONTENT_TYPE.JSON,
           },
           body: JSON.stringify(submission),
         }
@@ -69,7 +86,15 @@ class HTTPClient {
         throw InvalidFields.fromResponse(body);
       }
 
-      throw SDKError('Unexpected response');
+      if (statusCode === STATUS.FORBIDDEN) {
+        throw Forbidden.create(body.message);
+      }
+
+      if (statusCode === STATUS.SERVER_ERROR) {
+        throw InternalError.create('Error creating submission');
+      }
+
+      throw SDKError.create('Unexpected response');
 
     } catch (err) {
       if (err instanceof SDKError) {
