@@ -1,8 +1,5 @@
 const FormModel = require('../form/FormModel');
 
-const Forbidden = require('../error/Forbidden');
-const InternalError = require('../error/InternalError');
-const NotFound = require('../error/NotFound');
 const InvalidFields = require('../error/InvalidFields');
 const InvalidStep = require('../error/InvalidStep');
 const SDKError = require('../error/SDKError');
@@ -22,16 +19,11 @@ const AUTH_TYPE = {
   BEARER: 'Bearer',
 };
 
-const STATUS = {
-  OK: 200,
-  BAD_REQUEST: 400,
-  FORBIDDEN: 403,
-  NOT_FOUND: 404,
-  SERVER_ERROR: 500,
-};
-
-const CODE = {
-  SERVER_ERROR: 'ERR_INTERNAL_ERROR',
+const ERROR_CODE = {
+  INVALID_FIELDS: 'ERR_INVALID_INPUT',
+  INVALID_STEP: 'ERR_INVALID_STEP',
+  SERVER_ERROR: 'ERR_SERVER_ERROR',
+  NOT_FOUND: 'ERR_ENTITY_NOT_FOUND',
 };
 
 class HTTPClient {
@@ -48,6 +40,10 @@ class HTTPClient {
     return headers;
   }
 
+  static isSuccess (statusCode) {
+    return statusCode && statusCode < 400;
+  }
+
   static async getForm (formId) {
     const opUrl = `${API_URL}/forms/${formId}`;
 
@@ -57,19 +53,18 @@ class HTTPClient {
       const body = await res.json();
       const statusCode = res.status;
 
-      if (statusCode === STATUS.OK) {
+      if (HTTPClient.isSuccess(statusCode)) {
         return FormModel.create(body);
       }
 
-      if (statusCode === STATUS.NOT_FOUND) {
-        throw NotFound.create(body.message);
+      const errorCode = body.code;
+
+      if (errorCode === ERROR_CODE.NOT_FOUND) {
+        throw SDKError.create('Form not found');
       }
 
-      if (statusCode === STATUS.SERVER_ERROR) {
-        throw InternalError.create('Error getting form');
-      }
-
-      throw SDKError.create('Unexpected response');
+      console.error('Error retrieving form', body);
+      throw SDKError.create('Error retrieving form');
 
     } catch (err) {
       if (err instanceof SDKError) {
@@ -97,23 +92,22 @@ class HTTPClient {
       const body = await res.json();
       const statusCode = res.status;
 
-      if (statusCode === STATUS.OK) {
+      if (HTTPClient.isSuccess(statusCode)) {
         return body;
       }
 
-      if (statusCode === STATUS.BAD_REQUEST) {
+      const errorCode = body.code;
+
+      if (errorCode === ERROR_CODE.INVALID_FIELDS) {
         throw InvalidFields.fromResponse(body);
       }
 
-      if (statusCode === STATUS.FORBIDDEN) {
-        throw Forbidden.create(body.message);
+      if (errorCode === ERROR_CODE.INVALID_STEP) {
+        throw InvalidStep.fromResponse(body);
       }
 
-      if (statusCode === STATUS.SERVER_ERROR) {
-        throw InternalError.create('Error creating submission');
-      }
-
-      throw SDKError.create('Unexpected response');
+      console.error('Error creating submission', body);
+      throw SDKError.create('Error creating submission');
 
     } catch (err) {
       if (err instanceof SDKError) {
@@ -128,10 +122,6 @@ class HTTPClient {
   static async validateStep (formId, stepId, data, signature) {
     const opUrl = `${API_URL}/forms/${formId}/validations/${stepId}`;
 
-    const headers = {
-      [HEADER.CONTENT_TYPE]: CONTENT_TYPE.JSON,
-    };
-
     try {
       const res = await fetch(
         opUrl,
@@ -145,22 +135,29 @@ class HTTPClient {
       const body = await res.json();
       const statusCode = res.status;
 
-      if (statusCode === STATUS.OK) {
+      if (HTTPClient.isSuccess(statusCode)) {
         return body;
       }
 
-      if (body.code === CODE.SERVER_ERROR) {
-        throw InternalError.create('Error validating information');
+      const errorCode = body.code;
+
+      if (errorCode === ERROR_CODE.INVALID_FIELDS) {
+        throw InvalidFields.fromResponse(body);
       }
 
-      throw InvalidStep.create(body.message);
+      if (errorCode === ERROR_CODE.INVALID_STEP) {
+        throw InvalidStep.fromResponse(body);
+      }
+
+      console.error('Error validating data', body);
+      throw SDKError.create('Error validating data');
 
     } catch (err) {
       if (err instanceof SDKError) {
         throw err;
       } else {
-        console.error('Error validating step', err);
-        throw SDKError.create('Error validating step');
+        console.error('Error validating data', err);
+        throw SDKError.create('Error validating data');
       }
     }
   }
