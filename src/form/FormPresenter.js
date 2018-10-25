@@ -122,6 +122,7 @@ class FormPresenter extends BasePresenter {
         this.goNextStep();
       } else {
         await this._submitForm(stepP);
+        this.resetForm();
       }
     } catch (err) {
       if (err instanceof InvalidFields) {
