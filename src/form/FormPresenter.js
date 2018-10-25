@@ -2,12 +2,15 @@ const FormView = require('./FormView');
 const MetaData = require('./MetaData');
 
 const SubmitForm = require('./interactor/SubmitForm');
+const ValidateStep = require('./interactor/ValidateStep');
 
 const BasePresenter = require('../base/BasePresenter');
 
 const StepPresenter = require('../step/StepPresenter');
 
 const InvalidFields = require('../error/InvalidFields');
+
+const SignatureStack = require('../lib/SignatureStack');
 
 const FIRST_STEP = 0;
 
@@ -27,6 +30,8 @@ class FormPresenter extends BasePresenter {
       .forEach((sV) => this.formV.addStep(sV));
 
     this.hiddenFields = hiddenFields;
+
+    this.signatures = SignatureStack.create();
 
     this.indexCurrStep = null;
   }
@@ -80,38 +85,54 @@ class FormPresenter extends BasePresenter {
     }
   }
 
+  async _validateStep (stepM) {
+    if (!ValidateStep.required(stepM)) {
+      return;
+    }
+
+    const formId = this.formM.id;
+    const data = Object.assign({}, this.getFormValues(), this.hiddenFields.getAll());
+    const signature = this.signatures.get();
+
+    const body = await ValidateStep.execute(formId, stepM, data, signature);
+
+    this.signatures.set(body.signature);
+  }
+
   async _submitForm (stepP) {
     const formId = this.formM.id;
     const submission = {
       formData: Object.assign({}, this.getFormValues(), this.hiddenFields.getAll()),
       metaData: MetaData.getAll(),
     };
+    const signature = this.signatures.get();
+
+    const res = await SubmitForm.execute(formId, submission, signature);
+    this._handleOnSubmit(res, stepP);
+  }
+
+  async onNextStep (stepP, stepM) {
+    stepP.disable();
+    stepP.showLoading();
 
     try {
-      const res = await SubmitForm.execute(formId, submission);
-      this._handleOnSubmit(res, stepP);
+      await this._validateStep(stepM);
+
+      if (this.hasNextStep()) {
+        this.goNextStep();
+      } else {
+        await this._submitForm(stepP);
+      }
     } catch (err) {
       if (err instanceof InvalidFields) {
         this.stepsP.forEach((sP) => sP.onSeveralInvalidFields(err.fields));
       } else {
         stepP.onError(err.message);
       }
+    } finally {
+      stepP.enable();
+      stepP.hideLoading();
     }
-  }
-
-  async onNextStep (stepP, stepM) {
-    if (this.hasNextStep()) {
-      this.goNextStep();
-      return;
-    }
-
-    stepP.disable();
-    stepP.showLoading();
-
-    await this._submitForm(stepP);
-
-    stepP.enable();
-    stepP.hideLoading();
   }
 
   /*
@@ -127,17 +148,14 @@ class FormPresenter extends BasePresenter {
 
     this.indexCurrStep = index;
 
+    this.signatures.goto(index);
+
     if (currStepP) {
       currStepP.hide();
     }
     if (newStepP) {
       newStepP.show();
     }
-  }
-
-  render () {
-    this._goToStep(FIRST_STEP);
-    return this.formV.render();
   }
 
   hasPreviousStep () {
@@ -155,10 +173,18 @@ class FormPresenter extends BasePresenter {
     this._goToStep(this.indexCurrStep + 1);
   }
 
+  goFirstStep () {
+    this._goToStep(FIRST_STEP);
+  }
+
   static create () {
     return new FormPresenter(...arguments);
   }
 
+  render () {
+    this.goFirstStep();
+    return this.formV.render();
+  }
 }
 
 module.exports = FormPresenter;

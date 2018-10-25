@@ -4,6 +4,7 @@ const Forbidden = require('../error/Forbidden');
 const InternalError = require('../error/InternalError');
 const NotFound = require('../error/NotFound');
 const InvalidFields = require('../error/InvalidFields');
+const InvalidStep = require('../error/InvalidStep');
 const SDKError = require('../error/SDKError');
 
 const API_URL = WEBPACK_API_URL;
@@ -17,6 +18,10 @@ const CONTENT_TYPE = {
   JSON: 'application/json',
 };
 
+const AUTH_TYPE = {
+  BEARER: 'Bearer',
+};
+
 const STATUS = {
   OK: 200,
   BAD_REQUEST: 400,
@@ -25,7 +30,23 @@ const STATUS = {
   SERVER_ERROR: 500,
 };
 
+const CODE = {
+  SERVER_ERROR: 'ERR_INTERNAL_ERROR',
+};
+
 class HTTPClient {
+
+  static _buildHeaders (signature) {
+    const headers = {
+      [HEADER.CONTENT_TYPE]: CONTENT_TYPE.JSON,
+    };
+
+    if (signature) {
+      headers[HEADER.AUTHORIZATION] = `${AUTH_TYPE.BEARER} ${signature}`;
+    }
+
+    return headers;
+  }
 
   static async getForm (formId) {
     const opUrl = `${API_URL}/forms/${formId}`;
@@ -60,7 +81,7 @@ class HTTPClient {
     }
   }
 
-  static async createSubmission (formId, submission) {
+  static async createSubmission (formId, submission, signature) {
     const opUrl = `${API_URL}/forms/${formId}/submissions/`;
 
     try {
@@ -68,9 +89,7 @@ class HTTPClient {
         opUrl,
         {
           method: 'POST',
-          headers: {
-            [HEADER.CONTENT_TYPE]: CONTENT_TYPE.JSON,
-          },
+          headers: HTTPClient._buildHeaders(signature),
           body: JSON.stringify(submission),
         }
       );
@@ -102,6 +121,46 @@ class HTTPClient {
       } else {
         console.error('Error creating submission', err);
         throw SDKError.create('Error creating submission');
+      }
+    }
+  }
+
+  static async validateStep (formId, stepId, data, signature) {
+    const opUrl = `${API_URL}/forms/${formId}/validations/${stepId}`;
+
+    const headers = {
+      [HEADER.CONTENT_TYPE]: CONTENT_TYPE.JSON,
+    };
+
+    try {
+      const res = await fetch(
+        opUrl,
+        {
+          method: 'POST',
+          headers: HTTPClient._buildHeaders(),
+          body: JSON.stringify(data),
+        }
+      );
+
+      const body = await res.json();
+      const statusCode = res.status;
+
+      if (statusCode === STATUS.OK) {
+        return body;
+      }
+
+      if (body.code === CODE.SERVER_ERROR) {
+        throw InternalError.create('Error validating information');
+      }
+
+      throw InvalidStep.create(body.message);
+
+    } catch (err) {
+      if (err instanceof SDKError) {
+        throw err;
+      } else {
+        console.error('Error validating step', err);
+        throw SDKError.create('Error validating step');
       }
     }
   }

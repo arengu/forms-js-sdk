@@ -5,10 +5,10 @@ const EventsFactory = require('../../lib/EventsFactory');
 
 class SubmitForm {
 
-  static async execute (formId, submission) {
+  static async execute (formId, submission, signature) {
     try {
       EventsFactory.submitForm(formId, submission);
-      const res = await Repository.createSubmission(formId, submission);
+      const res = await Repository.createSubmission(formId, submission, signature);
 
       EventsFactory.submitFormSuccess(formId, res);
       return res;
