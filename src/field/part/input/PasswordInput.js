@@ -24,6 +24,7 @@ class PasswordInput extends BaseInput {
     node.setAttribute('id', uid);
     node.setAttribute('name', id);
     node.setAttribute('type', 'password');
+    node.setAttribute('autocomplete', 'current-password');
 
     if (placeholder) {
       node.setAttribute('placeholder', placeholder);
