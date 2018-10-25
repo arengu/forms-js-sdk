@@ -71,12 +71,12 @@ class FormPresenter extends BasePresenter {
   }
 
   _handleOnSubmit (res, stepP) {
-    if (res._message) {
-      stepP.onSuccess(res._message);
+    if (res.message) {
+      stepP.onSuccess(res.message);
     }
 
-    if (res._target) {
-      this.redirectUser(res._target, res._delay);
+    if (res.target) {
+      this.redirectUser(res.target, res.delay);
     }
   }
 
