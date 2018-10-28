@@ -127,7 +127,7 @@ class HTTPClient {
         opUrl,
         {
           method: 'POST',
-          headers: HTTPClient._buildHeaders(),
+          headers: HTTPClient._buildHeaders(signature),
           body: JSON.stringify(data),
         }
       );
