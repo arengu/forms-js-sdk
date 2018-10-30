@@ -9,6 +9,7 @@ class FormModel extends BaseModel {
     super(data);
     this.id = data.id;
     this.workspaceId = data.workspaceId;
+    this.hiddenFields = data.hiddenFields;
     this.steps = data.steps.map(StepModel.create);
   }
 

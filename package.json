@@ -1,12 +1,14 @@
 {
   "name": "arengu-forms-js-sdk",
-  "version": "0.9.0",
+  "version": "1.0.0",
   "license": "MIT",
   "scripts": {
     "start": "webpack-dev-server --open --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js"
   },
-  "dependencies": {},
+  "dependencies": {
+    "crypto-js": "^3.1.9-1"
+  },
   "devDependencies": {
     "clean-webpack-plugin": "0.x",
     "css-loader": "0.x",

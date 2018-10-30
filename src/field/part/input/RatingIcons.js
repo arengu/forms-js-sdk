@@ -1,8 +1,10 @@
+const SDKError = require('../../../error/SDKError');
+
 class RatingIcons {
 
   static render (icon) {
     switch (icon) {
-      case 'stars':
+      case 'STAR':
         {
           const container = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
           container.setAttribute('viewBox', '0 0 43.244 43.244');
@@ -12,7 +14,7 @@ class RatingIcons {
           container.appendChild(path);
           return container;
         }
-      case 'hearts':
+      case 'HEART':
         {
           const container = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
           container.setAttribute('viewBox', '0 0 471.701 471.701');
@@ -22,7 +24,7 @@ class RatingIcons {
           container.appendChild(path);
           return container;
         }
-      case 'thumbsup':
+      case 'THUMBUP':
         {
           const container = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
           container.setAttribute('viewBox', '0 0 478.2 478.2');
@@ -32,6 +34,8 @@ class RatingIcons {
           container.appendChild(path);
           return container;
         }
+      default:
+        throw new SDKError(`Unknown rating icon: ${icon}`);
     }
   }
 

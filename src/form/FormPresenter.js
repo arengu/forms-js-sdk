@@ -1,179 +1,192 @@
-const BasePresenter = require('../base/BasePresenter');
 const FormView = require('./FormView');
+const MetaData = require('./MetaData');
 
-const FormInteractor = require('./FormInteractor');
+const SubmitForm = require('./interactor/SubmitForm');
+const ValidateStep = require('./interactor/ValidateStep');
+
+const BasePresenter = require('../base/BasePresenter');
 
 const StepPresenter = require('../step/StepPresenter');
 
-const DEFAULT_STEP = 0;
+const InvalidFields = require('../error/InvalidFields');
+
+const SignatureStack = require('../lib/SignatureStack');
+
+const FIRST_STEP = 0;
 
 class FormPresenter extends BasePresenter {
 
-  constructor (model) {
+  constructor (formM, hiddenFields) {
     super();
 
-    this.formM = model;
-    this.formI = FormInteractor.create();
+    this.formM = formM;
 
-    this.stepsP = model.steps.map((s) => StepPresenter.create(s, this));
+    this.stepsP = formM.steps
+      .map((sM) => StepPresenter.create(sM, formM, this));
 
-    this.formV = FormView.create(model, this.stepsP, DEFAULT_STEP, this);
+    this.formV = FormView.create(formM, this);
+    this.stepsP
+      .map((sV) => sV.render())
+      .forEach((sV) => this.formV.addStep(sV));
 
-    this.currStep = DEFAULT_STEP;
+    this.hiddenFields = hiddenFields;
+
+    this.signatures = SignatureStack.create();
+
+    this.indexCurrStep = null;
   }
 
   /*
    * Internal methods
    */
-  _enableForm () {
-    this.stepsP.forEach((p) => p.enable());
+  redirectUser (url, delayS) {
+    const delayMS = delayS * 1000;
+    setTimeout(() => {
+      window.location = url;
+    }, delayMS);
   }
 
-  _disableForm () {
-    this.stepsP.forEach((p) => p.disable());
+  getFormValues () {
+    const valuesPerStep = this.stepsP.map((sP) => sP.getStepData());
+    const values = Object.assign({}, ...valuesPerStep);
+
+    return values;
   }
 
-  _enableLoading () {
-    this.stepsP.forEach((p) => p.stepV.submitV.node.classList.add('af-button-loading'));
-  }
-
-  _disableLoading () {
-    this.stepsP.forEach((p) => p.stepV.submitV.node.classList.remove('af-button-loading'));
-  }
-
-  _isFirstStep () {
-    return this.currStep === 0;
-  }
-
-  _isLastStep () {
-    return (this.currStep + 1) === this.stepsP.length;
-  }
-
-  _setInvalidFields (invalidFields) {
-    this.stepsP.forEach((sp) => sp.onInvalidFields(invalidFields));
-  }
-
-  _setFormError (msg) {
-    const current = this.stepsP[this.currStep];
-    current.onError(msg);
-  }
-
-  _setFormSuccess (msg) {
-    const current = this.stepsP[this.currStep];
-    current.onSuccess(msg);
-  }
-
-  _redirectUser (url) {
-    window.location = url;
-  }
-
-  _getFormData () {
-    return this.stepsP.reduce((data, p) => {
-      return Object.assign(data, p.getStepData());
-    }, {});
-  }
-
-  _submit () {
-    const formId = this.formM.id;
-    const data = this._getFormData();
-    const meta = this.formV.getMetaData();
-
-    this._disableForm();
-    this._enableLoading();
-
-    this.formI.submit(formId, data, meta, this);
-  }
-
-  _handleOnSubmit (os) {
-    switch (os.action) {
-      case 'redirect':
-        this._redirectUser(os.target);
-        break;
-
-      case 'message':
-        this._setFormSuccess(os.message);
-    }
-  }
-
-  /*
-   * Submit events
+  /**
+   *Public methods
    */
-  onSuccess (conf) {
-    this._setInvalidFields();
-    this._setFormError();
-    this._enableForm();
-    this._disableLoading();
 
-    this._handleOnSubmit(conf.onSubmit);
-  }
-
-  onInvalidFields (invalidFields) {
-    this._setInvalidFields(invalidFields);
-    this._setFormError('Some fields are not valid');
-    this._setFormSuccess();
-    this._enableForm();
-    this._disableLoading();
-  }
-
-  onFormError (msg) {
-    this._setInvalidFields();
-    this._setFormError(msg);
-    this._setFormSuccess();
-    this._enableForm();
-    this._disableLoading();
+  getFormId () {
+    return this.formM.id;
   }
 
   /*
    * Step events
    */
-  onBack () {
-    if (!this._isFirstStep()) {
-      this.goBack();
+  onPreviousStep (stepP, stepM) {
+    if (this.hasPreviousStep()) {
+      this.goPreviousStep();
+      stepP.removeSuccess();
     }
   }
 
-  onNext () {
-    const errors = this.stepsP[this.currStep].validate();
+  onSubmitForm () {
+    const currStepP = this.stepsP[this.indexCurrStep];
+    currStepP.onGoNext();
+  }
 
-    if (Object.keys(errors).length) {
-      console.error(`Error validating data:`, errors);
-      this.onInvalidFields(errors);
+  _handleOnSubmit (res, stepP) {
+    if (res.message) {
+      stepP.onSuccess(res.message);
+    }
+
+    if (res.target) {
+      this.redirectUser(res.target, res.delay);
+    }
+  }
+
+  async _validateStep (stepM) {
+    if (!ValidateStep.required(stepM)) {
       return;
     }
 
-    if (this._isLastStep()) {
-      this._submit();
-      this._enableLoading();
-    } else {
-      this.goNext();
+    const formId = this.formM.id;
+    const data = Object.assign({}, this.getFormValues(), this.hiddenFields.getAll());
+    const signature = this.signatures.get();
+
+    const body = await ValidateStep.execute(formId, stepM, data, signature);
+
+    this.signatures.set(body.signature);
+  }
+
+  async _submitForm (stepP) {
+    const formId = this.formM.id;
+    const submission = {
+      formData: Object.assign({}, this.getFormValues(), this.hiddenFields.getAll()),
+      metaData: MetaData.getAll(),
+    };
+    const signature = this.signatures.get();
+
+    const res = await SubmitForm.execute(formId, submission, signature);
+    this._handleOnSubmit(res, stepP);
+  }
+
+  async onNextStep (stepP, stepM) {
+    stepP.disable();
+    stepP.showLoading();
+
+    try {
+      await this._validateStep(stepM);
+
+      if (this.hasNextStep()) {
+        this.goNextStep();
+      } else {
+        await this._submitForm(stepP);
+        this.resetForm();
+      }
+    } catch (err) {
+      if (err instanceof InvalidFields) {
+        this.stepsP.forEach((sP) => sP.onSeveralInvalidFields(err.fields));
+      } else {
+        stepP.onError(err.message);
+      }
+    } finally {
+      stepP.enable();
+      stepP.hideLoading();
     }
   }
 
   /*
    * Form actions
    */
-  render () {
-    return this.formV.render();
+  resetForm () {
+    return this.formV.reset();
   }
 
-  goBack () {
-    this.currStep = this.currStep - 1;
-    this.formV.navigate(this.currStep);
+  _goToStep (index) {
+    const currStepP = this.stepsP[this.indexCurrStep];
+    const newStepP = this.stepsP[index]
+
+    this.indexCurrStep = index;
+
+    this.signatures.goto(index);
+
+    if (currStepP) {
+      currStepP.hide();
+    }
+    if (newStepP) {
+      newStepP.show();
+    }
   }
 
-  goNext () {
-    this.currStep = this.currStep + 1;
-    this.formV.navigate(this.currStep);
+  hasPreviousStep () {
+    return this.stepsP[this.indexCurrStep - 1];
+  }
+  hasNextStep () {
+    return this.stepsP[this.indexCurrStep + 1];
+  }
+
+  goPreviousStep () {
+    this._goToStep(this.indexCurrStep - 1);
+  }
+
+  goNextStep () {
+    this._goToStep(this.indexCurrStep + 1);
+  }
+
+  goFirstStep () {
+    this._goToStep(FIRST_STEP);
   }
 
   static create () {
     return new FormPresenter(...arguments);
   }
 
-  getModel () {
-    return this.formM;
+  render () {
+    this.goFirstStep();
+    return this.formV.render();
   }
-
 }
 
 module.exports = FormPresenter;

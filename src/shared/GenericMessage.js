@@ -11,22 +11,14 @@ class GenericMessage extends BaseView {
     this.html = null;
   }
 
-  _show () {
+  setText (txt) {
+    this.node.innerHTML = txt;
     this.html.style.display = 'block';
   }
 
-  _hide () {
+  removeText () {
+    this.node.innerHTML = null;
     this.html.style.display = 'none';
-  }
-
-  setText (msg) {
-    this.node.innerHTML = msg || null;
-
-    if (msg) {
-      this._show();
-    } else {
-      this._hide();
-    }
   }
 
   build () {

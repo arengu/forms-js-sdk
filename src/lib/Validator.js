@@ -13,8 +13,8 @@ class Validator {
    * @returns {String, null}
    */
   static validateRequire (value) {
-    if (value === null) {
-      throw new ValidationError('Is required');
+    if (value === null || !value.length) {
+      throw new ValidationError('This field is required');
     }
 
     return true;
@@ -28,7 +28,7 @@ class Validator {
    */
   static validateMinLength (value, length) {
     if (value && value.length < length){
-      throw new ValidationError(`Must have at least ${length} character(s)`);
+      throw new ValidationError(`This field must be at least ${length} character(s)`);
     }
 
     return true;
@@ -42,7 +42,7 @@ class Validator {
    */
   static validateMaxLength (value, length) {
     if (value && value.length > length){
-      throw new ValidationError(`Must have at most ${length} character(s)`);
+      throw new ValidationError(`This field must be less or equal to ${length} character(s)`);
     }
 
     return true;
@@ -55,7 +55,7 @@ class Validator {
    */
   static validateEmail (value) {
     if(!EMAIL_REGEX.test(value)){
-      throw new ValidationError('Must be a valid email');
+      throw new ValidationError('Please enter a valid email address');
     }
 
     return true;
@@ -68,7 +68,7 @@ class Validator {
    */
   static validateUrl (value) {
     if(!URI_REGEX.test(value)){
-      throw new ValidationError('Must be a valid URL');
+      throw new ValidationError('Please enter a valid URL');
     }
 
     return true;
@@ -81,7 +81,7 @@ class Validator {
    */
   static validateInteger (value) {
     if(!INTEGER_REGEX.test(value)){
-      throw new ValidationError('Must be an integer');
+      throw new ValidationError('Please enter a valid integer value');
     }
 
     return true;
@@ -94,7 +94,7 @@ class Validator {
    */
   static validateBoolean (value) {
     if(!BOOLEAN_REGEX.test(value)){
-      throw new ValidationError('Must be a boolean');
+      throw new ValidationError('Please enter a valid boolean value');
     }
 
     return true;
@@ -107,28 +107,28 @@ class Validator {
    */
   static validateNumber (value) {
     if(!NUMBER_REGEX.test(value)){
-      throw new ValidationError('Must be a number');
+      throw new ValidationError('Please enter a valid number');
     }
 
     return true;
   }
 
-  static validateFormat(type, value) {
+  static validateFormat(fieldType, value) {
     if (!value) {
       return true;
     }
 
-    switch (type) {
-      case 'email':
+    switch (fieldType) {
+      case 'EMAIL':
         return Validator.validateEmail(value);
 
-      case 'number':
+      case 'NUMBER':
         return Validator.validateNumber(value);
 
-      case 'boolean':
+      case 'BOOLEAN':
         return Validator.validateBoolean(value);
 
-      case 'url':
+      case 'URL':
         return Validator.validateUrl(value);
 
       default:

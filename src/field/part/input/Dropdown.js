@@ -3,10 +3,11 @@ const CustomDropdown = require('../../../shared/CustomDropdown');
 
 class Dropdown extends BaseInput {
 
-  constructor(model) {
+  constructor(model, presenter) {
     super();
 
     this.model = model;
+    this.presenter = presenter;
     this.multiple = model.config.multiple;
     this.dropdown = CustomDropdown.create(this.model);;
     this.nodes = null;
@@ -19,6 +20,14 @@ class Dropdown extends BaseInput {
   build() {
     this.html = this.dropdown.render();
     this.nodes = this.dropdown.options;
+  }
+
+  validate () {
+    if (this.model.required && !this.value.length) {
+       return this.model.config.multiple
+       ? 'You have to select at least one option'
+       : 'You have to select one option';
+    }
   }
 
   get value() {

@@ -15,14 +15,16 @@ class DateInput extends BaseInput {
   /*
    * Private methods
    */
-  
+
   _buildDate () {
     const { id, uid, config: { defaultValue, format } } = this.model;
+
+    const inputFormat = format.toLowerCase();
 
     const node = document.createElement('input');
     node.setAttribute('id', uid);
     node.setAttribute('name', id);
-    node.setAttribute('type', format);
+    node.setAttribute('type', inputFormat);
     node.setAttribute('max', '9999-12-31');
 
     if (defaultValue) {

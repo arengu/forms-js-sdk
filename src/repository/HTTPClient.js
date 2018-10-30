@@ -1,68 +1,165 @@
 const FormModel = require('../form/FormModel');
-const SubmissionModel = require('../form/SubmissionModel');
 
-const SchemaError = require('../error/SchemaError');
+const InvalidFields = require('../error/InvalidFields');
+const InvalidStep = require('../error/InvalidStep');
 const SDKError = require('../error/SDKError');
 
 const API_URL = WEBPACK_API_URL;
 
-const STATUS = {
-  OK: 200,
-  BAD_REQUEST: 400,
-  NOT_FOUND: 404,
+const HEADER = {
+  CONTENT_TYPE: 'Content-Type',
+  AUTHORIZATION: 'Authorization',
+};
+
+const CONTENT_TYPE = {
+  JSON: 'application/json',
+};
+
+const AUTH_TYPE = {
+  BEARER: 'Bearer',
+};
+
+const ERROR_CODE = {
+  INVALID_FIELDS: 'ERR_INVALID_INPUT',
+  INVALID_STEP: 'ERR_INVALID_STEP',
+  SERVER_ERROR: 'ERR_SERVER_ERROR',
+  NOT_FOUND: 'ERR_ENTITY_NOT_FOUND',
 };
 
 class HTTPClient {
 
-  getForm (formId) {
-    const opUrl = `${API_URL}/public/forms/${formId}`;
+  static _buildHeaders (signature) {
+    const headers = {
+      [HEADER.CONTENT_TYPE]: CONTENT_TYPE.JSON,
+    };
 
-    return fetch(opUrl)
-      .catch((err) => {
-        throw SDKError.create(err.message || 'Internal error');
-      })
-      .then((res) => {
-        switch (res.status) {
-          case STATUS.OK:
-            return res.json().then(FormModel.create);
-          case STATUS.NOT_FOUND:
-            throw new SDKError('Form not found');
-          default:
-            throw SDKError.create('Unexpected response');
-        }
-      });
+    if (signature) {
+      headers[HEADER.AUTHORIZATION] = `${AUTH_TYPE.BEARER} ${signature}`;
+    }
+
+    return headers;
   }
 
-  createSubmission (submission) {
-    const opUrl = `${API_URL}/public/submissions/`;
+  static isSuccess (statusCode) {
+    return statusCode && statusCode < 400;
+  }
 
-    return fetch(
-      opUrl,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(submission),
+  static async getForm (formId) {
+    const opUrl = `${API_URL}/forms/${formId}`;
+
+    try {
+      const res = await fetch(opUrl);
+
+      const body = await res.json();
+      const statusCode = res.status;
+
+      if (HTTPClient.isSuccess(statusCode)) {
+        return FormModel.create(body);
       }
-    )
-      .catch((err) => {
-        throw SDKError.create(err.message || 'Internal error');
-      })
-      .then((res) => {
-        switch (res.status) {
-          case STATUS.OK:
-            return res.json().then(SubmissionModel.create);
-          case STATUS.BAD_REQUEST:
-            return res.json().then((body) => { throw SchemaError.create(body) });
-          default:
-            throw SDKError.create('Unexpected response');
-        }
-      });
+
+      const errorCode = body.code;
+
+      if (errorCode === ERROR_CODE.NOT_FOUND) {
+        throw SDKError.create('Form not found');
+      }
+
+      console.error('Error retrieving form', body);
+      throw SDKError.create('Error retrieving form');
+
+    } catch (err) {
+      if (err instanceof SDKError) {
+        throw err;
+      } else {
+        console.error('Error retrieving form', err);
+        throw SDKError.create('Error retrieving form');
+      }
+    }
   }
 
-  static create () {
-    return new HTTPClient(...arguments);
+  static async createSubmission (formId, submission, signature) {
+    const opUrl = `${API_URL}/forms/${formId}/submissions/`;
+
+    try {
+      const res = await fetch(
+        opUrl,
+        {
+          method: 'POST',
+          headers: HTTPClient._buildHeaders(signature),
+          body: JSON.stringify(submission),
+        }
+      );
+
+      const body = await res.json();
+      const statusCode = res.status;
+
+      if (HTTPClient.isSuccess(statusCode)) {
+        return body;
+      }
+
+      const errorCode = body.code;
+
+      if (errorCode === ERROR_CODE.INVALID_FIELDS) {
+        throw InvalidFields.fromResponse(body);
+      }
+
+      if (errorCode === ERROR_CODE.INVALID_STEP) {
+        throw InvalidStep.fromResponse(body);
+      }
+
+      console.error('Error creating submission', body);
+      throw SDKError.create('Error creating submission');
+
+    } catch (err) {
+      if (err instanceof SDKError) {
+        throw err;
+      } else {
+        console.error('Error creating submission', err);
+        throw SDKError.create('Error creating submission');
+      }
+    }
+  }
+
+  static async validateStep (formId, stepId, data, signature) {
+    const opUrl = `${API_URL}/forms/${formId}/validations/${stepId}`;
+
+    try {
+      const res = await fetch(
+        opUrl,
+        {
+          method: 'POST',
+          headers: HTTPClient._buildHeaders(signature),
+          body: JSON.stringify(data),
+        }
+      );
+
+      const body = await res.json();
+      const statusCode = res.status;
+
+      if (HTTPClient.isSuccess(statusCode)) {
+        return body;
+      }
+
+      const errorCode = body.code;
+
+      if (errorCode === ERROR_CODE.INVALID_FIELDS) {
+        throw InvalidFields.fromResponse(body);
+      }
+
+      if (errorCode === ERROR_CODE.INVALID_STEP) {
+        throw InvalidStep.fromResponse(body);
+      }
+
+      console.error('Error validating data', body);
+      throw SDKError.create('Error validating data');
+
+    } catch (err) {
+      if (err instanceof SDKError) {
+        throw err;
+      } else {
+        console.error('Error validating data', err);
+        throw SDKError.create('Error validating data');
+      }
+    }
   }
 
 };

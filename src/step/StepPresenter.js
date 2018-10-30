@@ -1,49 +1,121 @@
-const BasePresenter = require('../base/BasePresenter');
 const StepView = require('./StepView');
+
+const ValidateStep = require('./interactor/ValidateStep');
+
+const BasePresenter = require('../base/BasePresenter');
 
 const FieldPresenter = require('../field/FieldPresenter');
 
+const InvalidFields = require('../error/InvalidFields');
+
+const INVALID_FIELDS_ERROR = 'One or more fields have an error. Please check and try again.';
+
 class StepPresenter extends BasePresenter {
 
-  constructor (model, form) {
+  constructor (stepM, formM, formP) {
     super();
 
-    this.stepM = model;
-    this.formP = form;
+    this.stepM = stepM;
+    this.formP = formP;
 
-    this.componentsP = model.components.map((c) => FieldPresenter.create(c, form.getModel()));
-    this.stepV = StepView.create(model, this.componentsP, this);
+    this.invalidFields = [];
+
+    this.componentsP = stepM.components
+      .map((cM) => FieldPresenter.create(cM, formM, this));
+
+    this.stepV = StepView.create(stepM, this);
+
+    this.componentsP
+      .map((cP) => cP.render())
+      .forEach((cV) => this.stepV.addComponent(cV));
   }
 
   /*
    * Step events
    */
-  onBack () {
-    this.formP.onBack();
-  }
+  onSeveralInvalidFields (errors = {}) {
+    this.componentsP.forEach((cp) => {
+      const errMessage = errors[cp.id];
 
-  onNext () {
-    this.formP.onNext();
-  }
-
-  onInvalidFields (errors = {}) {
-    this.componentsP.forEach((cv) => {
-      const errMessage = errors[cv.id];
-      cv.setError(errMessage)
+      if (errMessage) {
+        cp.setError(errMessage);
+      } else {
+        cp.removeError();
+      }
     });
   }
 
+  onGoPrevious () {
+    this.formP.onPreviousStep(this, this.stepM);
+  }
+
+  onGoNext () {
+    try {
+      ValidateStep.execute(this.componentsP);
+      this.formP.onNextStep(this, this.stepM);
+    } catch (err) {
+      if (err instanceof InvalidFields) {
+        this.onSeveralInvalidFields(err.fields);
+      } else {
+        this.onError(err.message);
+      }
+    }
+  }
+
+  onInvalidField (error, fieldPresenter) {
+    const exists = this.invalidFields.includes(fieldPresenter.id);
+
+    if (!exists) {
+      if (!this.invalidFields.length) {
+        this.setError(INVALID_FIELDS_ERROR);
+      }
+
+      this.invalidFields.push(fieldPresenter.id);
+    }
+  }
+
+  onValidField (fieldPresenter) {
+    const index = this.invalidFields.indexOf(fieldPresenter.id);
+
+    if (index >= 0) {
+      this.invalidFields.splice(index, 1);
+    }
+
+    if (!this.invalidFields.length) {
+      this.removeError();
+    }
+  }
+
   onSuccess (msg) {
-    return this.stepV.setSuccess(msg);
+    return this.setSuccess(msg);
   }
 
   onError (msg) {
-    return this.stepV.setError(msg);
+    return this.setError(msg);
   }
 
   /*
    * Step actions
    */
+
+  setSuccess (msg) {
+    this.removeError();
+    return this.stepV.setSuccess(msg);
+  }
+
+  removeSuccess () {
+    return this.stepV.removeSuccess(null);
+  }
+
+  setError (msg) {
+    this.removeSuccess();
+    return this.stepV.setError(msg);
+  }
+
+  removeError () {
+    return this.stepV.removeError();
+  }
+
   getStepData () {
     const data = {};
 
@@ -58,21 +130,16 @@ class StepPresenter extends BasePresenter {
     return data;
   }
 
-  validate () {
-    const errors = {};
-
-    this.componentsP.forEach((c) => {
-      const error = c.validate();
-      if (error) {
-        errors[c.id] = error;
-      }
-    });
-
-    return errors;
-  }
-
   render () {
     return this.stepV.render();
+  }
+
+  showLoading () {
+    this.stepV.showLoading();
+  }
+
+  hideLoading () {
+    this.stepV.hideLoading();
   }
 
   enable () {

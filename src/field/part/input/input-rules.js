@@ -6,10 +6,10 @@ module.exports = {
     const attributes = [];
 
     switch (fieldModel.type) {
-      case 'email':
+      case 'EMAIL':
         attributes.push({name: 'autocomplete', value: 'email'});
         break;
-      case 'tel':
+      case 'TEL':
         attributes.push({name: 'autocomplete', value: 'tel-national'});
         break;
     }

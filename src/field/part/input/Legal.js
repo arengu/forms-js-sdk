@@ -2,61 +2,66 @@ const BaseInput = require('./BaseInput');
 
 class Legal extends BaseInput {
 
-  constructor (model){
+  constructor (model, presenter){
     super();
 
     this.model = model;
+    this.presenter = presenter;
     this.node = null;
     this.html = null;
   }
 
-  _buildCheckbox (id, name, required) {
+  _buildCheckbox (id, name) {
     const node = document.createElement('input');
     node.setAttribute('id', id);
     node.setAttribute('type', 'checkbox');
     node.setAttribute('name', name);
     node.setAttribute('value', true);
 
+    return node;
+  }
+
+  _buildLabel (id, text, required) {
+    const node = document.createElement('label');
+    node.setAttribute('for', id);
+
     if (required) {
       node.setAttribute('required', required);
     }
 
-    return node;
-  }
-
-  _buildLabel (id, text) {
-    const node = document.createElement('label');
-    node.setAttribute('for', id);
     node.innerHTML = text;
 
     return node;
   }
 
-  get value () {
-    return String(this.node.checked);
-  }
-
-  validate () {
-    if (this.model.required && this.value === 'false') {
-       return 'This consent is required';
-    }
-  }
-
+  /*
+   * View actions
+   */
   build (){
     const container = document.createElement('div');
     container.classList.add('af-legal');
 
-    const {id, uid, required} = this.model;
-    const {text} = this.model.config;
+    const { id, uid, required } = this.model;
+    const { text } = this.model.config;
 
     const checkbox = this._buildCheckbox(uid, id, required);
     container.appendChild(checkbox);
 
-    const label = this._buildLabel(uid, text);
+    const label = this._buildLabel(uid, text, required);
     container.appendChild(label);
 
     this.node = checkbox;
     this.html = container;
+  }
+
+  validate () {
+    if (this.model.required && this.value === 'false') {
+       return 'Please check this field if you want to proceed';
+    }
+  }
+
+  get value () {
+    return String(this.node.checked);
   }
 
   static create (){

@@ -5,39 +5,43 @@ const DateInput = require('./input/DateInput');
 const Rating = require('./input/Rating');
 const Legal = require('./input/Legal');
 const BooleanField = require('./input/BooleanField');
+const PasswordInput = require('./input/PasswordInput');
 
 const SDKError = require('../../error/SDKError');
 
 module.exports = {
 
-  create: function createInput (model) {
+  create: function createInput (model, presenter) {
     const { type } = model;
 
     switch (type) {
-      case 'choice':
-        return Choice.create(model);
+      case 'CHOICE':
+        return Choice.create(model, presenter);
 
-      case 'dropdown':
-        return Dropdown.create(model);
+      case 'DROPDOWN':
+        return Dropdown.create(model, presenter);
 
-      case 'rating':
-        return Rating.create(model);
+      case 'RATING':
+        return Rating.create(model, presenter);
       
-      case 'boolean':
-        return BooleanField.create(model);
+      case 'BOOLEAN':
+        return BooleanField.create(model, presenter);
 
-      case 'legal':
-        return Legal.create(model);
+      case 'LEGAL':
+        return Legal.create(model, presenter);
 
-      case 'date':
-        return DateInput.create(model);
+      case 'DATE':
+        return DateInput.create(model, presenter);
 
-      case 'email':
-      case 'number':
-      case 'tel':
-      case 'text':
-      case 'url':
-        return TextInput.create(model);
+      case 'EMAIL':
+      case 'NUMBER':
+      case 'TEL':
+      case 'TEXT':
+      case 'URL':
+        return TextInput.create(model, presenter);
+
+      case 'PASSWORD':
+        return PasswordInput.create(model);
 
       default:
         throw SDKError.create(`Input type [${type}] is unknown`, model);

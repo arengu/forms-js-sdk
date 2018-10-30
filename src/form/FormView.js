@@ -2,17 +2,20 @@ const BaseView = require('../base/BaseView');
 
 class FormView extends BaseView {
 
-  constructor (model, steps, defaultStep, presenter) {
+  constructor (formM, formP) {
     super();
 
-    this.formM = model;
-    this.formP = presenter;
+    this.formP = formP;
+    this.formM = formM;
 
-    this.stepsP = steps;
+    this.stepsV = [];
 
-    this.currStep = this.stepsP[defaultStep];
-
+    this.node = null;
     this.html = null;
+  }
+
+  addStep (stepV) {
+    this.stepsV.push(stepV);
   }
 
   /*
@@ -23,35 +26,17 @@ class FormView extends BaseView {
     form.setAttribute('method', 'POST');
     form.setAttribute('novalidate', 'novalidate');
 
-    const presenter = this.formP;
+    const self = this;
     form.onsubmit = function onSubmit (evt) {
       evt.preventDefault();
-      presenter.onNext();
+      self.formP.onSubmitForm();
     };
 
-    this.stepsP
-      .map((s) => s.render())
-      .forEach((n) => form.appendChild(n));
-
-    if (this.currStep) {
-      this.currStep.show();
-    }
-
+    this.stepsV
+      .forEach((sN) => form.appendChild(sN));
+    
     return form;
   }
-
-  // use URLSearchParams() when IE will hasn't use
-  _gup(name, url) {
-    if (!url) {
-      url = location.href;
-    }
-    name = name.replace(/[[]/, '\\[').replace(/[\]]/, '\\]');
-    const regexS = '[\\?&]' + name + '=([^&#]*)';
-    const regex = new RegExp(regexS);
-    const results = regex.exec(url);
-    return results == null ? null : results[1];
-  }
-
 
   /*
    * View actions
@@ -66,53 +51,12 @@ class FormView extends BaseView {
     const node = this._buildForm();
     container.appendChild(node);
 
+    this.node = node;
     this.html = container;
   }
 
-  navigate (index) {
-    this.currStep.hide();
-
-    this.currStep = this.stepsP[index];
-
-    this.currStep.show();
-  }
-
-  getMetaData () {
-    return {
-      navigator: {
-        userAgent: window.navigator.userAgent,
-        language: window.navigator.language,
-      },
-      navigation: {
-        referer: window.referrer,
-        location: {
-          url: window.location.href,
-          protocol: window.location.protocol,
-          host: window.location.host,
-          path: window.location.pathname,
-          parameters: window.location.search,
-        },
-        analytics: {
-          ga: {
-            utm_source: this._gup('utm_source'),
-            utm_medium: this._gup('utm_medium'),
-            utm_campaign: this._gup('utm_campaign'),
-            utm_term: this._gup('utm_term'),
-            utm_content: this._gup('utm_content'),
-          },
-        },
-      },
-      view: {
-        screen: {
-          height: window.screen.height,
-          width: window.screen.width,
-        },
-        window: {
-          height: window.innerHeight,
-          width: window.innerWidth,
-        },
-      },
-    };
+  reset () {
+    this.node.reset();
   }
 
   static create () {
