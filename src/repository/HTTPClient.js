@@ -99,7 +99,7 @@ class HTTPClient {
       const errorCode = body.code;
 
       if (errorCode === ERROR_CODE.INVALID_FIELDS) {
-        throw InvalidFields.fromResponse(body);
+        throw InvalidFields.fromSchemaError(body);
       }
 
       if (errorCode === ERROR_CODE.INVALID_STEP) {
@@ -142,11 +142,11 @@ class HTTPClient {
       const errorCode = body.code;
 
       if (errorCode === ERROR_CODE.INVALID_FIELDS) {
-        throw InvalidFields.fromResponse(body);
+        throw InvalidFields.fromSchemaError(body);
       }
 
       if (errorCode === ERROR_CODE.INVALID_STEP) {
-        throw InvalidStep.fromResponse(body);
+        throw InvalidFields.fromResponse(body);
       }
 
       console.error('Error validating data', body);

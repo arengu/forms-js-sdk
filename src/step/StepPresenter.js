@@ -33,16 +33,23 @@ class StepPresenter extends BasePresenter {
   /*
    * Step events
    */
-  onSeveralInvalidFields (errors = {}) {
-    this.componentsP.forEach((cp) => {
-      const errMessage = errors[cp.id];
 
-      if (errMessage) {
-        cp.setError(errMessage);
-      } else {
-        cp.removeError();
-      }
-    });
+  /**
+   * @param {InvalidFields} error
+   */
+  onSeveralInvalidFields (error) {
+    const { fields } = error;
+
+    this.componentsP
+      .forEach((cP) => {
+        const info = fields[cP.id];
+
+        if (info) {
+          cP.setError(info.message);
+        } else {
+          cP.removeError();
+        }
+      });
   }
 
   onGoPrevious () {
@@ -55,7 +62,7 @@ class StepPresenter extends BasePresenter {
       this.formP.onNextStep(this, this.stepM);
     } catch (err) {
       if (err instanceof InvalidFields) {
-        this.onSeveralInvalidFields(err.fields);
+        this.onSeveralInvalidFields(err);
       } else {
         this.onError(err.message);
       }

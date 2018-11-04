@@ -127,7 +127,7 @@ class FormPresenter extends BasePresenter {
       }
     } catch (err) {
       if (err instanceof InvalidFields) {
-        this.stepsP.forEach((sP) => sP.onSeveralInvalidFields(err.fields));
+        this.stepsP.forEach((sP) => sP.onSeveralInvalidFields(err));
       } else {
         stepP.onError(err.message);
       }
