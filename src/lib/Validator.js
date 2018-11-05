@@ -1,5 +1,5 @@
-const ValidationError = require('../error/ValidationError');
 const { FieldError } = require('../error/InvalidFields');
+const { DEFAULT_MESSAGES } = require('./Messages');
 
 const { CODE } = FieldError;
 
@@ -20,7 +20,7 @@ class Validator {
     if (value === null || !value.length) {
       throw FieldError.create(
         CODE.ERR_REQUIRED_PROPERTY,
-        'This field is required'
+        DEFAULT_MESSAGES.ERR_REQUIRED_PROPERTY,
       );
     }
 
@@ -37,7 +37,7 @@ class Validator {
     if (value && value.length < length){
       throw FieldError.create(
         CODE.ERR_TOO_SHORT_STRING,
-        `This field must be at least ${length} character(s)`,
+        DEFAULT_MESSAGES.ERR_TOO_SHORT_STRING,
         { minLength: length },
       );
     }
@@ -55,7 +55,7 @@ class Validator {
     if (value && value.length > length){
       throw FieldError.create(
         CODE.ERR_TOO_LONG_STRING,
-        `This field must be less or equal to ${length} character(s)`,
+        DEFAULT_MESSAGES.ERR_TOO_LONG_STRING,
         { maxLength: length },
       );
     }
@@ -72,7 +72,7 @@ class Validator {
     if(!EMAIL_REGEX.test(value)){
       throw FieldError.create(
         CODE.ERR_EMAIL_EXPECTED,
-        'Please enter a valid email address'
+        DEFAULT_MESSAGES.ERR_EMAIL_EXPECTED,
       );
     }
 
@@ -88,7 +88,8 @@ class Validator {
     if(!URI_REGEX.test(value)){
       throw FieldError.create(
         CODE.ERR_URL_EXPECTED,
-        'Please enter a valid URL');
+        DEFAULT_MESSAGES.ERR_URL_EXPECTED,
+      );
     }
 
     return true;
@@ -103,7 +104,8 @@ class Validator {
     if(!INTEGER_REGEX.test(value)){
       throw FieldError.create(
         CODE.ERR_INTEGER_EXPECTED,
-        'Please enter a valid integer value');
+        DEFAULT_MESSAGES.ERR_INTEGER_EXPECTED,
+      );
     }
 
     return true;
@@ -118,7 +120,8 @@ class Validator {
     if(!BOOLEAN_REGEX.test(value)){
       throw FieldError.create(
         CODE.INVALID_BOOLEAN,
-        'Please enter a valid boolean value');
+        DEFAULT_MESSAGES.ERR_BOOLEAN_EXPECTED,
+      );
     }
 
     return true;
@@ -133,7 +136,8 @@ class Validator {
     if(!NUMBER_REGEX.test(value)){
       throw FieldError.create(
         CODE.INVALID_NUMBER,
-        'Please enter a valid number');
+        DEFAULT_MESSAGES.ERR_NUMBER_EXPECTED,
+      );
     }
 
     return true;

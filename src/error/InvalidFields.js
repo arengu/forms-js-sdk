@@ -1,6 +1,10 @@
 const SDKError = require('./SDKError');
+const ErrorCodes = require('./ErrorCodes');
+const { DEFAULT_MESSAGES } = require('../lib/Messages');
 
-const DEFAULT_MESSAGE = 'One or more fields are not valid';
+const DEFAULT_MESSAGE = DEFAULT_MESSAGES.ERR_INVALID_INPUT;
+
+const DEFAULT_CODE = ErrorCodes.ERR_INVALID_INPUT;
 
 const FieldErrorCode = {
   ERR_REQUIRED_PROPERTY: 'ERR_REQUIRED_PROPERTY',
@@ -16,8 +20,7 @@ const FieldErrorCode = {
 class FieldError extends SDKError {
 
   constructor (code, message, details) {
-    super(message);
-    this.code = code;
+    super(code, message);
     this.details = details;
   }
 
@@ -25,8 +28,8 @@ class FieldError extends SDKError {
     return FieldErrorCode;
   }
 
-  static create (message, code, details) {
-    return new FieldError(message, code, details);
+  static create (code, message, details) {
+    return new FieldError(code, message, details);
   }
 
   static fromPropertyError (data) {
@@ -42,7 +45,7 @@ class FieldError extends SDKError {
 class InvalidFields extends SDKError {
 
   constructor (fields) {
-    super(DEFAULT_MESSAGE);
+    super(DEFAULT_CODE, DEFAULT_MESSAGE);
     this.fields = fields;
   }
 
@@ -51,7 +54,7 @@ class InvalidFields extends SDKError {
   }
 
   static get EXPECTED_ERROR () {
-    return 'ERR_INVALID_INPUT';
+    return DEFAULT_CODE;
   }
 
   static fromFields (fields) {

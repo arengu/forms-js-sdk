@@ -8,17 +8,30 @@ const FieldPresenter = require('../field/FieldPresenter');
 
 const InvalidFields = require('../error/InvalidFields');
 
-const INVALID_FIELDS_ERROR = 'One or more fields have an error. Please check and try again.';
+const InvalidStep = require('../error/InvalidStep');
+
+const ErrorCodes = require('../error/ErrorCodes');
+
+const Messages = require('../lib/Messages');
+
+const { DEFAULT_MESSAGES } = Messages;
+
+
+const INVALID_FIELDS_ERROR = ErrorCodes.ERR_INVALID_INPUT;
+
+const INVALID_FIELDS_ERROR_MSG = DEFAULT_MESSAGES.ERR_INVALID_INPUT;
 
 class StepPresenter extends BasePresenter {
 
-  constructor (stepM, formM, formP) {
+  constructor (stepM, formM, formP, messages) {
     super();
 
     this.stepM = stepM;
     this.formP = formP;
 
     this.invalidFields = [];
+
+    this.messages = messages;
 
     this.componentsP = stepM.components
       .map((cM) => FieldPresenter.create(cM, formM, this));
@@ -39,13 +52,14 @@ class StepPresenter extends BasePresenter {
    */
   onSeveralInvalidFields (error) {
     const { fields } = error;
+    const messages = this.messages;
 
     this.componentsP
       .forEach((cP) => {
-        const info = fields[cP.id];
+        const err = fields[cP.id];
 
-        if (info) {
-          cP.setError(info.message);
+        if (err) {
+          cP.setError(messages.getErrorMessage(err));
         } else {
           cP.removeError();
         }
@@ -64,7 +78,7 @@ class StepPresenter extends BasePresenter {
       if (err instanceof InvalidFields) {
         this.onSeveralInvalidFields(err);
       } else {
-        this.onError(err.message);
+        this.onError(err);
       }
     }
   }
@@ -74,7 +88,12 @@ class StepPresenter extends BasePresenter {
 
     if (!exists) {
       if (!this.invalidFields.length) {
-        this.setError(INVALID_FIELDS_ERROR);
+        const stepError = InvalidStep.create(
+          INVALID_FIELDS_ERROR,
+          INVALID_FIELDS_ERROR_MSG,
+        );
+
+        this.setError(this.messages.getErrorMessage(stepError));
       }
 
       this.invalidFields.push(fieldPresenter.id);
@@ -97,7 +116,8 @@ class StepPresenter extends BasePresenter {
     return this.setSuccess(msg);
   }
 
-  onError (msg) {
+  onError (error) {
+    const msg = this.messages.getErrorMessage(error);
     return this.setError(msg);
   }
 

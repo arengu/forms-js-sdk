@@ -1,7 +1,8 @@
 class SDKError extends Error {
 
-  constructor (message) {
+  constructor (code, message) {
     super(message);
+    this.code = code;
   }
 
   static create () {

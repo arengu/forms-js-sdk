@@ -16,13 +16,13 @@ const FIRST_STEP = 0;
 
 class FormPresenter extends BasePresenter {
 
-  constructor (formM, hiddenFields) {
+  constructor (formM, hiddenFields, messages) {
     super();
 
     this.formM = formM;
 
     this.stepsP = formM.steps
-      .map((sM) => StepPresenter.create(sM, formM, this));
+      .map((sM) => StepPresenter.create(sM, formM, this, messages));
 
     this.formV = FormView.create(formM, this);
     this.stepsP
@@ -129,7 +129,7 @@ class FormPresenter extends BasePresenter {
       if (err instanceof InvalidFields) {
         this.stepsP.forEach((sP) => sP.onSeveralInvalidFields(err));
       } else {
-        stepP.onError(err.message);
+        stepP.onError(err);
       }
     } finally {
       stepP.enable();
@@ -146,7 +146,7 @@ class FormPresenter extends BasePresenter {
 
   _goToStep (index) {
     const currStepP = this.stepsP[this.indexCurrStep];
-    const newStepP = this.stepsP[index]
+    const newStepP = this.stepsP[index];
 
     this.indexCurrStep = index;
 

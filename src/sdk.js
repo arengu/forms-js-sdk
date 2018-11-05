@@ -5,11 +5,14 @@ const Form = require('./form/Form');
 const HiddenFields = require('./form/HiddenFields');
 
 const SDKError = require('./error/SDKError');
+const ErrorCodes = require('./error/ErrorCodes');
 
 const Repository = require('./repository/HTTPClient');
 
 const CSSInjector = require('./css/CSSInjector');
+
 const EventsFactory = require('./lib/EventsFactory');
+const Messages = require('./lib/Messages');
 
 const MAGIC_SELECTOR = 'data-arengu-form-id';
 
@@ -48,10 +51,10 @@ class SDK {
 
   async embed (form, parent, initValues) {
     if (!form) {
-      throw new SDKError('Specify the form you want to embed');
+      throw new SDKError(ErrorCodes.ERR_MISSING_FORM_ID, 'Specify the form you want to embed');
     }
     if (!parent) {
-      throw new SDKError('Specify the node where you want to embed the form');
+      throw new SDKError(ErrorCodes.ERR_INVALID_NODE, 'Specify the node where you want to embed the form');
     }
 
     const parentNode = parent.length ? this._findNode(parent) : parent;
@@ -59,12 +62,13 @@ class SDK {
     const formId = form.id || form;
 
     try {
-      const formData = await this._getForm(form)
+      const formData = await this._getForm(form);
 
       EventsFactory.embedForm(formId, parent.length ? parent : null);
 
       const hiddenFields = HiddenFields.create(formData.hiddenFields, initValues);
-      const presenter = FormPresenter.create(formData, hiddenFields);
+      const messages = Messages.create(formData.messages);
+      const presenter = FormPresenter.create(formData, hiddenFields, messages);
 
       const formNode = presenter.render();
 
