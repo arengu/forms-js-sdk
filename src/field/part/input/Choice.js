@@ -78,11 +78,15 @@ class Choice extends BaseInput {
   }
 
   validate () {
-    if (this.model.required && !this.value.length) {
-       return this.model.config.multiple
-       ? 'You have to select at least one option'
-       : 'You have to select one option';
+    if (this.model.required && this.isEmpty) {
+      return this.model.config.multiple
+        ? 'You have to select at least one option'
+        : 'You have to select one option';
     }
+  }
+
+  get isEmpty() {
+    return this.model.config.multiple ? !this.value.length : !this.value; 
   }
 
   build () {
