@@ -106,7 +106,7 @@ class FormPresenter extends BasePresenter {
       formData: Object.assign({}, this.getFormValues(), this.hiddenFields.getAll()),
       metaData: MetaData.getAll(),
     };
-    const signature = this.signatures.get();
+    const signature = this.signatures.get(true);
 
     const res = await SubmitForm.execute(formId, submission, signature);
     this._handleOnSubmit(res, stepP);

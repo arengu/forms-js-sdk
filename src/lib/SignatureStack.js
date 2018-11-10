@@ -9,8 +9,10 @@ class SignatureStack {
     return new SignatureStack();
   }
 
-  get () {
-    const maxIndex = this.step - 1 // signature of current step has to be skipped
+  get (includeCurrent) {
+    // We have to skip signature of current step for validations
+    // but form submissions require it to probe it was validated
+    const maxIndex = this.step - (includeCurrent ? 0 : 1);
 
     for (let index = maxIndex; index >= maxIndex; index--) {
       const signature = this.stack[index];
