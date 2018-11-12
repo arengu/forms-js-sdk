@@ -20,7 +20,7 @@ class Validator {
     if (value === null || !value.length) {
       throw FieldError.create(
         CODE.ERR_REQUIRED_PROPERTY,
-        DEFAULT_MESSAGES.ERR_REQUIRED_PROPERTY,
+        'This field is required',
       );
     }
 
@@ -37,7 +37,7 @@ class Validator {
     if (value && value.length < length){
       throw FieldError.create(
         CODE.ERR_TOO_SHORT_STRING,
-        DEFAULT_MESSAGES.ERR_TOO_SHORT_STRING,
+        `This field must be at least ${length} character(s)`,
         { minLength: length },
       );
     }
@@ -55,7 +55,7 @@ class Validator {
     if (value && value.length > length){
       throw FieldError.create(
         CODE.ERR_TOO_LONG_STRING,
-        DEFAULT_MESSAGES.ERR_TOO_LONG_STRING,
+        `This field must be less or equal to ${length} character(s)`,
         { maxLength: length },
       );
     }
@@ -72,7 +72,7 @@ class Validator {
     if(!EMAIL_REGEX.test(value)){
       throw FieldError.create(
         CODE.ERR_EMAIL_EXPECTED,
-        DEFAULT_MESSAGES.ERR_EMAIL_EXPECTED,
+        'Email is not valid',
       );
     }
 
@@ -88,7 +88,7 @@ class Validator {
     if(!URI_REGEX.test(value)){
       throw FieldError.create(
         CODE.ERR_URL_EXPECTED,
-        DEFAULT_MESSAGES.ERR_URL_EXPECTED,
+        'URL is not valid',
       );
     }
 
@@ -104,7 +104,7 @@ class Validator {
     if(!INTEGER_REGEX.test(value)){
       throw FieldError.create(
         CODE.ERR_INTEGER_EXPECTED,
-        DEFAULT_MESSAGES.ERR_INTEGER_EXPECTED,
+        'Enter a valid integer value',
       );
     }
 
@@ -120,7 +120,7 @@ class Validator {
     if(!BOOLEAN_REGEX.test(value)){
       throw FieldError.create(
         CODE.INVALID_BOOLEAN,
-        DEFAULT_MESSAGES.ERR_BOOLEAN_EXPECTED,
+        'Enter a valid boolean value',
       );
     }
 
@@ -136,7 +136,7 @@ class Validator {
     if(!NUMBER_REGEX.test(value)){
       throw FieldError.create(
         CODE.INVALID_NUMBER,
-        DEFAULT_MESSAGES.ERR_NUMBER_EXPECTED,
+        'Enter a valid number',
       );
     }
 
