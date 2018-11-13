@@ -14,7 +14,7 @@ class SignatureStack {
     // but form submissions require it to probe it was validated
     const maxIndex = this.step - (includeCurrent ? 0 : 1);
 
-    for (let index = maxIndex; index >= maxIndex; index--) {
+    for (let index = maxIndex; index >= 0; index--) {
       const signature = this.stack[index];
 
       if (signature) {
