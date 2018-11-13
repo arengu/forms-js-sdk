@@ -34,7 +34,7 @@ class StepPresenter extends BasePresenter {
     this.messages = messages;
 
     this.componentsP = stepM.components
-      .map((cM) => FieldPresenter.create(cM, formM, this));
+      .map((cM) => FieldPresenter.create(cM, formM, this, messages));
 
     this.stepV = StepView.create(stepM, this);
 

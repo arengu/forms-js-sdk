@@ -5,12 +5,14 @@ const EventsFactory = require('../lib/EventsFactory');
 
 class FieldPresenter extends BasePresenter {
 
-  constructor (fieldM, formM, stepP) {
+  constructor (fieldM, formM, stepP, messages) {
     super();
 
     this.fieldM = fieldM;
     this.formM = formM;
     this.stepP = stepP;
+
+    this.messages = messages;
 
     this.hasError = false;
 
@@ -63,7 +65,7 @@ class FieldPresenter extends BasePresenter {
     const error = this.validate();
 
     if (error) {
-      this.setError(error);
+      this.setError(this.messages.getErrorMessage(error));
     } else {
       this.removeError();
     }
