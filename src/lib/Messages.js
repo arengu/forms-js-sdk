@@ -44,7 +44,7 @@ class Messages {
 
     const template = this.messages[code] || defaultMessages[code];
 
-    return this._resolve(template, details) || message;
+    return template ? this._resolve(template, details) : message;
   }
 
   static get DEFAULT_MESSAGES () {
