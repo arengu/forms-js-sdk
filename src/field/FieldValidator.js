@@ -1,3 +1,5 @@
+const { FieldError } = require('../error/InvalidFields');
+
 const Validator = require('../lib/Validator');
 
 class FieldValidator {
@@ -24,8 +26,11 @@ class FieldValidator {
 
       Validator.validateFormat(model.type, value);
 
-    } catch (e) {
-      return e.message;
+    } catch (err) {
+      if (err instanceof FieldError) {
+        return err;
+      }
+      throw err;
     }
   }
 

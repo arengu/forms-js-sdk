@@ -1,5 +1,3 @@
-const InvalidFields = require('../../error/InvalidFields');
-
 const Repository = require('../../repository/HTTPClient');
 
 class ValidateStep {

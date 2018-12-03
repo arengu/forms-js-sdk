@@ -1,5 +1,6 @@
 const Utilities = require('../lib/Utilities');
 const SDKError = require('../error/SDKError');
+const ErrorCodes = require('../error/ErrorCodes');
 
 const MISSING_KEY_ERROR = 'The provided key does not belong to a hidden field';
 
@@ -32,7 +33,7 @@ class HiddenFields {
    */
   get (key) {
     if (!this.fields[key]) {
-      throw new SDKError(MISSING_KEY_ERROR)
+      throw new SDKError(ErrorCodes.ERR_UNDEFINED_KEY, MISSING_KEY_ERROR)
     }
 
     return this.data[key];
@@ -40,7 +41,7 @@ class HiddenFields {
 
   set (key, value) {
     if (!this.fields[key]) {
-      throw new SDKError(MISSING_KEY_ERROR)
+      throw new SDKError(ErrorCodes.ERR_UNDEFINED_KEY, MISSING_KEY_ERROR)
     }
 
     this.data[key] = value;

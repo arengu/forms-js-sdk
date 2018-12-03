@@ -1,4 +1,5 @@
 const SDKError = require('../../../error/SDKError');
+const ErrorCodes = require('../../../error/ErrorCodes');
 
 class RatingIcons {
 
@@ -35,7 +36,7 @@ class RatingIcons {
           return container;
         }
       default:
-        throw new SDKError(`Unknown rating icon: ${icon}`);
+        throw new SDKError(ErrorCodes.ERR_UNKOWN_ICON, `Unknown rating icon: ${icon}`);
     }
   }
 

@@ -3,6 +3,7 @@ const FormModel = require('../form/FormModel');
 const InvalidFields = require('../error/InvalidFields');
 const InvalidStep = require('../error/InvalidStep');
 const SDKError = require('../error/SDKError');
+const ErrorCodes = require('../error/ErrorCodes');
 
 const API_URL = WEBPACK_API_URL;
 
@@ -17,13 +18,6 @@ const CONTENT_TYPE = {
 
 const AUTH_TYPE = {
   BEARER: 'Bearer',
-};
-
-const ERROR_CODE = {
-  INVALID_FIELDS: 'ERR_INVALID_INPUT',
-  INVALID_STEP: 'ERR_INVALID_STEP',
-  SERVER_ERROR: 'ERR_SERVER_ERROR',
-  NOT_FOUND: 'ERR_ENTITY_NOT_FOUND',
 };
 
 class HTTPClient {
@@ -59,19 +53,19 @@ class HTTPClient {
 
       const errorCode = body.code;
 
-      if (errorCode === ERROR_CODE.NOT_FOUND) {
-        throw SDKError.create('Form not found');
+      if (errorCode === ErrorCodes.ERR_FORM_NOT_FOUND) {
+        throw SDKError.create(ErrorCodes.ERR_FORM_NOT_FOUND, 'Form not found');
       }
 
       console.error('Error retrieving form', body);
-      throw SDKError.create('Error retrieving form');
+      throw SDKError.create(ErrorCodes.ERR_SERVER_ERROR, 'Error retrieving form');
 
     } catch (err) {
       if (err instanceof SDKError) {
         throw err;
       } else {
         console.error('Error retrieving form', err);
-        throw SDKError.create('Error retrieving form');
+        throw SDKError.create(ErrorCodes.ERR_SERVER_ERROR, 'Error retrieving form');
       }
     }
   }
@@ -98,23 +92,23 @@ class HTTPClient {
 
       const errorCode = body.code;
 
-      if (errorCode === ERROR_CODE.INVALID_FIELDS) {
-        throw InvalidFields.fromResponse(body);
+      if (errorCode === ErrorCodes.ERR_INVALID_INPUT) {
+        throw InvalidFields.fromSchemaError(body);
       }
 
-      if (errorCode === ERROR_CODE.INVALID_STEP) {
+      if (errorCode === ErrorCodes.ERR_STEP_VALIDATION_FAILED) {
         throw InvalidStep.fromResponse(body);
       }
 
       console.error('Error creating submission', body);
-      throw SDKError.create('Error creating submission');
+      throw SDKError.create(ErrorCodes.ERR_SERVER_ERROR, 'Error creating submission');
 
     } catch (err) {
       if (err instanceof SDKError) {
         throw err;
       } else {
         console.error('Error creating submission', err);
-        throw SDKError.create('Error creating submission');
+        throw SDKError.create(ErrorCodes.ERR_SERVER_ERROR, 'Error creating submission');
       }
     }
   }
@@ -141,23 +135,23 @@ class HTTPClient {
 
       const errorCode = body.code;
 
-      if (errorCode === ERROR_CODE.INVALID_FIELDS) {
-        throw InvalidFields.fromResponse(body);
+      if (errorCode === ErrorCodes.ERR_INVALID_INPUT) {
+        throw InvalidFields.fromSchemaError(body);
       }
 
-      if (errorCode === ERROR_CODE.INVALID_STEP) {
+      if (errorCode === ErrorCodes.ERR_STEP_VALIDATION_FAILED) {
         throw InvalidStep.fromResponse(body);
       }
 
       console.error('Error validating data', body);
-      throw SDKError.create('Error validating data');
+      throw SDKError.create(ErrorCodes.ERR_SERVER_ERROR, 'Error validating data');
 
     } catch (err) {
       if (err instanceof SDKError) {
         throw err;
       } else {
         console.error('Error validating data', err);
-        throw SDKError.create('Error validating data');
+        throw SDKError.create(ErrorCodes.ERR_SERVER_ERROR, 'Error validating data');
       }
     }
   }

@@ -7,7 +7,7 @@ class InvalidStep extends SDKError {
   }
 
   static fromResponse (body) {
-    return InvalidStep.create(body.message);
+    return InvalidStep.create(body.code, body.message);
   }
 
 }

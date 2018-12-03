@@ -2,7 +2,7 @@ const InvalidFields = require('../../error/InvalidFields');
 
 class ValidateStep {
 
-  static getErrors (compsP) {
+  static _getErrors (compsP) {
     const errors = {};
 
     compsP.forEach((cP) => {
@@ -16,11 +16,11 @@ class ValidateStep {
   }
 
   static execute (compsP) {
-    const errors = ValidateStep.getErrors(compsP);
+    const errors = ValidateStep._getErrors(compsP);
 
     if (Object.keys(errors).length) {
       console.error('Some values are not valid', errors);
-      throw InvalidFields.create(errors);
+      throw InvalidFields.fromFields(errors);
     }
   }
 

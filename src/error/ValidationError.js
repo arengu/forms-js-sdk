@@ -2,8 +2,8 @@ const SDKError = require('./SDKError');
 
 class ValidationError extends SDKError {
 
-  constructor (message) {
-    super(message);
+  constructor (code, message) {
+    super(code, message);
   };
 
   static create () {

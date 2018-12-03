@@ -3,8 +3,7 @@ const SDKError = require('./SDKError');
 class AppError extends SDKError {
 
   constructor (code, message) {
-    super(message);
-    this.code = code;
+    super(code, message);
   };
 
   static create () {
