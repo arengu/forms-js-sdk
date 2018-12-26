@@ -93,11 +93,15 @@ class Choice extends BaseInput {
 
   validate () {
     if (this.model.required && this.isEmpty) {
-      const errMessage = this.model.config.multiple
-        ? 'You have to select at least one option'
-        : 'You have to select one option';
-
-      return FieldError.create(CODE.ERR_UNSPECIFIED, errMessage);
+      return this.model.config.multiple ?
+        FieldError.create(
+          CODE.ERR_ZERO_OPTIONS_CHOSEN,
+          'You have to select at least one option'
+        ) :
+        FieldError.create(
+          CODE.ERR_NO_OPTION_CHOSEN,
+          'You have to select an option'
+        );
     }
   }
 

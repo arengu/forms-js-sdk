@@ -74,8 +74,8 @@ class Legal extends BaseInput {
   validate () {
     if (this.model.required && this.value === 'false') {
       return FieldError.create(
-        CODE.ERR_UNSPECIFIED,
-        'Please check this field if you want to proceed',
+        CODE.ERR_ACCEPTANCE_REQUIRED,
+        'Please, check this field if you want to proceed.',
       );
     }
   }
