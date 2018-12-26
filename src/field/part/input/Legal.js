@@ -60,6 +60,10 @@ class Legal extends BaseInput {
     }
   }
 
+  reset () {
+    this.node.checked = false;
+  }
+
   get value () {
     return String(this.node.checked);
   }

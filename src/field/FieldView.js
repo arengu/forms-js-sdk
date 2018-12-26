@@ -77,6 +77,10 @@ class FieldView extends BaseView {
   /*
    * Public methods
    */
+  reset () {
+    return this.inputV.reset();
+  }
+
   validate () {
     return this.inputV.validate();
   }

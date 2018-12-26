@@ -6,6 +6,8 @@ const BasePresenter = require('../base/BasePresenter');
 
 const FieldPresenter = require('../field/FieldPresenter');
 
+const PaymentPresenter = require('../field/PaymentPresenter');
+
 const InvalidFields = require('../error/InvalidFields');
 
 const InvalidStep = require('../error/InvalidStep');
@@ -20,6 +22,8 @@ const { DEFAULT_MESSAGES } = Messages;
 const INVALID_FIELDS_ERROR = ErrorCodes.ERR_INVALID_INPUT;
 
 const INVALID_FIELDS_ERROR_MSG = DEFAULT_MESSAGES.ERR_INVALID_INPUT;
+
+const PAYMENT_FIELD_TYPE = 'PAYMENT';
 
 class StepPresenter extends BasePresenter {
 
@@ -41,6 +45,9 @@ class StepPresenter extends BasePresenter {
     this.componentsP
       .map((cP) => cP.render())
       .forEach((cV) => this.stepV.addComponent(cV));
+
+    this.paymentsP = this.componentsP
+      .filter((o) => o.fieldM.type === PAYMENT_FIELD_TYPE);
   }
 
   /*
@@ -70,9 +77,20 @@ class StepPresenter extends BasePresenter {
     this.formP.onPreviousStep(this, this.stepM);
   }
 
-  onGoNext () {
+  async createPaymentTokens() {
+    const promises = this.paymentsP
+      .map((pP) => PaymentPresenter.createToken(pP));
+
+    return Promise.all(promises);
+  }
+
+  async onGoNext () {
     try {
       ValidateStep.execute(this.componentsP);
+      if (this.paymentsP) {
+        this.showLoading();
+        await this.createPaymentTokens();
+      }
       this.formP.onNextStep(this, this.stepM);
     } catch (err) {
       if (err instanceof InvalidFields) {
@@ -124,6 +142,10 @@ class StepPresenter extends BasePresenter {
   /*
    * Step actions
    */
+
+  resetForm () {
+    this.componentsP.forEach((cV) => cV.reset());
+  }
 
   setSuccess (msg) {
     this.removeError();

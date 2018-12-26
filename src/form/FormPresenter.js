@@ -123,7 +123,8 @@ class FormPresenter extends BasePresenter {
         this.goNextStep();
       } else {
         await this._submitForm(stepP);
-        this.resetForm();
+        this.stepsP
+          .forEach((sP) => sP.resetForm());
       }
     } catch (err) {
       if (err instanceof InvalidFields) {
@@ -140,9 +141,6 @@ class FormPresenter extends BasePresenter {
   /*
    * Form actions
    */
-  resetForm () {
-    return this.formV.reset();
-  }
 
   _goToStep (index) {
     const currStepP = this.stepsP[this.indexCurrStep];

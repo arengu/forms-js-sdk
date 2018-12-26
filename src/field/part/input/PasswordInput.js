@@ -88,6 +88,10 @@ class PasswordInput extends BaseInput {
     this.html = container;
   }
 
+  reset () {
+    this.node.value = null;
+  }
+
   get value () {
     const { config: { hash } } = this.model;
 

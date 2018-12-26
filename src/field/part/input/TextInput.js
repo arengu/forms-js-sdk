@@ -101,6 +101,12 @@ class TextInput extends BaseInput {
     this.html = container;
   }
 
+  reset () {
+    const { config: { defaultValue } } = this.model;
+
+    this.node.value = defaultValue || null;
+  }
+
   get value () {
     return this.node.value;
   }

@@ -6,6 +6,7 @@ const Rating = require('./input/Rating');
 const Legal = require('./input/Legal');
 const BooleanField = require('./input/BooleanField');
 const PasswordInput = require('./input/PasswordInput');
+const PaymentInput = require('./input/PaymentInput');
 
 const SDKError = require('../../error/SDKError');
 
@@ -32,6 +33,12 @@ module.exports = {
 
       case 'DATE':
         return DateInput.create(model, presenter);
+      
+      case 'PAYMENT':
+        return PaymentInput.create(model, presenter);
+        
+      case 'PASSWORD':
+        return PasswordInput.create(model);
 
       case 'EMAIL':
       case 'NUMBER':
@@ -39,9 +46,6 @@ module.exports = {
       case 'TEXT':
       case 'URL':
         return TextInput.create(model, presenter);
-
-      case 'PASSWORD':
-        return PasswordInput.create(model);
 
       default:
         throw SDKError.create(`Input type [${type}] is unknown`, model);
