@@ -110,8 +110,10 @@ class SDK {
 
   init () {
     this.cssInjector.injectDefault();
-    EventsFactory.sdkInit(this);
-    this._waitForDom(this._auto.bind(this));
+    this._waitForDom(() => {
+      EventsFactory.sdkInit(this);
+      this._auto();
+    });
   }
 
   static create () {

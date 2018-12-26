@@ -1,5 +1,9 @@
 const BaseInput = require('./BaseInput');
 
+const { FieldError } = require('../../../error/InvalidFields');
+
+const { CODE } = FieldError;
+
 const STRIPE_SDK_URL = 'https://js.stripe.com/v3/';
 const STRIPE_SDK_LOAD = 'af-stripeLoad';
 
@@ -16,16 +20,19 @@ class PaymentInput extends BaseInput {
     this.cardNumber = null;
     this.cardNumberMounted = null;
     this.isCardNumberEmpty = true;
+    this.isCardNumberComplete = false;
     this.hasCardNumberError = false;
 
     this.expirationDate = null;
     this.expirationDateMounted = null;
     this.isExpirationDateEmpty = true;
+    this.isExpirationDateComplete = false;
     this.hasExpirationDateError = false;
 
     this.securityCode = null;
     this.securityCodeMounted = null;
     this.isSecurityCodeEmpty = true;
+    this.isSecurityCodeComplete = false;
     this.hasSecurityCodeError = false;
 
     this.trustmarks = 'unknown';
@@ -80,11 +87,13 @@ class PaymentInput extends BaseInput {
 
       self.hasCardNumberError = !!e.error;
       self.isCardNumberEmpty = e.empty;
+      self.isCardNumberComplete = e.complete;
+      self.presenter.onValueChange();
     });
   }
 
   _buildCardNumberLabel () {
-    const { config: { fields: { cardNumber: { label } } } } = this.model;
+    const { required, config: { fields: { cardNumber: { label } } } } = this.model;
 
     const container = document.createElement('div');
     container.classList.add('af-field-label');
@@ -92,6 +101,10 @@ class PaymentInput extends BaseInput {
     const node = document.createElement('label');
     node.innerHTML = label;
     container.appendChild(node);
+
+    if (required) {
+      node.classList.add('af-required');
+    }
 
     return container;
   }
@@ -146,6 +159,8 @@ class PaymentInput extends BaseInput {
     element.addEventListener('change', function(e) {
       self.hasExpirationDateError = !!e.error;
       self.isExpirationDateEmpty = e.empty;
+      self.isExpirationDateComplete = e.complete;
+      self.presenter.onValueChange();
     });
   }
 
@@ -169,7 +184,7 @@ class PaymentInput extends BaseInput {
   }
 
   _buildExpirationDateLabel () {
-    const { config: { fields: { expirationDate: { label } } } } = this.model;
+    const { required, config: { fields: { expirationDate: { label } } } } = this.model;
       
     const container = document.createElement('div');
     container.classList.add('af-field-label');
@@ -177,6 +192,10 @@ class PaymentInput extends BaseInput {
     const node = document.createElement('label');
     node.innerHTML = label;
     container.appendChild(node);
+
+    if (required) {
+      node.classList.add('af-required');
+    }
 
     return container;
   }
@@ -210,6 +229,8 @@ class PaymentInput extends BaseInput {
     element.addEventListener('change', function(e) {
       self.hasSecurityCodeError = !!e.error;
       self.isSecurityCodeEmpty = e.empty;
+      self.isSecurityCodeComplete = e.complete;
+      self.presenter.onValueChange();
     });
   }
 
@@ -224,7 +245,7 @@ class PaymentInput extends BaseInput {
   }
 
   _buildSecurityCodeLabel () {
-    const { config: { fields: { securityCode: { label } } } } = this.model;
+    const { required, config: { fields: { securityCode: { label } } } } = this.model;
 
     const container = document.createElement('div');
     container.classList.add('af-field-label');
@@ -232,6 +253,10 @@ class PaymentInput extends BaseInput {
     const node = document.createElement('label');
     node.innerHTML = label;
     container.appendChild(node);
+
+    if (required) {
+      node.classList.add('af-required');
+    }
 
     return container;
   }
@@ -373,8 +398,9 @@ class PaymentInput extends BaseInput {
   }
 
   validate () {
-    if (this.model.required && this.isSecurityCodeEmpty && this.isExpirationDateEmpty && this.isCardNumberEmpty) {
-       return 'This field is required';
+    if (!this.isCardNumberComplete || !this.isExpirationDateComplete || !this.isSecurityCodeComplete) {
+      const errMessage = 'This field is required';
+      return FieldError.create(CODE.ERR_REQUIRED_PROPERTY, errMessage);
     }
   }
   

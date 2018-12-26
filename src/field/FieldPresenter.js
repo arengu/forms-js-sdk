@@ -1,3 +1,5 @@
+const debounce = require('lodash/debounce');
+
 const BasePresenter = require('../base/BasePresenter');
 const FieldView = require('./FieldView');
 
@@ -15,6 +17,7 @@ class FieldPresenter extends BasePresenter {
     this.messages = messages;
 
     this.hasError = false;
+    this.debounceError = debounce(this._debounceValidation.bind(this), 250);
 
     this.fieldV = FieldView.create(fieldM, this);
   }
@@ -42,6 +45,8 @@ class FieldPresenter extends BasePresenter {
     return this.fieldV.removeError();
   }
 
+
+
   /*
    * Events
    */
@@ -55,13 +60,7 @@ class FieldPresenter extends BasePresenter {
     fn.call(EventsFactory, formId, fieldData);
   }
 
-  onBlur (fieldV) {
-    this._fireFieldEvent(EventsFactory.onBlurField, fieldV);
-
-    if (!this.hasError) {
-      return;
-    }
-
+  _debounceValidation () {
     const error = this.validate();
 
     if (error) {
@@ -69,6 +68,18 @@ class FieldPresenter extends BasePresenter {
     } else {
       this.removeError();
     }
+  }
+
+  onValueChange () {
+    if (!this.hasError) {
+      return;
+    }
+
+    this.debounceError();
+  }
+
+  onBlur (fieldV) {
+    this._fireFieldEvent(EventsFactory.onBlurField, fieldV);
   }
 
   onChange (fieldV) {

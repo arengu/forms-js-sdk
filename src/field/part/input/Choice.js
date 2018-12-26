@@ -1,5 +1,9 @@
 const BaseInput = require('./BaseInput');
 
+const { FieldError } = require('../../../error/InvalidFields');
+
+const { CODE } = FieldError;
+
 class Choice extends BaseInput {
 
   constructor (model, presenter) {
@@ -64,6 +68,16 @@ class Choice extends BaseInput {
     });
   }
 
+  _addListeners (node) {
+    const presenter = this.presenter;
+    const self = this;
+
+    node.onchange = function () {
+      presenter.onValueChange();
+      presenter.onChange(self);
+    };
+  }
+
   /*
    * View actions
    */
@@ -79,14 +93,16 @@ class Choice extends BaseInput {
 
   validate () {
     if (this.model.required && this.isEmpty) {
-      return this.model.config.multiple
+      const errMessage = this.model.config.multiple
         ? 'You have to select at least one option'
         : 'You have to select one option';
+
+      return FieldError.create(CODE.ERR_UNSPECIFIED, errMessage);
     }
   }
 
   get isEmpty() {
-    return this.model.config.multiple ? !this.value.length : !this.value; 
+    return this.model.config.multiple ? !this.value.length : !this.value;
   }
 
   build () {
@@ -96,7 +112,10 @@ class Choice extends BaseInput {
     container.className = multiple ? 'af-choice-multiple' : 'af-choice';
 
     const options = this._buildChoiceOptions();
-    options.map((o) => container.appendChild(o));
+    options.map((o) => {
+      this._addListeners(o);
+      container.appendChild(o);
+    });
 
     this.html = container;
   }

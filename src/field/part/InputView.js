@@ -38,7 +38,7 @@ module.exports = {
         return PaymentInput.create(model, presenter);
         
       case 'PASSWORD':
-        return PasswordInput.create(model);
+        return PasswordInput.create(model, presenter);
 
       case 'EMAIL':
       case 'NUMBER':

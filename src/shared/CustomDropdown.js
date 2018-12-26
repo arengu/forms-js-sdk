@@ -25,10 +25,12 @@ const NO_RESULTS_FOUND = 'No results found';
 
 class CustomDropdown extends BaseView {
 
-  constructor(model) {
+  constructor(model, presenter) {
     super();
 
     this.model = model;
+    this.presenter = presenter;
+
     this.multiple = model.config.multiple;
     this.hiddenDropdown = null;
     this.hiddenDropdownOptions = null;
@@ -439,8 +441,11 @@ class CustomDropdown extends BaseView {
 
   _selectDropdownOption(index, value) {
     const node = this.hiddenDropdown;
-
+    
     node.options[index].selected = true;
+    
+    this.presenter.onValueChange();
+    this.presenter.onChange(this);
 
     if(this.multiple) {
       const tag = this._buildDropdownOptionTag(index, value);
@@ -632,6 +637,9 @@ class CustomDropdown extends BaseView {
 
     node.options[index].selected = false;
 
+    this.presenter.onValueChange();
+    this.presenter.onChange(this);
+
     this._removeActiveDropdownOptionClass(index);
 
     return node;
@@ -737,7 +745,7 @@ class CustomDropdown extends BaseView {
     container.appendChild(hiddenDropdown);
 
     const hiddenDropdownOptions = this._buildHiddenDropdownOptions();
-    hiddenDropdownOptions.forEach((n) => hiddenDropdown.appendChild(n));
+    hiddenDropdownOptions.forEach((o) => hiddenDropdown.appendChild(o));
 
     if (!defaultValue) {
       // We cannot do it before appending children

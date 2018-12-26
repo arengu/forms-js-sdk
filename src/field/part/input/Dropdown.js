@@ -1,5 +1,9 @@
 const BaseInput = require('./BaseInput');
+
 const CustomDropdown = require('../../../shared/CustomDropdown');
+const { FieldError } = require('../../../error/InvalidFields');
+
+const { CODE } = FieldError;
 
 class Dropdown extends BaseInput {
 
@@ -9,7 +13,7 @@ class Dropdown extends BaseInput {
     this.model = model;
     this.presenter = presenter;
     this.multiple = model.config.multiple;
-    this.dropdown = CustomDropdown.create(this.model);;
+    this.dropdown = CustomDropdown.create(this.model, this.presenter);
     this.nodes = null;
     this.html = null;
   }
@@ -28,14 +32,16 @@ class Dropdown extends BaseInput {
 
   validate () {
     if (this.model.required && this.isEmpty) {
-      return this.model.config.multiple
+      const errMessage = this.model.config.multiple
         ? 'You have to select at least one option'
         : 'You have to select one option';
+
+      return FieldError.create(CODE.ERR_UNSPECIFIED, errMessage);
     }
   }
 
   get isEmpty() {
-    return this.model.config.multiple ? !this.value.length : !this.value; 
+    return this.model.config.multiple ? !this.value.length : !this.value;
   }
 
   get value() {

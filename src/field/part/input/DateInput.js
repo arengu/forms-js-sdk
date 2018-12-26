@@ -4,10 +4,11 @@ const BaseInput = require('./BaseInput');
 
 class DateInput extends BaseInput {
 
-  constructor (model) {
+  constructor (model, presenter) {
     super(model);
 
     this.model = model;
+    this.presenter = presenter;
 
     this.html = null;
   }
@@ -39,11 +40,42 @@ class DateInput extends BaseInput {
     return node;
   }
 
+  _addListeners (node) {
+    const presenter = this.presenter;
+    const self = this;
+
+    node.onblur = function () {
+      presenter.onBlur(self);
+    };
+
+    node.onfocus = function () {
+      presenter.onFocus(self);
+    };
+
+    node.onchange = function () {
+      presenter.onChange(self);
+    };
+
+    node.onkeydown = function () {
+      presenter.onValueChange();
+    }
+  }
+
   /*
    * View actions
    */
   build () {
-    this.html = this._buildDate();
+    const node = this._buildDate();
+
+    this._addListeners(node);
+
+    this.html = node;
+  }
+
+  reset () {
+    const { config: { defaultValue } } = this.model;
+
+    this.html.value = defaultValue || null;
   }
 
   reset () {

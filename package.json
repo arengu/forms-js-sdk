@@ -7,7 +7,8 @@
     "build": "webpack --config webpack.prod.js"
   },
   "dependencies": {
-    "crypto-js": "^3.1.9-1"
+    "crypto-js": "3.x",
+    "lodash": "4.x"
   },
   "devDependencies": {
     "clean-webpack-plugin": "0.x",

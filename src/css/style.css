@@ -19,6 +19,7 @@
   --font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   --payment-input-padding: 8px 50px 8px 10px;
   --border-focus-color: #1398b3;
+  --label-required-color: #ed5757;
   --label-color: #323d47;
   --label-font-size: 15px;
   --label-font-weight: 500;
@@ -208,6 +209,39 @@
   font-family: var(--font-family);
   height: var(--input-height);
 }
+
+.af-field-has-error .af-field-input input:not([type]),
+.af-field-has-error .af-field-input input[type="date"],
+.af-field-has-error .af-field-input input[type="email"],
+.af-field-has-error .af-field-input input[type="number"],
+.af-field-has-error .af-field-input input[type="password"],
+.af-field-has-error .af-field-input input[type="tel"],
+.af-field-has-error .af-field-input input[type="time"],
+.af-field-has-error .af-field-input input[type="text"],
+.af-field-has-error .af-field-input input[type="file"],
+.af-field-has-error .af-field-input input[type="url"],
+.af-field-has-error .af-dropdown {
+  border-color: var(--invalid-field-border);
+  background-color: var(--invalid-field-background);
+}
+
+.af-field-has-error .af-field-input input:not([type]):focus,
+.af-field-has-error .af-field-input input[type="date"]:focus,
+.af-field-has-error .af-field-input input[type="email"]:focus,
+.af-field-has-error .af-field-input input[type="number"]:focus,
+.af-field-has-error .af-field-input input[type="password"]:focus,
+.af-field-has-error .af-field-input input[type="tel"]:focus,
+.af-field-has-error .af-field-input input[type="time"]:focus,
+.af-field-has-error .af-field-input input[type="text"]:focus,
+.af-field-has-error .af-field-input input[type="file"]:focus,
+.af-field-has-error .af-field-input input[type="url"]:focus {
+  border-color: var(--invalid-field-border);
+}
+
+.af-field-has-error .af-dropdown-icon svg {
+  fill: var(--invalid-field-border);
+}
+
 
 /* Remove inner shadow from inputs on mobile iOS */
 .af-field-input textarea,
@@ -790,7 +824,13 @@
 
 .af-required:after {
   content: "*";
-  color: #d2383f;
+  color: var(--label-required-color);
+  margin-left: 3px;
+}
+
+.af-legal-required p:last-child:after {
+  content: "*";
+  color: var(--label-required-color);
   margin-left: 3px;
 }
 
