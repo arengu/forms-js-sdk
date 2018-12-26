@@ -5,11 +5,15 @@ const SHA512 = require('crypto-js/sha512');
 const SHA3 = require('crypto-js/sha3');
 const BaseInput = require('./BaseInput');
 
+const PASSWORD_ICON_SECONDARY = 'af-password-icon-secondary';
+
 class PasswordInput extends BaseInput {
 
   constructor (model) {
     super(model);
 
+    this.icon = null;
+    this.isVisible = false;
     this.node = null;
   }
 
@@ -33,18 +37,59 @@ class PasswordInput extends BaseInput {
     return node;
   }
 
+  _showPassword () {
+    this.node.setAttribute('type', 'text');
+    this.icon.classList.add(PASSWORD_ICON_SECONDARY);
+    this.isVisible = true;
+  }
+
+  _hidePassword () {
+    this.node.setAttribute('type', 'password');
+    this.icon.classList.remove(PASSWORD_ICON_SECONDARY);
+    this.isVisible = false;
+  }
+
+  _togglePasswordVisibility () {
+    if (this.isVisible) {
+      this._hidePassword();
+    } else {
+      this._showPassword();
+    }
+  }
+
+  _addIconListener (node) {
+    node.addEventListener('click', this._togglePasswordVisibility.bind(this));
+  }
+
+  _buildIcon () {
+    const node = document.createElement('span');
+    node.classList.add('af-password-icon');
+
+    this._addIconListener(node);
+
+    return node;
+  }
+
   /*
    * View actions
    */
   build () {
     const container = document.createElement('div');
-    container.classList.add('af-field-wrapper');
+    container.classList.add('af-password-wrapper');
 
     const node = this._buildInput();
     container.appendChild(node);
 
+    const icon = this._buildIcon();
+    container.appendChild(icon);
+
     this.node = node;
+    this.icon = icon;
     this.html = container;
+  }
+
+  reset () {
+    this.node.value = null;
   }
 
   get value () {

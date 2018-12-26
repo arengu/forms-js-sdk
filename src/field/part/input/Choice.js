@@ -101,6 +101,16 @@ class Choice extends BaseInput {
     this.html = container;
   }
 
+  reset() {
+    const { config: { defaultValue } } = this.model;
+
+    this.nodes
+      .forEach((o) => {
+        const checked = defaultValue && defaultValue.includes(o.value);
+        o.checked = !!checked;
+      });
+  }
+
   static create () {
     return new Choice(...arguments);
   }

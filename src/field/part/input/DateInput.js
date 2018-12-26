@@ -46,6 +46,12 @@ class DateInput extends BaseInput {
     this.html = this._buildDate();
   }
 
+  reset () {
+    const { config: { defaultValue } } = this.model;
+
+    this.html.value = defaultValue || null;
+  }
+
   get value () {
     return this.html.value;
   }

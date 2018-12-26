@@ -17,6 +17,9 @@ class BaseInput extends BaseView {
     return null;
   }
 
+  reset () {
+  }
+
   validate () {
     return FieldValidator.validate(this.model, this.value);
   }

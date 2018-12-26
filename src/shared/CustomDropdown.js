@@ -681,6 +681,24 @@ class CustomDropdown extends BaseView {
     }
   }
 
+  _resetDropdownActiveTags () {
+    const selectedOptions = this.html.querySelectorAll('a');
+
+    if (selectedOptions) {
+      selectedOptions.forEach((o) => {
+        const noResultsMessage = this._doesNoResultsMessageExists();
+        const index = o.getAttribute(INDEX_ATTRIBUTE);
+
+        this._unselectDropdownOption(index);
+        o.remove();
+
+        if (noResultsMessage) {
+          this._removeNoResultsMessage();
+        }
+      })
+    }
+  }
+
   /*
    * View actions
    */
@@ -748,6 +766,18 @@ class CustomDropdown extends BaseView {
     this.dropdownText = dropdownText;
     this.search = search;
     this.html = container;
+  }
+
+  reset () {
+    if (!this.multiple) {
+      this.hiddenDropdown.value = null;
+      this._setDropdownText(null);
+    } else {
+      this._resetDropdownActiveTags();
+
+      this.hiddenDropdownOptions
+        .forEach((o) => o.selected = false);
+    }
   }
 
   static create() {

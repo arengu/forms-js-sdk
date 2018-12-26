@@ -86,6 +86,10 @@ class FieldPresenter extends BasePresenter {
     return this.fieldV.render();
   }
 
+  reset () {
+    return this.fieldV.reset();
+  }
+
   validate () {
     return this.fieldV.validate();
   }

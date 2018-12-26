@@ -55,10 +55,6 @@ class FormView extends BaseView {
     this.html = container;
   }
 
-  reset () {
-    this.node.reset();
-  }
-
   static create () {
     return new FormView(...arguments);
   }

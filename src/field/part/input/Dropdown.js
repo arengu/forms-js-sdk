@@ -17,9 +17,13 @@ class Dropdown extends BaseInput {
   /*
    * View actions
    */
-  build() {
+  build () {
     this.html = this.dropdown.render();
     this.nodes = this.dropdown.options;
+  }
+
+  reset () {
+    this.dropdown.reset();
   }
 
   validate () {
