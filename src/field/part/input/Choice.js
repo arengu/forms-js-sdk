@@ -47,19 +47,21 @@ class Choice extends BaseInput {
   }
 
   _buildChoiceOptions() {
-    const { id: fieldId, uid, config: { validValues, defaultValue, multiple } } = this.model;
+    const { id: fieldId, uid, config: { options, defaultValue, multiple } } = this.model;
 
-    return validValues.map((optionValue, i) => {
-      const checked = defaultValue && defaultValue.includes(optionValue);
+    return options.map((opt, i) => {
+
+      const checked = defaultValue && (this.multiple ?
+        defaultValue.includes(opt.value) : defaultValue === opt.value);
       const optionId = `${uid}-${i}`;
 
       const node = document.createElement('div');
       node.classList.add('af-choice-option');
 
-      const input = this._buildChoiceOption(fieldId, optionId, optionValue, checked, multiple);
+      const input = this._buildChoiceOption(fieldId, optionId, opt.value, checked, multiple);
       node.appendChild(input);
 
-      const label = this._buildChoiceOptionLabel(optionId, optionValue);
+      const label = this._buildChoiceOptionLabel(optionId, opt.label);
       node.appendChild(label);
 
       this.nodes.push(input);
@@ -129,8 +131,8 @@ class Choice extends BaseInput {
 
     this.nodes
       .forEach((o) => {
-        const checked = defaultValue && defaultValue.includes(o.value);
-        o.checked = !!checked;
+        o.checked = defaultValue && (this.multiple ?
+          defaultValue.includes(o.value) : defaultValue === o.value);
       });
   }
 
