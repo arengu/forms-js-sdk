@@ -62,14 +62,14 @@ class CustomDropdown extends BaseView {
   }
 
   _buildHiddenDropdownOptions() {
-    const { options, defaultValue } = this.model.config;
+    const { options, defaultValue, multiple } = this.model.config;
     const { uid } = this.model;
 
     const node = options
     .map((o, i) => {
       const optionId = `${uid}-${i}`;
 
-      const selected = defaultValue && (this.multiple ?
+      const selected = defaultValue && (multiple ?
         defaultValue.includes(o.value) : defaultValue === o.value);
 
       return this._buildHiddenDropdownOption(optionId, o.label, o.value, selected);
@@ -249,7 +249,7 @@ class CustomDropdown extends BaseView {
     }
   }
 
-  _scrollDropdownOptions(){
+  _scrollDropdownOptions() {
     const menuScroll = this.dropdown.scrollTop;
     const menuHeight = this.dropdown.offsetHeight;
     const item = this.dropdown.querySelector(`.${CLASSES.HOVER}`);
@@ -362,11 +362,11 @@ class CustomDropdown extends BaseView {
   }
 
   _buildDropdownOptions(search, container) {
-    const { options, defaultValue } = this.model.config;
+    const { options, defaultValue, multiple } = this.model.config;
 
     const node = options
     .map((o, i) => {
-      const selected = defaultValue && (this.multiple ?
+      const selected = defaultValue && (multiple ?
         defaultValue.includes(o.value) : defaultValue === o.value);
 
       return this._buildDropdownOption(i, o.label, selected, search, container);
@@ -784,15 +784,30 @@ class CustomDropdown extends BaseView {
   }
 
   reset () {
-    if (!this.multiple) {
-      this.hiddenDropdown.value = null;
-      this._setDropdownText(null);
-    } else {
-      this._resetDropdownActiveTags();
+    const { defaultValue } = this.model.config;
 
-      this.hiddenDropdownOptions
-        .forEach((o) => o.selected = false);
+    if (this.multiple) {
+      this._resetDropdownActiveTags();
     }
+
+    this.hiddenDropdownOptions
+      .forEach((o, index) => {
+        const selected = defaultValue && (this.multiple ?
+          defaultValue.includes(o.value) :
+          defaultValue === o.value);
+
+        o.selected = selected;
+
+        if (!selected) {
+          return;
+        }
+
+        if (this.multiple) {
+          this._selectDropdownOption(index, o.label);
+        } else {
+          this._setDropdownText(o.label);
+        }
+      });
   }
 
   static create() {

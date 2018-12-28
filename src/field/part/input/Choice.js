@@ -51,7 +51,7 @@ class Choice extends BaseInput {
 
     return options.map((opt, i) => {
 
-      const checked = defaultValue && (this.multiple ?
+      const checked = defaultValue && (multiple ?
         defaultValue.includes(opt.value) : defaultValue === opt.value);
       const optionId = `${uid}-${i}`;
 
@@ -127,11 +127,11 @@ class Choice extends BaseInput {
   }
 
   reset() {
-    const { config: { defaultValue } } = this.model;
+    const { config: { multiple, defaultValue } } = this.model;
 
     this.nodes
       .forEach((o) => {
-        o.checked = defaultValue && (this.multiple ?
+        o.checked = defaultValue && (multiple ?
           defaultValue.includes(o.value) : defaultValue === o.value);
       });
   }
