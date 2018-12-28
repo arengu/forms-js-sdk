@@ -76,6 +76,10 @@ class TextInput extends BaseInput {
     node.onchange = function () {
       presenter.onChange(self);
     };
+
+    node.onkeydown = function () {
+      presenter.onValueChange();
+    }
   }
 
   /*

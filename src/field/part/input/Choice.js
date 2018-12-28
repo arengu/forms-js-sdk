@@ -1,5 +1,9 @@
 const BaseInput = require('./BaseInput');
 
+const { FieldError } = require('../../../error/InvalidFields');
+
+const { CODE } = FieldError;
+
 class Choice extends BaseInput {
 
   constructor (model, presenter) {
@@ -43,25 +47,37 @@ class Choice extends BaseInput {
   }
 
   _buildChoiceOptions() {
-    const { id: fieldId, uid, config: { validValues, defaultValue, multiple } } = this.model;
+    const { id: fieldId, uid, config: { options, defaultValue, multiple } } = this.model;
 
-    return validValues.map((optionValue, i) => {
-      const checked = defaultValue && defaultValue.includes(optionValue);
+    return options.map((opt, i) => {
+
+      const checked = defaultValue && (multiple ?
+        defaultValue.includes(opt.value) : defaultValue === opt.value);
       const optionId = `${uid}-${i}`;
 
       const node = document.createElement('div');
       node.classList.add('af-choice-option');
 
-      const input = this._buildChoiceOption(fieldId, optionId, optionValue, checked, multiple);
+      const input = this._buildChoiceOption(fieldId, optionId, opt.value, checked, multiple);
       node.appendChild(input);
 
-      const label = this._buildChoiceOptionLabel(optionId, optionValue);
+      const label = this._buildChoiceOptionLabel(optionId, opt.label);
       node.appendChild(label);
 
       this.nodes.push(input);
 
       return node;
     });
+  }
+
+  _addListeners (node) {
+    const presenter = this.presenter;
+    const self = this;
+
+    node.onchange = function () {
+      presenter.onValueChange();
+      presenter.onChange(self);
+    };
   }
 
   /*
@@ -79,14 +95,20 @@ class Choice extends BaseInput {
 
   validate () {
     if (this.model.required && this.isEmpty) {
-      return this.model.config.multiple
-        ? 'You have to select at least one option'
-        : 'You have to select one option';
+      return this.model.config.multiple ?
+        FieldError.create(
+          CODE.ERR_ZERO_OPTIONS_CHOSEN,
+          'You have to select at least one option'
+        ) :
+        FieldError.create(
+          CODE.ERR_NO_OPTION_CHOSEN,
+          'You have to select an option'
+        );
     }
   }
 
   get isEmpty() {
-    return this.model.config.multiple ? !this.value.length : !this.value; 
+    return this.model.config.multiple ? !this.value.length : !this.value;
   }
 
   build () {
@@ -96,18 +118,21 @@ class Choice extends BaseInput {
     container.className = multiple ? 'af-choice-multiple' : 'af-choice';
 
     const options = this._buildChoiceOptions();
-    options.map((o) => container.appendChild(o));
+    options.map((o) => {
+      this._addListeners(o);
+      container.appendChild(o);
+    });
 
     this.html = container;
   }
 
   reset() {
-    const { config: { defaultValue } } = this.model;
+    const { config: { multiple, defaultValue } } = this.model;
 
     this.nodes
       .forEach((o) => {
-        const checked = defaultValue && defaultValue.includes(o.value);
-        o.checked = !!checked;
+        o.checked = defaultValue && (multiple ?
+          defaultValue.includes(o.value) : defaultValue === o.value);
       });
   }
 

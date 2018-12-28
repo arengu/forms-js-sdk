@@ -25,10 +25,12 @@ const NO_RESULTS_FOUND = 'No results found';
 
 class CustomDropdown extends BaseView {
 
-  constructor(model) {
+  constructor(model, presenter) {
     super();
 
     this.model = model;
+    this.presenter = presenter;
+
     this.multiple = model.config.multiple;
     this.hiddenDropdown = null;
     this.hiddenDropdownOptions = null;
@@ -60,24 +62,27 @@ class CustomDropdown extends BaseView {
   }
 
   _buildHiddenDropdownOptions() {
-    const { validValues, defaultValue } = this.model.config;
+    const { options, defaultValue, multiple } = this.model.config;
     const { uid } = this.model;
 
-    const node = validValues
-    .map((value, i) => {
+    const node = options
+    .map((o, i) => {
       const optionId = `${uid}-${i}`;
-      const selected = defaultValue && defaultValue.includes(value);
-      return this._buildHiddenDropdownOption(optionId, value, selected);
+
+      const selected = defaultValue && (multiple ?
+        defaultValue.includes(o.value) : defaultValue === o.value);
+
+      return this._buildHiddenDropdownOption(optionId, o.label, o.value, selected);
     });
 
     return node;
   }
 
-  _buildHiddenDropdownOption(optionId, value, selected) {
+  _buildHiddenDropdownOption(optionId, label, value, selected) {
     const node = document.createElement('option');
     node.setAttribute('id', optionId);
     node.setAttribute('value', value);
-    node.innerText = value;
+    node.innerText = label;
 
     if (selected) {
       node.setAttribute('selected', 'true');
@@ -188,7 +193,7 @@ class CustomDropdown extends BaseView {
         this.search.focus();
       }
     }
-  } 
+  }
 
   _selectHoverDropdownOption(e) {
     e.preventDefault();
@@ -196,16 +201,16 @@ class CustomDropdown extends BaseView {
 
     if (hover) {
       const index = hover.getAttribute(INDEX_ATTRIBUTE);
-      const value = hover.innerText;
-      
+      const label = hover.innerText;
+
       if(!this.multiple) {
-        this._setDropdownText(value);
+        this._setDropdownText(label);
       }
 
       this._prevAvailableDropdownOption(hover);
-      this._selectDropdownOption(index, value);
+      this._selectDropdownOption(index, label);
     }
-  } 
+  }
 
   _hoverNextDropdownOption(e) {
     e.preventDefault();
@@ -225,7 +230,7 @@ class CustomDropdown extends BaseView {
       }
     }
   }
-  
+
   _hoverPrevDropdownOption(e) {
     e.preventDefault();
     const hover = this.dropdown.querySelector(`.${CLASSES.HOVER}`);
@@ -244,7 +249,7 @@ class CustomDropdown extends BaseView {
     }
   }
 
-  _scrollDropdownOptions(){
+  _scrollDropdownOptions() {
     const menuScroll = this.dropdown.scrollTop;
     const menuHeight = this.dropdown.offsetHeight;
     const item = this.dropdown.querySelector(`.${CLASSES.HOVER}`);
@@ -285,7 +290,7 @@ class CustomDropdown extends BaseView {
 
     if (noResultsMessage) {
       this._removeNoResultsMessage();
-    } 
+    }
 
     if (activeOption) {
       const index = activeOption.getAttribute(INDEX_ATTRIBUTE)
@@ -310,7 +315,7 @@ class CustomDropdown extends BaseView {
   }
 
   _buildDropdownText() {
-    const { placeholder, config: { defaultValue } } = this.model;
+    const { placeholder, config: { options, defaultValue } } = this.model;
 
     const node = document.createElement('div');
     node.classList.add('af-dropdown-text');
@@ -321,7 +326,9 @@ class CustomDropdown extends BaseView {
     }
 
     if (defaultValue && !this.multiple) {
-      node.innerText = defaultValue;
+      const option = options
+        .filter((o) => o.value === defaultValue);
+      node.innerText = option[0].label;
       node.classList.remove('af-default');
     }
 
@@ -355,25 +362,27 @@ class CustomDropdown extends BaseView {
   }
 
   _buildDropdownOptions(search, container) {
-    const { validValues, defaultValue } = this.model.config;
+    const { options, defaultValue, multiple } = this.model.config;
 
-    const node = validValues
-    .map((value, i) => {
-      const selected = defaultValue && defaultValue.includes(value);
-      return this._buildDropdownOption(i, value, selected, search, container);
+    const node = options
+    .map((o, i) => {
+      const selected = defaultValue && (multiple ?
+        defaultValue.includes(o.value) : defaultValue === o.value);
+
+      return this._buildDropdownOption(i, o.label, selected, search, container);
     });
 
     return node;
   }
 
-  _buildDropdownOption(i, value, selected, search, container) {
+  _buildDropdownOption(i, label, selected, search, container) {
     const node = document.createElement('div');
-    node.innerText = value;
+    node.innerText = label;
 
     if (selected && this.multiple) {
       node.classList.add(CLASSES.ACTIVE);
 
-      const tag = this._buildDropdownOptionTag(i, value);
+      const tag = this._buildDropdownOptionTag(i, label);
       container.insertBefore(tag, search);
     }
 
@@ -389,15 +398,15 @@ class CustomDropdown extends BaseView {
     node.onmousedown = (e) => {
       e.preventDefault();
 
-      const value = node.innerText;
+      const label = node.innerText;
       const index = node.getAttribute(INDEX_ATTRIBUTE);
 
       if(!this.multiple) {
-        this._setDropdownText(value);
+        this._setDropdownText(label);
         this._hideDropdownOptions();
       }
 
-      this._selectDropdownOption(index, value);
+      this._selectDropdownOption(index, label);
     }
 
   }
@@ -437,13 +446,16 @@ class CustomDropdown extends BaseView {
   }
 
 
-  _selectDropdownOption(index, value) {
+  _selectDropdownOption(index, label) {
     const node = this.hiddenDropdown;
 
     node.options[index].selected = true;
 
+    this.presenter.onValueChange();
+    this.presenter.onChange(this);
+
     if(this.multiple) {
-      const tag = this._buildDropdownOptionTag(index, value);
+      const tag = this._buildDropdownOptionTag(index, label);
       this.dropdownText.style.opacity = '0';
       this.html.insertBefore(tag, this.search);
     } else {
@@ -487,10 +499,10 @@ class CustomDropdown extends BaseView {
     return node;
   }
 
-  _buildDropdownOptionTag(index, value) {
+  _buildDropdownOptionTag(index, label) {
     const node = document.createElement('a');
     node.setAttribute(INDEX_ATTRIBUTE, index);
-    node.innerText = value;
+    node.innerText = label;
 
     const icon = document.createElement('i');
     icon.classList.add('af-dropdown-option-delete');
@@ -561,7 +573,7 @@ class CustomDropdown extends BaseView {
       activeTag.removeAttribute('tabindex');
       activeTag.classList.remove(CLASSES.ACTIVE)
     }
-    
+
     node.classList.add(CLASSES.ACTIVE);
     node.setAttribute('tabindex', '0');
     this._showDropdownOptions();
@@ -631,6 +643,9 @@ class CustomDropdown extends BaseView {
     const node = this.hiddenDropdown;
 
     node.options[index].selected = false;
+
+    this.presenter.onValueChange();
+    this.presenter.onChange(this);
 
     this._removeActiveDropdownOptionClass(index);
 
@@ -725,7 +740,7 @@ class CustomDropdown extends BaseView {
     }
 
     const self = this;
-    
+
     container.onmousedown = function (e) {
       if(e.target === e.currentTarget) {
         e.preventDefault();
@@ -737,7 +752,7 @@ class CustomDropdown extends BaseView {
     container.appendChild(hiddenDropdown);
 
     const hiddenDropdownOptions = this._buildHiddenDropdownOptions();
-    hiddenDropdownOptions.forEach((n) => hiddenDropdown.appendChild(n));
+    hiddenDropdownOptions.forEach((o) => hiddenDropdown.appendChild(o));
 
     if (!defaultValue) {
       // We cannot do it before appending children
@@ -769,15 +784,30 @@ class CustomDropdown extends BaseView {
   }
 
   reset () {
-    if (!this.multiple) {
-      this.hiddenDropdown.value = null;
-      this._setDropdownText(null);
-    } else {
-      this._resetDropdownActiveTags();
+    const { defaultValue } = this.model.config;
 
-      this.hiddenDropdownOptions
-        .forEach((o) => o.selected = false);
+    if (this.multiple) {
+      this._resetDropdownActiveTags();
     }
+
+    this.hiddenDropdownOptions
+      .forEach((o, index) => {
+        const selected = defaultValue && (this.multiple ?
+          defaultValue.includes(o.value) :
+          defaultValue === o.value);
+
+        o.selected = selected;
+
+        if (!selected) {
+          return;
+        }
+
+        if (this.multiple) {
+          this._selectDropdownOption(index, o.label);
+        } else {
+          this._setDropdownText(o.label);
+        }
+      });
   }
 
   static create() {

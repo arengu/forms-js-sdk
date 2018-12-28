@@ -1,5 +1,9 @@
 const BaseInput = require('./BaseInput');
 
+const { FieldError } = require('../../../error/InvalidFields');
+
+const { CODE } = FieldError;
+
 class Legal extends BaseInput {
 
   constructor (model, presenter){
@@ -27,11 +31,22 @@ class Legal extends BaseInput {
 
     if (required) {
       node.setAttribute('required', required);
+      node.classList.add('af-legal-required');
     }
 
     node.innerHTML = text;
 
     return node;
+  }
+
+  _addListeners (node) {
+    const presenter = this.presenter;
+    const self = this;
+
+    node.onchange = function () {
+      presenter.onValueChange();
+      presenter.onChange(self);
+    };
   }
 
   /*
@@ -50,13 +65,18 @@ class Legal extends BaseInput {
     const label = this._buildLabel(uid, text, required);
     container.appendChild(label);
 
+    this._addListeners(checkbox);
+
     this.node = checkbox;
     this.html = container;
   }
 
   validate () {
     if (this.model.required && this.value === 'false') {
-       return 'Please check this field if you want to proceed';
+      return FieldError.create(
+        CODE.ERR_ACCEPTANCE_REQUIRED,
+        'Please, check this field if you want to proceed.',
+      );
     }
   }
 

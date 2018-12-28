@@ -9,11 +9,14 @@ const PASSWORD_ICON_SECONDARY = 'af-password-icon-secondary';
 
 class PasswordInput extends BaseInput {
 
-  constructor (model) {
+  constructor (model, presenter) {
     super(model);
 
     this.icon = null;
     this.isVisible = false;
+    this.model = model;
+    this.presenter = presenter;
+
     this.node = null;
   }
 
@@ -22,7 +25,7 @@ class PasswordInput extends BaseInput {
    */
   
   _buildInput () {
-    const { id, uid, placeholder } = this.model;
+    const { id, uid, placeholder, required } = this.model;
 
     const node = document.createElement('input');
     node.setAttribute('id', uid);
@@ -32,6 +35,10 @@ class PasswordInput extends BaseInput {
 
     if (placeholder) {
       node.setAttribute('placeholder', placeholder);
+    }
+
+    if (required) {
+      node.setAttribute('required', required);
     }
 
     return node;
@@ -70,6 +77,27 @@ class PasswordInput extends BaseInput {
     return node;
   }
 
+  _addListeners (node) {
+    const presenter = this.presenter;
+    const self = this;
+
+    node.onblur = function () {
+      presenter.onBlur(self);
+    };
+
+    node.onfocus = function () {
+      presenter.onFocus(self);
+    };
+
+    node.onchange = function () {
+      presenter.onChange(self);
+    };
+
+    node.onkeydown = function () {
+      presenter.onValueChange();
+    }
+  }
+
   /*
    * View actions
    */
@@ -82,6 +110,8 @@ class PasswordInput extends BaseInput {
 
     const icon = this._buildIcon();
     container.appendChild(icon);
+
+    this._addListeners(node);
 
     this.node = node;
     this.icon = icon;
