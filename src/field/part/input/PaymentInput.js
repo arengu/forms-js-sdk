@@ -92,6 +92,14 @@ class PaymentInput extends BaseInput {
     });
   }
 
+  _addCardNumberIconListener(node) {
+    const self = this;
+
+    node.onclick = function () {
+      self.cardNumberMounted.focus();
+    };
+  }
+
   _buildCardNumberLabel () {
     const { required, config: { fields: { cardNumber: { label } } } } = this.model;
 
@@ -125,6 +133,8 @@ class PaymentInput extends BaseInput {
     const node = document.createElement('span');
     node.classList.add('af-payment-cardNumber-brand');
     node.classList.add(`af-payment-cardNumber-brand-${this.trustmarks}`);
+
+    this._addCardNumberIconListener(node);
 
     this.trustmarksSelector = node;
     return node;
@@ -164,6 +174,14 @@ class PaymentInput extends BaseInput {
     });
   }
 
+  _addExpirationIconDateListener(node) {
+    const self = this;
+
+    node.onclick = function () {
+      self.expirationDateMounted.focus();
+    };
+  }
+
   _buildExpirationDateField () {
     const { uid } = this.model;
 
@@ -179,6 +197,8 @@ class PaymentInput extends BaseInput {
   _buildExpirationDateIcon () {
     const node = document.createElement('span');
     node.classList.add('af-payment-expirationDate-icon');
+
+    this._addExpirationIconDateListener(node);
 
     return node;
   }
@@ -234,6 +254,14 @@ class PaymentInput extends BaseInput {
     });
   }
 
+  _addSecuriyCodeIconListener(node) {
+    const self = this;
+
+    node.onclick = function () {
+      self.securityCodeMounted.focus();
+    };
+  }
+
   _buildSecurityCodeField () {
     const { uid } = this.model;
     const node = document.createElement('div');
@@ -264,6 +292,8 @@ class PaymentInput extends BaseInput {
   _buildSecurityCodeIcon () {
     const node = document.createElement('span');
     node.classList.add('af-payment-securityCode-icon');
+
+    this._addSecuriyCodeIconListener(node);
 
     return node;
   }
