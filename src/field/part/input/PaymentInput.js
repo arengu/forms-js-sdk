@@ -377,11 +377,23 @@ class PaymentInput extends BaseInput {
     return selector.appendChild(node);
   }
 
+  _parseError (stripeError) {
+    return FieldError.create(CODE.INVALID_CARD, stripeError.message);
+  }
+
   async _createToken() {
-    const { token } = await this.stripe.createToken(this.cardNumberMounted);
+    this.token = null;
+
+    const response = await this.stripe.createToken(this.cardNumberMounted);
+    const { error: stripeError, token } = response;
 
     if (token) {
       this.token = token.id;
+    }
+
+    if (stripeError) {
+      const sdkError = this._parseError(stripeError);
+      throw sdkError;
     }
   }
 

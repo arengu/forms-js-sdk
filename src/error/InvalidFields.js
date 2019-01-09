@@ -33,6 +33,9 @@ const FieldErrorCode = {
 
   // Boolean
   INVALID_BOOLEAN: 'ERR_BOOLEAN_EXPECTED',
+
+  // Payment
+  INVALID_CARD: 'ERR_INVALID_CARD',
 };
 
 class FieldError extends SDKError {

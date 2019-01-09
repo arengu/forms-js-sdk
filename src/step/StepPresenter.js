@@ -78,21 +78,30 @@ class StepPresenter extends BasePresenter {
   }
 
   async createPaymentTokens() {
+    const errors = {};
     const promises = this.paymentsP
-      .map((pP) => PaymentPresenter.createToken(pP));
+      .map((pP) => PaymentPresenter.createToken(pP)
+        .catch((err) => {
+          errors[pP.id] = err;
+        }));
 
-    return Promise.all(promises);
+    await Promise.all(promises);
+    
+    if (Object.keys(errors).length) {
+      throw InvalidFields.fromFields(errors);
+    }
   }
 
   async onGoNext () {
     try {
       ValidateStep.execute(this.componentsP);
-      if (this.paymentsP) {
+      if (this.paymentsP.length) {
         this.showLoading();
         await this.createPaymentTokens();
       }
       this.formP.onNextStep(this, this.stepM);
     } catch (err) {
+      this.hideLoading();
       if (err instanceof InvalidFields) {
         this.onSeveralInvalidFields(err);
       } else {
