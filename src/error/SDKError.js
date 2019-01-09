@@ -5,6 +5,10 @@ class SDKError extends Error {
     this.code = code;
   }
 
+  static fromResponse(body) {
+    return SDKError.create(body.code, body.message);
+  }
+
   static create () {
     return new SDKError(...arguments);
   }

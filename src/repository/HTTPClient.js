@@ -101,7 +101,7 @@ class HTTPClient {
       }
 
       console.error('Error creating submission', body);
-      throw SDKError.create(ErrorCodes.ERR_SERVER_ERROR, 'Error creating submission');
+      throw SDKError.fromResponse(body);
 
     } catch (err) {
       if (err instanceof SDKError) {
