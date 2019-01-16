@@ -14,7 +14,7 @@ module.exports = {
     }),
     new webpack.DefinePlugin({
       'WEBPACK_API_URL': JSON.stringify(process.env.API_URL || DEFAULT_API_URL)
-    })
+    }),
   ],
   module: {
     rules: [
