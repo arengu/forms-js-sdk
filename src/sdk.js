@@ -101,11 +101,14 @@ class SDK {
   }
 
   _auto () {
-    document.querySelectorAll(`[${MAGIC_SELECTOR}]`)
-      .forEach((node) => {
-        const formId = node.dataset.arenguFormId;
-        this.embed(formId, node);
-      });
+    const list = document.querySelectorAll(`[${MAGIC_SELECTOR}]`);
+    const array = Array.from(list);
+
+    // old browsers do not implement NodeList.prototype.forEach
+    array.forEach((node) => {
+      const formId = node.dataset.arenguFormId;
+      this.embed(formId, node);
+    });
   }
 
   init () {
