@@ -19,6 +19,37 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.m?js$/,
+        exclude: /(node_modules|bower_components)/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              [
+                '@babel/preset-env',
+                {
+                  debug: true,
+                  modules: 'commonjs',
+                  targets: {
+                    browsers: [
+                      'chrome >= 46',
+                      'firefox >= 45',
+                      'safari >= 10',
+                      'ios >= 10',
+                      'edge >= 13',
+                      'opera >= 33',
+                    ],
+                  },
+                },
+              ],
+            ],
+            plugins: [
+              '@babel/plugin-transform-runtime',
+            ],
+          },
+        },
+      },
+      {
         test: /\.css$/,
         use: [
           {
