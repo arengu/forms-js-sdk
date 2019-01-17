@@ -18,8 +18,8 @@ class NextButton extends GenericButton {
     this.node.classList.remove('af-button-loading');
   }
 
-  static create () {
-    return new NextButton(...arguments);
+  static create (...args) {
+    return new NextButton(...args);
   }
 
 }

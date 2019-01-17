@@ -14,7 +14,7 @@ class CSSInjector {
   }
 
   static create () {
-    return new CSSInjector(...arguments);
+    return new CSSInjector();
   }
 
 }

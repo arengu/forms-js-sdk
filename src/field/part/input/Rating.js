@@ -74,8 +74,8 @@ class Rating extends BaseInput {
     return this._value ? String(this._value) : null;
   }
 
-  static create (){
-    return new Rating(...arguments);
+  static create (...args){
+    return new Rating(...args);
   }
 
 }

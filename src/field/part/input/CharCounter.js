@@ -75,8 +75,8 @@ class CharCounter {
     return counter;
   }
 
-  static create () {
-    return new CharCounter(...arguments);
+  static create (...args) {
+    return new CharCounter(...args);
   }
 
 }

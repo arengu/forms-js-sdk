@@ -105,8 +105,8 @@ class FieldPresenter extends BasePresenter {
     return this.fieldV.validate();
   }
 
-  static create () {
-    return new FieldPresenter(...arguments);
+  static create (...args) {
+    return new FieldPresenter(...args);
   }
 
 }

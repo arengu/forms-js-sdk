@@ -142,8 +142,8 @@ class PasswordInput extends BaseInput {
     }
   }
 
-  static create () {
-    return new PasswordInput(...arguments);
+  static create (...args) {
+    return new PasswordInput(...args);
   }
 
 }

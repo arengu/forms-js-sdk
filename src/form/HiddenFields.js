@@ -51,8 +51,8 @@ class HiddenFields {
     return this.data;
   }
 
-  static create() {
-    return new HiddenFields(...arguments);
+  static create(...args) {
+    return new HiddenFields(...args);
   }
 }
 

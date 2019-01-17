@@ -116,8 +116,8 @@ class SDK {
     });
   }
 
-  static create () {
-    return new SDK(...arguments);
+  static create (...args) {
+    return new SDK(...args);
   }
 
 }

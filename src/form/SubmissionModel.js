@@ -11,8 +11,8 @@ class SubmissionModel extends BaseModel {
     this.onSubmit = data.onSubmit;
   }
 
-  static create () {
-    return new SubmissionModel(...arguments);
+  static create (...args) {
+    return new SubmissionModel(...args);
   }
 }
 

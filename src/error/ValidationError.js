@@ -6,8 +6,8 @@ class ValidationError extends SDKError {
     super(code, message);
   };
 
-  static create () {
-    return new ValidationError(...arguments);
+  static create (...args) {
+    return new ValidationError(...args);
   }
 
 }

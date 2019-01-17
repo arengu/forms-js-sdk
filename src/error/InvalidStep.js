@@ -2,8 +2,8 @@ const SDKError = require('./SDKError');
 
 class InvalidStep extends SDKError {
 
-  static create () {
-    return new InvalidStep(...arguments);
+  static create (...args) {
+    return new InvalidStep(...args);
   }
 
   static fromResponse (body) {

@@ -115,8 +115,8 @@ class TextInput extends BaseInput {
     return this.node.value;
   }
 
-  static create () {
-    return new TextInput(...arguments);
+  static create (...args) {
+    return new TextInput(...args);
   }
 
 }

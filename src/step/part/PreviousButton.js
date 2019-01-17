@@ -18,8 +18,8 @@ class PreviousButton extends GenericButton {
     this.node.onclick = () => this.stepP.onGoPrevious();
   }
 
-  static create () {
-    return new PreviousButton(...arguments);
+  static create (...args) {
+    return new PreviousButton(...args);
   }
 
 }

@@ -12,8 +12,8 @@ class StepModel extends BaseModel {
     this.onNext = data.onNext;
   }
 
-  static create () {
-    return new StepModel(...arguments);
+  static create (...args) {
+    return new StepModel(...args);
   }
 
 }

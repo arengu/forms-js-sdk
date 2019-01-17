@@ -5,8 +5,8 @@ class PaymentView extends FieldView {
     return fieldV.inputV._createToken();
   }
 
-  static create () {
-    return new PaymentView(...arguments);
+  static create (...args) {
+    return new PaymentView(...args);
   }
 }
 

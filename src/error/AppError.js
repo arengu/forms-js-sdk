@@ -6,8 +6,8 @@ class AppError extends SDKError {
     super(code, message);
   };
 
-  static create () {
-    return new AppError(...arguments);
+  static create (...args) {
+    return new AppError(...args);
   }
 
 }

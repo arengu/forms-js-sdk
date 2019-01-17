@@ -177,8 +177,8 @@ class FormPresenter extends BasePresenter {
     this._goToStep(FIRST_STEP);
   }
 
-  static create () {
-    return new FormPresenter(...arguments);
+  static create (...args) {
+    return new FormPresenter(...args);
   }
 
   render () {

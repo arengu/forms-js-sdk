@@ -450,8 +450,8 @@ class PaymentInput extends BaseInput {
     return this.token;
   }
 
-  static create () {
-    return new PaymentInput(...arguments);
+  static create (...args) {
+    return new PaymentInput(...args);
   }
 
 }

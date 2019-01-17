@@ -216,8 +216,8 @@ class StepPresenter extends BasePresenter {
     this.stepV.hide();
   }
 
-  static create () {
-    return new StepPresenter(...arguments);
+  static create (...args) {
+    return new StepPresenter(...args);
   }
 
 }

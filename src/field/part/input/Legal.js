@@ -88,8 +88,8 @@ class Legal extends BaseInput {
     return String(this.node.checked);
   }
 
-  static create (){
-    return new Legal(...arguments);
+  static create (...args){
+    return new Legal(...args);
   }
 
 }

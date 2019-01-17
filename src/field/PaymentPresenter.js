@@ -7,8 +7,8 @@ class PaymentPresenter extends FieldPresenter {
     return PaymentView.createToken(paymentV.fieldV);
   }
 
-  static create () {
-    return new PaymentPresenter(...arguments);
+  static create (...args) {
+    return new PaymentPresenter(...args);
   }
 }
 

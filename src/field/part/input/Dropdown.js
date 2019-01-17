@@ -52,8 +52,8 @@ class Dropdown extends BaseInput {
     return this.dropdown.value;
   }
 
-  static create() {
-    return new Dropdown(...arguments);
+  static create(...args) {
+    return new Dropdown(...args);
   }
 
 }

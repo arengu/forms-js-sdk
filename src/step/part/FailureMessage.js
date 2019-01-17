@@ -8,8 +8,8 @@ class FailureMessage extends GenericMessage {
     super(CSS_CLASSES);
   }
 
-  static create () {
-    return new FailureMessage(...arguments);
+  static create (...args) {
+    return new FailureMessage(...args);
   }
 
 }

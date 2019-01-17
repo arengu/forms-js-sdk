@@ -14,8 +14,8 @@ class FormModel extends BaseModel {
     this.steps = data.steps.map(StepModel.create);
   }
 
-  static create () {
-    return new FormModel(...arguments);
+  static create (...args) {
+    return new FormModel(...args);
   }
 }
 

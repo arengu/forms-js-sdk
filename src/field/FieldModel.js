@@ -16,8 +16,8 @@ class FieldModel extends BaseModel {
     this.config = data.config;
   }
 
-  static create () {
-    return new FieldModel(...arguments);
+  static create (...args) {
+    return new FieldModel(...args);
   }
 
   _getUID (id) {

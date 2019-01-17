@@ -129,8 +129,8 @@ class StepView extends BaseView {
     return this.errorV.removeText();
   }
 
-  static create () {
-    return new StepView(...arguments);
+  static create (...args) {
+    return new StepView(...args);
   }
 
 }

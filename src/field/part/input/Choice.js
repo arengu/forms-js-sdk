@@ -136,8 +136,8 @@ class Choice extends BaseInput {
       });
   }
 
-  static create () {
-    return new Choice(...arguments);
+  static create (...args) {
+    return new Choice(...args);
   }
 
 }

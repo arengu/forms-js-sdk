@@ -34,8 +34,8 @@ class GenericMessage extends BaseView {
     this.html = container;
   }
 
-  static create () {
-    return new GenericMessage(...arguments);
+  static create (...args) {
+    return new GenericMessage(...args);
   }
 
 }

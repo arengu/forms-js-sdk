@@ -88,8 +88,8 @@ class DateInput extends BaseInput {
     return this.html.value;
   }
 
-  static create () {
-    return new DateInput(...arguments);
+  static create (...args) {
+    return new DateInput(...args);
   }
 
 }

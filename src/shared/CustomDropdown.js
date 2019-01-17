@@ -810,8 +810,8 @@ class CustomDropdown extends BaseView {
       });
   }
 
-  static create() {
-    return new CustomDropdown(...arguments);
+  static create (...args) {
+    return new CustomDropdown(...args);
   }
 
 }

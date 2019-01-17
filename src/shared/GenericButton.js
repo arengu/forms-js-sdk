@@ -46,8 +46,8 @@ class GenericButton extends BaseView {
     this.node.setAttribute('disabled', 'true');
   }
 
-  static create () {
-    return new GenericButton(...arguments);
+  static create (...args) {
+    return new GenericButton(...args);
   }
 
 }

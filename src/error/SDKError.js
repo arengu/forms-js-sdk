@@ -9,8 +9,8 @@ class SDKError extends Error {
     return SDKError.create(body.code, body.message);
   }
 
-  static create () {
-    return new SDKError(...arguments);
+  static create (...args) {
+    return new SDKError(...args);
   }
 
 }

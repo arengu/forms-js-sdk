@@ -83,8 +83,8 @@ class BooleanField extends BaseInput {
     this.html = container;
   }
 
-  static create () {
-    return new BooleanField(...arguments);
+  static create (...args) {
+    return new BooleanField(...args);
   }
 }
 

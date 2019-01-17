@@ -125,8 +125,8 @@ class FieldView extends BaseView {
     this.html.classList.remove('af-field-has-error');
   }
 
-  static create () {
-    return new FieldView(...arguments);
+  static create (...args) {
+    return new FieldView(...args);
   }
 
 }

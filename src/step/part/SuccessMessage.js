@@ -8,8 +8,8 @@ class SuccessMessage extends GenericMessage {
     super(CSS_CLASSES);
   }
 
-  static create () {
-    return new SuccessMessage(...arguments);
+  static create (...args) {
+    return new SuccessMessage(...args);
   }
 
 }
