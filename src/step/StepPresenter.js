@@ -111,7 +111,7 @@ class StepPresenter extends BasePresenter {
   }
 
   onInvalidField (error, fieldPresenter) {
-    const exists = this.invalidFields.includes(fieldPresenter.id);
+    const exists = includes(this.invalidFields, fieldPresenter.id);
 
     if (!exists) {
       if (!this.invalidFields.length) {

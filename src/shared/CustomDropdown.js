@@ -1,5 +1,7 @@
 const BaseView = require('../base/BaseView')
 
+const { includes } = require('../lib/Utilities');
+
 const KEY_CODE = {
   LEFT_ARROW: 37,
   UP_ARROW: 38,
@@ -70,7 +72,7 @@ class CustomDropdown extends BaseView {
       const optionId = `${uid}-${i}`;
 
       const selected = defaultValue && (multiple ?
-        defaultValue.includes(o.value) : defaultValue === o.value);
+        includes(defaultValue, o.value) : defaultValue === o.value);
 
       return this._buildHiddenDropdownOption(optionId, o.label, o.value, selected);
     });
@@ -221,8 +223,8 @@ class CustomDropdown extends BaseView {
       this._scrollDropdownOptions();
     } else {
       const findNode = this.dropdownOptions.find((e) => {
-        return !e.classList.value.includes(CLASSES.FILTERED)
-          && !e.classList.value.includes(CLASSES.ACTIVE);
+        return !includes(e.classList.value, CLASSES.FILTERED)
+          && !includes(e.classList.value, CLASSES.ACTIVE);
       });
       if (findNode) {
         findNode.classList.add(CLASSES.HOVER);
@@ -367,7 +369,7 @@ class CustomDropdown extends BaseView {
     const node = options
     .map((o, i) => {
       const selected = defaultValue && (multiple ?
-        defaultValue.includes(o.value) : defaultValue === o.value);
+        includes(defaultValue, o.value) : defaultValue === o.value);
 
       return this._buildDropdownOption(i, o.label, selected, search, container);
     });
@@ -437,7 +439,7 @@ class CustomDropdown extends BaseView {
 
       const classes = self.dropdown.classList.value;
 
-      classes.includes(CLASSES.DISPLAY)
+      includes(classes, CLASSES.DISPLAY)
         ? self._hideDropdownOptions()
         : self._showDropdownOptions();
 
@@ -597,9 +599,9 @@ class CustomDropdown extends BaseView {
     .map((value, i) => {
       const optionValue = value.innerText.toLowerCase();
 
-      if(!optionValue.includes(input)) {
+      if(!includes(optionValue, input)) {
         return options[i].classList.add(CLASSES.FILTERED);
-      } else if (!options[i].classList.value.includes(CLASSES.ACTIVE)) {
+      } else if (!includes(options[i].classList.value, CLASSES.ACTIVE)) {
         return options[i].classList.remove(CLASSES.FILTERED);
       }
     });
@@ -673,8 +675,8 @@ class CustomDropdown extends BaseView {
 
     while (current.nextElementSibling) {
       current = current.nextElementSibling;
-      if (!current.classList.value.includes(CLASSES.ACTIVE) &&
-          !current.classList.value.includes(CLASSES.FILTERED)) {
+      if (!includes(current.classList.value, CLASSES.ACTIVE) &&
+          !includes(current.classList.value, CLASSES.FILTERED)) {
         current.classList.add(CLASSES.HOVER);
         node.classList.remove(CLASSES.HOVER);
         break;
@@ -687,8 +689,8 @@ class CustomDropdown extends BaseView {
 
     while (current.previousElementSibling) {
       current = current.previousElementSibling;
-      if (!current.classList.value.includes(CLASSES.ACTIVE) &&
-          !current.classList.value.includes(CLASSES.FILTERED)) {
+      if (!includes(current.classList.value, CLASSES.ACTIVE) &&
+          !includes(current.classList.value, CLASSES.FILTERED)) {
         current.classList.add(CLASSES.HOVER);
         node.classList.remove(CLASSES.HOVER);
         break;
@@ -793,7 +795,7 @@ class CustomDropdown extends BaseView {
     this.hiddenDropdownOptions
       .forEach((o, index) => {
         const selected = defaultValue && (this.multiple ?
-          defaultValue.includes(o.value) :
+          includes(defaultValue, o.value) :
           defaultValue === o.value);
 
         o.selected = selected;

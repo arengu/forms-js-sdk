@@ -13,6 +13,7 @@ const CSSInjector = require('./css/CSSInjector');
 
 const EventsFactory = require('./lib/EventsFactory');
 const Messages = require('./lib/Messages');
+const { includes } = require('./lib/Utilities');
 
 const MAGIC_SELECTOR = 'data-arengu-form-id';
 
@@ -86,14 +87,14 @@ class SDK {
   _waitForDom (fn) {
     const VALID_STATES = ['interactive', 'complete'];
 
-    if (VALID_STATES.includes(document.readyState)) {
+    if (includes(VALID_STATES, document.readyState)) {
       fn();
       return;
     }
 
     let executed = false;
     document.addEventListener('readystatechange', function listenState (event) {
-      if (VALID_STATES.includes(event.target.readyState) && !executed) {
+      if (includes(VALID_STATES, event.target.readyState) && !executed) {
         executed = true;
         fn();
       }

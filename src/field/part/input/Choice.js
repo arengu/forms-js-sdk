@@ -1,6 +1,7 @@
 const BaseInput = require('./BaseInput');
 
 const { FieldError } = require('../../../error/InvalidFields');
+const { includes } = require('../../../lib/Utilities');
 
 const { CODE } = FieldError;
 
@@ -52,7 +53,7 @@ class Choice extends BaseInput {
     return options.map((opt, i) => {
 
       const checked = defaultValue && (multiple ?
-        defaultValue.includes(opt.value) : defaultValue === opt.value);
+        includes(defaultValue, opt.value) : defaultValue === opt.value);
       const optionId = `${uid}-${i}`;
 
       const node = document.createElement('div');
@@ -132,7 +133,7 @@ class Choice extends BaseInput {
     this.nodes
       .forEach((o) => {
         o.checked = defaultValue && (multiple ?
-          defaultValue.includes(o.value) : defaultValue === o.value);
+          includes(defaultValue, o.value) : defaultValue === o.value);
       });
   }
 
