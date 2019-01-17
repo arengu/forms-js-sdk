@@ -1,6 +1,5 @@
 :root {
   --primary-color: #1398b3;
-  --primary-hover-color: #5BBBCD;
   --input-padding: 8px 10px;
   --input-background: #f6f8f9;
   --input-color: #323d47;
@@ -14,9 +13,8 @@
   --dropdown-option-background-color: #949a9e;
   --dropdown-option-background-active-color: #6d7378;
   --dropdown-option-text-color: #ffffff;
-  --font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
-  --password-padding: 8px 50px 8px 10px;
   --font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --password-padding: 8px 50px 8px 10px;
   --payment-input-padding: 8px 50px 8px 10px;
   --border-focus-color: #1398b3;
   --label-required-color: #ed5757;
@@ -41,7 +39,6 @@
   --invalid-field-background: #fff6f6;
   --message-fail-color: #d2383f;
   --message-fail-font-size: 14px;
-  --message-fail-background-color: #fff6f6;
   --message-success-color: #318233;
   --message-success-background-color: #fcfff5;
 }
