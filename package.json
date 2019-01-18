@@ -9,7 +9,8 @@
   "dependencies": {
     "@babel/runtime": "7.x",
     "crypto-js": "3.x",
-    "lodash": "4.x"
+    "lodash": "4.x",
+    "url-search-params-polyfill": "5.x"
   },
   "devDependencies": {
     "@babel/core": "7.x",

@@ -1,7 +1,9 @@
+require('url-search-params-polyfill');
+
 class Utilities {
 
   static getUrlParam(param) {
-    return new URL(location.href).searchParams.get(param);
+    return new URLSearchParams(window.location.search).get(param);
   }
 
   static indexObject (array, identity) {
