@@ -15,6 +15,7 @@ const InvalidStep = require('../error/InvalidStep');
 const ErrorCodes = require('../error/ErrorCodes');
 
 const Messages = require('../lib/Messages');
+const { includes } = require('../lib/Utilities');
 
 const { DEFAULT_MESSAGES } = Messages;
 
