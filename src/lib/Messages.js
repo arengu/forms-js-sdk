@@ -19,8 +19,10 @@ const defaultMessages = {
   ERR_TOO_LONG_STRING: 'This field must be less or equal to {{maxLength}} character(s).',
   ERR_EMAIL_EXPECTED: 'Please, enter a valid email address.',
   ERR_URL_EXPECTED: 'Please, enter a valid URL.',
-  ERR_INTEGER_EXPECTED: 'Please, enter a valid integer value.',
-  ERR_BOOLEAN_EXPECTED: 'Please, enter a valid boolean value.',
+  ERR_BOOLEAN_EXPECTED: 'Please, enter a valid boolean.',
+  ERR_INTEGER_EXPECTED: 'Please, enter a valid integer.',
+  ERR_DECIMAL_EXPECTED: 'Please, enter a valid decimal.',
+  ERR_CURRENCY_EXPECTED: 'Please, enter a valid amount.',
 };
 
 class Messages {
