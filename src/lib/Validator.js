@@ -96,22 +96,6 @@ class Validator {
   }
 
   /**
-   * Validate Integer type
-   * @param value
-   * @returns {*}
-   */
-  static validateInteger (value) {
-    if(!INTEGER_REGEX.test(value)){
-      throw FieldError.create(
-        CODE.ERR_INTEGER_EXPECTED,
-        'Enter a valid integer value',
-      );
-    }
-
-    return true;
-  }
-
-  /**
    * Validate Boolean Type
    * @param value
    * @returns {*}
