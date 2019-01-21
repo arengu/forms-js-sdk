@@ -73,27 +73,34 @@ class EventsFactory {
   static submitForm (formId, data) {
     this.triggerEvent(KEYS.SUBMIT_FORM, {
       formId: formId,
-      data
+      formData: data.formData,
+      metaData: data.metaData,
     });
   }
 
-  static submitFormError (formId, err) {
+  static submitFormError (formId, data, err) {
     this.triggerEvent(KEYS.SUBMIT_FORM_ERROR, {
       formId: formId,
-      error: err
+      formData: data.formData,
+      metaData: data.metaData,
+      error: err,
     });
   }
 
-  static submitFormSuccess (formId, confirmation) {
+  static submitFormSuccess (formId, data, confirmation) {
     this.triggerEvent(KEYS.SUBMIT_FORM_SUCCESS, {
       formId: formId,
-      confirmation
+      formData: data.formData,
+      metaData: data.metaData,
+      confirmation,
     });
   }
 
-  static invalidFieldsError (formId, fields) {
+  static invalidFieldsError (formId, data, fields) {
     this.triggerEvent(KEYS.INVALID_FIELDS_ERROR, {
       formId: formId,
+      formData: data.formData,
+      metaData: data.metaData,
       fields
     });
   }

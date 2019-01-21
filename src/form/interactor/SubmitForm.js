@@ -10,15 +10,15 @@ class SubmitForm {
       EventsFactory.submitForm(formId, submission);
       const res = await Repository.createSubmission(formId, submission, signature);
 
-      EventsFactory.submitFormSuccess(formId, res);
+      EventsFactory.submitFormSuccess(formId, submission, res);
       return res;
     } catch (err) {
       if (err instanceof InvalidFields) {
         console.error(`Some values are not valid:`, err.fields);
-        EventsFactory.invalidFieldsError(formId, err);
+        EventsFactory.invalidFieldsError(formId, submission, err);
       } else {
         console.error(`Error sending submission:`, err);
-        EventsFactory.submitFormError(formId, err);
+        EventsFactory.submitFormError(formId, submission, err);
       }
       throw err;
     }
