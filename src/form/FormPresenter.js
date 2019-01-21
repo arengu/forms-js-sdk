@@ -10,6 +10,7 @@ const StepPresenter = require('../step/StepPresenter');
 
 const InvalidFields = require('../error/InvalidFields');
 
+const EventsFactory = require('../lib/EventsFactory');
 const SignatureStack = require('../lib/SignatureStack');
 
 const FIRST_STEP = 0;
@@ -166,10 +167,12 @@ class FormPresenter extends BasePresenter {
   }
 
   goPreviousStep () {
+    EventsFactory.previousStep(this.getFormId());
     this._goToStep(this.indexCurrStep - 1);
   }
 
   goNextStep () {
+    EventsFactory.nextStep(this.getFormId());
     this._goToStep(this.indexCurrStep + 1);
   }
 

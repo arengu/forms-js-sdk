@@ -6,6 +6,8 @@ const KEYS = {
   EMBED_FORM: 'af-embedForm',
   EMBED_FORM_ERROR: 'af-embedForm-error',
   EMBED_FORM_SUCCESS: 'af-embedForm-success',
+  STEP_PREVIOUS: 'af-previousStep',
+  STEP_NEXT: 'af-nextStep',
   SUBMIT_FORM: 'af-submitForm',
   SUBMIT_FORM_ERROR: 'af-submitForm-error',
   SUBMIT_FORM_SUCCESS: 'af-submitForm-success',
@@ -67,6 +69,18 @@ class EventsFactory {
       formId: formId,
       parent: parentNode,
       node: formNode
+    });
+  }
+
+  static previousStep (formId) {
+    this.triggerEvent(KEYS.STEP_PREVIOUS, {
+      formId,
+    });
+  }
+
+  static nextStep (formId) {
+    this.triggerEvent(KEYS.STEP_NEXT, {
+      formId,
     });
   }
 
