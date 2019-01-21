@@ -32,41 +32,41 @@ class EventsFactory {
 
   static getForm (formId) {
     this.triggerEvent(KEYS.GET_FORM, {
-      formId: formId,
+      formId,
     });
   }
 
   static getFormError (formId, err) {
     this.triggerEvent(KEYS.GET_FORM_ERROR, {
-      formId: formId,
+      formId,
       error: err
     });
   }
 
   static getFormSuccess (formId, data) {
     this.triggerEvent(KEYS.GET_FORM_SUCCESS, {
-      formId: formId,
+      formId,
       data
     });
   }
 
   static embedForm (formId, parentSelector) {
     this.triggerEvent(KEYS.EMBED_FORM, {
-      formId: formId,
+      formId,
       selector: parentSelector
     });
   }
 
   static embedFormError (formId, err) {
     this.triggerEvent(KEYS.EMBED_FORM_ERROR, {
-      formId: formId,
+      formId,
       error: err
     });
   }
 
   static embedFormSuccess (formId, parentNode, formNode) {
     this.triggerEvent(KEYS.EMBED_FORM_SUCCESS, {
-      formId: formId,
+      formId,
       parent: parentNode,
       node: formNode
     });
@@ -86,7 +86,7 @@ class EventsFactory {
 
   static submitForm (formId, data) {
     this.triggerEvent(KEYS.SUBMIT_FORM, {
-      formId: formId,
+      formId,
       formData: data.formData,
       metaData: data.metaData,
     });
@@ -94,7 +94,7 @@ class EventsFactory {
 
   static submitFormError (formId, data, err) {
     this.triggerEvent(KEYS.SUBMIT_FORM_ERROR, {
-      formId: formId,
+      formId,
       formData: data.formData,
       metaData: data.metaData,
       error: err,
@@ -103,7 +103,7 @@ class EventsFactory {
 
   static submitFormSuccess (formId, data, confirmation) {
     this.triggerEvent(KEYS.SUBMIT_FORM_SUCCESS, {
-      formId: formId,
+      formId,
       formData: data.formData,
       metaData: data.metaData,
       confirmation,
@@ -112,7 +112,7 @@ class EventsFactory {
 
   static invalidFieldsError (formId, data, fields) {
     this.triggerEvent(KEYS.INVALID_FIELDS_ERROR, {
-      formId: formId,
+      formId,
       formData: data.formData,
       metaData: data.metaData,
       fields
