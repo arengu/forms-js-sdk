@@ -205,7 +205,7 @@ class PaymentInput extends BaseInput {
 
   _buildExpirationDateLabel () {
     const { required, config: { fields: { expirationDate: { label } } } } = this.model;
-      
+
     const container = document.createElement('div');
     container.classList.add('af-field-label');
 
@@ -315,7 +315,7 @@ class PaymentInput extends BaseInput {
 
     const securityCodeField = this._buildSecurityCodeField();
     wrapper.appendChild(securityCodeField);
-    
+
     const securityCodeIcon = this._buildSecurityCodeIcon();
     wrapper.appendChild(securityCodeIcon);
 
@@ -354,7 +354,7 @@ class PaymentInput extends BaseInput {
   }
 
   _waitLoadEventAndInitSdk() {
-    document.addEventListener(STRIPE_SDK_LOAD, () => this._initStripeSdk()); 
+    document.addEventListener(STRIPE_SDK_LOAD, () => this._initStripeSdk());
   }
 
   _triggerStripeLoadEvent() {
@@ -383,6 +383,10 @@ class PaymentInput extends BaseInput {
 
   async _createToken() {
     this.token = null;
+
+    if (this.isEmpty()) {
+      return;
+    }
 
     const response = await this.stripe.createToken(this.cardNumberMounted);
     const { error: stripeError, token } = response;
@@ -439,13 +443,31 @@ class PaymentInput extends BaseInput {
     this.securityCodeMounted.clear();
   }
 
+  isEmpty () {
+    return this.isCardNumberEmpty && this.isExpirationDateEmpty && this.isSecurityCodeEmpty;
+  }
+
+  isComplete () {
+    return this.isCardNumberComplete && this.isExpirationDateComplete && this.isSecurityCodeComplete;
+  }
+
   validate () {
-    if (!this.isCardNumberComplete || !this.isExpirationDateComplete || !this.isSecurityCodeComplete) {
+    const { required } = this.model;
+
+    const empty = this.isEmpty();
+    const complete = this.isComplete();
+
+    if (empty && required) {
       const errMessage = 'This field is required';
       return FieldError.create(CODE.ERR_REQUIRED_PROPERTY, errMessage);
     }
+
+    if (!empty && !complete) {
+      const errMessage = 'Some fields are empty';
+      return FieldError.create(CODE.MISSING_CARD_INFO, errMessage);
+    }
   }
-  
+
   get value () {
     return this.token;
   }

@@ -31,7 +31,7 @@ class Dropdown extends BaseInput {
   }
 
   validate () {
-    if (this.model.required && this.isEmpty) {
+    if (this.model.required && this.isEmpty()) {
       return this.model.config.multiple ?
         FieldError.create(
           CODE.ERR_ZERO_OPTIONS_CHOSEN,
@@ -44,7 +44,7 @@ class Dropdown extends BaseInput {
     }
   }
 
-  get isEmpty() {
+  isEmpty() {
     return this.model.config.multiple ? !this.value.length : !this.value;
   }
 

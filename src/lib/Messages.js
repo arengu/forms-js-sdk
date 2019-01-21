@@ -23,6 +23,8 @@ const defaultMessages = {
   ERR_INTEGER_EXPECTED: 'Please, enter a valid integer.',
   ERR_DECIMAL_EXPECTED: 'Please, enter a valid decimal.',
   ERR_CURRENCY_EXPECTED: 'Please, enter a valid amount.',
+
+  ERR_MISSING_CARD_INFO: 'Please, fill in all card information.',
 };
 
 class Messages {
