@@ -14,6 +14,7 @@ const InvalidStep = require('../error/InvalidStep');
 
 const ErrorCodes = require('../error/ErrorCodes');
 
+const EventsFactory = require('../lib/EventsFactory');
 const Messages = require('../lib/Messages');
 const { includes } = require('../lib/Utilities');
 
@@ -87,7 +88,7 @@ class StepPresenter extends BasePresenter {
         }));
 
     await Promise.all(promises);
-    
+
     if (Object.keys(errors).length) {
       throw InvalidFields.fromFields(errors);
     }
@@ -104,6 +105,11 @@ class StepPresenter extends BasePresenter {
     } catch (err) {
       this.hideLoading();
       if (err instanceof InvalidFields) {
+        EventsFactory.invalidFieldsError(
+          this.formP.getFormId(),
+          this.formP.getSubmissionData(),
+          err.fields,
+        );
         this.onSeveralInvalidFields(err);
       } else {
         this.onError(err);

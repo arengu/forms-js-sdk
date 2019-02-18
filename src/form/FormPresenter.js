@@ -48,10 +48,25 @@ class FormPresenter extends BasePresenter {
   }
 
   getFormValues () {
-    const valuesPerStep = this.stepsP.map((sP) => sP.getStepData());
-    const values = Object.assign({}, ...valuesPerStep);
+    const userValuesPerStep = this.stepsP.map((sP) => sP.getStepData());
+    const userValues = Object.assign({}, ...userValuesPerStep);
 
-    return values;
+    const hiddenFields = this.hiddenFields.getAll();
+
+    const formValues = Object.assign({}, userValues, hiddenFields);
+
+    return formValues;
+  }
+
+  getMetaData () {
+    return MetaData.getAll();
+  }
+
+  getSubmissionData () {
+    return {
+      formData: this.getFormValues(),
+      metaData: this.getMetaData(),
+    };
   }
 
   /**
@@ -93,7 +108,7 @@ class FormPresenter extends BasePresenter {
     }
 
     const formId = this.formM.id;
-    const data = Object.assign({}, this.getFormValues(), this.hiddenFields.getAll());
+    const data = this.getFormValues();
     const signature = this.signatures.get();
 
     const body = await ValidateStep.execute(formId, stepM, data, signature);
@@ -103,10 +118,7 @@ class FormPresenter extends BasePresenter {
 
   async _submitForm (stepP) {
     const formId = this.formM.id;
-    const submission = {
-      formData: Object.assign({}, this.getFormValues(), this.hiddenFields.getAll()),
-      metaData: MetaData.getAll(),
-    };
+    const submission = this.getSubmissionData();
     const signature = this.signatures.get(true);
 
     const res = await SubmitForm.execute(formId, submission, signature);

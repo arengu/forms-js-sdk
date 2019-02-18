@@ -15,7 +15,7 @@ class SubmitForm {
     } catch (err) {
       if (err instanceof InvalidFields) {
         console.error(`Some values are not valid:`, err.fields);
-        EventsFactory.invalidFieldsError(formId, submission, err);
+        EventsFactory.invalidFieldsError(formId, submission, err.fields);
       } else {
         console.error(`Error sending submission:`, err);
         EventsFactory.submitFormError(formId, submission, err);
