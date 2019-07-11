@@ -15,6 +15,3 @@ coverage
 node_modules/
 jspm_packages/
 dist/
-
-# Plugin for files history
-.history/

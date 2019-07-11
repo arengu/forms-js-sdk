@@ -34,7 +34,6 @@
   --button-font-weight: 500;
   --button-border-radius: 3px;
   --button-padding: 12px 24px;
-  --previous-button-hover-background: #eaeaea;
   --invalid-field-border: #d2383f;
   --invalid-field-background: #fff6f6;
   --message-fail-color: #d2383f;
@@ -61,7 +60,7 @@
 ---------------------*/
 
 .af-field {
-  margin: 0 0 1.75em;
+  margin: 0 0 1.5em;
 }
 
 /*--------------------
@@ -70,6 +69,7 @@
 
 .af-field-label label {
   display: block;
+  font-family: var(--font-family);
   font-weight: var(--label-font-weight);
   font-size: var(--label-font-size);
   margin: 0 0 0.3em 0;
@@ -85,6 +85,7 @@
 .af-choice-option label,
 .af-boolean-option label {
   font-size: var(--label-font-size);
+  font-family: var(--font-family);
   margin: 6px 0;
   box-sizing: border-box;
   display: flex;
@@ -96,15 +97,25 @@
 
 .af-boolean-option label {
   background: var(--boolean-background-color);
+  font-family: var(--font-family);
 }
 
 .af-legal label {
   font-size: var(--label-font-size);
+  font-family: var(--font-family);
   margin: 8px 0;
   box-sizing: border-box;
   display: flex;
   align-items: center;
   cursor: pointer;
+}
+
+.af-legal label p:last-child {
+  margin-bottom: 0;
+}
+
+.af-legal label p:first-child {
+  margin-top: 0;
 }
 
 .af-choice-option label {
@@ -179,6 +190,7 @@
   margin: 0 0 0.4em 0;
   font-size: var(--hint-font-size);
   color: var(--hint-color);
+  font-family: var(--font-family);
 }
 
 /*--------------------
@@ -217,7 +229,8 @@
 .af-field-has-error .af-field-input input[type="text"],
 .af-field-has-error .af-field-input input[type="file"],
 .af-field-has-error .af-field-input input[type="url"],
-.af-field-has-error .af-dropdown {
+.af-field-has-error .af-dropdown,
+.af-field-has-error .af-legal label:before {
   border-color: var(--invalid-field-border);
   background-color: var(--invalid-field-background);
 }
@@ -246,7 +259,8 @@
 .af-field-input input[type="email"],
 .af-field-input input[type="number"],
 .af-field-input input[type="tel"],
-.af-field-input input[type="url"] {
+.af-field-input input[type="url"],
+.af-field-input input[type="password"] {
   -webkit-appearance: none;
 }
 
@@ -295,25 +309,6 @@
   opacity: 0;
   cursor: pointer;
   z-index: -1;
-}
-
-/* Rating */
-.af-rating {
-  display: flex;
-  margin-top: 15px;
-}
-
-.af-rating-option {
-  display: inline-flex;
-  justify-content: center;
-  flex: auto;
-  cursor: pointer;
-}
-
-.af-rating-option svg {
-  max-width: 35px;
-  padding: 0 5px;
-  cursor: pointer;
 }
 
 /* Search */
@@ -719,17 +714,6 @@
   background: var(--label-background-hover-color);
 }
 
-/* Rating */
-.af-rating:hover .af-rating-option svg,
-.af-rating-option.af-checked svg {
-  fill: #1398b3;
-}
-
-.af-rating-option:hover~.af-rating-option svg,
-.af-rating-option svg {
-  fill: #cccccc;
-}
-
 /*--------------------
         Checked
 ---------------------*/
@@ -859,7 +843,8 @@
 
 .af-step-next button[type=submit]:hover {
   color: #fff;
-  transition: background-color 0.3s ease;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1));
+  transition: background-image 0.3s ease;
 }
 
 .af-step-previous button[type=button] {
@@ -867,8 +852,8 @@
 }
 
 .af-step-previous button[type=button]:hover {
-  background: var(--previous-button-hover-background);
-  transition: background-color 0.3s ease;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1));
+  transition: background-image 0.3s ease;
 }
 
 .af-step-button {
@@ -928,13 +913,12 @@
 .af-field-error p {
   color: var(--message-fail-color);
   font-size: var(--message-fail-font-size);
-  margin-top: 6px;
-  padding-left: 2px;
+  margin: .3em 0 .6em 0;
 }
 
 .af-step-failure {
   color: var(--message-fail-color);
-  padding: 0 1em;
+  padding: .75em 1em;
   border: 1px solid var(--message-fail-color);
   background: #fff6f6;
   border-radius: var(--button-border-radius);
@@ -948,9 +932,17 @@
   margin: 10px 0;
 }
 
+.af-step-messages .af-step-failure p:first-child, .af-step-messages .af-step-success p:first-child {
+  margin-top: 0;
+}
+
+.af-step-messages .af-step-failure p:last-child, .af-step-messages .af-step-success p:last-child {
+  margin-bottom: 0;
+}
+
 .af-step-success {
   color: var(--message-success-color);
-  padding: 0 1em;
+  padding: .75em 1em;
   border: 1px solid var(--message-success-color);
   background: var(--message-success-background-color);
   border-radius: var(--button-border-radius);

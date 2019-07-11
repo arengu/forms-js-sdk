@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "checkJs": true,
+    "target": "es2016",
+    "strict": true,
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}
