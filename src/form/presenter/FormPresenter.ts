@@ -221,7 +221,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
     this.confV.setMessage(msg);
 
     this.formV.showPage(this.confV);
-    this.formV.scrollTop();
+    this.formV.scrollTopIfNeeded();
   }
 
   public showStep(index: number, scroll?: boolean): void {
@@ -231,7 +231,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
     this.formV.showPage(chosenStepP.getView());
 
     if (scroll === true) {
-      this.formV.scrollTop();
+      this.formV.scrollTopIfNeeded();
     }
   }
 

@@ -3,6 +3,41 @@ import { IFormModel } from '../model/FormModel';
 import { ICookieModel } from '../model/CookieModel';
 import { CookieHelper } from '../../lib/view/CookieHelper';
 
+export interface IVisibleArea {
+  minOffset: number;
+  height: number;
+  maxOffset: number;
+}
+
+export abstract class FormViewHelper {
+  public static getVisibleArea(): IVisibleArea {
+    const currScroll = window.scrollY;
+    const vpHeight = window.innerHeight;
+
+    return {
+      minOffset: currScroll,
+      height: vpHeight,
+      maxOffset: currScroll + vpHeight,
+    };
+  }
+
+  public static getOffset(elem: null | Element): number {
+    if (!(elem instanceof HTMLElement)) {
+      return 0;
+    }
+
+    /*
+     * offsetTop property is relative to its parent, so we have to get the offsetTop
+     * of the parents recursively until we reach the absolute parent.
+     */
+    return this.getOffset(elem.offsetParent) + (elem.offsetTop);
+  }
+
+  public static scrollTo(elem: HTMLElement): void {
+    elem.scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
 export interface IFormViewListener {
   onSubmitForm(this: void): void;
 }
@@ -16,7 +51,7 @@ export interface IRedirectionParams {
 
 export interface IFormView extends IHTMLView {
   showPage(view: IFormPageView): void;
-  scrollTop(): void;
+  scrollTopIfNeeded(): void;
 }
 
 export abstract class FormRendererer {
@@ -71,8 +106,31 @@ export class FormView implements IFormView {
     this.formE.appendChild(newPageE);
   }
 
-  public scrollTop(): void {
-    this.formE.scrollIntoView({ behavior: 'smooth' });
+  /**
+   * Scroll when the first field is not visible in the 3/4 parts of the visible area
+   */
+  public scrollTopIfNeeded(): void {
+    const visArea = FormViewHelper.getVisibleArea();
+
+    const formWrapper = this.rootE;
+    const formOffset = FormViewHelper.getOffset(formWrapper);
+
+    if (formOffset > visArea.maxOffset) {
+      FormViewHelper.scrollTo(formWrapper);
+      return;
+    }
+
+    if (formOffset >= visArea.minOffset) {
+      return;
+    }
+
+    const headerHeight = visArea.height * 0.25;
+
+    FormViewHelper.scrollTo(
+      formOffset < headerHeight
+        ? document.body
+        : formWrapper,
+    );
   }
 
   public reset(): void { // eslint-disable-line class-methods-use-this
