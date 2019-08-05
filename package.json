@@ -4,8 +4,8 @@
   "license": "MIT",
   "scripts": {
     "start": "webpack-dev-server --open --config webpack.dev.js",
-    "lint": "npx eslint --ext .js,.ts src/",
-    "tsc": "npx tsc",
+    "lint": "npx --no-install eslint --ext .js,.ts src/",
+    "tsc": "npx --no-install tsc",
     "build": "webpack --config webpack.prod.js",
     "test": "jest",
     "coverage": "jest --coverage"
