@@ -8,11 +8,15 @@ export interface IMetaDataModel {
   readonly navigation: {
     readonly referer: string;
     readonly location: {
-      readonly url: string;
       readonly protocol: string;
+      readonly hostname: string;
+      readonly port: string;
       readonly host: string;
-      readonly path: string;
-      readonly parameters: string;
+      readonly pathname: string;
+      readonly search: string;
+      readonly searchParams: Record<string, string | string[]>;
+      readonly hash: string;
+      readonly href: string;
     };
     readonly analytics: {
       readonly ga: {
@@ -46,11 +50,15 @@ export abstract class MetaDataModelFactory {
       navigation: {
         referer: document.referrer,
         location: {
-          url: document.location.href,
           protocol: document.location.protocol,
+          hostname: document.location.hostname,
+          port: document.location.port,
           host: document.location.host,
-          path: document.location.pathname,
-          parameters: document.location.search,
+          pathname: document.location.pathname,
+          search: document.location.search,
+          searchParams: URLHelper.getAllParams(),
+          hash: document.location.hash,
+          href: document.location.href,
         },
         analytics: {
           ga: {
