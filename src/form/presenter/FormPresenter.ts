@@ -76,6 +76,10 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
     return this.formM.id;
   }
 
+  public getCurrentStep(): IStepPresenter {
+    return this.stepsP[this.currentStep];
+  }
+
   public getPresenter(index: number): IStepPresenter {
     const chosenPresenter = this.stepsP[index];
 
@@ -165,7 +169,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
   }
 
   public onSubmitForm(): void {
-    const currStepP = this.stepsP[this.currentStep];
+    const currStepP = this.getCurrentStep();
     this.handleGoToNext(currStepP);
   }
 
@@ -236,11 +240,27 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
   }
 
   public showPreviousStep(): void {
+    const currStep = this.getCurrentStep();
     this.showStep(this.currentStep - 1);
+    const prevStep = this.getCurrentStep();
+
+    EventsFactory.previousStep({
+      formId: this.formM.id,
+      current: currStep.getStepId(),
+      previous: prevStep.getStepId(),
+    });
   }
 
   public showNextStep(): void {
+    const currStep = this.getCurrentStep();
     this.showStep(this.currentStep + 1, true);
+    const nextStep = this.getCurrentStep();
+
+    EventsFactory.nextStep({
+      formId: this.formM.id,
+      current: currStep.getStepId(),
+      next: nextStep.getStepId(),
+    });
   }
 
   public reset(): void {
