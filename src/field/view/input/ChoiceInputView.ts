@@ -27,9 +27,12 @@ export abstract class ChoiceInputRenderer {
   public static isDefault(fieldM: IChoiceFieldModel, value: string): boolean {
     const { defaultValue, multiple } = fieldM.config;
 
-    return defaultValue != null && (multiple
-      ? includes(defaultValue, value)
-      : defaultValue === value);
+    return defaultValue != undefined // eslint-disable-line eqeqeq
+      && (
+        multiple
+          ? includes(defaultValue, value)
+          : defaultValue === value
+      );
   }
 
   public static renderOptionInput(fieldM: IChoiceFieldModel, inputL: IInputViewListener,
@@ -128,7 +131,7 @@ export class ChoiceInputView implements IChoiceInputView {
 
   public getFirstChoice(): ISingleOptionValue {
     const checked = this.optionsE.find(InputHelper.isChecked);
-    return checked ? checked.value : null;
+    return checked ? checked.value : undefined;
   }
 
   public getAllChoices(): IMultiOptionValue {

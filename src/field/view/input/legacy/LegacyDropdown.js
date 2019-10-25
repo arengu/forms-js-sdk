@@ -33,13 +33,13 @@ class LegacyDropdown {
     this.listener = listener;
 
     this.multiple = model.config.multiple;
-    this.hiddenDropdown = null;
-    this.hiddenDropdownOptions = null;
-    this.dropdown = null;
-    this.dropdownOptions = null;
-    this.search = null;
-    this.dropdownText = null;
-    this.html = null;
+    this.hiddenDropdown = undefined;
+    this.hiddenDropdownOptions = undefined;
+    this.dropdown = undefined;
+    this.dropdownOptions = undefined;
+    this.search = undefined;
+    this.dropdownText = undefined;
+    this.html = undefined;
   }
 
   _buildHiddenDropdown() {
@@ -123,7 +123,7 @@ class LegacyDropdown {
     node.onblur = function () {
       self._hideDropdownOptions();
       self._showDropdownText();
-      node.value = null;
+      node.value = undefined;
       self._filterDropdownOptions(node);
       const tagOptions = self.html.querySelectorAll('a');
       self.dropdownText.style.opacity = tagOptions.length > 0 ? '0' : '1';
@@ -483,7 +483,10 @@ class LegacyDropdown {
   _addActiveDropdownOptionClass(index) {
     if (!this.multiple) {
       const activeOption = this.dropdown.querySelector(`.${CLASSES.ACTIVE}`);
-      const activeOptionIndex = activeOption ? activeOption.getAttribute(INDEX_ATTRIBUTE) : null;
+      const activeOptionIndex = activeOption
+        ? activeOption.getAttribute(INDEX_ATTRIBUTE)
+        : undefined;
+
       if (activeOptionIndex) {
         this._removeActiveDropdownOptionClass(activeOptionIndex);
       }
@@ -727,7 +730,7 @@ class LegacyDropdown {
       return choices;
     }
 
-    const firstChoice = choices[0] || null;
+    const firstChoice = choices[0] || undefined;
 
     return firstChoice;
   }
@@ -790,7 +793,7 @@ class LegacyDropdown {
       this.build();
     }
 
-    if (this.html === null) {
+    if (this.html == undefined) { // eslint-disable-line eqeqeq
       throw new Error('Unexpected case');
     }
 

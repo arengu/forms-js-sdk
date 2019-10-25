@@ -14,7 +14,7 @@ export abstract class CustomValidations {
     Promise<IFieldValidationResult> {
     const { id: fieldId } = fieldM;
 
-    if (value === null) {
+    if (value == undefined) { // eslint-disable-line eqeqeq
       return VALID;
     }
 

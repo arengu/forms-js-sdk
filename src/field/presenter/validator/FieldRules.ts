@@ -15,7 +15,7 @@ export const FieldRules = {
       return VALID;
     }
 
-    if (value === null) {
+    if (value == undefined) { // eslint-disable-line eqeqeq
       return {
         valid: false,
         error: FieldError.create(
@@ -29,12 +29,12 @@ export const FieldRules = {
     return VALID;
   },
 
-  async minLength(value: string | null, fieldM: ITextFieldModel | ITelFieldModel):
+  async minLength(value: string | undefined, fieldM: ITextFieldModel | ITelFieldModel):
     Promise<IFieldValidationResult> {
     const { minLength } = fieldM.config;
 
-    // explicit abstract comparison
-    if (minLength == null || value === null || value.length >= minLength) {
+    if (minLength == undefined || value == undefined // eslint-disable-line eqeqeq
+      || value.length >= minLength) {
       return VALID;
     }
 
@@ -51,12 +51,12 @@ export const FieldRules = {
     };
   },
 
-  async maxLength(value: string | null, fieldM: ITextFieldModel | ITelFieldModel):
+  async maxLength(value: string | undefined, fieldM: ITextFieldModel | ITelFieldModel):
     Promise<IFieldValidationResult> {
     const { maxLength } = fieldM.config;
 
-    // explicit abstract comparison
-    if (maxLength == null || value === null || value.length <= maxLength) {
+    if (maxLength == undefined || value == undefined // eslint-disable-line eqeqeq
+      || value.length <= maxLength) {
       return VALID;
     }
 
@@ -73,12 +73,11 @@ export const FieldRules = {
     };
   },
 
-  async minValue(strValue: string | null, fieldM: INumberFieldModel):
+  async minValue(strValue: string | undefined, fieldM: INumberFieldModel):
     Promise<IFieldValidationResult> {
     const { minValue } = fieldM.config;
 
-    // explicit abstract comparisons
-    if (minValue == null || strValue === null) {
+    if (minValue == undefined || strValue == undefined) { // eslint-disable-line eqeqeq
       return VALID;
     }
 
@@ -101,12 +100,11 @@ export const FieldRules = {
     };
   },
 
-  async maxValue(strValue: string | null, fieldM: INumberFieldModel):
+  async maxValue(strValue: string | undefined, fieldM: INumberFieldModel):
     Promise<IFieldValidationResult> {
     const { maxValue } = fieldM.config;
 
-    // explicit abstract comparisons
-    if (maxValue == null || strValue === null) {
+    if (maxValue == undefined || strValue == undefined) { // eslint-disable-line eqeqeq
       return VALID;
     }
 
@@ -137,7 +135,7 @@ export const FieldRules = {
       return VALID;
     }
 
-    if (value === null) {
+    if (value == undefined) { // eslint-disable-line eqeqeq
       return {
         valid: false,
         error: FieldError.create(

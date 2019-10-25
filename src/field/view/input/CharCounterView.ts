@@ -47,14 +47,14 @@ export abstract class CharCounterRenderer {
     return root;
   }
 
-  public static getClassByPercentage(percentage: number): null | string {
+  public static getClassByPercentage(percentage: number): string | undefined {
     if (percentage >= ALERT_VALUE) {
       return ALERT_CLASS;
     }
     if (percentage >= WARNING_VALUE) {
       return WARNING_CLASS;
     }
-    return null;
+    return undefined;
   }
 }
 

@@ -20,11 +20,11 @@ export interface IMetaDataModel {
     };
     readonly analytics: {
       readonly ga: {
-        readonly utm_source: null | string;
-        readonly utm_medium: null | string;
-        readonly utm_campaign: null | string;
-        readonly utm_term: null | string;
-        readonly utm_content: null | string;
+        readonly utm_source?: string;
+        readonly utm_medium?: string;
+        readonly utm_campaign?: string;
+        readonly utm_term?: string;
+        readonly utm_content?: string;
       };
     };
   };

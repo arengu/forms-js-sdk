@@ -7,7 +7,7 @@ export interface ICookieModel {
   readonly name: string;
   readonly value: string;
   readonly path: string;
-  readonly domain: null | string;
+  readonly domain?: string;
   readonly maxAge: number;
   readonly secure: boolean;
   readonly sameSite: SameSitePolicy;

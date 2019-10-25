@@ -17,26 +17,26 @@ export class GenericButton implements IHTMLView {
 
   protected readonly cssClasses: string[];
 
-  protected readonly callback: null | IButtonCallback;
+  protected readonly callback?: IButtonCallback;
 
-  protected buttonE: null | HTMLElement;
+  protected buttonE?: HTMLElement;
 
-  protected rootE: null | HTMLElement;
+  protected rootE?: HTMLElement;
 
   protected constructor(text: string, type: ButtonType,
-    callback?: null | IButtonCallback, cssClasses?: string[]) {
+    callback?: IButtonCallback, cssClasses?: string[]) {
     this.text = text;
     this.type = type;
     this.cssClasses = cssClasses || [];
 
-    this.callback = callback || null;
+    this.callback = callback;
 
-    this.buttonE = null;
-    this.rootE = null;
+    this.buttonE = undefined;
+    this.rootE = undefined;
   }
 
   protected getButton(): HTMLElement {
-    if (this.buttonE === null) {
+    if (this.buttonE == undefined) { // eslint-disable-line eqeqeq
       throw new Error('Render it first');
     }
 
@@ -44,7 +44,7 @@ export class GenericButton implements IHTMLView {
   }
 
   protected renderButton(): HTMLElement {
-    if (this.buttonE !== null) {
+    if (this.buttonE != undefined) { // eslint-disable-line eqeqeq
       return this.buttonE;
     }
 
@@ -62,7 +62,7 @@ export class GenericButton implements IHTMLView {
       node.appendChild(ladda);
     }
 
-    if (this.callback !== null) {
+    if (this.callback != undefined) { // eslint-disable-line eqeqeq
       node.onclick = this.callback;
     }
 
@@ -71,7 +71,7 @@ export class GenericButton implements IHTMLView {
   }
 
   public render(): HTMLElement {
-    if (this.rootE !== null) {
+    if (this.rootE != undefined) { // eslint-disable-line eqeqeq
       return this.rootE;
     }
 

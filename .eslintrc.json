@@ -17,9 +17,11 @@
     "project": "./tsconfig.json"
   },
   "plugins": [
-    "@typescript-eslint"
+    "@typescript-eslint",
+    "no-null"
   ],
   "rules": {
+    "no-null/no-null": "error",
     "@typescript-eslint/interface-name-prefix": [
       "error",
       "always"

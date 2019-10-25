@@ -31,11 +31,11 @@ export class TextInputRenderer {
   }
 
   public static renderCount(inputE: TextInputElements,
-    fieldM: ITextFieldModel): null | CharCounterView {
+    fieldM: ITextFieldModel): CharCounterView | undefined {
     const { config: { maxLength } } = fieldM;
 
     if (!maxLength) {
-      return null;
+      return undefined;
     }
 
     const counter = CharCounterView.create(inputE, maxLength);

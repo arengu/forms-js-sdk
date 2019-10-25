@@ -1,8 +1,8 @@
 import 'url-search-params-polyfill';
 
 export const URLHelper = {
-  getParam(name: string): null | string {
-    return new URLSearchParams(document.location.search).get(name);
+  getParam(name: string): string | undefined {
+    return new URLSearchParams(document.location.search).get(name) || undefined;
   },
 
   getAllParams(): Record<string, string | string[]> {
@@ -12,7 +12,7 @@ export const URLHelper = {
     entries.forEach((newVal, key): void => {
       const currVal = params[key];
 
-      if (currVal == null) {
+      if (currVal == undefined) { // eslint-disable-line eqeqeq
         params[key] = newVal;
       } else if (typeof (currVal) === 'string') {
         params[key] = [currVal, newVal] as string[];

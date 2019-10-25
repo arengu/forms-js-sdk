@@ -43,23 +43,23 @@ export abstract class InputCreator {
 export type ITextInput = HTMLInputElement | HTMLTextAreaElement;
 
 export interface IFieldWithPlaceholder {
-  readonly placeholder: null | string;
+  readonly placeholder?: string;
 }
 export interface IFieldWithDefaultValue {
   readonly config: {
-    readonly defaultValue: null | number | string;
+    readonly defaultValue?: number | string;
   };
 }
 export interface IFieldWithLengthRules {
   readonly config: {
     readonly minLength: number;
-    readonly maxLength: null | number;
+    readonly maxLength?: number;
   };
 }
 export interface IFieldWithRangeRules {
   config: {
-    minValue: null | number;
-    maxValue: null | number;
+    minValue?: number;
+    maxValue?: number;
   };
 }
 
@@ -75,7 +75,7 @@ export abstract class InputConfigurator {
   public static defaultValue(elem: ITextInput, fieldM: IFieldWithDefaultValue): void {
     const { defaultValue } = fieldM.config;
 
-    if (defaultValue != null) { // explicit abstract comparison
+    if (defaultValue != undefined) { // eslint-disable-line eqeqeq
       elem.value = defaultValue.toString(); // eslint-disable-line no-param-reassign
     }
   }
@@ -86,7 +86,7 @@ export abstract class InputConfigurator {
     if (minLength > 0) {
       elem.minLength = minLength; // eslint-disable-line no-param-reassign
     }
-    if (maxLength != null && maxLength >= 0) { // explicit abstract comparison
+    if (maxLength != undefined && maxLength >= 0) { // eslint-disable-line eqeqeq
       elem.maxLength = maxLength; // eslint-disable-line no-param-reassign
     }
   }
@@ -94,10 +94,10 @@ export abstract class InputConfigurator {
   public static rangeRules(elem: HTMLInputElement, fieldM: IFieldWithRangeRules): void {
     const { minValue, maxValue } = fieldM.config;
 
-    if (minValue != null) { // explicit abstract comparison
+    if (minValue != undefined) { // eslint-disable-line eqeqeq
       elem.min = minValue.toString(); // eslint-disable-line no-param-reassign
     }
-    if (maxValue != null) { // explicit abstract comparison
+    if (maxValue != undefined) { // eslint-disable-line eqeqeq
       elem.max = maxValue.toString(); // eslint-disable-line no-param-reassign
     }
   }

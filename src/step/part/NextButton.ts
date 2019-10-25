@@ -4,7 +4,7 @@ export const CSS_CLASSES = ['af-step-next', 'af-step-button'];
 
 export class NextButton extends GenericButton {
   public static create(text: string): NextButton {
-    return new this(text, ButtonType.SUBMIT, null, CSS_CLASSES);
+    return new this(text, ButtonType.SUBMIT, undefined, CSS_CLASSES);
   }
 
   public showLoading(): void {

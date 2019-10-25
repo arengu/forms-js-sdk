@@ -11,30 +11,30 @@ class LegacyPaymentInput {
     this.uid = uid;
     this.listener = paymentL;
 
-    this.cardNumber = null;
-    this.cardNumberMounted = null;
+    this.cardNumber = undefined;
+    this.cardNumberMounted = undefined;
     this.isCardNumberEmpty = true;
     this.isCardNumberComplete = false;
     this.isCardNumberValid = false;
 
-    this.expirationDate = null;
-    this.expirationDateMounted = null;
+    this.expirationDate = undefined;
+    this.expirationDateMounted = undefined;
     this.isExpirationDateEmpty = true;
     this.isExpirationDateComplete = false;
     this.isExpirationDateValid = false;
 
-    this.securityCode = null;
-    this.securityCodeMounted = null;
+    this.securityCode = undefined;
+    this.securityCodeMounted = undefined;
     this.isSecurityCodeEmpty = true;
     this.isSecurityCodeComplete = false;
     this.isSecurityCodeValid = false;
 
     this.trustmarks = 'unknown';
-    this.trustmarksSelector = null;
+    this.trustmarksSelector = undefined;
 
-    this.stripe = null;
+    this.stripe = undefined;
 
-    this.viewE = null;
+    this.viewE = undefined;
   }
 
   static create(fieldM, uid, paymentL) {
@@ -69,7 +69,7 @@ class LegacyPaymentInput {
     element.addEventListener('change', (e) => {
       const node = self.trustmarksSelector;
 
-      const hasError = e.error != null; // explicit abstract comparisons
+      const hasError = e.error != undefined; // eslint-disable-line eqeqeq
 
       if (hasError) {
         node.classList.add('af-payment-cardNumber-brand-error');
@@ -167,7 +167,7 @@ class LegacyPaymentInput {
     element.addEventListener('focus', () => self.listener.onFocus());
     element.addEventListener('blur', () => self.listener.onBlur());
     element.addEventListener('change', (e) => {
-      const hasError = e.error != null; // explicit abstract comparisons
+      const hasError = e.error != undefined; // eslint-disable-line eqeqeq
 
       self.isExpirationDateEmpty = e.empty;
       self.isExpirationDateComplete = e.complete || !hasError ||
@@ -251,7 +251,7 @@ class LegacyPaymentInput {
     element.addEventListener('focus', () => self.listener.onFocus());
     element.addEventListener('blur', () => self.listener.onBlur());
     element.addEventListener('change', (e) => {
-      const hasError = e.error != null; // explicit abstract comparisons
+      const hasError = e.error != undefined; // eslint-disable-line eqeqeq
 
       self.isSecurityCodeEmpty = e.empty;
       self.isSecurityCodeComplete = e.complete || !hasError ||
@@ -389,7 +389,7 @@ class LegacyPaymentInput {
   }
 
   render() {
-    if (this.viewE !== null) {
+    if (this.viewE != undefined) { // eslint-disable-line eqeqeq
       return this.viewE;
     }
 

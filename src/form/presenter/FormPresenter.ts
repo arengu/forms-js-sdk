@@ -83,13 +83,13 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
   public getPresenter(index: number): IStepPresenter {
     const chosenPresenter = this.stepsP[index];
 
-    if (chosenPresenter !== undefined) {
+    if (chosenPresenter != undefined) { // eslint-disable-line eqeqeq
       return chosenPresenter;
     }
 
     const chosenModel = this.formM.steps[index];
 
-    if (chosenModel === undefined) {
+    if (chosenModel == undefined) { // eslint-disable-line eqeqeq
       throw new Error('Step not found');
     }
 
@@ -104,7 +104,9 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
    * @param stepIndex Index of the last step you want to get value from
    */
   public async getUserValues(stepIndex?: number): Promise<IFormData> {
-    const steps = (stepIndex !== undefined) ? this.stepsP.slice(0, stepIndex + 1) : this.stepsP;
+    const steps = (stepIndex != undefined) // eslint-disable-line eqeqeq
+      ? this.stepsP.slice(0, stepIndex + 1)
+      : this.stepsP;
     const proms = steps.map(FormPresenterHelper.getUserValues);
     const userValuesPerStep = await Promise.all(proms);
 

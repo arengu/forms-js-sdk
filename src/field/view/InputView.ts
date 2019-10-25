@@ -23,7 +23,7 @@ export interface IInputView<IVA extends IInputValue> extends IHTMLView {
   getValue(): Promise<IVA>;
 }
 
-export type ISingleOptionValue = null | string;
+export type ISingleOptionValue = string | undefined;
 export type IMultiOptionValue = string[];
 
 export type IInputValue = IBooleanInputValue | IChoiceInputValue | IDateInputValue |

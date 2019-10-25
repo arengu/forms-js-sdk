@@ -86,10 +86,10 @@ export abstract class SDKHelper {
 export abstract class SDK {
   public static async embed(form: string | IFormModel, parent: string | Element,
     initValues?: Record<string, string>): Promise<IArenguForm> {
-    if (form == null) { // explicit abstract comparison
+    if (form == undefined) { // eslint-disable-line eqeqeq
       throw SDKError.create(SDKErrorCode.MISSING_FORM_ID, 'Specify the form you want to embed');
     }
-    if (parent == null) {
+    if (parent == undefined) { // eslint-disable-line eqeqeq
       throw SDKError.create(SDKErrorCode.INVALID_NODE, 'Specify the node where you want to embed the form');
     }
 

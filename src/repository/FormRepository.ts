@@ -28,7 +28,7 @@ export class FormRepository {
   }
 
   public static async createSubmission(formId: string, submission: object,
-    signature: null | string): Promise<IConfirmationModel> {
+    signature?: string): Promise<IConfirmationModel> {
     const reqUrl = `${API_URL}/forms/${formId}/submissions/`;
     const headers: IHeaders = {};
 
@@ -58,7 +58,7 @@ export class FormRepository {
   }
 
   public static async validateStep(formId: string, stepId: string,
-    formData: IFormData, signature: null | string): Promise<IValidationModel> {
+    formData: IFormData, signature?: string): Promise<IValidationModel> {
     const reqUrl = `${API_URL}/forms/${formId}/validations/${stepId}`;
     const headers: IHeaders = {};
 

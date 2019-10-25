@@ -21,7 +21,7 @@ export abstract class FormViewHelper {
     };
   }
 
-  public static getOffset(elem: null | Element): number {
+  public static getOffset(elem: Element | undefined): number {
     if (!(elem instanceof HTMLElement)) {
       return 0;
     }
@@ -30,7 +30,8 @@ export abstract class FormViewHelper {
      * offsetTop property is relative to its parent, so we have to get the offsetTop
      * of the parents recursively until we reach the absolute parent.
      */
-    return this.getOffset(elem.offsetParent) + (elem.offsetTop);
+    const offsetParent = elem.offsetParent || undefined;
+    return this.getOffset(offsetParent) + (elem.offsetTop);
   }
 
   public static scrollTo(elem: HTMLElement): void {
@@ -144,7 +145,7 @@ export class FormView implements IFormView {
   public static redirect(params: IRedirectionParams): void {
     const { target, delay: delayS } = params;
 
-    const delayMS = delayS != null ? delayS * 1000 : 0;
+    const delayMS = delayS != undefined ? delayS * 1000 : 0; // eslint-disable-line eqeqeq
 
     setTimeout((): void => {
       document.location.href = target;

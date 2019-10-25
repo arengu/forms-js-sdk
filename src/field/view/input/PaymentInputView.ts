@@ -3,7 +3,7 @@ import { IPaymentFieldModel } from '../../model/FieldModel';
 import { IInputView, IInputViewListener } from '../InputView';
 
 export interface ICardToken {
-  id: null | string;
+  id?: string;
 }
 
 export enum CardErrorCode {
@@ -25,8 +25,8 @@ export interface ICardError {
 }
 
 export interface ICreateTokenResponse {
-  token?: null | ICardToken;
-  error?: null | ICardError;
+  token?: ICardToken;
+  error?: ICardError;
 }
 
 export interface ILegacyPaymentListener {
@@ -38,11 +38,11 @@ export interface ILegacyPaymentListener {
   onBlur(this: this): void;
 }
 
-export type IPaymentInputValue = null;
+export type IPaymentInputValue = undefined;
 
 export interface IPaymentInputView extends IInputView<IPaymentInputValue> {
   processCard(): Promise<void>;
-  getToken(): null | ICardToken;
+  getToken(): ICardToken | undefined;
   isEmpty(): boolean;
   isComplete(): boolean;
   isValid(): boolean;
@@ -67,17 +67,17 @@ export class PaymentInputView implements IPaymentInputView, ILegacyPaymentListen
   /* Indicates if the existing token is valid or we have to create a new one */
   protected fresh: boolean;
 
-  protected token: null | ICardToken;
+  protected token?: ICardToken;
 
-  protected error: null | ICardError;
+  protected error?: ICardError;
 
   protected constructor(fieldM: IPaymentFieldModel, uid: string, inputL: IInputViewListener) {
     this.paymentV = LegacyPaymentInput.create(fieldM, uid, this);
     this.inputL = inputL;
     this.changed = false;
     this.fresh = false;
-    this.token = null;
-    this.error = null;
+    this.token = undefined;
+    this.error = undefined;
   }
 
   public static create(fieldM: IPaymentFieldModel, uid: string,
@@ -92,17 +92,17 @@ export class PaymentInputView implements IPaymentInputView, ILegacyPaymentListen
 
     const res: ICreateTokenResponse = await this.paymentV.processCard();
 
-    this.token = res.token || null;
-    this.error = res.error || null;
+    this.token = res.token || undefined;
+    this.error = res.error || undefined;
 
     this.fresh = true;
   }
 
-  public async getValue(): Promise<null> { // eslint-disable-line class-methods-use-this
+  public async getValue(): Promise<never> { // eslint-disable-line class-methods-use-this
     throw new Error('Not implemented');
   }
 
-  public getToken(): null | ICardToken {
+  public getToken(): ICardToken | undefined {
     return this.token;
   }
 
@@ -141,8 +141,8 @@ export class PaymentInputView implements IPaymentInputView, ILegacyPaymentListen
 
   public reset(): void {
     this.fresh = false;
-    this.token = null;
-    this.error = null;
+    this.token = undefined;
+    this.error = undefined;
     this.paymentV.reset();
   }
 

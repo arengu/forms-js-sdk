@@ -21,9 +21,9 @@ export interface IFieldOptionModel {
 export interface IBaseFieldModel {
   readonly id: string;
   readonly type: FieldType;
-  readonly label: null | string;
-  readonly hint: null | string;
-  readonly placeholder: null | string;
+  readonly label?: string;
+  readonly hint?: string;
+  readonly placeholder?: string;
   readonly required: boolean;
   readonly config: object;
 }
@@ -40,7 +40,7 @@ export interface IChoiceFieldModel extends IBaseFieldModel {
   readonly config: {
     readonly multiple: boolean;
     readonly options: IFieldOptionModel[];
-    readonly defaultValue: null | string | string[];
+    readonly defaultValue?: string | string[];
   };
 }
 
@@ -53,7 +53,7 @@ export interface IDateFieldModel extends IBaseFieldModel {
   readonly type: FieldType.DATE;
   readonly config: {
     readonly format: DateFormat;
-    readonly defaultValue: null | string;
+    readonly defaultValue?: string;
   };
 }
 
@@ -62,7 +62,7 @@ export interface IDropdownFieldModel extends IBaseFieldModel {
   readonly config: {
     readonly multiple: boolean;
     readonly options: IFieldOptionModel[];
-    readonly defaultValue: null | string | string[];
+    readonly defaultValue?: string | string[];
   };
 }
 
@@ -70,14 +70,14 @@ export interface IDropdownFieldModel extends IBaseFieldModel {
 export interface IEmailFieldModel extends IBaseFieldModel {
   readonly type: FieldType.EMAIL;
   readonly config: {
-    readonly defaultValue: null | string;
+    readonly defaultValue?: string;
   };
 }
 
 export interface ILegalFieldModel extends IBaseFieldModel {
   readonly type: FieldType.LEGAL;
   readonly config: {
-    readonly text: null | string;
+    readonly text?: string;
   }
 }
 
@@ -91,9 +91,9 @@ export interface INumberFieldModel extends IBaseFieldModel {
   readonly type: FieldType.NUMBER;
   readonly config: {
     readonly format: NumberFormat;
-    readonly defaultValue: null | number;
-    readonly minValue: null | number;
-    readonly maxValue: null | number;
+    readonly defaultValue?: number;
+    readonly minValue?: number;
+    readonly maxValue?: number;
   }
 }
 
@@ -113,8 +113,8 @@ export interface IPasswordFieldModel extends IBaseFieldModel {
 }
 
 export interface IPaymentCardFieldModel {
-  readonly label: null | string;
-  readonly placeholder: null | string;
+  readonly label?: string;
+  readonly placeholder?: string;
 }
 
 export interface IPaymentFieldModel extends IBaseFieldModel {
@@ -137,7 +137,7 @@ export interface ITelFieldModel extends IBaseFieldModel {
   readonly config: {
     readonly defaultValue: string;
     readonly minLength: number;
-    readonly maxLength: null | number;
+    readonly maxLength?: number;
   }
 }
 
@@ -145,16 +145,16 @@ export interface ITextFieldModel extends IBaseFieldModel {
   readonly type: FieldType.TEXT;
   readonly config: {
     readonly multiline: boolean;
-    readonly defaultValue: null | string;
+    readonly defaultValue?: string;
     readonly minLength: number;
-    readonly maxLength: null | number;
+    readonly maxLength?: number;
   }
 }
 
 export interface IURLFieldModel extends IBaseFieldModel {
   readonly type: FieldType.URL;
   readonly config: {
-    readonly defaultValue: null | string;
+    readonly defaultValue?: string;
   }
 }
 
@@ -162,7 +162,7 @@ export type IFieldModel = IBooleanFieldModel | IChoiceFieldModel | IDateFieldMod
   IDropdownFieldModel | IEmailFieldModel | ILegalFieldModel | INumberFieldModel |
   IPasswordFieldModel | IPaymentFieldModel | ITelFieldModel | ITextFieldModel | IURLFieldModel;
 
-export type ISingleFieldValue = null | string;
+export type ISingleFieldValue = string | undefined;
 export type IMultiFieldValue = string[];
 
 export type IBooleanFieldValue = 'false' | 'true';

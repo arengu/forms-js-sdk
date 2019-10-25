@@ -7,11 +7,11 @@ import { IStepModel } from '../step/model/StepModel';
 export class StackEntry {
   public readonly stepId: string;
 
-  public signature: null | string;
+  public signature?: string;
 
-  protected constructor(stepId: string, signature?: null | string) {
+  protected constructor(stepId: string, signature?: string) {
     this.stepId = stepId;
-    this.signature = signature || null;
+    this.signature = signature || undefined;
   }
 
   public static create(stepId: string, signature?: string): StackEntry {
@@ -43,7 +43,7 @@ export class SignatureStack {
   protected getEntryByStepId(stepId: string): StackEntry {
     const entry = find(this.steps, { stepId });
 
-    if (entry === undefined) {
+    if (entry == undefined) { // eslint-disable-line eqeqeq
       throw new Error('ID not found');
     }
 
@@ -53,7 +53,7 @@ export class SignatureStack {
   protected getEntryByIndex(index: number): StackEntry {
     const entry = get(this.steps, index);
 
-    if (entry === undefined) {
+    if (entry == undefined) { // eslint-disable-line eqeqeq
       throw new Error('Index not found');
     }
 
@@ -70,17 +70,17 @@ export class SignatureStack {
     return index;
   }
 
-  public getSignature(stepIndex: number): null | string {
+  public getSignature(stepIndex: number): string | undefined {
     const entry = this.getEntryByIndex(stepIndex);
 
     const { signature } = entry;
 
-    if (signature !== null) {
+    if (signature != undefined) { // eslint-disable-line eqeqeq
       return signature;
     }
 
     if (stepIndex === 0) {
-      return null;
+      return undefined;
     }
 
     const prevIndex: number = stepIndex - 1;
@@ -90,7 +90,7 @@ export class SignatureStack {
   /**
    * Returns the signature required to submit the form.
    */
-  public getSubmissionSignature(): null | string {
+  public getSubmissionSignature(): string | undefined {
     const lastIndex = this.steps.length - 1;
     return this.getSignature(lastIndex);
   }
@@ -98,7 +98,7 @@ export class SignatureStack {
   /**
    * Returns the signature required to validate the current step.
    */
-  public getValidationSignature(stepId: string): null | string {
+  public getValidationSignature(stepId: string): string | undefined {
     const index = this.getIndexByStepId(stepId);
 
     /**
@@ -108,7 +108,7 @@ export class SignatureStack {
     const prevIndex = index - 1;
 
     if (prevIndex < 0) {
-      return null;
+      return undefined;
     }
 
     return this.getSignature(prevIndex);

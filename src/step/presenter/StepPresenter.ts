@@ -71,7 +71,7 @@ export abstract class StepPresenterHelper {
   }
 
   public static hasValue(pair: IPairFieldIdValue): boolean {
-    return pair.value !== null && !isEmpty(pair.value);
+    return pair.value != undefined && !isEmpty(pair.value); // eslint-disable-line eqeqeq
   }
 }
 
@@ -119,7 +119,7 @@ export class StepPresenter implements IStepPresenter, IFieldPresenterListener {
   public getFieldPresenter(fieldId: string): IAnyFieldPresenter {
     const fieldP = this.fieldsPI[fieldId];
 
-    if (fieldP === undefined) {
+    if (fieldP == undefined) { // eslint-disable-line eqeqeq
       throw new Error('Field not found');
     }
 

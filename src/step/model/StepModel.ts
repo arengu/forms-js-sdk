@@ -1,7 +1,7 @@
 import { IFieldModel } from '../../field/model/FieldModel';
 
 export interface IStepButtonsModel {
-  readonly previous: null | string;
+  readonly previous?: string;
   readonly next: string;
 }
 

@@ -31,6 +31,8 @@ export const PasswordValueHandler: IValueHandler<IPasswordFieldModel,
   async getValue(inputV: IPasswordInputView, fieldM: IPasswordFieldModel):
     Promise<IPasswordFieldValue> {
     const cleanValue = await StringValueHandler.getValue(inputV, fieldM);
-    return cleanValue === null ? null : PasswordHasher.hash(cleanValue, fieldM.config.hash);
+    return cleanValue == undefined // eslint-disable-line eqeqeq
+      ? undefined
+      : PasswordHasher.hash(cleanValue, fieldM.config.hash);
   },
 };

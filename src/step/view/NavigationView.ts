@@ -18,18 +18,18 @@ export interface INavigationListener {
 }
 
 export class NavigationView implements IHTMLView {
-  protected readonly previousV: null | PreviousButton;
+  protected readonly previousV?: PreviousButton;
 
   protected readonly nextV: NextButton;
 
-  protected rootE: null | HTMLElement;
+  protected rootE?: HTMLElement;
 
   protected constructor(buttons: IStepButtonsModel, listener: INavigationListener) {
-    this.previousV = buttons.previous !== null
+    this.previousV = buttons.previous != undefined // eslint-disable-line eqeqeq
       ? PreviousButton.create(buttons.previous, NavigationHelper.createButtonCallback(listener))
-      : null;
+      : undefined;
     this.nextV = NextButton.create(buttons.next);
-    this.rootE = null;
+    this.rootE = undefined;
   }
 
   public static create(buttons: IStepButtonsModel, listener: INavigationListener): NavigationView {
@@ -37,14 +37,14 @@ export class NavigationView implements IHTMLView {
   }
 
   public render(): HTMLElement {
-    if (this.rootE !== null) {
+    if (this.rootE != undefined) { // eslint-disable-line eqeqeq
       return this.rootE;
     }
 
     const container = document.createElement('div');
     container.classList.add('af-step-navigation');
 
-    if (this.previousV !== null) {
+    if (this.previousV != undefined) { // eslint-disable-line eqeqeq
       const previousE = this.previousV.render();
       container.appendChild(previousE);
     }

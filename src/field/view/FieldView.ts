@@ -43,11 +43,11 @@ export type ITextFieldView = IFieldView<ITextInputView, ITextInputValue>;
 export type IURLFieldView = IFieldView<IURLInputView, IURLInputValue>;
 
 export abstract class FieldRenderer {
-  public static renderLabel(fieldM: IFieldModel, uid: string): null | HTMLDivElement {
+  public static renderLabel(fieldM: IFieldModel, uid: string): HTMLDivElement | undefined {
     const { label, required } = fieldM;
 
     if (!label) {
-      return null;
+      return undefined;
     }
 
     const wrapperontainer = document.createElement('div');
@@ -65,11 +65,11 @@ export abstract class FieldRenderer {
     return wrapperontainer;
   }
 
-  public static renderHint(fieldM: IFieldModel): null | HTMLElement {
+  public static renderHint(fieldM: IFieldModel): HTMLElement | undefined {
     const { hint } = fieldM;
 
     if (!hint) {
-      return null;
+      return undefined;
     }
 
     const wrapper = document.createElement('div');
