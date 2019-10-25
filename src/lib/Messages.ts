@@ -17,7 +17,7 @@ export const DEFAULT_MESSAGES: IMessages = {
   [AppErrorCode.MISSING_VALIDATION]: ' There is at least one step that we did not validate.',
   [AppErrorCode.NO_VALIDATION_REQUIRED]: 'The specified step does not have any validation associated.',
   [AppErrorCode.SIGNATURE_REQUIRED]: ' The form requires at least one validation and no signature was provided.',
-  [AppErrorCode.FLOW_NOT_FOUND]: 'The requested flow was not found.',
+  [AppErrorCode.FLOW_NOT_FOUND]: 'There was an internal error executing a flow that does not exist.',
   [AppErrorCode.STEP_NOT_FOUND]: 'The requested step was not found.',
 
   /*
@@ -38,10 +38,10 @@ export const DEFAULT_MESSAGES: IMessages = {
   [FieldErrorCode.REQUIRED_PROPERTY]: 'This field is required.',
   [FieldErrorCode.TOO_SHORT_STRING]: 'This field must be at least {{minLength}} character(s).',
   [FieldErrorCode.TOO_LONG_STRING]: 'This field must be less or equal to {{maxLength}} character(s).',
-  [FieldErrorCode.TOO_SMALL_NUMBER]: 'This number must be greater than or equal to {{minValue}}',
-  [FieldErrorCode.TOO_BIG_NUMBER]: 'This number must be less than or equal to {{maxValue}}',
-  [FieldErrorCode.NO_OPTION_CHOSEN]: 'You have to select an option',
-  [FieldErrorCode.ZERO_OPTIONS_CHOSEN]: 'You have to select at least one option',
+  [FieldErrorCode.TOO_SMALL_NUMBER]: 'This number must be greater than or equal to {{minValue}}.',
+  [FieldErrorCode.TOO_BIG_NUMBER]: 'This number must be less than or equal to {{maxValue}}.',
+  [FieldErrorCode.NO_OPTION_CHOSEN]: 'You have to select an option.',
+  [FieldErrorCode.ZERO_OPTIONS_CHOSEN]: 'You have to select at least one option.',
   [FieldErrorCode.ACCEPTANCE_REQUIRED]: 'Please, check this field if you want to proceed.',
   [FieldErrorCode.EMAIL_EXPECTED]: 'Please, enter a valid email address.',
   [FieldErrorCode.URL_EXPECTED]: 'Please, enter a valid URL.',
