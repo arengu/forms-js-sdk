@@ -126,9 +126,10 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
 
   /**
    * Returns the data provided by the user plus the hidden fields
+   * @param stepIndex Index of the last step you want to get value from
    */
-  public async getFormValues(): Promise<IFormData> {
-    const userValues = await this.getUserValues();
+  public async getFormValues(stepIndex?: number): Promise<IFormData> {
+    const userValues = await this.getUserValues(stepIndex);
     const hiddenFields = this.getHiddenFields();
 
     const formValues = { ...userValues, ...hiddenFields };
@@ -308,7 +309,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
 
     const formId = this.formM.id;
     const stepIndex = this.stepsP.indexOf(stepP);
-    const userValues = await this.getUserValues(stepIndex);
+    const userValues = await this.getFormValues(stepIndex);
 
     const stepId = stepP.getStepId();
     const signature = this.signatures.getValidationSignature(stepId);
