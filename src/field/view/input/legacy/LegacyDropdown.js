@@ -123,7 +123,7 @@ class LegacyDropdown {
     node.onblur = function () {
       self._hideDropdownOptions();
       self._showDropdownText();
-      node.value = undefined;
+      node.value = '';
       self._filterDropdownOptions(node);
       const tagOptions = self.html.querySelectorAll('a');
       self.dropdownText.style.opacity = tagOptions.length > 0 ? '0' : '1';
