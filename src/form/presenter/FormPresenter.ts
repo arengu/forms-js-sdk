@@ -121,7 +121,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
   }
 
   public setHiddenField(fieldId: string, value: string): void {
-    this.hiddenFields.set(fieldId, value);
+    this.hiddenFields.setValue(fieldId, value);
   }
 
   /**

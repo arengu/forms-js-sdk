@@ -1,4 +1,6 @@
+import isNil from 'lodash/isNil';
 import keyBy from 'lodash/keyBy';
+import includes from 'lodash/includes';
 import mapValues from 'lodash/mapValues';
 import toString from 'lodash/toString';
 
@@ -51,27 +53,34 @@ export abstract class HiddenFieldsHelper {
 export class HiddenFields {
   protected readonly fields: IHiddenFieldValuesSet;
 
-  protected constructor(fields: IHiddenFieldDef[], initValues?: Record<string, string>) {
+  protected readonly keys: string[];
+
+  protected constructor(fields: IHiddenFieldDef[], initValues?: IHiddenFieldValuesSet) {
     this.fields = HiddenFieldsHelper.initFields(fields, initValues);
+    this.keys = Object.keys(this.fields);
   }
 
   public static create(fields: IHiddenFieldDef[],
-    initValues?: Record<string, string>): HiddenFields {
+    initValues?: IHiddenFieldValuesSet): HiddenFields {
     return new HiddenFields(fields, initValues);
   }
 
-  public get(key: string): string | undefined {
+  public hasKey(key: string): boolean {
+    return includes(this.keys, key);
+  }
+
+  public getValue(key: string): IHiddenFieldValue {
     const value = this.fields[key];
-    if (value == undefined) { // eslint-disable-line eqeqeq
+
+    if (isNil(value) && !this.hasKey(key)) {
       throw SDKError.create(SDKErrorCode.UNDEFINED_KEY, MISSING_KEY_ERROR);
     }
 
     return value;
   }
 
-  public set(key: string, newValue: string | undefined): void {
-    const oldValue = this.fields[key];
-    if (oldValue == undefined) { // eslint-disable-line eqeqeq
+  public setValue(key: string, newValue: IHiddenFieldValue): void {
+    if (!this.hasKey(key)) {
       throw SDKError.create(SDKErrorCode.UNDEFINED_KEY, MISSING_KEY_ERROR);
     }
 
