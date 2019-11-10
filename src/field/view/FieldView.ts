@@ -50,19 +50,19 @@ export abstract class FieldRenderer {
       return undefined;
     }
 
-    const wrapperontainer = document.createElement('div');
-    wrapperontainer.classList.add('af-field-label');
+    const wrapperContainer = document.createElement('div');
+    wrapperContainer.classList.add('af-field-label');
 
     const node = document.createElement('label');
     node.setAttribute('for', uid);
     node.innerHTML = label;
-    wrapperontainer.appendChild(node);
+    wrapperContainer.appendChild(node);
 
     if (required) {
       node.classList.add('af-required');
     }
 
-    return wrapperontainer;
+    return wrapperContainer;
   }
 
   public static renderHint(fieldM: IFieldModel): HTMLElement | undefined {
