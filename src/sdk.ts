@@ -111,7 +111,7 @@ export abstract class SDK {
       const messages = Messages.create(formData.messages);
       const presenter = FormPresenter.create(formData, hiddenFields, messages);
 
-      const formNode = presenter.getView().render();
+      const formNode = presenter.render();
 
       parentNode.appendChild(formNode);
       EventsFactory.embedFormSuccess({ ...eventData, parent: parentNode, node: formNode });

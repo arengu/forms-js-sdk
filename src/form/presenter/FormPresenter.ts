@@ -17,8 +17,7 @@ import { EventsFactory } from '../../lib/EventsFactory';
 import { IValidationModel } from '../model/ValidationModel';
 import { InvalidStep } from '../../error/InvalidStep';
 import { IStepPresenter, IStepListener, StepPresenter } from '../../step/presenter/StepPresenter';
-
-const FIRST_STEP = 0;
+import { IStepModel } from '../../step/model/StepModel';
 
 export abstract class FormPresenterHelper {
   public static getUserValues(stepP: IStepPresenter): Promise<IUserValues> {
@@ -33,12 +32,15 @@ export abstract class FormPresenterHelper {
 export interface IFormPresenter extends IPresenter<IFormView> {
   getFormId(): string;
   setHiddenField(fieldId: string, value: string): void;
+  render(): HTMLElement;
 }
 
 export class FormPresenter implements IFormPresenter, IFormViewListener, IStepListener {
   protected readonly formM: IFormModel;
 
   protected readonly formV: IFormView;
+
+  protected readonly messages: Messages;
 
   protected readonly confV: ThankYouView;
 
@@ -48,23 +50,18 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
 
   protected readonly signatures: SignatureStack;
 
-  protected readonly messages: Messages;
-
   protected currentStep: number;
 
   protected constructor(formM: IFormModel, hiddenFields: HiddenFields, messages: Messages) {
     const { steps } = formM;
     this.formM = formM;
     this.formV = FormView.create(formM, this);
+    this.messages = messages;
     this.confV = ThankYouView.create();
-    this.stepsP = Array(steps.length);
+    this.stepsP = steps.map((sM: IStepModel) => StepPresenter.create(sM, this, this.messages));
     this.hiddenFields = hiddenFields;
     this.signatures = SignatureStack.fromSteps(steps);
-    this.messages = messages;
-
     this.currentStep = -1;
-
-    this.showStep(FIRST_STEP);
   }
 
   public static create(model: IFormModel, hiddenFields: HiddenFields,
@@ -76,28 +73,20 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
     return this.formM.id;
   }
 
+  public getFirstStep(): IStepPresenter | undefined {
+    return this.stepsP[0];
+  }
+
+  public getPreviousStep(): IStepPresenter | undefined {
+    return this.stepsP[this.currentStep - 1];
+  }
+
   public getCurrentStep(): IStepPresenter {
     return this.stepsP[this.currentStep];
   }
 
-  public getPresenter(index: number): IStepPresenter {
-    const chosenPresenter = this.stepsP[index];
-
-    if (chosenPresenter != undefined) { // eslint-disable-line eqeqeq
-      return chosenPresenter;
-    }
-
-    const chosenModel = this.formM.steps[index];
-
-    if (chosenModel == undefined) { // eslint-disable-line eqeqeq
-      throw new Error('Step not found');
-    }
-
-    const newPresenter = StepPresenter.create(chosenModel, this, this.messages);
-
-    this.stepsP[index] = newPresenter;
-
-    return newPresenter;
+  public getNextStep(): IStepPresenter | undefined {
+    return this.stepsP[this.currentStep + 1];
   }
 
   /**
@@ -231,11 +220,9 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
     this.formV.scrollTopIfNeeded();
   }
 
-  public showStep(index: number, scroll?: boolean): void {
-    const chosenStepP = this.getPresenter(index);
-
-    this.currentStep = index;
-    this.formV.showPage(chosenStepP.getView());
+  public showStep(stepP: IStepPresenter, scroll?: boolean): void {
+    this.currentStep = this.stepsP.indexOf(stepP);
+    this.formV.showPage(stepP.getView());
 
     if (scroll === true) {
       this.formV.scrollTopIfNeeded();
@@ -244,8 +231,13 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
 
   public showPreviousStep(): void {
     const currStep = this.getCurrentStep();
-    this.showStep(this.currentStep - 1);
-    const prevStep = this.getCurrentStep();
+    const prevStep = this.getPreviousStep();
+
+    if (prevStep == undefined) {
+      throw new Error('No previous step');
+    }
+
+    this.showStep(prevStep);
 
     EventsFactory.previousStep({
       formId: this.formM.id,
@@ -256,8 +248,13 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
 
   public showNextStep(): void {
     const currStep = this.getCurrentStep();
-    this.showStep(this.currentStep + 1, true);
-    const nextStep = this.getCurrentStep();
+    const nextStep = this.getNextStep();
+
+    if (nextStep == undefined) {
+      throw new Error('No previous step');
+    }
+
+    this.showStep(nextStep, true);
 
     EventsFactory.nextStep({
       formId: this.formM.id,
@@ -267,7 +264,13 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
   }
 
   public reset(): void {
-    this.showStep(FIRST_STEP, true);
+    const firstStep = this.getFirstStep();
+
+    if (firstStep == undefined) {
+      throw new Error('No first step');
+    }
+
+    this.showStep(firstStep, true);
     this.stepsP.forEach(FormPresenterHelper.reset);
   }
 
@@ -328,8 +331,10 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
   public render(): HTMLElement {
     const element = this.formV.render();
 
-    if (this.stepsP.length > 0) {
-      this.showStep(FIRST_STEP);
+    const firstStep = this.getFirstStep();
+
+    if (firstStep != undefined) {
+      this.showStep(firstStep);
     }
 
     return element;
