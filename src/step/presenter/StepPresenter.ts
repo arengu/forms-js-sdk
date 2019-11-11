@@ -17,7 +17,7 @@ import { AppErrorCode } from '../../error/ErrorCodes';
 import { InvalidStep } from '../../error/InvalidStep';
 import { ArenguError } from '../../error/ArenguError';
 import { FieldPresenterFactory } from '../../field/presenter/FieldPresenterFactory';
-import { IUserValues } from '../../form/model/SubmissionModel';
+import { IUserValues, IFormData } from '../../form/model/SubmissionModel';
 import { IAnyFieldView } from '../../field/view/FieldView';
 
 export type IStepListener = IStepViewListener;
@@ -27,6 +27,9 @@ export interface IStepPresenter extends IPresenter<IStepView> {
 
   startAsync(this: this): void;
   endAsync(this: this): void;
+
+  isDynamic(this: this): boolean;
+  updateStep(this: this, data: IFormData): void;
 
   hasStepValidation(this: this): boolean;
   validateFields(this: this): Promise<IStepValidationResult>;
@@ -85,6 +88,8 @@ export class StepPresenter implements IStepPresenter, IFieldPresenterListener {
 
   protected readonly fieldsP: IAnyFieldPresenter[];
 
+  protected readonly dynFieldsP: IAnyFieldPresenter[];
+
   /**
    * Components indexed by identifier
    */
@@ -101,6 +106,7 @@ export class StepPresenter implements IStepPresenter, IFieldPresenterListener {
     this.invalidFields = new Set();
     this.messages = messages;
     this.fieldsP = stepM.components.map(StepPresenterHelper.createFieldPresenter(this, messages));
+    this.dynFieldsP = this.fieldsP.filter((fP): boolean => fP.isDynamic());
     this.fieldsPI = keyBy(this.fieldsP, StepPresenterHelper.getFieldId);
     const fieldsV = this.fieldsP.map(StepPresenterHelper.getView, StepPresenterHelper);
     this.stepV = StepView.create(stepM, fieldsV, stepL);
@@ -129,6 +135,14 @@ export class StepPresenter implements IStepPresenter, IFieldPresenterListener {
 
   public getView(): IStepView {
     return this.stepV;
+  }
+
+  public isDynamic(this: this): boolean {
+    return this.dynFieldsP.length > 0;
+  }
+
+  public updateStep(this: this, data: IFormData): void {
+    this.dynFieldsP.forEach((sP): void => sP.updateField(data));
   }
 
   public hasStepValidation(this: this): boolean {

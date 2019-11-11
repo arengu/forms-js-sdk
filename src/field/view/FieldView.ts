@@ -1,3 +1,5 @@
+import isNil from 'lodash/isNil';
+
 import { IComponentView } from '../../component/ComponentView';
 import { IInputViewListener, IInputView, IInputValue } from './InputView';
 import { IBooleanInputView, IBooleanInputValue } from './input/BooleanInputView';
@@ -15,11 +17,14 @@ import { IURLInputView, IURLInputValue } from './input/URLInputView';
 import { FieldErrorMessage } from './FieldErrorMessage';
 import { UID } from '../../lib/UID';
 import { IFieldModel } from '../model/FieldModel';
+import { ILabelView, LabelView } from './LabelView';
 
 export type IFieldViewListener = IInputViewListener;
 
 export interface IFieldView<IV extends IInputView<IVA>,
   IVA extends IInputValue> extends IComponentView {
+  updateLabel(label: string): void;
+
   getInput(): IV;
   getValue(): Promise<IVA>;
 
@@ -43,28 +48,6 @@ export type ITextFieldView = IFieldView<ITextInputView, ITextInputValue>;
 export type IURLFieldView = IFieldView<IURLInputView, IURLInputValue>;
 
 export abstract class FieldRenderer {
-  public static renderLabel(fieldM: IFieldModel, uid: string): HTMLDivElement | undefined {
-    const { label, required } = fieldM;
-
-    if (!label) {
-      return undefined;
-    }
-
-    const wrapperContainer = document.createElement('div');
-    wrapperContainer.classList.add('af-field-label');
-
-    const node = document.createElement('label');
-    node.setAttribute('for', uid);
-    node.innerHTML = label;
-    wrapperContainer.appendChild(node);
-
-    if (required) {
-      node.classList.add('af-required');
-    }
-
-    return wrapperContainer;
-  }
-
   public static renderHint(fieldM: IFieldModel): HTMLElement | undefined {
     const { hint } = fieldM;
 
@@ -93,16 +76,16 @@ export abstract class FieldRenderer {
   }
 
   public static renderRoot(fieldM: IFieldModel, uid: string,
-    inputV: IInputView<IInputValue>, errorV: FieldErrorMessage): HTMLDivElement {
+    inputV: IInputView<IInputValue>, errorV: FieldErrorMessage,
+    labelV?: ILabelView): HTMLDivElement {
     const { id } = fieldM;
 
     const root = document.createElement('div');
     root.classList.add(`af-field-${id}`);
     root.classList.add('af-field');
 
-    const labelE = this.renderLabel(fieldM, uid);
-    if (labelE) {
-      root.appendChild(labelE);
+    if (!isNil(labelV)) {
+      root.appendChild(labelV.render());
     }
 
     const hintE = this.renderHint(fieldM);
@@ -134,19 +117,26 @@ export interface IFieldViewDeps<FM extends IFieldModel,
 
 export class FieldView<FM extends IFieldModel,
   IV extends IInputView<IVA>, IVA extends IInputValue> implements IFieldView<IV, IVA> {
-  protected readonly errorV: FieldErrorMessage;
-
   protected readonly uid: string;
 
+  protected readonly labelV?: ILabelView;
+
   protected readonly inputV: IV;
+
+  protected readonly errorV: FieldErrorMessage;
 
   protected readonly rootE: HTMLDivElement;
 
   protected constructor(deps: IFieldViewDeps<FM, IV>) {
-    this.errorV = FieldErrorMessage.create();
     this.uid = UID.create();
+
+    this.labelV = LabelView.create(deps.fieldM, this.uid);
     this.inputV = deps.fieldF.createInputView(deps.fieldM, deps.fieldL, this.uid);
-    this.rootE = FieldRenderer.renderRoot(deps.fieldM, this.uid, this.inputV, this.errorV);
+    this.errorV = FieldErrorMessage.create();
+
+    this.rootE = FieldRenderer.renderRoot(
+      deps.fieldM, this.uid, this.inputV, this.errorV, this.labelV,
+    );
   }
 
   public static create<FM extends IFieldModel,
@@ -154,6 +144,12 @@ export class FieldView<FM extends IFieldModel,
       deps: IFieldViewDeps<FM, IV>,
   ): IFieldView<IV, IVA> {
     return new this(deps);
+  }
+
+  public updateLabel(label: string): void {
+    if (this.labelV) {
+      this.labelV.updateLabel(label);
+    }
   }
 
   public getInput(): IV {

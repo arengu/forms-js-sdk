@@ -90,13 +90,9 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
     return this.stepsP[this.currentStep + 1];
   }
 
-  /**
-   * @param stepIndex Index of the last step you want to get value from
-   */
-  public async getUserValues(stepIndex?: number): Promise<IFormData> {
-    const steps = (!isNil(stepIndex))
-      ? this.stepsP.slice(0, stepIndex + 1)
-      : this.stepsP;
+  public async getUserValues(): Promise<IFormData> {
+    const steps = this.stepsP.slice(0, this.currentStep + 1);
+
     const proms = steps.map(FormPresenterHelper.getUserValues);
     const userValuesPerStep = await Promise.all(proms);
 
@@ -116,10 +112,9 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
 
   /**
    * Returns the data provided by the user plus the hidden fields
-   * @param stepIndex Index of the last step you want to get value from
    */
-  public async getFormValues(stepIndex?: number): Promise<IFormData> {
-    const userValues = await this.getUserValues(stepIndex);
+  public async getFormValues(): Promise<IFormData> {
+    const userValues = await this.getUserValues();
     const hiddenFields = this.getHiddenFields();
 
     const formValues = { ...userValues, ...hiddenFields };
@@ -181,7 +176,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
       if (this.isLastStep()) {
         await this.submitForm();
       } else {
-        this.showNextStep();
+        await this.showNextStep();
       }
     } catch (err) {
       stepP.handleAnyError(err);
@@ -223,6 +218,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
 
   public showStep(stepP: IStepPresenter, scroll?: boolean): void {
     this.currentStep = this.stepsP.indexOf(stepP);
+
     this.formV.showPage(stepP.getView());
 
     if (scroll === true) {
@@ -247,12 +243,17 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
     });
   }
 
-  public showNextStep(): void {
+  public async showNextStep(): Promise<void> {
     const currStep = this.getCurrentStep();
     const nextStep = this.getNextStep();
 
     if (isNil(nextStep)) {
       throw new Error('No previous step');
+    }
+
+    if (nextStep.isDynamic()) {
+      const formValues = await this.getFormValues();
+      nextStep.updateStep(formValues);
     }
 
     this.showStep(nextStep, true);
@@ -312,8 +313,8 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
     }
 
     const formId = this.formM.id;
-    const stepIndex = this.stepsP.indexOf(stepP);
-    const userValues = await this.getFormValues(stepIndex);
+
+    const userValues = await this.getFormValues();
 
     const stepId = stepP.getStepId();
     const signature = this.signatures.getValidationSignature(stepId);

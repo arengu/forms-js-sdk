@@ -1,4 +1,6 @@
 import debounce from 'lodash/debounce';
+import isNil from 'lodash/isNil';
+import isString from 'lodash/isString';
 
 import { FieldError } from '../../error/InvalidFields';
 import { IPresenter } from '../../base/Presenter';
@@ -17,6 +19,8 @@ import { IFieldValidationResult, IFieldValidator } from './validator/FieldValida
 import { IValueHandler } from './handler/ValueHandler';
 import { Messages } from '../../lib/Messages';
 import { EventsFactory } from '../../lib/EventsFactory';
+import { IFormData } from '../../form/model/SubmissionModel';
+import { MagicString } from '../../lib/MagicString';
 
 export interface IFieldPresenterListener {
   onValidField(this: this, fieldP: IAnyFieldPresenter): void;
@@ -27,6 +31,9 @@ export interface IFieldPresenter<FV extends IFieldView<IInputView<IInputValue>, 
   FVA extends IFieldValue> extends IPresenter<FV> {
   getFieldId(this: this): string;
   getValue(this: this): Promise<FVA>;
+
+  isDynamic(this: this): boolean;
+  updateField(this: this, data: IFormData): void;
 
   validate(this: this): Promise<IFieldValidationResult>;
 
@@ -168,6 +175,21 @@ export class FieldPresenter<FM extends IFieldModel, FV extends IFieldView<IV, II
 
     this.invalid = false;
     this.fieldL.onValidField(this);
+  }
+
+  public isDynamic(this: this): boolean {
+    const { label } = this.fieldM;
+    return isString(label) && MagicString.isDynamic(label);
+  }
+
+  public updateField(this: this, data: IFormData): void {
+    if (isNil(this.fieldV)) {
+      return;
+    }
+
+    const template = this.fieldM.label || '';
+    const label = MagicString.render(template, data);
+    this.fieldV.updateLabel(label);
   }
 
   public async validate(): Promise<IFieldValidationResult> {
