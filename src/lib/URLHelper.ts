@@ -1,5 +1,7 @@
 import 'url-search-params-polyfill';
 
+import isNil from 'lodash/isNil';
+
 export const URLHelper = {
   getParam(name: string): string | undefined {
     return new URLSearchParams(document.location.search).get(name) || undefined;
@@ -12,7 +14,7 @@ export const URLHelper = {
     entries.forEach((newVal, key): void => {
       const currVal = params[key];
 
-      if (currVal == undefined) { // eslint-disable-line eqeqeq
+      if (isNil(currVal)) {
         params[key] = newVal;
       } else if (typeof (currVal) === 'string') {
         params[key] = [currVal, newVal] as string[];

@@ -1,4 +1,5 @@
 import includes from 'lodash/includes';
+import isNil from 'lodash/isNil';
 
 import { UID } from '../../../../lib/UID';
 
@@ -793,7 +794,7 @@ class LegacyDropdown {
       this.build();
     }
 
-    if (this.html == undefined) { // eslint-disable-line eqeqeq
+    if (isNil(this.html)) {
       throw new Error('Unexpected case');
     }
 

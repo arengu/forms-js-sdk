@@ -1,3 +1,5 @@
+import isNil from 'lodash/isNil';
+
 import { IFieldValidationResult } from './FieldValidator';
 import {
   ILegalFieldValue, ILegalFieldModel, IPaymentFieldValue,
@@ -14,7 +16,7 @@ export abstract class CustomValidations {
     Promise<IFieldValidationResult> {
     const { id: fieldId } = fieldM;
 
-    if (value == undefined) { // eslint-disable-line eqeqeq
+    if (isNil(value)) {
       return VALID;
     }
 

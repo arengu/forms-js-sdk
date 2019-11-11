@@ -1,3 +1,5 @@
+import isNil from 'lodash/isNil';
+
 import { IStepButtonsModel } from '../model/StepModel';
 
 import { NextButton } from '../part/NextButton';
@@ -25,7 +27,7 @@ export class NavigationView implements IHTMLView {
   protected rootE?: HTMLElement;
 
   protected constructor(buttons: IStepButtonsModel, listener: INavigationListener) {
-    this.previousV = buttons.previous != undefined // eslint-disable-line eqeqeq
+    this.previousV = !isNil(buttons.previous)
       ? PreviousButton.create(buttons.previous, NavigationHelper.createButtonCallback(listener))
       : undefined;
     this.nextV = NextButton.create(buttons.next);
@@ -37,14 +39,14 @@ export class NavigationView implements IHTMLView {
   }
 
   public render(): HTMLElement {
-    if (this.rootE != undefined) { // eslint-disable-line eqeqeq
+    if (!isNil(this.rootE)) {
       return this.rootE;
     }
 
     const container = document.createElement('div');
     container.classList.add('af-step-navigation');
 
-    if (this.previousV != undefined) { // eslint-disable-line eqeqeq
+    if (!isNil(this.previousV)) {
       const previousE = this.previousV.render();
       container.appendChild(previousE);
     }

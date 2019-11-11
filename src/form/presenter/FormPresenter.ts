@@ -1,3 +1,5 @@
+import isNil from 'lodash/isNil';
+
 import { HiddenFields } from '../HiddenFields'; // eslint-disable-line no-unused-vars
 
 import { IFormModel } from '../model/FormModel';
@@ -17,7 +19,6 @@ import { EventsFactory } from '../../lib/EventsFactory';
 import { IValidationModel } from '../model/ValidationModel';
 import { InvalidStep } from '../../error/InvalidStep';
 import { IStepPresenter, IStepListener, StepPresenter } from '../../step/presenter/StepPresenter';
-import { IStepModel } from '../../step/model/StepModel';
 
 export abstract class FormPresenterHelper {
   public static getUserValues(stepP: IStepPresenter): Promise<IUserValues> {
@@ -58,7 +59,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
     this.formV = FormView.create(formM, this);
     this.messages = messages;
     this.confV = ThankYouView.create();
-    this.stepsP = steps.map((sM: IStepModel) => StepPresenter.create(sM, this, this.messages));
+    this.stepsP = steps.map((sM): IStepPresenter => StepPresenter.create(sM, this, this.messages));
     this.hiddenFields = hiddenFields;
     this.signatures = SignatureStack.fromSteps(steps);
     this.currentStep = -1;
@@ -93,7 +94,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
    * @param stepIndex Index of the last step you want to get value from
    */
   public async getUserValues(stepIndex?: number): Promise<IFormData> {
-    const steps = (stepIndex != undefined) // eslint-disable-line eqeqeq
+    const steps = (!isNil(stepIndex))
       ? this.stepsP.slice(0, stepIndex + 1)
       : this.stepsP;
     const proms = steps.map(FormPresenterHelper.getUserValues);
@@ -233,7 +234,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
     const currStep = this.getCurrentStep();
     const prevStep = this.getPreviousStep();
 
-    if (prevStep == undefined) {
+    if (isNil(prevStep)) {
       throw new Error('No previous step');
     }
 
@@ -250,7 +251,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
     const currStep = this.getCurrentStep();
     const nextStep = this.getNextStep();
 
-    if (nextStep == undefined) {
+    if (isNil(nextStep)) {
       throw new Error('No previous step');
     }
 
@@ -266,7 +267,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
   public reset(): void {
     const firstStep = this.getFirstStep();
 
-    if (firstStep == undefined) {
+    if (isNil(firstStep)) {
       throw new Error('No first step');
     }
 
@@ -333,7 +334,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
 
     const firstStep = this.getFirstStep();
 
-    if (firstStep != undefined) {
+    if (!isNil(firstStep)) {
       this.showStep(firstStep);
     }
 

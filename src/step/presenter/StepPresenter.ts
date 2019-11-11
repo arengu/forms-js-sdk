@@ -1,5 +1,6 @@
 import keyBy from 'lodash/keyBy';
 import isEmpty from 'lodash/isEmpty';
+import isNil from 'lodash/isNil';
 
 import { InvalidFields, FieldError } from '../../error/InvalidFields';
 
@@ -71,7 +72,7 @@ export abstract class StepPresenterHelper {
   }
 
   public static hasValue(pair: IPairFieldIdValue): boolean {
-    return pair.value != undefined && !isEmpty(pair.value); // eslint-disable-line eqeqeq
+    return !isNil(pair.value) && !isEmpty(pair.value);
   }
 }
 
@@ -119,7 +120,7 @@ export class StepPresenter implements IStepPresenter, IFieldPresenterListener {
   public getFieldPresenter(fieldId: string): IAnyFieldPresenter {
     const fieldP = this.fieldsPI[fieldId];
 
-    if (fieldP == undefined) { // eslint-disable-line eqeqeq
+    if (isNil(fieldP)) {
       throw new Error('Field not found');
     }
 

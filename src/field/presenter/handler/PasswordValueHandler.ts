@@ -2,6 +2,7 @@ import md5 from 'md5';
 import sha1 from 'hash.js/lib/hash/sha/1';
 import sha256 from 'hash.js/lib/hash/sha/256';
 import sha512 from 'hash.js/lib/hash/sha/512';
+import isNil from 'lodash/isNil';
 
 import { IValueHandler } from './ValueHandler';
 import { IPasswordFieldModel, IPasswordFieldValue, HashFunction } from '../../model/FieldModel';
@@ -31,7 +32,7 @@ export const PasswordValueHandler: IValueHandler<IPasswordFieldModel,
   async getValue(inputV: IPasswordInputView, fieldM: IPasswordFieldModel):
     Promise<IPasswordFieldValue> {
     const cleanValue = await StringValueHandler.getValue(inputV, fieldM);
-    return cleanValue == undefined // eslint-disable-line eqeqeq
+    return isNil(cleanValue)
       ? undefined
       : PasswordHasher.hash(cleanValue, fieldM.config.hash);
   },

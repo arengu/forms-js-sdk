@@ -1,3 +1,5 @@
+import isNil from 'lodash/isNil';
+
 import { IFieldValidationResult } from './FieldValidator';
 import {
   IFieldValue, IFieldModel, ITextFieldModel, ITelFieldModel, INumberFieldModel,
@@ -15,7 +17,7 @@ export const FieldRules = {
       return VALID;
     }
 
-    if (value == undefined) { // eslint-disable-line eqeqeq
+    if (isNil(value)) {
       return {
         valid: false,
         error: FieldError.create(
@@ -33,8 +35,7 @@ export const FieldRules = {
     Promise<IFieldValidationResult> {
     const { minLength } = fieldM.config;
 
-    if (minLength == undefined || value == undefined // eslint-disable-line eqeqeq
-      || value.length >= minLength) {
+    if (isNil(minLength) || isNil(value) || value.length >= minLength) {
       return VALID;
     }
 
@@ -55,8 +56,7 @@ export const FieldRules = {
     Promise<IFieldValidationResult> {
     const { maxLength } = fieldM.config;
 
-    if (maxLength == undefined || value == undefined // eslint-disable-line eqeqeq
-      || value.length <= maxLength) {
+    if (isNil(maxLength) || isNil(value) || value.length <= maxLength) {
       return VALID;
     }
 
@@ -77,7 +77,7 @@ export const FieldRules = {
     Promise<IFieldValidationResult> {
     const { minValue } = fieldM.config;
 
-    if (minValue == undefined || strValue == undefined) { // eslint-disable-line eqeqeq
+    if (isNil(minValue) || isNil(strValue)) {
       return VALID;
     }
 
@@ -104,7 +104,7 @@ export const FieldRules = {
     Promise<IFieldValidationResult> {
     const { maxValue } = fieldM.config;
 
-    if (maxValue == undefined || strValue == undefined) { // eslint-disable-line eqeqeq
+    if (isNil(maxValue) || isNil(strValue)) {
       return VALID;
     }
 
@@ -135,7 +135,7 @@ export const FieldRules = {
       return VALID;
     }
 
-    if (value == undefined) { // eslint-disable-line eqeqeq
+    if (isNil(value)) {
       return {
         valid: false,
         error: FieldError.create(

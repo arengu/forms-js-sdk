@@ -1,3 +1,5 @@
+import isNil from 'lodash/isNil';
+
 import { IHTMLView } from '../../base/view/HTMLView';
 import { IFormModel } from '../model/FormModel';
 import { ICookieModel } from '../model/CookieModel';
@@ -145,7 +147,7 @@ export class FormView implements IFormView {
   public static redirect(params: IRedirectionParams): void {
     const { target, delay: delayS } = params;
 
-    const delayMS = delayS != undefined ? delayS * 1000 : 0; // eslint-disable-line eqeqeq
+    const delayMS = !isNil(delayS) ? delayS * 1000 : 0;
 
     setTimeout((): void => {
       document.location.href = target;

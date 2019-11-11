@@ -1,4 +1,5 @@
 import includes from 'lodash/includes';
+import isNil from 'lodash/isNil';
 
 import { FormPresenter, IFormPresenter } from './form/presenter/FormPresenter';
 
@@ -86,10 +87,10 @@ export abstract class SDKHelper {
 export abstract class SDK {
   public static async embed(form: string | IFormModel, parent: string | Element,
     initValues?: Record<string, string>): Promise<IArenguForm> {
-    if (form == undefined) { // eslint-disable-line eqeqeq
+    if (isNil(form)) {
       throw SDKError.create(SDKErrorCode.MISSING_FORM_ID, 'Specify the form you want to embed');
     }
-    if (parent == undefined) { // eslint-disable-line eqeqeq
+    if (isNil(parent)) {
       throw SDKError.create(SDKErrorCode.INVALID_NODE, 'Specify the node where you want to embed the form');
     }
 

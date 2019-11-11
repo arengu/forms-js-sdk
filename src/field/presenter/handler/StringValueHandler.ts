@@ -1,3 +1,5 @@
+import isNil from 'lodash/isNil';
+
 import { IFieldModel, ISingleFieldValue } from '../../model/FieldModel';
 import { IInputView } from '../../view/InputView';
 import { IValueHandler } from './ValueHandler';
@@ -11,7 +13,7 @@ export const StringValueHandler: IValueHandler<IFieldModel,
   async getValue(inputV: IInputView<string>): Promise<ISingleFieldValue> {
     const origValue = await inputV.getValue();
 
-    if (origValue == undefined) { // eslint-disable-line eqeqeq
+    if (isNil(origValue)) {
       return undefined;
     }
 

@@ -1,3 +1,5 @@
+import isNil from 'lodash/isNil';
+
 import { IHTMLView } from '../../base/view/HTMLView';
 import { HTMLHelper } from './HTMLHelper';
 
@@ -36,7 +38,7 @@ export class GenericButton implements IHTMLView {
   }
 
   protected getButton(): HTMLElement {
-    if (this.buttonE == undefined) { // eslint-disable-line eqeqeq
+    if (isNil(this.buttonE)) {
       throw new Error('Render it first');
     }
 
@@ -44,7 +46,7 @@ export class GenericButton implements IHTMLView {
   }
 
   protected renderButton(): HTMLElement {
-    if (this.buttonE != undefined) { // eslint-disable-line eqeqeq
+    if (!isNil(this.buttonE)) {
       return this.buttonE;
     }
 
@@ -62,7 +64,7 @@ export class GenericButton implements IHTMLView {
       node.appendChild(ladda);
     }
 
-    if (this.callback != undefined) { // eslint-disable-line eqeqeq
+    if (!isNil(this.callback)) {
       node.onclick = this.callback;
     }
 
@@ -71,7 +73,7 @@ export class GenericButton implements IHTMLView {
   }
 
   public render(): HTMLElement {
-    if (this.rootE != undefined) { // eslint-disable-line eqeqeq
+    if (!isNil(this.rootE)) {
       return this.rootE;
     }
 

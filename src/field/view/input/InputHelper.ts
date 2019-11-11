@@ -1,3 +1,5 @@
+import isNil from 'lodash/isNil';
+
 import { IInputViewListener } from '../InputView';
 import { IFieldModel } from '../../model/FieldModel';
 
@@ -75,7 +77,7 @@ export abstract class InputConfigurator {
   public static defaultValue(elem: ITextInput, fieldM: IFieldWithDefaultValue): void {
     const { defaultValue } = fieldM.config;
 
-    if (defaultValue != undefined) { // eslint-disable-line eqeqeq
+    if (!isNil(defaultValue)) {
       elem.value = defaultValue.toString(); // eslint-disable-line no-param-reassign
     }
   }
@@ -86,7 +88,7 @@ export abstract class InputConfigurator {
     if (minLength > 0) {
       elem.minLength = minLength; // eslint-disable-line no-param-reassign
     }
-    if (maxLength != undefined && maxLength >= 0) { // eslint-disable-line eqeqeq
+    if (!isNil(maxLength) && maxLength >= 0) {
       elem.maxLength = maxLength; // eslint-disable-line no-param-reassign
     }
   }
@@ -94,10 +96,10 @@ export abstract class InputConfigurator {
   public static rangeRules(elem: HTMLInputElement, fieldM: IFieldWithRangeRules): void {
     const { minValue, maxValue } = fieldM.config;
 
-    if (minValue != undefined) { // eslint-disable-line eqeqeq
+    if (!isNil(minValue)) {
       elem.min = minValue.toString(); // eslint-disable-line no-param-reassign
     }
-    if (maxValue != undefined) { // eslint-disable-line eqeqeq
+    if (!isNil(maxValue)) {
       elem.max = maxValue.toString(); // eslint-disable-line no-param-reassign
     }
   }

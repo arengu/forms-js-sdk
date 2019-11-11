@@ -1,6 +1,7 @@
 import find from 'lodash/find';
 import findIndex from 'lodash/findIndex';
 import get from 'lodash/get';
+import isNil from 'lodash/isNil';
 
 import { IStepModel } from '../step/model/StepModel';
 
@@ -43,7 +44,7 @@ export class SignatureStack {
   protected getEntryByStepId(stepId: string): StackEntry {
     const entry = find(this.steps, { stepId });
 
-    if (entry == undefined) { // eslint-disable-line eqeqeq
+    if (isNil(entry)) {
       throw new Error('ID not found');
     }
 
@@ -53,7 +54,7 @@ export class SignatureStack {
   protected getEntryByIndex(index: number): StackEntry {
     const entry = get(this.steps, index);
 
-    if (entry == undefined) { // eslint-disable-line eqeqeq
+    if (isNil(entry)) {
       throw new Error('Index not found');
     }
 
@@ -75,7 +76,7 @@ export class SignatureStack {
 
     const { signature } = entry;
 
-    if (signature != undefined) { // eslint-disable-line eqeqeq
+    if (!isNil(signature)) {
       return signature;
     }
 

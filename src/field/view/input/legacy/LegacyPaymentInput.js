@@ -1,3 +1,5 @@
+import isNil from 'lodash/isNil';
+
 const STRIPE_SDK_URL = 'https://js.stripe.com/v3/';
 const STRIPE_SDK_LOAD = 'af-stripeLoad';
 
@@ -69,7 +71,7 @@ class LegacyPaymentInput {
     element.addEventListener('change', (e) => {
       const node = self.trustmarksSelector;
 
-      const hasError = e.error != undefined; // eslint-disable-line eqeqeq
+      const hasError = !isNil(e.error);
 
       if (hasError) {
         node.classList.add('af-payment-cardNumber-brand-error');
@@ -167,7 +169,7 @@ class LegacyPaymentInput {
     element.addEventListener('focus', () => self.listener.onFocus());
     element.addEventListener('blur', () => self.listener.onBlur());
     element.addEventListener('change', (e) => {
-      const hasError = e.error != undefined; // eslint-disable-line eqeqeq
+      const hasError = !isNil(e.error);
 
       self.isExpirationDateEmpty = e.empty;
       self.isExpirationDateComplete = e.complete || !hasError ||
@@ -251,7 +253,7 @@ class LegacyPaymentInput {
     element.addEventListener('focus', () => self.listener.onFocus());
     element.addEventListener('blur', () => self.listener.onBlur());
     element.addEventListener('change', (e) => {
-      const hasError = e.error != undefined; // eslint-disable-line eqeqeq
+      const hasError = !isNil(e.error);
 
       self.isSecurityCodeEmpty = e.empty;
       self.isSecurityCodeComplete = e.complete || !hasError ||
@@ -389,7 +391,7 @@ class LegacyPaymentInput {
   }
 
   render() {
-    if (this.viewE != undefined) { // eslint-disable-line eqeqeq
+    if (!isNil(this.viewE)) {
       return this.viewE;
     }
 

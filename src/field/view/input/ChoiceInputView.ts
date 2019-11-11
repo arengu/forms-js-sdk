@@ -1,4 +1,5 @@
 import includes from 'lodash/includes';
+import isNil from 'lodash/isNil';
 
 import {
   IInputView, IInputViewListener, ISingleOptionValue, IMultiOptionValue,
@@ -27,7 +28,7 @@ export abstract class ChoiceInputRenderer {
   public static isDefault(fieldM: IChoiceFieldModel, value: string): boolean {
     const { defaultValue, multiple } = fieldM.config;
 
-    return defaultValue != undefined // eslint-disable-line eqeqeq
+    return !isNil(defaultValue)
       && (
         multiple
           ? includes(defaultValue, value)
