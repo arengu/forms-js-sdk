@@ -91,7 +91,8 @@
   display: flex;
   align-items: center;
   padding: 5px;
-  height: var(--input-height);
+  min-height: var(--input-height);
+  height: auto;
   cursor: pointer;
 }
 
@@ -127,8 +128,8 @@
   content: "";
   background: #fff;
   border: var(--input-border);
-  width: 20px;
-  height: 20px;
+  min-width: 20px;
+  min-height: 20px;
   box-sizing: border-box;
   margin-left: 4px;
 }
