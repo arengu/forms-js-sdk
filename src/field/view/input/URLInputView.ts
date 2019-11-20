@@ -1,5 +1,5 @@
 import { IInputViewListener, IInputView } from '../InputView';
-import { SimpleInputView } from './SimpleInputView';
+import { StringInputView } from './StringInputView';
 import { InputConfigurator, InputCreator } from './InputHelper';
 import { IURLFieldModel } from '../../model/FieldModel';
 
@@ -22,7 +22,7 @@ export type IURLInputValue = string;
 
 export type IURLInputView = IInputView<IURLInputValue>;
 
-export class URLInputView extends SimpleInputView implements IURLInputView {
+export class URLInputView extends StringInputView implements IURLInputView {
   public static create(fieldM: IURLFieldModel, uid: string,
     inputL: IInputViewListener): URLInputView {
     const inputE = URLInputRenderer.renderInput(fieldM, uid, inputL);

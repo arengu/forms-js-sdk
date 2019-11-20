@@ -1,5 +1,5 @@
 import { IInputViewListener, IInputView } from '../InputView';
-import { SimpleInputView } from './SimpleInputView';
+import { StringInputView } from './StringInputView';
 import { InputCreator, InputConfigurator } from './InputHelper';
 import { IEmailFieldModel } from '../../model/FieldModel';
 
@@ -23,7 +23,7 @@ export type IEmailInputValue = string;
 
 export type IEmailInputView = IInputView<IEmailInputValue>;
 
-export class EmailInputView extends SimpleInputView implements IEmailInputView {
+export class EmailInputView extends StringInputView implements IEmailInputView {
   public static create(fieldM: IEmailFieldModel, uid: string,
     inputL: IInputViewListener): EmailInputView {
     const inputE = EmailInputRenderer.renderInput(fieldM, uid, inputL);

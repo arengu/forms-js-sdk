@@ -1,5 +1,5 @@
 import { IInputViewListener, IInputView } from '../InputView';
-import { SimpleInputView } from './SimpleInputView';
+import { StringInputView } from './StringInputView';
 import { InputConfigurator, InputCreator } from './InputHelper';
 import { ITelFieldModel } from '../../model/FieldModel';
 
@@ -24,7 +24,7 @@ export type ITelInputValue = string;
 
 export type ITelInputView = IInputView<ITelInputValue>;
 
-export class TelInputView extends SimpleInputView implements ITelInputView {
+export class TelInputView extends StringInputView implements ITelInputView {
   public static create(fieldM: ITelFieldModel, uid: string,
     inputL: IInputViewListener): TelInputView {
     const inputE = TelInputRenderer.renderInput(fieldM, uid, inputL);

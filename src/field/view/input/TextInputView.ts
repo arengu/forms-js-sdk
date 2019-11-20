@@ -1,6 +1,6 @@
 import { IInputViewListener, IInputView } from '../InputView';
 import { InputCreator, InputConfigurator } from './InputHelper';
-import { SimpleInputView } from './SimpleInputView';
+import { StringInputView } from './StringInputView';
 import { CharCounterView } from './CharCounterView';
 import { ITextFieldModel } from '../../model/FieldModel';
 
@@ -63,7 +63,7 @@ export type ITextInputValue = string;
 
 export type ITextInputView = IInputView<ITextInputValue>;
 
-export class TextInputView extends SimpleInputView implements ITextInputView {
+export class TextInputView extends StringInputView implements ITextInputView {
   public static create(fieldM: ITextFieldModel, uid: string,
     inputL: IInputViewListener): TextInputView {
     const inputE = TextInputRenderer.renderInput(fieldM, uid, inputL);

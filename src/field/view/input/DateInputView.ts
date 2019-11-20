@@ -1,5 +1,5 @@
 import { IInputViewListener, IInputView } from '../InputView';
-import { SimpleInputView } from './SimpleInputView';
+import { StringInputView } from './StringInputView';
 import { InputCreator, InputConfigurator } from './InputHelper';
 import { IDateFieldModel, DateFormat } from '../../model/FieldModel';
 
@@ -40,7 +40,7 @@ export type IDateInputValue = string;
 
 export type IDateInputView = IInputView<IDateInputValue>;
 
-export class DateInputView extends SimpleInputView implements IDateInputView {
+export class DateInputView extends StringInputView implements IDateInputView {
   public static create(fieldM: IDateFieldModel, uid: string,
     inputL: IInputViewListener): DateInputView {
     const inputE = DateInputRenderer.renderInput(fieldM, uid, inputL);

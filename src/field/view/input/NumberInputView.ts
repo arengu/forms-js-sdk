@@ -1,5 +1,5 @@
 import { IInputViewListener, IInputView } from '../InputView';
-import { SimpleInputView } from './SimpleInputView';
+import { StringInputView } from './StringInputView';
 import { InputCreator, InputConfigurator } from './InputHelper';
 import { INumberFieldModel } from '../../model/FieldModel';
 
@@ -23,7 +23,7 @@ export type INumberInputValue = string;
 
 export type INumberInputView = IInputView<INumberInputValue>;
 
-export class NumberInputView extends SimpleInputView implements INumberInputView {
+export class NumberInputView extends StringInputView implements INumberInputView {
   public static create(fieldM: INumberFieldModel, uid: string,
     inputL: IInputViewListener): NumberInputView {
     const inputE = NumberInputRenderer.renderInput(fieldM, uid, inputL);
