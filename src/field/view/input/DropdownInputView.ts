@@ -30,6 +30,10 @@ export class DropdownInputView implements IDropdownInputView {
     return this.inputV.value;
   }
 
+  public async setValue(): Promise<void> { // eslint-disable-line class-methods-use-this
+    throw new Error('Not supported yet');
+  }
+
   public reset(): void { // eslint-disable-line class-methods-use-this
     // nothing to do here until LegacyDropdown supports it
   }

@@ -2,13 +2,23 @@ import 'url-search-params-polyfill';
 
 import isNil from 'lodash/isNil';
 
+const searchParams = new URLSearchParams(document.location.search);
+
 export const URLHelper = {
   getParam(name: string): string | undefined {
-    return new URLSearchParams(document.location.search).get(name) || undefined;
+    const urlValue = searchParams.get(name);
+
+    if (isNil(urlValue)) {
+      return undefined;
+    }
+
+    const trimValue = urlValue.trim();
+
+    return trimValue === '' ? undefined : trimValue;
   },
 
   getAllParams(): Record<string, string | string[]> {
-    const entries = new URLSearchParams(document.location.search);
+    const entries = searchParams;
     const params: Record<string, string | string[]> = {};
 
     entries.forEach((newVal, key): void => {

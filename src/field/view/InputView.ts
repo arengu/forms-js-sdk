@@ -21,6 +21,7 @@ export interface IInputViewListener {
 
 export interface IInputView<IVA extends IInputValue> extends IHTMLView {
   getValue(): Promise<IVA>;
+  setValue(value: IVA): Promise<void>;
 }
 
 export type ISingleOptionValue = string | undefined;

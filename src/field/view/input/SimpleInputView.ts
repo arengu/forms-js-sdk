@@ -7,7 +7,9 @@ export interface ISimpleInputElement extends HTMLElement {
   defaultValue: string;
 }
 
-export abstract class SimpleInputView implements IInputView<ISimpleInputValue> {
+export type ISimpleInputView = IInputView<ISimpleInputValue>;
+
+export abstract class SimpleInputView implements ISimpleInputView {
   protected readonly inputE: ISimpleInputElement;
 
   protected readonly rootE: HTMLElement;
@@ -19,6 +21,10 @@ export abstract class SimpleInputView implements IInputView<ISimpleInputValue> {
 
   public async getValue(): Promise<ISimpleInputValue> {
     return this.inputE.value.trim();
+  }
+
+  public async setValue(value: ISimpleInputValue): Promise<void> {
+    this.inputE.value = value;
   }
 
   public reset(): void {

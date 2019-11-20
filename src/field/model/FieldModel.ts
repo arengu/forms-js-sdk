@@ -162,21 +162,21 @@ export type IFieldModel = IBooleanFieldModel | IChoiceFieldModel | IDateFieldMod
   IDropdownFieldModel | IEmailFieldModel | ILegalFieldModel | INumberFieldModel |
   IPasswordFieldModel | IPaymentFieldModel | ITelFieldModel | ITextFieldModel | IURLFieldModel;
 
-export type ISingleFieldValue = string | undefined;
-export type IMultiFieldValue = string[];
+export type IStringFieldValue = string | undefined;
+export type IArrayFieldValue = string[];
 
 export type IBooleanFieldValue = 'false' | 'true';
-export type IChoiceFieldValue = ISingleFieldValue | IMultiFieldValue;
-export type IDateFieldValue = ISingleFieldValue;
-export type IDropdownFieldValue = ISingleFieldValue | IMultiFieldValue;
-export type IEmailFieldValue = ISingleFieldValue;
+export type IChoiceFieldValue = IStringFieldValue | IArrayFieldValue;
+export type IDateFieldValue = IStringFieldValue;
+export type IDropdownFieldValue = IStringFieldValue | IArrayFieldValue;
+export type IEmailFieldValue = IStringFieldValue;
 export type ILegalFieldValue = IBooleanFieldValue;
-export type INumberFieldValue = ISingleFieldValue;
-export type IPasswordFieldValue = ISingleFieldValue;
-export type IPaymentFieldValue = ISingleFieldValue;
-export type ITelFieldValue = ISingleFieldValue;
-export type ITextFieldValue = ISingleFieldValue;
-export type IURLFieldValue = ISingleFieldValue;
+export type INumberFieldValue = IStringFieldValue;
+export type IPasswordFieldValue = IStringFieldValue;
+export type IPaymentFieldValue = IStringFieldValue;
+export type ITelFieldValue = IStringFieldValue;
+export type ITextFieldValue = IStringFieldValue;
+export type IURLFieldValue = IStringFieldValue;
 
 export type IFieldValue = IBooleanFieldValue | IChoiceFieldValue | IDateFieldValue |
   IDropdownFieldValue | IEmailFieldValue | ILegalFieldValue | INumberFieldValue |

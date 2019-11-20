@@ -144,6 +144,10 @@ export class ChoiceInputView implements IChoiceInputView {
     return this.multiple ? this.getAllChoices() : this.getFirstChoice();
   }
 
+  public async setValue(): Promise<void> { // eslint-disable-line class-methods-use-this
+    throw new Error('Not supported yet');
+  }
+
   public reset(): void {
     this.optionsE.forEach(InputHelper.resetCheck);
   }

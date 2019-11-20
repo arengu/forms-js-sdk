@@ -21,6 +21,7 @@ import { Messages } from '../../lib/Messages';
 import { EventsFactory } from '../../lib/EventsFactory';
 import { IFormData } from '../../form/model/SubmissionModel';
 import { MagicString } from '../../lib/MagicString';
+import { URLHelper } from '../../lib/URLHelper';
 
 export interface IFieldPresenterListener {
   onValidField(this: this, fieldP: IAnyFieldPresenter): void;
@@ -105,6 +106,8 @@ export class FieldPresenter<FM extends IFieldModel, FV extends IFieldView<IV, II
     this.valueH = deps.fieldF.createHandler();
 
     this.debouncedValidate = debounce(this.validate, 500);
+
+    this.initValue();
   }
 
   public static create<FM extends IFieldModel, FV extends IFieldView<IV, IInputValue>,
@@ -116,6 +119,15 @@ export class FieldPresenter<FM extends IFieldModel, FV extends IFieldView<IV, II
 
   public getFieldId(): string {
     return this.fieldM.id;
+  }
+
+  public initValue(): void {
+    const urlValue = URLHelper.getParam(this.getFieldId());
+    const anyValue = urlValue as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+
+    if (!isNil(urlValue)) {
+      this.valueH.setValue(this.inputV, anyValue);
+    }
   }
 
   public async getValue(): Promise<FVA> {

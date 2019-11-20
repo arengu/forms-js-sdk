@@ -13,4 +13,8 @@ export const PaymentValueHandler: IValueHandler<IPaymentFieldModel,
     const token = inputV.getToken();
     return token ? token.id : undefined;
   },
+
+  async setValue(): Promise<void> {
+    // we must not inject its value for security purposes
+  },
 };

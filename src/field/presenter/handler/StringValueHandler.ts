@@ -1,16 +1,17 @@
 import isNil from 'lodash/isNil';
 
-import { IFieldModel, ISingleFieldValue } from '../../model/FieldModel';
+import { IFieldModel, IStringFieldValue } from '../../model/FieldModel';
 import { IInputView } from '../../view/InputView';
 import { IValueHandler } from './ValueHandler';
 
+export type IStringFieldView = IInputView<string>;
 /**
  * Handles values when its associated InputView always return a string:
  * trims value and returns undefined when the string is empty
  */
 export const StringValueHandler: IValueHandler<IFieldModel,
-  IInputView<string>, ISingleFieldValue> = {
-  async getValue(inputV: IInputView<string>): Promise<ISingleFieldValue> {
+  IStringFieldView, IStringFieldValue> = {
+  async getValue(inputV: IStringFieldView): Promise<IStringFieldValue> {
     const origValue = await inputV.getValue();
 
     if (isNil(origValue)) {
@@ -19,6 +20,12 @@ export const StringValueHandler: IValueHandler<IFieldModel,
 
     const trimValue = origValue.trim();
 
-    return trimValue || undefined;
+    return trimValue === '' ? undefined : trimValue;
+  },
+
+  async setValue(
+    inputV: IStringFieldView, value: IStringFieldValue,
+  ): Promise<void> {
+    inputV.setValue(isNil(value) ? '' : value.trim());
   },
 };

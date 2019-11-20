@@ -123,6 +123,10 @@ export class BooleanInputView implements IBooleanInputView {
     }
   }
 
+  public async setValue(): Promise<void> { // eslint-disable-line class-methods-use-this
+    throw new Error('Not supported yet');
+  }
+
   public reset(): void {
     this.optionsE.forEach(InputHelper.resetCheck);
   }

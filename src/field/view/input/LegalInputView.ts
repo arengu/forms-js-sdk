@@ -68,6 +68,10 @@ export class LegalInputView implements ILegalInputView {
     return this.inputE.checked ? 'true' : 'false';
   }
 
+  public async setValue(): Promise<void> { // eslint-disable-line class-methods-use-this
+    // automatic check of legal fields is not allowed
+  }
+
   public reset(): void {
     this.inputE.checked = this.inputE.defaultChecked;
   }

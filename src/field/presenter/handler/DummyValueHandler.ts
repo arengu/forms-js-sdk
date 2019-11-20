@@ -12,6 +12,10 @@ export class DummyValueHandler<VA extends IConvertibleValue>
     return inputV.getValue();
   }
 
+  public async setValue(): Promise<void> { // eslint-disable-line class-methods-use-this
+    // not supported yet
+  }
+
   public static create<VA extends IConvertibleValue>():
     IValueHandler<IFieldModel, IInputView<VA>, VA> {
     return new this();

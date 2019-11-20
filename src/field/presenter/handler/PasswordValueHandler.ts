@@ -36,4 +36,8 @@ export const PasswordValueHandler: IValueHandler<IPasswordFieldModel,
       ? undefined
       : PasswordHasher.hash(cleanValue, fieldM.config.hash);
   },
+
+  async setValue(): Promise<void> {
+    // we must not inject its value for security purposes
+  },
 };

@@ -102,6 +102,10 @@ export class PaymentInputView implements IPaymentInputView, ILegacyPaymentListen
     throw new Error('Not implemented');
   }
 
+  public async setValue(): Promise<never> { // eslint-disable-line class-methods-use-this
+    throw new Error('Not allowed for security purposes');
+  }
+
   public getToken(): ICardToken | undefined {
     return this.token;
   }

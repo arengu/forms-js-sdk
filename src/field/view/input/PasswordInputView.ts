@@ -123,6 +123,10 @@ export class PasswordInputView implements IPasswordInputView, IPasswordVisibilit
     return this.inputE.value;
   }
 
+  public async setValue(): Promise<void> {
+    throw new Error('Not allowed for security purposes');
+  }
+
   public showPassword(): void {
     this.inputE.setAttribute('type', PasswordInputType.visible);
   }
