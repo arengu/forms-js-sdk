@@ -1,5 +1,3 @@
-import 'url-search-params-polyfill';
-
 import isNil from 'lodash/isNil';
 
 export const URLHelper = {

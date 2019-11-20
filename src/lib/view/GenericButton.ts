@@ -55,7 +55,7 @@ export class GenericButton implements IHTMLView {
 
     const text = document.createElement('span');
     text.classList.add('af-button-text');
-    text.innerText = this.text;
+    text.textContent = this.text;
     node.appendChild(text);
 
     if (this.type === 'submit') {

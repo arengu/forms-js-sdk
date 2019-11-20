@@ -102,7 +102,7 @@ export class FormView implements IFormView {
     const currPageE = this.formE.firstChild;
 
     if (currPageE) {
-      currPageE.remove();
+      this.formE.removeChild(currPageE);
     }
 
     const newPageE = pageV.render();

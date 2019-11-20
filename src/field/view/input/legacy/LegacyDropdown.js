@@ -92,7 +92,7 @@ class LegacyDropdown {
     const node = document.createElement('option');
     node.setAttribute('id', optionId);
     node.setAttribute('value', value);
-    node.innerText = label;
+    node.textContent = label;
 
     if (selected) {
       node.selected = true;
@@ -210,7 +210,7 @@ class LegacyDropdown {
 
     if (hover) {
       const index = hover.getAttribute(INDEX_ATTRIBUTE);
-      const label = hover.innerText;
+      const label = hover.textContent;
 
       if (!this.multiple) {
         this._setDropdownText(label);
@@ -328,14 +328,14 @@ class LegacyDropdown {
     node.classList.add('af-dropdown-text');
 
     if (placeholder) {
-      node.innerText = placeholder;
+      node.textContent = placeholder;
       node.classList.add('af-default');
     }
 
     if (defaultValue && !this.multiple) {
       const option = options
         .filter(o => o.value === defaultValue);
-      node.innerText = option[0].label;
+      node.textContent = option[0].label;
       node.classList.remove('af-default');
     }
 
@@ -356,7 +356,7 @@ class LegacyDropdown {
   _setDropdownText(value) {
     const node = this.dropdownText;
     node.classList.remove('af-default');
-    node.innerText = value;
+    node.textContent = value;
 
     return node;
   }
@@ -384,7 +384,7 @@ class LegacyDropdown {
 
   _buildDropdownOption(i, label, selected, search, container) {
     const node = document.createElement('div');
-    node.innerText = label;
+    node.textContent = label;
 
     if (selected && this.multiple) {
       node.classList.add(CLASSES.ACTIVE);
@@ -404,7 +404,7 @@ class LegacyDropdown {
     node.onmousedown = (e) => {
       e.preventDefault();
 
-      const label = node.innerText;
+      const label = node.textContent;
       const index = node.getAttribute(INDEX_ATTRIBUTE);
 
       if (!this.multiple) {
@@ -510,7 +510,7 @@ class LegacyDropdown {
   _buildDropdownOptionTag(index, label) {
     const node = document.createElement('a');
     node.setAttribute(INDEX_ATTRIBUTE, index);
-    node.innerText = label;
+    node.textContent = label;
 
     const icon = document.createElement('i');
     icon.classList.add('af-dropdown-option-delete');
@@ -603,7 +603,7 @@ class LegacyDropdown {
 
     options
       .map((value, i) => {
-        const optionValue = value.innerText.toLowerCase();
+        const optionValue = value.textContent.toLowerCase();
 
         if (!includes(optionValue, input)) {
           return options[i].classList.add(CLASSES.FILTERED);
@@ -635,7 +635,7 @@ class LegacyDropdown {
   _buildNoResultsMessage() {
     const node = document.createElement('div');
     node.classList.add('af-dropdown-message');
-    node.innerText = NO_RESULTS_FOUND;
+    node.textContent = NO_RESULTS_FOUND;
 
     return node;
   }
