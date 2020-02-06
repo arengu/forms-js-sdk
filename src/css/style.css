@@ -40,6 +40,7 @@
   --message-fail-font-size: 14px;
   --message-success-color: #318233;
   --message-success-background-color: #fcfff5;
+  --message-border-radius: 3px;
 }
 
 /*******************************
@@ -922,7 +923,7 @@
   padding: .75em 1em;
   border: 1px solid var(--message-fail-color);
   background: #fff6f6;
-  border-radius: var(--button-border-radius);
+  border-radius: var(--message-border-radius);
 }
 
 .af-step-messages {
@@ -946,5 +947,5 @@
   padding: .75em 1em;
   border: 1px solid var(--message-success-color);
   background: var(--message-success-background-color);
-  border-radius: var(--button-border-radius);
+  border-radius: var(--message-border-radius);
 }
