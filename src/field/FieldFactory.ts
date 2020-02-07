@@ -38,6 +38,7 @@ import { IURLInputView, URLInputView } from './view/input/URLInputView';
 import { StringValueHandler } from './presenter/handler/StringValueHandler';
 import { DummyValueHandler } from './presenter/handler/DummyValueHandler';
 import { PaymentValueHandler } from './presenter/handler/PaymentValueHandler';
+import { UrlValueHandler } from './presenter/handler/UrlValueHandler';
 
 export const BooleanFieldFactory: IFieldFactory<IBooleanFieldModel,
   IBooleanFieldView, IBooleanInputView, IBooleanFieldValue> = {
@@ -267,6 +268,6 @@ export const URLFieldFactory: IFieldFactory<IURLFieldModel,
     ]);
   },
   createHandler(): IValueHandler<IURLFieldModel, IURLInputView, IURLFieldValue> {
-    return StringValueHandler;
+    return UrlValueHandler;
   },
 };
