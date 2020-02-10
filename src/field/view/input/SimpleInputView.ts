@@ -18,7 +18,7 @@ export abstract class SimpleInputView implements IInputView<ISimpleInputValue> {
   }
 
   public async getValue(): Promise<ISimpleInputValue> {
-    return this.inputE.value.trim();
+    return this.inputE.value;
   }
 
   public reset(): void {
