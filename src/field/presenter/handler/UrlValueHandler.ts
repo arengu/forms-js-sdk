@@ -6,7 +6,7 @@ import { IURLInputView } from '../../view/input/URLInputView';
 import { StringValueHandler } from './StringValueHandler';
 
 function ensurePrefix(str: string): string {
-  return str.match(/^https?:\/\//i) ? str : `http://${str}`;
+  return /^https?:\/\//i.test(str) ? str : `http://${str}`;
 }
 
 export const UrlValueHandler: IValueHandler<IURLFieldModel,
