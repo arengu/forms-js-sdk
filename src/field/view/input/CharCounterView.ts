@@ -18,7 +18,7 @@ export abstract class CharCounterRenderer {
   public static renderSeparator(): HTMLDivElement {
     const separator = document.createElement('div');
     separator.classList.add('af-counter-separator');
-    separator.innerText = '/';
+    separator.textContent = '/';
 
     return separator;
   }
@@ -27,7 +27,7 @@ export abstract class CharCounterRenderer {
     const limit = document.createElement('div');
     limit.classList.add('af-counter-maximum');
 
-    limit.innerText = maxLength.toString();
+    limit.textContent = maxLength.toString();
 
     return limit;
   }
@@ -93,7 +93,7 @@ export class CharCounterView implements IHTMLView {
 
   public update(): void {
     const currLength = this.inputE.value.length;
-    this.counterE.innerText = currLength.toString();
+    this.counterE.textContent = currLength.toString();
     this.updateCSS(currLength);
   }
 

@@ -62,7 +62,7 @@ export abstract class ChoiceInputRenderer {
     elem.setAttribute('for', uid);
 
     const span = document.createElement('span');
-    span.innerText = label;
+    span.textContent = label;
 
     elem.appendChild(span);
 

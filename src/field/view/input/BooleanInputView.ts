@@ -32,7 +32,7 @@ export abstract class BooleanInputRenderer {
   public static renderLabel(option: IBooleanOptionData): HTMLLabelElement {
     const node = document.createElement('label');
     node.setAttribute('for', option.uid);
-    node.innerText = option.label;
+    node.textContent = option.label;
 
     return node;
   }

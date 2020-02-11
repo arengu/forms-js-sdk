@@ -47,19 +47,26 @@ module.exports = {
                   modules: false,
                   targets: {
                     browsers: [
-                      'chrome >= 46',
-                      'firefox >= 45',
+                      'chrome >= 40',
+                      'firefox >= 40',
                       'safari >= 10',
                       'ios >= 10',
                       'edge >= 13',
                       'opera >= 33',
+                      'ie 11',
                     ],
                   },
                 },
               ],
             ],
             plugins: [
-              '@babel/plugin-transform-runtime',
+              'transform-class-properties',
+              [
+                '@babel/plugin-transform-runtime',
+                {
+                  corejs: 3,
+                },
+              ],
             ],
           },
         },
