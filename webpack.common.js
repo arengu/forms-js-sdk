@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires, import/no-extraneous-dependencies */
 const path = require('path');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 const postcssPresetEnv = require('postcss-preset-env');
 
@@ -10,15 +8,9 @@ const { version: pkgVersion } = require('./package.json');
 
 const DEFAULT_API_URL = 'https://api.arengu.com';
 
-module.exports = {
+const config = {
   entry: './src/index.ts',
   plugins: [
-    new CleanWebpackPlugin({
-      verbose: true,
-    }),
-    new HtmlWebpackPlugin({
-      title: 'Playground',
-    }),
     new webpack.DefinePlugin({
       SDK_VERSION: JSON.stringify(pkgVersion),
       API_URL: JSON.stringify(process.env.API_URL || DEFAULT_API_URL),
@@ -28,49 +20,7 @@ module.exports = {
     extensions: ['.ts', '.js', '.json'],
   },
   module: {
-
     rules: [
-      {
-        test: /\.(t|j)sx?$/,
-        exclude: /(node_modules|bower_components)/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: [
-              [
-                '@babel/preset-typescript',
-              ],
-              [
-                '@babel/preset-env',
-                {
-                  debug: true,
-                  modules: false,
-                  targets: {
-                    browsers: [
-                      'chrome >= 40',
-                      'firefox >= 40',
-                      'safari >= 10',
-                      'ios >= 10',
-                      'edge >= 13',
-                      'opera >= 33',
-                      'ie 11',
-                    ],
-                  },
-                },
-              ],
-            ],
-            plugins: [
-              'transform-class-properties',
-              [
-                '@babel/plugin-transform-runtime',
-                {
-                  corejs: 3,
-                },
-              ],
-            ],
-          },
-        },
-      },
       {
         test: /\.css$/,
         use: [
@@ -93,10 +43,11 @@ module.exports = {
     ],
   },
   output: {
-    filename: 'forms.js',
     path: path.resolve(__dirname, 'dist'),
     library: 'ArenguForms',
     libraryExport: 'default',
     libraryTarget: 'umd',
   },
 };
+
+module.exports = config;
