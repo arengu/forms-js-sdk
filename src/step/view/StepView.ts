@@ -9,7 +9,7 @@ import { ViewHelper } from '../../lib/view/ViewHelper';
 import { IComponentView } from '../../component/ComponentView';
 
 export interface IStepViewListener {
-  onGoToPreviousStep(this: this): void;
+  onGoBack(this: this): void;
 }
 
 export interface IStepView extends IFormPageView {

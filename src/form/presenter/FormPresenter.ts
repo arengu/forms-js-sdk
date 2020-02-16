@@ -1,10 +1,10 @@
 import isNil from 'lodash/isNil';
+import find from 'lodash/find';
 
 import { HiddenFields } from '../HiddenFields'; // eslint-disable-line no-unused-vars
 
 import { IFormModel } from '../model/FormModel';
 
-import { SignatureStack } from '../../lib/SignatureStack';
 import { Messages } from '../../lib/Messages';
 
 import { IPresenter } from '../../base/Presenter';
@@ -19,6 +19,7 @@ import { EventsFactory } from '../../lib/EventsFactory';
 import { IValidationModel } from '../model/ValidationModel';
 import { InvalidStep } from '../../error/InvalidStep';
 import { IStepPresenter, IStepListener, StepPresenter } from '../../step/presenter/StepPresenter';
+import { NavigationHistory } from '../../lib/NavigationHistory';
 
 export abstract class FormPresenterHelper {
   public static getUserValues(stepP: IStepPresenter): Promise<IUserValues> {
@@ -49,9 +50,11 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
 
   protected readonly hiddenFields: HiddenFields;
 
-  protected readonly signatures: SignatureStack;
+  protected readonly signatures: Map<string, string>;
 
-  protected currentStep: number;
+  protected currentStep?: IStepPresenter;
+
+  protected history: NavigationHistory;
 
   protected constructor(formM: IFormModel, hiddenFields: HiddenFields, messages: Messages) {
     const { steps } = formM;
@@ -61,8 +64,9 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
     this.confV = ThankYouView.create();
     this.stepsP = steps.map((sM): IStepPresenter => StepPresenter.create(sM, this, this.messages));
     this.hiddenFields = hiddenFields;
-    this.signatures = SignatureStack.fromSteps(steps);
-    this.currentStep = -1;
+    this.signatures = new Map();
+    this.currentStep = undefined;
+    this.history = NavigationHistory.create();
   }
 
   public static create(model: IFormModel, hiddenFields: HiddenFields,
@@ -74,24 +78,28 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
     return this.formM.id;
   }
 
-  public getFirstStep(): IStepPresenter | undefined {
-    return this.stepsP[0];
-  }
-
-  public getPreviousStep(): IStepPresenter | undefined {
-    return this.stepsP[this.currentStep - 1];
-  }
-
   public getCurrentStep(): IStepPresenter {
-    return this.stepsP[this.currentStep];
+    if (!this.currentStep) {
+      throw new Error('No current step');
+    }
+
+    return this.currentStep;
   }
 
   public getNextStep(): IStepPresenter | undefined {
-    return this.stepsP[this.currentStep + 1];
+    const currStep = this.getCurrentStep();
+
+    const indexCurrStep = this.stepsP.indexOf(currStep);
+
+    const nextStep = this.stepsP[indexCurrStep + 1];
+
+    return nextStep;
   }
 
   public async getUserValues(): Promise<IFormData> {
-    const steps = this.stepsP.slice(0, this.currentStep + 1);
+    const currStep = this.getCurrentStep();
+
+    const steps = this.history.getSequence().concat(currStep);
 
     const proms = steps.map(FormPresenterHelper.getUserValues);
     const userValuesPerStep = await Promise.all(proms);
@@ -102,8 +110,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
   }
 
   public getHiddenFields(): object {
-    const hiddenFields = this.hiddenFields.getAll();
-    return hiddenFields;
+    return this.hiddenFields.getAll();
   }
 
   public setHiddenField(fieldId: string, value: string): void {
@@ -132,33 +139,54 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
     };
   }
 
-  /**
-   * Returns true when the user is not in the first step
-   */
-  public isFirstStep(): boolean {
-    return this.currentStep === 0;
+  public getValidationSignature(): string | undefined {
+    const steps = this.history.getHistory();
+
+    for (let i = 0; i < steps.length; i += 1) {
+      const stepId = steps[i].getStepId();
+      const signature = this.signatures.get(stepId);
+
+      if (signature) {
+        return signature;
+      }
+    }
+
+    return undefined;
+  }
+
+  public getSubmissionSignature(): string | undefined {
+    const currStep = this.getCurrentStep();
+
+    const signature = this.signatures.get(currStep.getStepId());
+
+    if (signature) {
+      return signature;
+    }
+
+    return this.getValidationSignature();
   }
 
   /**
    * Returns true when the user is not in the last step
    */
   public isLastStep(): boolean {
-    return (this.currentStep + 1) === this.stepsP.length;
+    const currStep = this.getCurrentStep();
+
+    const indexCurrStep = this.stepsP.indexOf(currStep);
+
+    return (indexCurrStep + 1) === this.stepsP.length;
   }
 
   public getView(): IFormView {
     return this.formV;
   }
 
-  public onGoToPreviousStep(): void {
-    if (!this.isFirstStep()) {
-      this.showPreviousStep();
-    }
+  public onGoBack(): void {
+    this.goBack();
   }
 
   public onSubmitForm(): void {
-    const currStepP = this.getCurrentStep();
-    this.handleGoToNext(currStepP);
+    this.handleGoToNext(this.getCurrentStep());
   }
 
   public async handleGoToNext(stepP: IStepPresenter): Promise<void> {
@@ -176,7 +204,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
       if (this.isLastStep()) {
         await this.submitForm();
       } else {
-        await this.showNextStep();
+        await this.goToNextStep();
       }
     } catch (err) {
       stepP.handleAnyError(err);
@@ -187,7 +215,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
 
   public handleValidation(stepId: string, res: IValidationModel): void {
     FormView.setCookies(res.cookies);
-    this.signatures.setSignature(stepId, res.signature);
+    this.signatures.set(stepId, res.signature);
   }
 
   public handleSubmission(conf: IConfirmationModel): void {
@@ -196,7 +224,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
     this.reset();
 
     if (message) {
-      this.showThankYou(message);
+      this.goToThankYou(message);
     }
 
     if (conf.cookies.length) {
@@ -208,33 +236,35 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
     }
   }
 
-  public showThankYou(msg: string): void {
-    this.currentStep = -1;
-    this.confV.setMessage(msg);
+  public setContent(stepP: IStepPresenter, { scrollTop = true } = {}): void {
+    this.currentStep = stepP;
 
-    this.formV.showPage(this.confV);
-    this.formV.scrollTopIfNeeded();
-  }
+    this.formV.setContent(stepP.getView());
 
-  public showStep(stepP: IStepPresenter, scroll?: boolean): void {
-    this.currentStep = this.stepsP.indexOf(stepP);
-
-    this.formV.showPage(stepP.getView());
-
-    if (scroll === true) {
+    if (scrollTop) {
       this.formV.scrollTopIfNeeded();
     }
   }
 
-  public showPreviousStep(): void {
-    const currStep = this.getCurrentStep();
-    const prevStep = this.getPreviousStep();
+  public goToFirstStep(): void {
+    const firstStep = this.stepsP[0];
 
-    if (isNil(prevStep)) {
-      throw new Error('No previous step');
+    if (isNil(firstStep)) {
+      return;
     }
 
-    this.showStep(prevStep);
+    this.setContent(firstStep);
+  }
+
+  public goBack(): void {
+    const currStep = this.getCurrentStep();
+    const prevStep = this.history.popStep();
+
+    if (isNil(currStep) || isNil(prevStep)) {
+      return;
+    }
+
+    this.setContent(prevStep);
 
     EventsFactory.previousStep({
       formId: this.formM.id,
@@ -243,20 +273,27 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
     });
   }
 
-  public async showNextStep(): Promise<void> {
-    const currStep = this.getCurrentStep();
+  public async goToNextStep(): Promise<void> {
     const nextStep = this.getNextStep();
 
     if (isNil(nextStep)) {
-      throw new Error('No previous step');
+      return;
     }
+
+    await this.goToStep(nextStep);
+  }
+
+  public async goToStep(nextStep: IStepPresenter): Promise<void> {
+    const currStep = this.getCurrentStep();
+
+    this.history.pushStep(currStep);
 
     if (nextStep.isDynamic()) {
       const formValues = await this.getFormValues();
       nextStep.updateStep(formValues);
     }
 
-    this.showStep(nextStep, true);
+    this.setContent(nextStep, { scrollTop: true });
 
     EventsFactory.nextStep({
       formId: this.formM.id,
@@ -265,21 +302,25 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
     });
   }
 
+  public goToThankYou(msg: string): void {
+    this.confV.setMessage(msg);
+
+    this.currentStep = undefined;
+    this.formV.setContent(this.confV);
+
+    this.formV.scrollTopIfNeeded();
+  }
+
   public reset(): void {
-    const firstStep = this.getFirstStep();
-
-    if (isNil(firstStep)) {
-      throw new Error('No first step');
-    }
-
-    this.showStep(firstStep, true);
     this.stepsP.forEach(FormPresenterHelper.reset);
+    this.history.clearHistory();
+    this.goToFirstStep();
   }
 
   public async submitForm(): Promise<void> {
     const formId = this.formM.id;
     const submission = await this.getSubmissionData();
-    const signature = this.signatures.getSubmissionSignature();
+    const signature = this.getSubmissionSignature();
 
     const eventData = {
       formId,
@@ -317,7 +358,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
     const userValues = await this.getFormValues();
 
     const stepId = stepP.getStepId();
-    const signature = this.signatures.getValidationSignature(stepId);
+    const signature = this.getValidationSignature();
 
     try {
       const res = await FormRepository.validateStep(formId, stepId, userValues, signature);
@@ -333,11 +374,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
   public render(): HTMLElement {
     const element = this.formV.render();
 
-    const firstStep = this.getFirstStep();
-
-    if (!isNil(firstStep)) {
-      this.showStep(firstStep);
-    }
+    this.goToFirstStep();
 
     return element;
   }

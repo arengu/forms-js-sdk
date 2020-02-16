@@ -53,7 +53,7 @@ export interface IRedirectionParams {
 }
 
 export interface IFormView extends IHTMLView {
-  showPage(view: IFormPageView): void;
+  setContent(view: IFormPageView): void;
   scrollTopIfNeeded(): void;
 }
 
@@ -98,7 +98,7 @@ export class FormView implements IFormView {
     return new FormView(formM, viewL);
   }
 
-  public showPage(pageV: IFormPageView): void {
+  public setContent(pageV: IFormPageView): void {
     const currPageE = this.formE.firstChild;
 
     if (currPageE) {

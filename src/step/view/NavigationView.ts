@@ -10,13 +10,13 @@ import { IHTMLView } from '../../base/view/HTMLView';
 export abstract class NavigationHelper {
   public static createButtonCallback(listener: INavigationListener): IButtonCallback {
     return function callback(this: void): void {
-      listener.onGoToPreviousStep();
+      listener.onGoBack();
     };
   }
 }
 
 export interface INavigationListener {
-  onGoToPreviousStep(this: this): void;
+  onGoBack(this: this): void;
 }
 
 export class NavigationView implements IHTMLView {
