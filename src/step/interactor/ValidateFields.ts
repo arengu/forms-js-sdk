@@ -1,4 +1,4 @@
-import { IAnyFieldPresenter } from '../../field/presenter/FieldPresenter';
+import { IFieldPresenter } from '../../field/presenter/FieldPresenter';
 
 import { InvalidFields, FieldError } from '../../error/InvalidFields';
 import { IFailedFieldValidation, IFieldValidationResult } from '../../field/presenter/validator/FieldValidator';
@@ -14,7 +14,7 @@ export interface IFailedStepValidation {
 export type IStepValidationResult = ISuccessfulStepValidation | IFailedStepValidation;
 
 export abstract class ValidatorHelper {
-  public static validate(fieldP: IAnyFieldPresenter): Promise<IFieldValidationResult> {
+  public static validate(fieldP: IFieldPresenter): Promise<IFieldValidationResult> {
     return fieldP.validate();
   }
 
@@ -28,7 +28,7 @@ export abstract class ValidatorHelper {
 }
 
 export abstract class ValidateFields {
-  public static async execute(fieldsP: IAnyFieldPresenter[]): Promise<IStepValidationResult> {
+  public static async execute(fieldsP: IFieldPresenter[]): Promise<IStepValidationResult> {
     const proms = fieldsP.map(ValidatorHelper.validate, ValidatorHelper);
     const results = await Promise.all(proms);
 

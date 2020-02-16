@@ -24,11 +24,11 @@ import { MagicString } from '../../lib/MagicString';
 import { URLHelper } from '../../lib/URLHelper';
 
 export interface IFieldPresenterListener {
-  onValidField(this: this, fieldP: IAnyFieldPresenter): void;
-  onInvalidField(this: this, error: FieldError, message: string, fieldP: IAnyFieldPresenter): void;
+  onValidField(this: this, fieldP: IFieldPresenter): void;
+  onInvalidField(this: this, error: FieldError, message: string, fieldP: IFieldPresenter): void;
 }
 
-export interface IFieldPresenter<FV extends IFieldView<IInputView<IInputValue>, IInputValue>,
+export interface IGenericFieldPresenter<FV extends IFieldView<IInputView<IInputValue>, IInputValue>,
   FVA extends IFieldValue> extends IPresenter<FV> {
   getFieldId(this: this): string;
   getValue(this: this): Promise<FVA>;
@@ -41,21 +41,8 @@ export interface IFieldPresenter<FV extends IFieldView<IInputView<IInputValue>, 
   handleFieldError(this: this, err: FieldError): void;
 }
 
-export type IAnyFieldPresenter = IFieldPresenter<IFieldView<IInputView<IInputValue>,
-  IInputValue>, IFieldValue>;
-
-export type IBooleanFieldPresenter = IFieldPresenter<IBooleanFieldView, IBooleanFieldValue>;
-export type IChoiceFieldPresenter = IFieldPresenter<IChoiceFieldView, IChoiceFieldValue>;
-export type IDateFieldPresenter = IFieldPresenter<IDateFieldView, IDateFieldValue>;
-export type IDropdownFieldPresenter = IFieldPresenter<IDropdownFieldView, IDropdownFieldValue>;
-export type IEmailFieldPresenter = IFieldPresenter<IEmailFieldView, IEmailFieldValue>;
-export type ILegalFieldPresenter = IFieldPresenter<ILegalFieldView, ILegalFieldValue>;
-export type INumberFieldPresenter = IFieldPresenter<INumberFieldView, INumberFieldValue>;
-export type IPasswordFieldPresenter = IFieldPresenter<IPasswordFieldView, IPasswordFieldValue>;
-export type IPaymentFieldPresenter = IFieldPresenter<IPaymentFieldView, IPaymentFieldValue>;
-export type ITelFieldPresenter = IFieldPresenter<ITelFieldView, ITelFieldValue>;
-export type ITextFieldPresenter = IFieldPresenter<ITextFieldView, ITextFieldValue>;
-export type IURLFieldPresenter = IFieldPresenter<IURLFieldView, IURLFieldValue>;
+export type IFieldPresenter = IGenericFieldPresenter<IFieldView<
+  IInputView<IInputValue>, IInputValue>, IFieldValue>;
 
 export interface IFieldFactory<FM extends IFieldModel, FV extends IFieldView<IV, IInputValue>,
   IV extends IInputView<IInputValue>, FVA extends IFieldValue> extends IInputFactory<FM,
@@ -75,7 +62,7 @@ export interface IFieldPresenterDeps<FM extends IFieldModel, FV extends IFieldVi
 
 export class FieldPresenter<FM extends IFieldModel, FV extends IFieldView<IV, IInputValue>,
   IV extends IInputView<IInputValue>, FVA extends IFieldValue> implements
-  IFieldPresenter<FV, FVA>, IInputViewListener {
+  IGenericFieldPresenter<FV, FVA>, IInputViewListener {
   protected readonly fieldM: FM;
 
   protected readonly fieldL: IFieldPresenterListener;
@@ -113,7 +100,7 @@ export class FieldPresenter<FM extends IFieldModel, FV extends IFieldView<IV, II
   public static create<FM extends IFieldModel, FV extends IFieldView<IV, IInputValue>,
     IV extends IInputView<IInputValue>, FVA extends IFieldValue>(
       deps: IFieldPresenterDeps<FM, FV, IV, FVA>,
-  ): IFieldPresenter<FV, FVA> {
+  ): IFieldPresenter {
     return new this(deps);
   }
 

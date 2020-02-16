@@ -21,6 +21,10 @@ export abstract class SimpleInputView implements IInputView<ISimpleInputValue> {
     return this.inputE.value;
   }
 
+  public async setValue(value: ISimpleInputValue): Promise<void> {
+    this.inputE.value = value;
+  }
+
   public reset(): void {
     this.inputE.value = this.inputE.defaultValue;
   }

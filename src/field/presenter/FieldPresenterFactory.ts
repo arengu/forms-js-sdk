@@ -1,6 +1,6 @@
 import { Messages } from '../../lib/Messages';
 import { FieldType, IFieldModel } from '../model/FieldModel';
-import { IFieldPresenterListener, IAnyFieldPresenter, FieldPresenter } from './FieldPresenter';
+import { IFieldPresenterListener, IFieldPresenter, FieldPresenter } from './FieldPresenter';
 import {
   URLFieldFactory, BooleanFieldFactory, ChoiceFieldFactory, DateFieldFactory,
   DropdownFieldFactory, EmailFieldFactory, LegalFieldFactory, NumberFieldFactory,
@@ -9,7 +9,7 @@ import {
 
 export abstract class FieldPresenterFactory {
   public static create(fieldM: IFieldModel, fieldL: IFieldPresenterListener,
-    messages: Messages): IAnyFieldPresenter {
+    messages: Messages): IFieldPresenter {
     switch (fieldM.type) {
       case FieldType.BOOLEAN:
         return FieldPresenter.create({

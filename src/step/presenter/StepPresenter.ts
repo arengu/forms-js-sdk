@@ -11,7 +11,7 @@ import { Messages } from '../../lib/Messages';
 import { IStepModel } from '../model/StepModel';
 import { IFieldModel, IFieldValue } from '../../field/model/FieldModel';
 import { IPresenter } from '../../base/Presenter';
-import { IFieldPresenterListener, IAnyFieldPresenter } from '../../field/presenter/FieldPresenter';
+import { IFieldPresenterListener, IFieldPresenter } from '../../field/presenter/FieldPresenter';
 import { IStepView, StepView, IStepViewListener } from '../view/StepView';
 import { AppErrorCode } from '../../error/ErrorCodes';
 import { InvalidStep } from '../../error/InvalidStep';
@@ -44,33 +44,33 @@ export interface IPairFieldIdValue {
 }
 
 export interface IFieldPresenterCreator {
-  (fieldM: IFieldModel): IAnyFieldPresenter;
+  (fieldM: IFieldModel): IFieldPresenter;
 }
 
 export abstract class StepPresenterHelper {
   public static createFieldPresenter(fieldL: IFieldPresenterListener,
     messages: Messages): IFieldPresenterCreator {
-    return function creator(this: void, fieldM: IFieldModel): IAnyFieldPresenter {
+    return function creator(this: void, fieldM: IFieldModel): IFieldPresenter {
       return FieldPresenterFactory.create(fieldM, fieldL, messages);
     };
   }
 
-  public static getFieldId(fieldP: IAnyFieldPresenter): string {
+  public static getFieldId(fieldP: IFieldPresenter): string {
     return fieldP.getFieldId();
   }
 
-  public static async getValue(fieldP: IAnyFieldPresenter): Promise<IPairFieldIdValue> {
+  public static async getValue(fieldP: IFieldPresenter): Promise<IPairFieldIdValue> {
     return {
       fieldId: fieldP.getFieldId(),
       value: await fieldP.getValue(),
     };
   }
 
-  public static reset(presenter: IAnyFieldPresenter): void {
+  public static reset(presenter: IFieldPresenter): void {
     return presenter.reset();
   }
 
-  public static getView(fieldP: IAnyFieldPresenter): IAnyFieldView {
+  public static getView(fieldP: IFieldPresenter): IAnyFieldView {
     return fieldP.getView();
   }
 
@@ -86,14 +86,14 @@ export class StepPresenter implements IStepPresenter, IFieldPresenterListener {
 
   protected readonly messages: Messages
 
-  protected readonly fieldsP: IAnyFieldPresenter[];
+  protected readonly fieldsP: IFieldPresenter[];
 
-  protected readonly dynFieldsP: IAnyFieldPresenter[];
+  protected readonly dynFieldsP: IFieldPresenter[];
 
   /**
    * Components indexed by identifier
    */
-  protected readonly fieldsPI: Record<string, IAnyFieldPresenter>;
+  protected readonly fieldsPI: Record<string, IFieldPresenter>;
 
   protected readonly stepV: IStepView;
 
@@ -123,7 +123,7 @@ export class StepPresenter implements IStepPresenter, IFieldPresenterListener {
     return this.stepM.id;
   }
 
-  public getFieldPresenter(fieldId: string): IAnyFieldPresenter {
+  public getFieldPresenter(fieldId: string): IFieldPresenter {
     const fieldP = this.fieldsPI[fieldId];
 
     if (isNil(fieldP)) {
@@ -269,7 +269,7 @@ export class StepPresenter implements IStepPresenter, IFieldPresenterListener {
     this.setError(msg);
   }
 
-  public onInvalidField(error: FieldError, message: string, fieldP: IAnyFieldPresenter): void {
+  public onInvalidField(error: FieldError, message: string, fieldP: IFieldPresenter): void {
     const fieldId = fieldP.getFieldId();
 
     if (!this.hasInvalidFields()) {
@@ -280,7 +280,7 @@ export class StepPresenter implements IStepPresenter, IFieldPresenterListener {
     this.invalidFields.add(fieldId);
   }
 
-  public onValidField(fieldP: IAnyFieldPresenter): void {
+  public onValidField(fieldP: IFieldPresenter): void {
     const fieldId = fieldP.getFieldId();
 
     this.invalidFields.delete(fieldId);

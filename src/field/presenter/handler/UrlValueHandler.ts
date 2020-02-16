@@ -5,7 +5,11 @@ import { IURLFieldModel, IURLFieldValue } from '../../model/FieldModel';
 import { IURLInputView } from '../../view/input/URLInputView';
 import { StringValueHandler } from './StringValueHandler';
 
-function ensurePrefix(str: string): string {
+function ensurePrefix(str: string | undefined): string | undefined {
+  if (!str) {
+    return str;
+  }
+
   return /^https?:\/\//i.test(str) ? str : `http://${str}`;
 }
 
@@ -15,8 +19,12 @@ export const UrlValueHandler: IValueHandler<IURLFieldModel,
     Promise<IURLFieldValue> {
     const cleanValue = await StringValueHandler.getValue(inputV, fieldM);
 
-    return isNil(cleanValue)
-      ? undefined
-      : ensurePrefix(cleanValue);
+    return ensurePrefix(cleanValue);
   },
+
+  async setValue(inputV: IURLInputView, value: IURLFieldValue): Promise<void> {
+    const newValue = ensurePrefix(value);
+
+    await StringValueHandler.setValue(inputV, newValue);
+  }
 };
