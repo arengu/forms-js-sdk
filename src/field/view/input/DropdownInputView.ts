@@ -26,11 +26,11 @@ export class DropdownInputView implements IDropdownInputView {
     return new this(fieldM, inputL);
   }
 
-  public async getValue(): Promise<IDropdownInputValue> {
+  public getValue(): IDropdownInputValue {
     return this.inputV.value;
   }
 
-  public async setValue(): Promise<void> { // eslint-disable-line class-methods-use-this
+  public setValue(): void { // eslint-disable-line class-methods-use-this
     throw new Error('Not supported yet');
   }
 

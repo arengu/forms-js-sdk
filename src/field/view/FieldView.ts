@@ -26,7 +26,7 @@ export interface IFieldView<IV extends IInputView<IVA>,
   updateLabel(label: string): void;
 
   getInput(): IV;
-  getValue(): Promise<IVA>;
+  getValue(): IVA;
 
   setError(msg: string): void;
   clearError(): void;
@@ -156,7 +156,7 @@ export class FieldView<FM extends IFieldModel,
     return this.inputV;
   }
 
-  public async getValue(): Promise<IVA> {
+  public getValue(): IVA {
     return this.inputV.getValue();
   }
 

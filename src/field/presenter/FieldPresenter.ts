@@ -1,27 +1,18 @@
 import debounce from 'lodash/debounce';
 import isNil from 'lodash/isNil';
 import isString from 'lodash/isString';
-
-import { FieldError } from '../../error/InvalidFields';
 import { IPresenter } from '../../base/Presenter';
-import {
-  IFieldValue, IBooleanFieldValue, IChoiceFieldValue, IDateFieldValue, IDropdownFieldValue,
-  IEmailFieldValue, ILegalFieldValue, INumberFieldValue, IPasswordFieldValue, IPaymentFieldValue,
-  ITelFieldValue, ITextFieldValue, IURLFieldValue, IFieldModel,
-} from '../model/FieldModel';
-import { IInputView, IInputViewListener, IInputValue } from '../view/InputView';
-import {
-  IFieldView, IBooleanFieldView, IChoiceFieldView, IDateFieldView, IDropdownFieldView,
-  IEmailFieldView, ILegalFieldView, INumberFieldView, IPasswordFieldView, IPaymentFieldView,
-  ITelFieldView, ITextFieldView, IURLFieldView, IFieldViewListener, IInputFactory,
-} from '../view/FieldView';
-import { IFieldValidationResult, IFieldValidator } from './validator/FieldValidator';
-import { IValueHandler } from './handler/ValueHandler';
-import { Messages } from '../../lib/Messages';
-import { EventsFactory } from '../../lib/EventsFactory';
+import { FieldError } from '../../error/InvalidFields';
 import { IFormData } from '../../form/model/SubmissionModel';
+import { EventsFactory } from '../../lib/EventsFactory';
 import { MagicString } from '../../lib/MagicString';
+import { Messages } from '../../lib/Messages';
 import { URLHelper } from '../../lib/URLHelper';
+import { IFieldModel, IFieldValue } from '../model/FieldModel';
+import { IFieldView, IFieldViewListener, IInputFactory } from '../view/FieldView';
+import { IInputValue, IInputView, IInputViewListener } from '../view/InputView';
+import { IValueHandler } from './handler/ValueHandler';
+import { IFieldValidationResult, IFieldValidator } from './validator/FieldValidator';
 
 export interface IFieldPresenterListener {
   onValidField(this: this, fieldP: IFieldPresenter): void;
@@ -193,7 +184,7 @@ export class FieldPresenter<FM extends IFieldModel, FV extends IFieldView<IV, II
 
   public async validate(): Promise<IFieldValidationResult> {
     const value = await this.getValue();
-    const result = await this.validator.validate(value, this.fieldM, this.inputV);
+    const result = this.validator.validate(value, this.fieldM, this.inputV);
 
     if (result.valid) {
       this.handleValidValue();

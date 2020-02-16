@@ -14,10 +14,6 @@ export interface IFailedStepValidation {
 export type IStepValidationResult = ISuccessfulStepValidation | IFailedStepValidation;
 
 export abstract class ValidatorHelper {
-  public static validate(fieldP: IFieldPresenter): Promise<IFieldValidationResult> {
-    return fieldP.validate();
-  }
-
   public static isError(result: IFieldValidationResult): result is IFailedFieldValidation {
     return result.valid === false;
   }
@@ -29,12 +25,12 @@ export abstract class ValidatorHelper {
 
 export abstract class ValidateFields {
   public static async execute(fieldsP: IFieldPresenter[]): Promise<IStepValidationResult> {
-    const proms = fieldsP.map(ValidatorHelper.validate, ValidatorHelper);
+    const proms = fieldsP.map((fP) => fP.validate());
     const results = await Promise.all(proms);
 
-    const invalids = results.filter(ValidatorHelper.isError, ValidatorHelper);
+    const invalids = results.filter(ValidatorHelper.isError);
 
-    const errors = invalids.map(ValidatorHelper.getError, ValidatorHelper);
+    const errors = invalids.map(ValidatorHelper.getError);
 
     if (errors.length === 0) {
       return {

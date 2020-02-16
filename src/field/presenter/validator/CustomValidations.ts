@@ -11,9 +11,9 @@ import { IPaymentInputView } from '../../view/input/PaymentInputView';
 
 const VALID: IFieldValidationResult = { valid: true };
 
-export abstract class CustomValidations {
-  public static async number(value: INumberFieldValue, fieldM: IFieldModel):
-    Promise<IFieldValidationResult> {
+export const CustomValidations = {
+  number(value: INumberFieldValue, fieldM: IFieldModel):
+    IFieldValidationResult {
     const { id: fieldId } = fieldM;
 
     if (isNil(value)) {
@@ -34,10 +34,10 @@ export abstract class CustomValidations {
         'Please, enter a valid number.',
       ),
     };
-  }
+  },
 
-  public static async legal(value: ILegalFieldValue, fieldM: ILegalFieldModel):
-    Promise<IFieldValidationResult> {
+  legal(value: ILegalFieldValue, fieldM: ILegalFieldModel):
+    IFieldValidationResult {
     const { id: fieldId, required } = fieldM;
 
     if (required === false || value === 'true') {
@@ -52,10 +52,10 @@ export abstract class CustomValidations {
         'Please, check this field if you want to proceed.',
       ),
     };
-  }
+  },
 
-  public static async payment(value: IPaymentFieldValue, fieldM: IPaymentFieldModel,
-    inputV: IPaymentInputView): Promise<IFieldValidationResult> {
+  payment(value: IPaymentFieldValue, fieldM: IPaymentFieldModel,
+    inputV: IPaymentInputView): IFieldValidationResult {
     if (inputV.isEmpty()) {
       if (!fieldM.required) {
         return VALID;
@@ -94,5 +94,5 @@ export abstract class CustomValidations {
     }
 
     return VALID;
-  }
-}
+  },
+};

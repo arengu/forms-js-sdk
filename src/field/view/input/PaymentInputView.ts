@@ -98,11 +98,11 @@ export class PaymentInputView implements IPaymentInputView, ILegacyPaymentListen
     this.fresh = true;
   }
 
-  public async getValue(): Promise<never> { // eslint-disable-line class-methods-use-this
+  public getValue(): never { // eslint-disable-line class-methods-use-this
     throw new Error('Not implemented');
   }
 
-  public async setValue(): Promise<never> { // eslint-disable-line class-methods-use-this
+  public setValue(): never { // eslint-disable-line class-methods-use-this
     throw new Error('Not allowed for security purposes');
   }
 

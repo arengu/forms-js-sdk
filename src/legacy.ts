@@ -5,6 +5,8 @@ import isNil from 'lodash/isNil';
 
 import index from './index';
 
+declare const window: { Promise?: PromiseConstructor };
+
 if (isNil(window.Promise)) {
   window.Promise = Promise;
 }

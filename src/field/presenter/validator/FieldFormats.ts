@@ -8,9 +8,8 @@ export const URI_REGEX = /^(?:(?:http[s\u017F]?|ftp):\/\/)(?:(?:[\0-\x08\x0E-\x1
 
 export const VALID: IFieldValidationResult = { valid: true };
 
-export abstract class FieldFormats {
-  public static async email(value: string, fieldM: IFieldModel):
-    Promise<IFieldValidationResult> {
+export const FieldFormats = {
+  email(value: string, fieldM: IFieldModel): IFieldValidationResult {
     if (!value || EMAIL_REGEX.test(value)) {
       return VALID;
     }
@@ -25,10 +24,9 @@ export abstract class FieldFormats {
         'Email is not valid',
       ),
     };
-  }
+  },
 
-  public static async url(value: string, fieldM: IFieldModel):
-    Promise<IFieldValidationResult> {
+  url(value: string, fieldM: IFieldModel): IFieldValidationResult {
     if (!value || URI_REGEX.test(value)) {
       return VALID;
     }
@@ -43,5 +41,5 @@ export abstract class FieldFormats {
         'URL is not valid',
       ),
     };
-  }
+  },
 }

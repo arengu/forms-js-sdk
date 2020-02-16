@@ -128,7 +128,7 @@ export abstract class SDK {
 
 export abstract class AutoMagic {
   public static embed(): void {
-    const list = document.querySelectorAll(`[${MAGIC_SELECTOR}]`) as NodeListOf<HTMLElement>;
+    const list: NodeListOf<HTMLElement> = document.querySelectorAll(`[${MAGIC_SELECTOR}]`);
     const array = Array.from(list); // old browsers do not implement NodeList.prototype.forEach
 
     array.forEach((node): void => {

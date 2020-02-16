@@ -3,9 +3,7 @@ import { IStepModel } from '../model/StepModel';
 import { IAnyFieldView } from '../../field/view/FieldView';
 import { StepErrorMessage } from '../part/StepErrorMessage';
 import { NavigationView } from './NavigationView';
-import { IHTMLView } from '../../base/view/HTMLView';
 import { HTMLHelper } from '../../lib/view/HTMLHelper';
-import { ViewHelper } from '../../lib/view/ViewHelper';
 import { IComponentView } from '../../component/ComponentView';
 
 export interface IStepViewListener {
@@ -21,12 +19,6 @@ export interface IStepView extends IFormPageView {
 
   setError(this: this, msg: string): void;
   clearError(this: this): void;
-}
-
-export abstract class StepViewHelper {
-  public static render(view: IHTMLView): HTMLElement {
-    return view.render();
-  }
 }
 
 export abstract class StepRenderer {
@@ -47,7 +39,7 @@ export abstract class StepRenderer {
     root.classList.add(`af-step-${id}`);
     root.classList.add('af-step');
 
-    compsV.map(ViewHelper.render)
+    compsV.map((cV) => cV.render())
       .forEach(HTMLHelper.appendChild(root));
 
     root.appendChild(this.renderMessage(errorV));

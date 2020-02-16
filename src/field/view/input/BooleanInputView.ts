@@ -105,7 +105,7 @@ export class BooleanInputView implements IBooleanInputView {
     return new this(fieldM, inputL);
   }
 
-  public async getValue(): Promise<IBooleanInputValue> {
+  public getValue(): IBooleanInputValue {
     const checkedInput = this.optionsE.find(InputHelper.isChecked);
 
     if (!checkedInput) {
@@ -123,7 +123,7 @@ export class BooleanInputView implements IBooleanInputView {
     }
   }
 
-  public async setValue(): Promise<void> { // eslint-disable-line class-methods-use-this
+  public setValue(): void { // eslint-disable-line class-methods-use-this
     throw new Error('Not supported yet');
   }
 

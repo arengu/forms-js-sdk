@@ -11,8 +11,8 @@ import { FieldErrorCode } from '../../../error/ErrorCodes';
 const VALID: IFieldValidationResult = { valid: true };
 
 export const FieldRules = {
-  async require(value: IFieldValue, fieldM: IFieldModel):
-    Promise<IFieldValidationResult> {
+  require(this: void, value: IFieldValue, fieldM: IFieldModel):
+    IFieldValidationResult {
     if (fieldM.required !== true) {
       return VALID;
     }
@@ -31,8 +31,8 @@ export const FieldRules = {
     return VALID;
   },
 
-  async minLength(value: string | undefined, fieldM: ITextFieldModel | ITelFieldModel):
-    Promise<IFieldValidationResult> {
+  minLength(value: string | undefined, fieldM: ITextFieldModel | ITelFieldModel):
+    IFieldValidationResult {
     const { minLength } = fieldM.config;
 
     if (isNil(minLength) || isNil(value) || value.length >= minLength) {
@@ -52,8 +52,8 @@ export const FieldRules = {
     };
   },
 
-  async maxLength(value: string | undefined, fieldM: ITextFieldModel | ITelFieldModel):
-    Promise<IFieldValidationResult> {
+  maxLength(value: string | undefined, fieldM: ITextFieldModel | ITelFieldModel):
+    IFieldValidationResult {
     const { maxLength } = fieldM.config;
 
     if (isNil(maxLength) || isNil(value) || value.length <= maxLength) {
@@ -73,8 +73,8 @@ export const FieldRules = {
     };
   },
 
-  async minValue(strValue: string | undefined, fieldM: INumberFieldModel):
-    Promise<IFieldValidationResult> {
+  minValue(strValue: string | undefined, fieldM: INumberFieldModel):
+    IFieldValidationResult {
     const { minValue } = fieldM.config;
 
     if (isNil(minValue) || isNil(strValue)) {
@@ -100,8 +100,8 @@ export const FieldRules = {
     };
   },
 
-  async maxValue(strValue: string | undefined, fieldM: INumberFieldModel):
-    Promise<IFieldValidationResult> {
+  maxValue(strValue: string | undefined, fieldM: INumberFieldModel):
+    IFieldValidationResult {
     const { maxValue } = fieldM.config;
 
     if (isNil(maxValue) || isNil(strValue)) {
@@ -127,8 +127,8 @@ export const FieldRules = {
     };
   },
 
-  async multiple(value: IChoiceFieldValue | IDropdownFieldValue, fieldM: IFieldModel):
-    Promise<IFieldValidationResult> {
+  multiple(value: IChoiceFieldValue | IDropdownFieldValue, fieldM: IFieldModel):
+    IFieldValidationResult {
     const { id: fieldId, required } = fieldM;
 
     if (required !== true) {

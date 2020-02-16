@@ -140,11 +140,11 @@ export class ChoiceInputView implements IChoiceInputView {
     return checked.map(InputHelper.getValue);
   }
 
-  public async getValue(): Promise<IChoiceInputValue> {
+  public getValue(): IChoiceInputValue {
     return this.multiple ? this.getAllChoices() : this.getFirstChoice();
   }
 
-  public async setValue(): Promise<void> { // eslint-disable-line class-methods-use-this
+  public setValue(): void { // eslint-disable-line class-methods-use-this
     throw new Error('Not supported yet');
   }
 

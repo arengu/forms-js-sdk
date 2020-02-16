@@ -19,11 +19,11 @@ export abstract class StringInputView implements IStringInputView {
     this.rootE = rootE || inputE;
   }
 
-  public async getValue(): Promise<IStringInputValue> {
+  public getValue(): IStringInputValue {
     return this.inputE.value.trim();
   }
 
-  public async setValue(value: IStringInputValue): Promise<void> {
+  public setValue(value: IStringInputValue): void {
     this.inputE.value = value;
   }
 

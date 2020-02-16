@@ -78,7 +78,7 @@ export interface ILegalFieldModel extends IBaseFieldModel {
   readonly type: FieldType.LEGAL;
   readonly config: {
     readonly text?: string;
-  }
+  };
 }
 
 export enum NumberFormat {
@@ -94,7 +94,7 @@ export interface INumberFieldModel extends IBaseFieldModel {
     readonly defaultValue?: number;
     readonly minValue?: number;
     readonly maxValue?: number;
-  }
+  };
 }
 
 export enum HashFunction {
@@ -109,7 +109,7 @@ export interface IPasswordFieldModel extends IBaseFieldModel {
   readonly type: FieldType.PASSWORD;
   readonly config: {
     readonly hash: HashFunction;
-  }
+  };
 }
 
 export interface IPaymentCardFieldModel {
@@ -129,7 +129,7 @@ export interface IPaymentFieldModel extends IBaseFieldModel {
       readonly securityCode: IPaymentCardFieldModel;
       readonly trustmarks: boolean;
     };
-  }
+  };
 }
 
 export interface ITelFieldModel extends IBaseFieldModel {
@@ -138,7 +138,7 @@ export interface ITelFieldModel extends IBaseFieldModel {
     readonly defaultValue: string;
     readonly minLength: number;
     readonly maxLength?: number;
-  }
+  };
 }
 
 export interface ITextFieldModel extends IBaseFieldModel {
@@ -148,14 +148,14 @@ export interface ITextFieldModel extends IBaseFieldModel {
     readonly defaultValue?: string;
     readonly minLength: number;
     readonly maxLength?: number;
-  }
+  };
 }
 
 export interface IURLFieldModel extends IBaseFieldModel {
   readonly type: FieldType.URL;
   readonly config: {
     readonly defaultValue?: string;
-  }
+  };
 }
 
 export type IFieldModel = IBooleanFieldModel | IChoiceFieldModel | IDateFieldModel |

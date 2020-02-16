@@ -10,8 +10,8 @@ import { IStringInputView } from '../../view/input/StringInputView';
  */
 export const StringValueHandler: IValueHandler<IFieldModel,
   IStringInputView, IStringFieldValue> = {
-  async getValue(inputV: IStringInputView): Promise<IStringFieldValue> {
-    const origValue = await inputV.getValue();
+  getValue(inputV: IStringInputView): IStringFieldValue {
+    const origValue = inputV.getValue();
 
     if (isNil(origValue)) {
       return undefined;
@@ -22,9 +22,7 @@ export const StringValueHandler: IValueHandler<IFieldModel,
     return trimValue === '' ? undefined : trimValue;
   },
 
-  async setValue(
-    inputV: IStringInputView, value: IStringFieldValue,
-  ): Promise<void> {
+  setValue(inputV: IStringInputView, value: IStringFieldValue): void {
     inputV.setValue(isNil(value) ? '' : value.trim());
   },
 };

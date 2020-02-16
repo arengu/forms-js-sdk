@@ -1,5 +1,4 @@
 import isNil from 'lodash/isNil';
-import find from 'lodash/find';
 
 import { HiddenFields } from '../HiddenFields'; // eslint-disable-line no-unused-vars
 
@@ -101,7 +100,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
 
     const steps = this.history.getSequence().concat(currStep);
 
-    const proms = steps.map(FormPresenterHelper.getUserValues);
+    const proms = steps.map((sP) => FormPresenterHelper.getUserValues(sP));
     const userValuesPerStep = await Promise.all(proms);
 
     const userValues = Object.assign({}, ...userValuesPerStep);
@@ -312,7 +311,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
   }
 
   public reset(): void {
-    this.stepsP.forEach(FormPresenterHelper.reset);
+    this.stepsP.forEach((sP) => FormPresenterHelper.reset(sP));
     this.history.clearHistory();
     this.goToFirstStep();
   }

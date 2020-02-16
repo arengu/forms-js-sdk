@@ -155,6 +155,6 @@ export class FormView implements IFormView {
   }
 
   public static setCookies(cookies: ICookieModel[]): void {
-    cookies.forEach(CookieHelper.set);
+    cookies.forEach((c) => CookieHelper.set(c));
   }
 }

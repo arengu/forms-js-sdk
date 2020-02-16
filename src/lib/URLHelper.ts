@@ -25,7 +25,7 @@ export const URLHelper = {
       if (isNil(currVal)) {
         params[key] = newVal;
       } else if (typeof (currVal) === 'string') {
-        params[key] = [currVal, newVal] as string[];
+        params[key] = [currVal, newVal];
       } else if (currVal instanceof Array) {
         params[key] = currVal.concat(newVal);
       } else {

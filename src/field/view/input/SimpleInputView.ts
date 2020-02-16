@@ -17,11 +17,11 @@ export abstract class SimpleInputView implements IInputView<ISimpleInputValue> {
     this.rootE = rootE || inputE;
   }
 
-  public async getValue(): Promise<ISimpleInputValue> {
+  public getValue(): ISimpleInputValue {
     return this.inputE.value;
   }
 
-  public async setValue(value: ISimpleInputValue): Promise<void> {
+  public setValue(value: ISimpleInputValue): void {
     this.inputE.value = value;
   }
 

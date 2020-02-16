@@ -1,5 +1,3 @@
-import isNil from 'lodash/isNil';
-
 import { IValueHandler } from './ValueHandler';
 import { IURLFieldModel, IURLFieldValue } from '../../model/FieldModel';
 import { IURLInputView } from '../../view/input/URLInputView';
@@ -22,9 +20,9 @@ export const UrlValueHandler: IValueHandler<IURLFieldModel,
     return ensurePrefix(cleanValue);
   },
 
-  async setValue(inputV: IURLInputView, value: IURLFieldValue): Promise<void> {
+  setValue(inputV: IURLInputView, value: IURLFieldValue): void {
     const newValue = ensurePrefix(value);
 
-    await StringValueHandler.setValue(inputV, newValue);
+    StringValueHandler.setValue(inputV, newValue);
   }
 };

@@ -80,9 +80,9 @@ export class InvalidFields extends ArenguError {
   public static fromSchemaError(schemaErr: ISchemaError): InvalidFields {
     const { invalidProperties } = schemaErr.details;
 
-    const invalidFields = invalidProperties.filter(InvalidFieldsHelper.isFormField);
+    const invalidFields = invalidProperties.filter((pE) => InvalidFieldsHelper.isFormField(pE));
 
-    const fieldErrors = invalidFields.map(FieldError.fromPropertyError, FieldError);
+    const fieldErrors = invalidFields.map((pE) => FieldError.fromPropertyError(pE));
 
     const parentError = InvalidFields.fromFieldErrors(fieldErrors);
 

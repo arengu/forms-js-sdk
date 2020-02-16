@@ -14,12 +14,12 @@ export type IFieldValidationResult = ISuccessfulFieldValidation | IFailedFieldVa
 
 export interface IFieldValidationFunction<FM extends IFieldModel,
   IV extends IInputView<IInputValue>, FVA extends IFieldValue> {
-  (this: void, value: FVA, fieldM: FM, inputV: IV): Promise<IFieldValidationResult>;
+  (this: void, value: FVA, fieldM: FM, inputV: IV): IFieldValidationResult;
 }
 
 export interface IFieldValidator<FM extends IFieldModel,
   IV extends IInputView<IInputValue>, FVA extends IFieldValue> {
-  validate(value: FVA, fieldM: FM, inputV: IV): Promise<IFieldValidationResult>;
+  validate(value: FVA, fieldM: FM, inputV: IV): IFieldValidationResult;
 }
 
 export class FieldValidator<FM extends IFieldModel,
@@ -38,7 +38,7 @@ export class FieldValidator<FM extends IFieldModel,
     return new this(validations);
   }
 
-  public async validate(value: FVA, fieldM: FM, inputV: IV): Promise<IFieldValidationResult> {
+  public validate(value: FVA, fieldM: FM, inputV: IV): IFieldValidationResult {
     /*
      * Firefox <51 do NOT support declaring this variable as const into for...of statement
      * See https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/for...of
@@ -50,7 +50,7 @@ export class FieldValidator<FM extends IFieldModel,
      * and we have to stop as soon as a rule is not satisfied.
      */
     for (validation of this.validations) { // eslint-disable-line no-restricted-syntax
-      const result = await validation( // eslint-disable-line no-await-in-loop
+      const result = validation( // eslint-disable-line no-await-in-loop
         value, fieldM, inputV,
       );
 

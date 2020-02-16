@@ -119,11 +119,11 @@ export class PasswordInputView implements IPasswordInputView, IPasswordVisibilit
     return new this(fieldM, uid, inputL);
   }
 
-  public async getValue(): Promise<IPasswordInputValue> {
+  public getValue(): IPasswordInputValue {
     return this.inputE.value;
   }
 
-  public async setValue(): Promise<void> {
+  public setValue(): void {
     throw new Error('Not allowed for security purposes');
   }
 

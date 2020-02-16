@@ -47,36 +47,28 @@ export interface IFieldPresenterCreator {
   (fieldM: IFieldModel): IFieldPresenter;
 }
 
-export abstract class StepPresenterHelper {
-  public static createFieldPresenter(fieldL: IFieldPresenterListener,
+export const StepPresenterHelper = {
+  createFieldPresenter(fieldL: IFieldPresenterListener,
     messages: Messages): IFieldPresenterCreator {
     return function creator(this: void, fieldM: IFieldModel): IFieldPresenter {
       return FieldPresenterFactory.create(fieldM, fieldL, messages);
     };
-  }
+  },
 
-  public static getFieldId(fieldP: IFieldPresenter): string {
-    return fieldP.getFieldId();
-  }
-
-  public static async getValue(fieldP: IFieldPresenter): Promise<IPairFieldIdValue> {
+  async getValue(fieldP: IFieldPresenter): Promise<IPairFieldIdValue> {
     return {
       fieldId: fieldP.getFieldId(),
       value: await fieldP.getValue(),
     };
-  }
+  },
 
-  public static reset(presenter: IFieldPresenter): void {
-    return presenter.reset();
-  }
-
-  public static getView(fieldP: IFieldPresenter): IAnyFieldView {
+  getView(fieldP: IFieldPresenter): IAnyFieldView {
     return fieldP.getView();
-  }
+  },
 
-  public static hasValue(pair: IPairFieldIdValue): boolean {
+  hasValue(pair: IPairFieldIdValue): boolean {
     return !isNil(pair.value) && !isEmpty(pair.value);
-  }
+  },
 }
 
 export class StepPresenter implements IStepPresenter, IFieldPresenterListener {
@@ -107,8 +99,8 @@ export class StepPresenter implements IStepPresenter, IFieldPresenterListener {
     this.messages = messages;
     this.fieldsP = stepM.components.map(StepPresenterHelper.createFieldPresenter(this, messages));
     this.dynFieldsP = this.fieldsP.filter((fP): boolean => fP.isDynamic());
-    this.fieldsPI = keyBy(this.fieldsP, StepPresenterHelper.getFieldId);
-    const fieldsV = this.fieldsP.map(StepPresenterHelper.getView, StepPresenterHelper);
+    this.fieldsPI = keyBy(this.fieldsP, (fP) => fP.getFieldId());
+    const fieldsV = this.fieldsP.map((fV) => StepPresenterHelper.getView(fV));
     this.stepV = StepView.create(stepM, fieldsV, stepL);
     this.loadings = 0;
     this.disablements = 0;
@@ -159,10 +151,10 @@ export class StepPresenter implements IStepPresenter, IFieldPresenterListener {
   public async getUserValues(): Promise<IUserValues> {
     const indexedValues: IUserValues = {};
 
-    const proms = this.fieldsP.map(StepPresenterHelper.getValue);
+    const proms = this.fieldsP.map((fP) => StepPresenterHelper.getValue(fP));
 
     const allValues = await Promise.all(proms);
-    const validValues = allValues.filter(StepPresenterHelper.hasValue);
+    const validValues = allValues.filter((v) => StepPresenterHelper.hasValue(v));
 
     validValues.forEach((pair): void => {
       indexedValues[pair.fieldId] = pair.value;
@@ -218,7 +210,7 @@ export class StepPresenter implements IStepPresenter, IFieldPresenterListener {
 
 
   public handleInvalidFields(err: InvalidFields): void {
-    return err.fields.forEach(this.handleFieldError, this);
+    return err.fields.forEach((fE) => this.handleFieldError(fE));
   }
 
   public handleInvalidStep(err: InvalidStep): void {
@@ -247,7 +239,7 @@ export class StepPresenter implements IStepPresenter, IFieldPresenterListener {
   }
 
   public reset(): void {
-    this.fieldsP.forEach(StepPresenterHelper.reset);
+    this.fieldsP.forEach((fP) => fP.reset());
     this.stepV.reset();
   }
 

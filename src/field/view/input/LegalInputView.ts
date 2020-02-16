@@ -64,11 +64,11 @@ export class LegalInputView implements ILegalInputView {
     return new this(fieldM, uid, inputL);
   }
 
-  public async getValue(): Promise<ILegalInputValue> {
+  public getValue(): ILegalInputValue {
     return this.inputE.checked ? 'true' : 'false';
   }
 
-  public async setValue(): Promise<void> { // eslint-disable-line class-methods-use-this
+  public setValue(): void { // eslint-disable-line class-methods-use-this
     // automatic check of legal fields is not allowed
   }
 
