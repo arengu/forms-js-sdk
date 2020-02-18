@@ -1,8 +1,8 @@
 import { IFieldModel, IFieldValue } from '../../model/FieldModel';
-import { IInputView, IInputValue } from '../../view/InputView';
+import { IInputView } from '../../view/InputView';
 
 export interface IValueHandler<FM extends IFieldModel,
-  IV extends IInputView<IInputValue>, FVA extends IFieldValue> {
+  IV extends IInputView, FVA extends IFieldValue> {
   getValue(inputV: IV, fieldM: FM): FVA | Promise<FVA>;
-  setValue(inputV: IV, value: FVA): void;
+  setValue(inputV: IV, value: FVA, fieldM: FM): void;
 }

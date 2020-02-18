@@ -1,5 +1,5 @@
 import { IFieldModel, IFieldValue } from '../../model/FieldModel';
-import { IInputView, IInputValue } from '../../view/InputView';
+import { IInputView } from '../../view/InputView';
 import { FieldError } from '../../../error/InvalidFields';
 
 export interface ISuccessfulFieldValidation {
@@ -13,17 +13,17 @@ export interface IFailedFieldValidation {
 export type IFieldValidationResult = ISuccessfulFieldValidation | IFailedFieldValidation;
 
 export interface IFieldValidationFunction<FM extends IFieldModel,
-  IV extends IInputView<IInputValue>, FVA extends IFieldValue> {
+  IV extends IInputView, FVA extends IFieldValue> {
   (this: void, value: FVA, fieldM: FM, inputV: IV): IFieldValidationResult;
 }
 
 export interface IFieldValidator<FM extends IFieldModel,
-  IV extends IInputView<IInputValue>, FVA extends IFieldValue> {
+  IV extends IInputView, FVA extends IFieldValue> {
   validate(value: FVA, fieldM: FM, inputV: IV): IFieldValidationResult;
 }
 
 export class FieldValidator<FM extends IFieldModel,
-  IV extends IInputView<IInputValue>, FVA extends IFieldValue>
+  IV extends IInputView, FVA extends IFieldValue>
   implements IFieldValidator<FM, IV, FVA> {
   protected readonly validations: IFieldValidationFunction<FM, IV, FVA>[];
 
@@ -31,7 +31,7 @@ export class FieldValidator<FM extends IFieldModel,
     this.validations = validations;
   }
 
-  public static create<FM extends IFieldModel, IV extends IInputView<IInputValue>,
+  public static create<FM extends IFieldModel, IV extends IInputView,
     FVA extends IFieldValue>(
       validations: IFieldValidationFunction<FM, IV, FVA>[],
   ): FieldValidator<FM, IV, FVA> {

@@ -21,7 +21,7 @@ export abstract class EmailInputRenderer {
 
 export type IEmailInputValue = string;
 
-export type IEmailInputView = IInputView<IEmailInputValue>;
+export type IEmailInputView = IInputView;
 
 export class EmailInputView extends StringInputView implements IEmailInputView {
   public static create(fieldM: IEmailFieldModel, uid: string,

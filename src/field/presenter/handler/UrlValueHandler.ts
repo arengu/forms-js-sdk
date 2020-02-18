@@ -1,6 +1,6 @@
 import { IValueHandler } from './ValueHandler';
 import { IURLFieldModel, IURLFieldValue } from '../../model/FieldModel';
-import { IURLInputView } from '../../view/input/URLInputView';
+import { URLInputView } from '../../view/input/URLInputView';
 import { StringValueHandler } from './StringValueHandler';
 
 function ensurePrefix(str: string | undefined): string | undefined {
@@ -12,17 +12,17 @@ function ensurePrefix(str: string | undefined): string | undefined {
 }
 
 export const UrlValueHandler: IValueHandler<IURLFieldModel,
-  IURLInputView, IURLFieldValue> = {
-  async getValue(inputV: IURLInputView, fieldM: IURLFieldModel):
+  URLInputView, IURLFieldValue> = {
+  async getValue(inputV: URLInputView, fieldM: IURLFieldModel):
     Promise<IURLFieldValue> {
     const cleanValue = await StringValueHandler.getValue(inputV, fieldM);
 
     return ensurePrefix(cleanValue);
   },
 
-  setValue(inputV: IURLInputView, value: IURLFieldValue): void {
+  setValue(inputV: URLInputView, value: IURLFieldValue, fieldM: IURLFieldModel): void {
     const newValue = ensurePrefix(value);
 
-    StringValueHandler.setValue(inputV, newValue);
+    StringValueHandler.setValue(inputV, newValue, fieldM);
   }
 };

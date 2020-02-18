@@ -7,20 +7,21 @@ import { IFormData } from '../../form/model/SubmissionModel';
 import { EventsFactory } from '../../lib/EventsFactory';
 import { MagicString } from '../../lib/MagicString';
 import { Messages } from '../../lib/Messages';
+import { UID } from '../../lib/UID';
 import { URLHelper } from '../../lib/URLHelper';
 import { IFieldModel, IFieldValue } from '../model/FieldModel';
-import { IFieldView, IFieldViewListener, IInputFactory } from '../view/FieldView';
-import { IInputValue, IInputView, IInputViewListener } from '../view/InputView';
+import { FieldView, IFieldView } from '../view/FieldView';
+import { IInputView, IInputViewListener } from '../view/InputView';
 import { IValueHandler } from './handler/ValueHandler';
 import { IFieldValidationResult, IFieldValidator } from './validator/FieldValidator';
+import { IFieldFactory } from '../FieldFactory';
 
 export interface IFieldPresenterListener {
   onValidField(this: this, fieldP: IFieldPresenter): void;
   onInvalidField(this: this, error: FieldError, message: string, fieldP: IFieldPresenter): void;
 }
 
-export interface IGenericFieldPresenter<FV extends IFieldView<IInputView<IInputValue>, IInputValue>,
-  FVA extends IFieldValue> extends IPresenter<FV> {
+export interface IGenericFieldPresenter<FVA extends IFieldValue> extends IPresenter<IFieldView> {
   getFieldId(this: this): string;
   getValue(this: this): Promise<FVA>;
 
@@ -32,28 +33,16 @@ export interface IGenericFieldPresenter<FV extends IFieldView<IInputView<IInputV
   handleFieldError(this: this, err: FieldError): void;
 }
 
-export type IFieldPresenter = IGenericFieldPresenter<IFieldView<
-  IInputView<IInputValue>, IInputValue>, IFieldValue>;
+export type IFieldPresenter = IGenericFieldPresenter<IFieldValue>;
 
-export interface IFieldFactory<FM extends IFieldModel, FV extends IFieldView<IV, IInputValue>,
-  IV extends IInputView<IInputValue>, FVA extends IFieldValue> extends IInputFactory<FM,
-  IV> {
-  createFieldView(fieldM: FM, fieldL: IFieldViewListener): FV;
-  createValidator(): IFieldValidator<FM, IV, FVA>;
-  createHandler(): IValueHandler<FM, IV, FVA>;
+export interface IInputFactory<FM extends IFieldModel, IV extends IInputView> {
+  (fieldM: FM, inputL: IInputViewListener): IV;
 }
 
-export interface IFieldPresenterDeps<FM extends IFieldModel, FV extends IFieldView<IV, IInputValue>,
-  IV extends IInputView<IInputValue>, FVA extends IFieldValue> {
-  readonly fieldM: FM;
-  readonly fieldL: IFieldPresenterListener;
-  readonly fieldF: IFieldFactory<FM, FV, IV, FVA>;
-  readonly messages: Messages;
-}
+export class FieldPresenter<FM extends IFieldModel, IV extends IInputView, FVA extends IFieldValue> implements
+  IGenericFieldPresenter<FVA>, IInputViewListener {
+  protected readonly uid: string;
 
-export class FieldPresenter<FM extends IFieldModel, FV extends IFieldView<IV, IInputValue>,
-  IV extends IInputView<IInputValue>, FVA extends IFieldValue> implements
-  IGenericFieldPresenter<FV, FVA>, IInputViewListener {
   protected readonly fieldM: FM;
 
   protected readonly fieldL: IFieldPresenterListener;
@@ -62,9 +51,9 @@ export class FieldPresenter<FM extends IFieldModel, FV extends IFieldView<IV, II
 
   protected invalid: boolean;
 
-  protected readonly fieldV: FV;
-
   protected readonly inputV: IV;
+
+  protected readonly fieldV: IFieldView;
 
   protected readonly valueH: IValueHandler<FM, IV, FVA>;
 
@@ -72,27 +61,29 @@ export class FieldPresenter<FM extends IFieldModel, FV extends IFieldView<IV, II
 
   protected readonly debouncedValidate: Function;
 
-  protected constructor(deps: IFieldPresenterDeps<FM, FV, IV, FVA>) {
-    this.fieldM = deps.fieldM;
-    this.fieldL = deps.fieldL;
-    this.messages = deps.messages;
-    this.invalid = false;
-    this.fieldV = deps.fieldF.createFieldView(this.fieldM, this);
-    this.inputV = this.fieldV.getInput();
-    this.validator = deps.fieldF.createValidator();
+  protected constructor(fieldM: FM, fieldL: IFieldPresenterListener, messages: Messages,
+    factory: IFieldFactory<FM, IV, FVA>) {
+    this.uid = UID.create();
 
-    this.valueH = deps.fieldF.createHandler();
+    this.fieldM = fieldM;
+    this.fieldL = fieldL;
+    this.messages = messages;
+    this.invalid = false;
+    this.inputV = factory.createInputView(this.fieldM, this.uid, this);
+    this.fieldV = FieldView.create(this.fieldM, this.uid, this.inputV);
+    this.validator = factory.createValidator();
+
+    this.valueH = factory.createHandler();
 
     this.debouncedValidate = debounce(this.validate, 500);
 
     this.initValue();
   }
 
-  public static create<FM extends IFieldModel, FV extends IFieldView<IV, IInputValue>,
-    IV extends IInputView<IInputValue>, FVA extends IFieldValue>(
-      deps: IFieldPresenterDeps<FM, FV, IV, FVA>,
-  ): IFieldPresenter {
-    return new this(deps);
+  public static create<FM extends IFieldModel, IV extends IInputView, FVA extends IFieldValue>
+    (fieldM: FM, fieldL: IFieldPresenterListener, messages: Messages,
+      factory: IFieldFactory<FM, IV, FVA>): IGenericFieldPresenter<FVA> {
+    return new FieldPresenter(fieldM, fieldL, messages, factory);
   }
 
   public getFieldId(): string {
@@ -104,7 +95,7 @@ export class FieldPresenter<FM extends IFieldModel, FV extends IFieldView<IV, II
     const anyValue = urlValue as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
     if (!isNil(urlValue)) {
-      this.valueH.setValue(this.inputV, anyValue);
+      this.valueH.setValue(this.inputV, anyValue, this.fieldM);
     }
   }
 
@@ -116,7 +107,7 @@ export class FieldPresenter<FM extends IFieldModel, FV extends IFieldView<IV, II
     return this.invalid;
   }
 
-  public getView(): FV {
+  public getView(): IFieldView {
     return this.fieldV;
   }
 

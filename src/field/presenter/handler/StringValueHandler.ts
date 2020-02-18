@@ -11,15 +11,9 @@ import { IStringInputView } from '../../view/input/StringInputView';
 export const StringValueHandler: IValueHandler<IFieldModel,
   IStringInputView, IStringFieldValue> = {
   getValue(inputV: IStringInputView): IStringFieldValue {
-    const origValue = inputV.getValue();
+    const value = inputV.getValue().trim();
 
-    if (isNil(origValue)) {
-      return undefined;
-    }
-
-    const trimValue = origValue.trim();
-
-    return trimValue === '' ? undefined : trimValue;
+    return value === '' ? undefined : value;
   },
 
   setValue(inputV: IStringInputView, value: IStringFieldValue): void {

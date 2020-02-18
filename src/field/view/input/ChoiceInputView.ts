@@ -111,7 +111,7 @@ export abstract class ChoiceInputRenderer {
 
 export type IChoiceInputValue = ISingleOptionValue | IMultiOptionValue;
 
-export type IChoiceInputView = IInputView<IChoiceInputValue>;
+export type IChoiceInputView = IInputView;
 
 export class ChoiceInputView implements IChoiceInputView {
   protected readonly multiple: boolean;

@@ -99,7 +99,9 @@ export interface IPasswordVisibilityListener {
 
 export type IPasswordInputValue = string;
 
-export type IPasswordInputView = IInputView<IPasswordInputValue>;
+export interface IPasswordInputView extends IInputView {
+  getValue(): IPasswordInputValue;
+}
 
 export class PasswordInputView implements IPasswordInputView, IPasswordVisibilityListener {
   protected readonly maskV: PasswordMaskView;

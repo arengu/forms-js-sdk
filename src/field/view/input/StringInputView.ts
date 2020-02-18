@@ -7,7 +7,10 @@ export interface IStringInputElement extends HTMLElement {
   defaultValue: string;
 }
 
-export type IStringInputView = IInputView<IStringInputValue>;
+export interface IStringInputView extends IInputView {
+  getValue(): IStringInputValue;
+  setValue(value: IStringInputValue): void;
+}
 
 export abstract class StringInputView implements IStringInputView {
   protected readonly inputE: IStringInputElement;

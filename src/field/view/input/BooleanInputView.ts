@@ -89,7 +89,7 @@ export abstract class BooleanInputRenderer {
 
 export type IBooleanInputValue = 'false' | 'true';
 
-export type IBooleanInputView = IInputView<IBooleanInputValue>;
+export type IBooleanInputView = IInputView;
 
 export class BooleanInputView implements IBooleanInputView {
   protected rootE: HTMLDivElement;

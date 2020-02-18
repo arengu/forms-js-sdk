@@ -61,7 +61,7 @@ export class TextInputRenderer {
 
 export type ITextInputValue = string;
 
-export type ITextInputView = IInputView<ITextInputValue>;
+export type ITextInputView = IInputView;
 
 export class TextInputView extends StringInputView implements ITextInputView {
   public static create(fieldM: ITextFieldModel, uid: string,

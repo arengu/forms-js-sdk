@@ -13,7 +13,7 @@ export abstract class DropdownInputRenderer {
 
 export type IDropdownInputValue = ISingleOptionValue | IMultiOptionValue;
 
-export type IDropdownInputView = IInputView<IDropdownInputValue>;
+export type IDropdownInputView = IInputView;
 
 export class DropdownInputView implements IDropdownInputView {
   protected readonly inputV: LegacyDropdown;

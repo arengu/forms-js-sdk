@@ -1,6 +1,6 @@
 import { IFormPageView } from '../../form/view/FormView';
 import { IStepModel } from '../model/StepModel';
-import { IAnyFieldView } from '../../field/view/FieldView';
+import { IFieldView } from '../../field/view/FieldView';
 import { StepErrorMessage } from '../part/StepErrorMessage';
 import { NavigationView } from './NavigationView';
 import { HTMLHelper } from '../../lib/view/HTMLHelper';
@@ -50,7 +50,7 @@ export abstract class StepRenderer {
 }
 
 export class StepView implements IStepView {
-  protected readonly fieldsV: IAnyFieldView[];
+  protected readonly fieldsV: IFieldView[];
 
   protected readonly errorV: StepErrorMessage;
 
@@ -58,7 +58,7 @@ export class StepView implements IStepView {
 
   protected readonly rootE: HTMLDivElement;
 
-  protected constructor(stepM: IStepModel, fieldsV: IAnyFieldView[], viewL: IStepViewListener) {
+  protected constructor(stepM: IStepModel, fieldsV: IFieldView[], viewL: IStepViewListener) {
     this.fieldsV = fieldsV;
     this.errorV = StepErrorMessage.create();
     this.navV = NavigationView.create(stepM.buttons, viewL);
@@ -66,7 +66,7 @@ export class StepView implements IStepView {
     this.rootE = StepRenderer.renderRoot(stepM, fieldsV, this.errorV, this.navV);
   }
 
-  public static create(stepM: IStepModel, fieldsV: IAnyFieldView[],
+  public static create(stepM: IStepModel, fieldsV: IFieldView[],
     viewL: IStepViewListener): IStepView {
     return new this(stepM, fieldsV, viewL);
   }

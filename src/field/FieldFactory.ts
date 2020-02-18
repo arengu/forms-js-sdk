@@ -3,10 +3,8 @@ import {
   IDateFieldValue, IDropdownFieldModel, IDropdownFieldValue, IEmailFieldModel, IEmailFieldValue,
   ILegalFieldModel, ILegalFieldValue, INumberFieldModel, INumberFieldValue, IPasswordFieldModel,
   IPasswordFieldValue, IPaymentFieldModel, IPaymentFieldValue, ITelFieldModel, ITelFieldValue,
-  ITextFieldModel, ITextFieldValue, IURLFieldModel, IURLFieldValue,
+  ITextFieldModel, ITextFieldValue, IURLFieldModel, IURLFieldValue, IFieldModel, IFieldValue,
 } from './model/FieldModel';
-
-import { IFieldFactory } from './presenter/FieldPresenter';
 
 import { IValueHandler } from './presenter/handler/ValueHandler';
 import { PasswordValueHandler } from './presenter/handler/PasswordValueHandler';
@@ -16,13 +14,7 @@ import { FieldFormats } from './presenter/validator/FieldFormats';
 import { FieldRules } from './presenter/validator/FieldRules';
 import { IFieldValidator, FieldValidator } from './presenter/validator/FieldValidator';
 
-import {
-  IBooleanFieldView, IFieldViewListener, FieldView, IChoiceFieldView, IDateFieldView,
-  IDropdownFieldView, IEmailFieldView, ILegalFieldView, INumberFieldView, IPasswordFieldView,
-  IPaymentFieldView, ITelFieldView, ITextFieldView, IURLFieldView,
-} from './view/FieldView';
-
-import { IInputViewListener } from './view/InputView';
+import { IInputViewListener, IInputView } from './view/InputView';
 import { IBooleanInputView, BooleanInputView } from './view/input/BooleanInputView';
 import { IChoiceInputView, ChoiceInputView } from './view/input/ChoiceInputView';
 import { IDateInputView, DateInputView } from './view/input/DateInputView';
@@ -40,51 +32,43 @@ import { DummyValueHandler } from './presenter/handler/DummyValueHandler';
 import { PaymentValueHandler } from './presenter/handler/PaymentValueHandler';
 import { UrlValueHandler } from './presenter/handler/UrlValueHandler';
 
+export interface IFieldFactory<FM extends IFieldModel, IV extends IInputView, FVA extends IFieldValue> {
+  createInputView(fieldM: FM, uid: string, inputL: IInputViewListener): IV;
+  createValidator(): IFieldValidator<FM, IV, FVA>;
+  createHandler(): IValueHandler<FM, IV, FVA>;
+}
+
 export const BooleanFieldFactory: IFieldFactory<IBooleanFieldModel,
-  IBooleanFieldView, IBooleanInputView, IBooleanFieldValue> = {
-  createInputView(fieldM: IBooleanFieldModel, inputL: IInputViewListener): IBooleanInputView {
+  IBooleanInputView, IBooleanFieldValue> = {
+  createInputView(fieldM: IBooleanFieldModel, uid: string, inputL: IInputViewListener): IBooleanInputView {
     return BooleanInputView.create(fieldM, inputL);
   },
-  createFieldView(fieldM: IBooleanFieldModel, fieldL: IFieldViewListener): IBooleanFieldView {
-    return FieldView.create({ fieldM, fieldL, fieldF: this });
-  },
+
   createValidator(): IFieldValidator<IBooleanFieldModel, IBooleanInputView, IBooleanFieldValue> {
     return FieldValidator.create([
       FieldRules.require,
     ]);
   },
-  createHandler(): IValueHandler<IBooleanFieldModel, IBooleanInputView, IBooleanFieldValue> {
-    return DummyValueHandler.create();
-  },
+  createHandler: DummyValueHandler.create,
 };
 
 export const ChoiceFieldFactory: IFieldFactory<IChoiceFieldModel,
-  IChoiceFieldView, IChoiceInputView, IChoiceFieldValue> = {
-  createInputView(fieldM: IChoiceFieldModel, inputL: IInputViewListener): IChoiceInputView {
+  IChoiceInputView, IChoiceFieldValue> = {
+  createInputView(fieldM: IChoiceFieldModel, uid: string, inputL: IInputViewListener): IChoiceInputView {
     return ChoiceInputView.create(fieldM, inputL);
-  },
-  createFieldView(fieldM: IChoiceFieldModel, fieldL: IFieldViewListener): IChoiceFieldView {
-    return FieldView.create({ fieldM, fieldL, fieldF: this });
   },
   createValidator(): IFieldValidator<IChoiceFieldModel, IChoiceInputView, IChoiceFieldValue> {
     return FieldValidator.create([
       FieldRules.multiple,
     ]);
   },
-  createHandler(): IValueHandler<IChoiceFieldModel, IChoiceInputView, IChoiceFieldValue> {
-    return DummyValueHandler.create();
-  },
+  createHandler: DummyValueHandler.create,
 };
 
 export const DateFieldFactory: IFieldFactory<IDateFieldModel,
-  IDateFieldView, IDateInputView, IDateFieldValue> = {
-  createInputView(fieldM: IDateFieldModel, inputL: IInputViewListener,
-    uid: string): IDateInputView {
-    return DateInputView.create(fieldM, uid, inputL);
-  },
-  createFieldView(fieldM: IDateFieldModel, fieldL: IFieldViewListener): IDateFieldView {
-    return FieldView.create({ fieldM, fieldL, fieldF: this });
-  },
+  IDateInputView, IDateFieldValue> = {
+  createInputView: DateInputView.create,
+
   createValidator(): IFieldValidator<IDateFieldModel, IDateInputView, IDateFieldValue> {
     return FieldValidator.create([
       FieldRules.require,
@@ -96,32 +80,26 @@ export const DateFieldFactory: IFieldFactory<IDateFieldModel,
 };
 
 export const DropdownFieldFactory: IFieldFactory<IDropdownFieldModel,
-  IDropdownFieldView, IDropdownInputView, IDropdownFieldValue> = {
-  createInputView(fieldM: IDropdownFieldModel, inputL: IInputViewListener): IDropdownInputView {
+  IDropdownInputView, IDropdownFieldValue> = {
+  createInputView(fieldM: IDropdownFieldModel, uid: string, inputL: IInputViewListener): IDropdownInputView {
     return DropdownInputView.create(fieldM, inputL);
   },
-  createFieldView(fieldM: IDropdownFieldModel, fieldL: IFieldViewListener): IDropdownFieldView {
-    return FieldView.create({ fieldM, fieldL, fieldF: this });
-  },
+
   createValidator(): IFieldValidator<IDropdownFieldModel, IDropdownInputView, IDropdownFieldValue> {
     return FieldValidator.create([
       FieldRules.multiple,
     ]);
   },
-  createHandler(): IValueHandler<IDropdownFieldModel, IDropdownInputView, IDropdownFieldValue> {
-    return DummyValueHandler.create();
-  },
+  createHandler: DummyValueHandler.create,
 };
 
 export const EmailFieldFactory: IFieldFactory<IEmailFieldModel,
-  IEmailFieldView, IEmailInputView, IEmailFieldValue> = {
-  createInputView(fieldM: IEmailFieldModel, inputL: IInputViewListener,
-    uid: string): IEmailInputView {
+  IEmailInputView, IEmailFieldValue> = {
+  createInputView(fieldM: IEmailFieldModel, uid: string, inputL: IInputViewListener,
+  ): IEmailInputView {
     return EmailInputView.create(fieldM, uid, inputL);
   },
-  createFieldView(fieldM: IEmailFieldModel, fieldL: IFieldViewListener): IEmailFieldView {
-    return FieldView.create({ fieldM, fieldL, fieldF: this });
-  },
+
   createValidator(): IFieldValidator<IEmailFieldModel, IEmailInputView, IEmailFieldValue> {
     return FieldValidator.create([
       FieldRules.require,
@@ -134,14 +112,12 @@ export const EmailFieldFactory: IFieldFactory<IEmailFieldModel,
 };
 
 export const LegalFieldFactory: IFieldFactory<ILegalFieldModel,
-  ILegalFieldView, ILegalInputView, ILegalFieldValue> = {
-  createInputView(fieldM: ILegalFieldModel, inputL: IInputViewListener,
-    uid: string): ILegalInputView {
+  ILegalInputView, ILegalFieldValue> = {
+  createInputView(fieldM: ILegalFieldModel, uid: string, inputL: IInputViewListener,
+  ): ILegalInputView {
     return LegalInputView.create(fieldM, uid, inputL);
   },
-  createFieldView(fieldM: ILegalFieldModel, fieldL: IFieldViewListener): ILegalFieldView {
-    return FieldView.create({ fieldM, fieldL, fieldF: this });
-  },
+
   createValidator(): IFieldValidator<ILegalFieldModel, ILegalInputView, ILegalFieldValue> {
     return FieldValidator.create([
       CustomValidations.legal,
@@ -153,14 +129,12 @@ export const LegalFieldFactory: IFieldFactory<ILegalFieldModel,
 };
 
 export const NumberFieldFactory: IFieldFactory<INumberFieldModel,
-  INumberFieldView, INumberInputView, INumberFieldValue> = {
-  createInputView(fieldM: INumberFieldModel, inputL: IInputViewListener,
-    uid: string): INumberInputView {
+  INumberInputView, INumberFieldValue> = {
+  createInputView(fieldM: INumberFieldModel, uid: string, inputL: IInputViewListener,
+  ): INumberInputView {
     return NumberInputView.create(fieldM, uid, inputL);
   },
-  createFieldView(fieldM: INumberFieldModel, fieldL: IFieldViewListener): INumberFieldView {
-    return FieldView.create({ fieldM, fieldL, fieldF: this });
-  },
+
   createValidator(): IFieldValidator<INumberFieldModel, INumberInputView, INumberFieldValue> {
     return FieldValidator.create([
       FieldRules.require,
@@ -175,14 +149,12 @@ export const NumberFieldFactory: IFieldFactory<INumberFieldModel,
 };
 
 export const PasswordFieldFactory: IFieldFactory<IPasswordFieldModel,
-  IPasswordFieldView, IPasswordInputView, IPasswordFieldValue> = {
-  createInputView(fieldM: IPasswordFieldModel, inputL: IInputViewListener,
-    uid: string): IPasswordInputView {
+  IPasswordInputView, IPasswordFieldValue> = {
+  createInputView(fieldM: IPasswordFieldModel, uid: string, inputL: IInputViewListener,
+  ): IPasswordInputView {
     return PasswordInputView.create(fieldM, uid, inputL);
   },
-  createFieldView(fieldM: IPasswordFieldModel, fieldL: IFieldViewListener): IPasswordFieldView {
-    return FieldView.create({ fieldM, fieldL, fieldF: this });
-  },
+
   createValidator(): IFieldValidator<IPasswordFieldModel, IPasswordInputView, IPasswordFieldValue> {
     return FieldValidator.create([
       FieldRules.require,
@@ -194,14 +166,12 @@ export const PasswordFieldFactory: IFieldFactory<IPasswordFieldModel,
 };
 
 export const PaymentFieldFactory: IFieldFactory<IPaymentFieldModel,
-  IPaymentFieldView, IPaymentInputView, IPaymentFieldValue> = {
-  createInputView(fieldM: IPaymentFieldModel, inputL: IInputViewListener,
-    uid: string): IPaymentInputView {
+  IPaymentInputView, IPaymentFieldValue> = {
+  createInputView(fieldM: IPaymentFieldModel, uid: string, inputL: IInputViewListener,
+  ): IPaymentInputView {
     return PaymentInputView.create(fieldM, uid, inputL);
   },
-  createFieldView(fieldM: IPaymentFieldModel, fieldL: IFieldViewListener): IPaymentFieldView {
-    return FieldView.create({ fieldM, fieldL, fieldF: this });
-  },
+
   createValidator(): IFieldValidator<IPaymentFieldModel, IPaymentInputView, IPaymentFieldValue> {
     return FieldValidator.create([
       CustomValidations.payment,
@@ -213,13 +183,11 @@ export const PaymentFieldFactory: IFieldFactory<IPaymentFieldModel,
 };
 
 export const TelFieldFactory: IFieldFactory<ITelFieldModel,
-  ITelFieldView, ITelInputView, ITelFieldValue> = {
-  createInputView(fieldM: ITelFieldModel, inputL: IInputViewListener, uid: string): ITelInputView {
+  ITelInputView, ITelFieldValue> = {
+  createInputView(fieldM: ITelFieldModel, uid: string, inputL: IInputViewListener, ): ITelInputView {
     return TelInputView.create(fieldM, uid, inputL);
   },
-  createFieldView(fieldM: ITelFieldModel, fieldL: IFieldViewListener): ITelFieldView {
-    return FieldView.create({ fieldM, fieldL, fieldF: this });
-  },
+
   createValidator(): IFieldValidator<ITelFieldModel, ITelInputView, ITelFieldValue> {
     return FieldValidator.create([
       FieldRules.require,
@@ -233,14 +201,12 @@ export const TelFieldFactory: IFieldFactory<ITelFieldModel,
 };
 
 export const TextFieldFactory: IFieldFactory<ITextFieldModel,
-  ITextFieldView, ITextInputView, ITextFieldValue> = {
-  createInputView(fieldM: ITextFieldModel, inputL: IInputViewListener,
-    uid: string): ITextInputView {
+  ITextInputView, ITextFieldValue> = {
+  createInputView(fieldM: ITextFieldModel, uid: string, inputL: IInputViewListener,
+  ): ITextInputView {
     return TextInputView.create(fieldM, uid, inputL);
   },
-  createFieldView(fieldM: ITextFieldModel, fieldL: IFieldViewListener): ITextFieldView {
-    return FieldView.create({ fieldM, fieldL, fieldF: this });
-  },
+
   createValidator(): IFieldValidator<ITextFieldModel, ITextInputView, ITextFieldValue> {
     return FieldValidator.create([
       FieldRules.require,
@@ -254,13 +220,11 @@ export const TextFieldFactory: IFieldFactory<ITextFieldModel,
 };
 
 export const URLFieldFactory: IFieldFactory<IURLFieldModel,
-  IURLFieldView, IURLInputView, IURLFieldValue> = {
-  createInputView(fieldM: IURLFieldModel, inputL: IInputViewListener, uid: string): IURLInputView {
+  IURLInputView, IURLFieldValue> = {
+  createInputView(fieldM: IURLFieldModel, uid: string, inputL: IInputViewListener, ): IURLInputView {
     return URLInputView.create(fieldM, uid, inputL);
   },
-  createFieldView(fieldM: IURLFieldModel, fieldL: IFieldViewListener): IURLFieldView {
-    return FieldView.create({ fieldM, fieldL, fieldF: this });
-  },
+
   createValidator(): IFieldValidator<IURLFieldModel, IURLInputView, IURLFieldValue> {
     return FieldValidator.create([
       FieldRules.require,

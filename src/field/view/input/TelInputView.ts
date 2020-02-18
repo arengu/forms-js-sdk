@@ -22,11 +22,11 @@ export abstract class TelInputRenderer {
 
 export type ITelInputValue = string;
 
-export type ITelInputView = IInputView<ITelInputValue>;
+export type ITelInputView = IInputView;
 
 export class TelInputView extends StringInputView implements ITelInputView {
   public static create(fieldM: ITelFieldModel, uid: string,
-    inputL: IInputViewListener): TelInputView {
+    inputL: IInputViewListener): ITelInputView {
     const inputE = TelInputRenderer.renderInput(fieldM, uid, inputL);
     return new this(inputE);
   }

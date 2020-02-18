@@ -1,51 +1,16 @@
 import isNil from 'lodash/isNil';
-
 import { IComponentView } from '../../component/ComponentView';
-import { IInputViewListener, IInputView, IInputValue } from './InputView';
-import { IBooleanInputView, IBooleanInputValue } from './input/BooleanInputView';
-import { IChoiceInputView, IChoiceInputValue } from './input/ChoiceInputView';
-import { IDateInputView, IDateInputValue } from './input/DateInputView';
-import { IDropdownInputView, IDropdownInputValue } from './input/DropdownInputView';
-import { IEmailInputView, IEmailInputValue } from './input/EmailInputView';
-import { ILegalInputView, ILegalInputValue } from './input/LegalInputView';
-import { INumberInputView, INumberInputValue } from './input/NumberInputView';
-import { IPasswordInputView, IPasswordInputValue } from './input/PasswordInputView';
-import { IPaymentInputView, IPaymentInputValue } from './input/PaymentInputView';
-import { ITelInputView, ITelInputValue } from './input/TelInputView';
-import { ITextInputView, ITextInputValue } from './input/TextInputView';
-import { IURLInputView, IURLInputValue } from './input/URLInputView';
-import { FieldErrorMessage } from './FieldErrorMessage';
-import { UID } from '../../lib/UID';
 import { IFieldModel } from '../model/FieldModel';
+import { FieldErrorMessage } from './FieldErrorMessage';
+import { IInputView } from './InputView';
 import { ILabelView, LabelView } from './LabelView';
 
-export type IFieldViewListener = IInputViewListener;
-
-export interface IFieldView<IV extends IInputView<IVA>,
-  IVA extends IInputValue> extends IComponentView {
+export interface IFieldView extends IComponentView {
   updateLabel(label: string): void;
-
-  getInput(): IV;
-  getValue(): IVA;
 
   setError(msg: string): void;
   clearError(): void;
 }
-
-export type IAnyFieldView = IFieldView<IInputView<IInputValue>, IInputValue>;
-
-export type IBooleanFieldView = IFieldView<IBooleanInputView, IBooleanInputValue>;
-export type IChoiceFieldView = IFieldView<IChoiceInputView, IChoiceInputValue>;
-export type IDateFieldView = IFieldView<IDateInputView, IDateInputValue>;
-export type IDropdownFieldView = IFieldView<IDropdownInputView, IDropdownInputValue>;
-export type IEmailFieldView = IFieldView<IEmailInputView, IEmailInputValue>;
-export type ILegalFieldView = IFieldView<ILegalInputView, ILegalInputValue>;
-export type INumberFieldView = IFieldView<INumberInputView, INumberInputValue>;
-export type IPasswordFieldView = IFieldView<IPasswordInputView, IPasswordInputValue>;
-export type IPaymentFieldView = IFieldView<IPaymentInputView, IPaymentInputValue>;
-export type ITelFieldView = IFieldView<ITelInputView, ITelInputValue>;
-export type ITextFieldView = IFieldView<ITextInputView, ITextInputValue>;
-export type IURLFieldView = IFieldView<IURLInputView, IURLInputValue>;
 
 export abstract class FieldRenderer {
   public static renderHint(fieldM: IFieldModel): HTMLElement | undefined {
@@ -65,7 +30,7 @@ export abstract class FieldRenderer {
     return wrapper;
   }
 
-  public static renderInput(inputV: IInputView<IInputValue>): HTMLDivElement {
+  public static renderInput(inputV: IInputView): HTMLDivElement {
     const wrapper = document.createElement('div');
     wrapper.classList.add('af-field-input');
 
@@ -76,7 +41,7 @@ export abstract class FieldRenderer {
   }
 
   public static renderRoot(fieldM: IFieldModel, uid: string,
-    inputV: IInputView<IInputValue>, errorV: FieldErrorMessage,
+    inputV: IInputView, errorV: FieldErrorMessage,
     labelV?: ILabelView): HTMLDivElement {
     const { id } = fieldM;
 
@@ -103,61 +68,31 @@ export abstract class FieldRenderer {
   }
 }
 
-export interface IInputFactory<FM extends IFieldModel,
-  IV extends IInputView<IInputValue>> {
-  createInputView(fieldM: FM, inputL: IInputViewListener, uid: string): IV;
-}
-
-export interface IFieldViewDeps<FM extends IFieldModel,
-  IV extends IInputView<IInputValue>> {
-  readonly fieldM: FM;
-  readonly fieldL: IFieldViewListener;
-  readonly fieldF: IInputFactory<FM, IV>;
-}
-
-export class FieldView<FM extends IFieldModel,
-  IV extends IInputView<IVA>, IVA extends IInputValue> implements IFieldView<IV, IVA> {
-  protected readonly uid: string;
-
+export class FieldView implements IFieldView {
   protected readonly labelV?: ILabelView;
 
-  protected readonly inputV: IV;
+  protected readonly inputV: IInputView;
 
   protected readonly errorV: FieldErrorMessage;
 
   protected readonly rootE: HTMLDivElement;
 
-  protected constructor(deps: IFieldViewDeps<FM, IV>) {
-    this.uid = UID.create();
-
-    this.labelV = LabelView.create(deps.fieldM, this.uid);
-    this.inputV = deps.fieldF.createInputView(deps.fieldM, deps.fieldL, this.uid);
+  protected constructor(fieldM: IFieldModel, uid: string, inputV: IInputView) {
+    this.labelV = LabelView.create(fieldM, uid);
+    this.inputV = inputV; //deps.fieldF.createInputView(deps.fieldM, deps.fieldL, this.uid);
     this.errorV = FieldErrorMessage.create();
 
-    this.rootE = FieldRenderer.renderRoot(
-      deps.fieldM, this.uid, this.inputV, this.errorV, this.labelV,
-    );
+    this.rootE = FieldRenderer.renderRoot(fieldM, uid, inputV, this.errorV, this.labelV);
   }
 
-  public static create<FM extends IFieldModel,
-    IV extends IInputView<IVA>, IVA extends IInputValue>(
-      deps: IFieldViewDeps<FM, IV>,
-  ): IFieldView<IV, IVA> {
-    return new this(deps);
+  public static create(fieldM: IFieldModel, uid: string, inputV: IInputView): IFieldView {
+    return new FieldView(fieldM, uid, inputV);
   }
 
   public updateLabel(label: string): void {
     if (this.labelV) {
       this.labelV.updateLabel(label);
     }
-  }
-
-  public getInput(): IV {
-    return this.inputV;
-  }
-
-  public getValue(): IVA {
-    return this.inputV.getValue();
   }
 
   public reset(): void {

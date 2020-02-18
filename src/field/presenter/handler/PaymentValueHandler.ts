@@ -14,7 +14,7 @@ export const PaymentValueHandler: IValueHandler<IPaymentFieldModel,
     return token ? token.id : undefined;
   },
 
-  async setValue(): Promise<void> {
-    // we must not inject its value for security purposes
+  setValue(): void {
+    console.error('Setting a card is not allowed.');
   },
 };

@@ -47,7 +47,7 @@ export class LegalInputRenderer {
 
 export type ILegalInputValue = IBooleanInputValue;
 
-export type ILegalInputView = IInputView<ILegalInputValue>;
+export type ILegalInputView = IInputView;
 
 export class LegalInputView implements ILegalInputView {
   protected readonly inputE: HTMLInputElement;

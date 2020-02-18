@@ -40,7 +40,7 @@ export interface ILegacyPaymentListener {
 
 export type IPaymentInputValue = undefined;
 
-export interface IPaymentInputView extends IInputView<IPaymentInputValue> {
+export interface IPaymentInputView extends IInputView {
   processCard(): Promise<void>;
   getToken(): ICardToken | undefined;
   isEmpty(): boolean;
@@ -81,7 +81,7 @@ export class PaymentInputView implements IPaymentInputView, ILegacyPaymentListen
   }
 
   public static create(fieldM: IPaymentFieldModel, uid: string,
-    inputL: IInputViewListener): PaymentInputView {
+    inputL: IInputViewListener): IPaymentInputView {
     return new this(fieldM, uid, inputL);
   }
 

@@ -2,12 +2,10 @@ import md5 from 'md5';
 import sha1 from 'hash.js/lib/hash/sha/1';
 import sha256 from 'hash.js/lib/hash/sha/256';
 import sha512 from 'hash.js/lib/hash/sha/512';
-import isNil from 'lodash/isNil';
 
 import { IValueHandler } from './ValueHandler';
 import { IPasswordFieldModel, IPasswordFieldValue, HashFunction } from '../../model/FieldModel';
 import { IPasswordInputView } from '../../view/input/PasswordInputView';
-import { StringValueHandler } from './StringValueHandler';
 
 export abstract class PasswordHasher {
   public static hash(password: string, hash: HashFunction): string {
@@ -29,15 +27,20 @@ export abstract class PasswordHasher {
 
 export const PasswordValueHandler: IValueHandler<IPasswordFieldModel,
   IPasswordInputView, IPasswordFieldValue> = {
-  async getValue(inputV: IPasswordInputView, fieldM: IPasswordFieldModel):
-    Promise<IPasswordFieldValue> {
-    const cleanValue = await StringValueHandler.getValue(inputV, fieldM);
-    return isNil(cleanValue)
-      ? undefined
-      : PasswordHasher.hash(cleanValue, fieldM.config.hash);
+  getValue(inputV: IPasswordInputView, fieldM: IPasswordFieldModel):
+    IPasswordFieldValue {
+    const value = inputV.getValue().trim();
+
+    if (value === '') {
+      return undefined;
+    }
+
+    const hash = PasswordHasher.hash(value, fieldM.config.hash);
+
+    return hash;
   },
 
-  async setValue(): Promise<void> {
-    // we must not inject its value for security purposes
+  setValue(): void {
+    console.error('Setting a password is not allowed.');
   },
 };

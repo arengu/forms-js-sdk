@@ -38,7 +38,7 @@ export abstract class DateInputRenderer {
 
 export type IDateInputValue = string;
 
-export type IDateInputView = IInputView<IDateInputValue>;
+export type IDateInputView = IInputView;
 
 export class DateInputView extends StringInputView implements IDateInputView {
   public static create(fieldM: IDateFieldModel, uid: string,

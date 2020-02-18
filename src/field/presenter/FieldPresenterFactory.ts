@@ -8,57 +8,57 @@ import {
 } from '../FieldFactory';
 
 export abstract class FieldPresenterFactory {
-  public static create(fieldM: IFieldModel, fieldL: IFieldPresenterListener,
+  public static create(model: IFieldModel, listener: IFieldPresenterListener,
     messages: Messages): IFieldPresenter {
-    switch (fieldM.type) {
+    switch (model.type) {
       case FieldType.BOOLEAN:
-        return FieldPresenter.create({
-          fieldM, fieldL, messages, fieldF: BooleanFieldFactory,
-        });
+        return FieldPresenter.create(
+          model, listener, messages, BooleanFieldFactory,
+        );
       case FieldType.CHOICE:
-        return FieldPresenter.create({
-          fieldM, fieldL, messages, fieldF: ChoiceFieldFactory,
-        });
+        return FieldPresenter.create(
+          model, listener, messages, ChoiceFieldFactory,
+        );
       case FieldType.DATE:
-        return FieldPresenter.create({
-          fieldM, fieldL, messages, fieldF: DateFieldFactory,
-        });
+        return FieldPresenter.create(
+          model, listener, messages, DateFieldFactory,
+        );
       case FieldType.DROPDOWN:
-        return FieldPresenter.create({
-          fieldM, fieldL, messages, fieldF: DropdownFieldFactory,
-        });
+        return FieldPresenter.create(
+          model, listener, messages, DropdownFieldFactory,
+        );
       case FieldType.EMAIL:
-        return FieldPresenter.create({
-          fieldM, fieldL, messages, fieldF: EmailFieldFactory,
-        });
+        return FieldPresenter.create(
+          model, listener, messages, EmailFieldFactory,
+        );
       case FieldType.LEGAL:
-        return FieldPresenter.create({
-          fieldM, fieldL, messages, fieldF: LegalFieldFactory,
-        });
+        return FieldPresenter.create(
+          model, listener, messages, LegalFieldFactory,
+        );
       case FieldType.NUMBER:
-        return FieldPresenter.create({
-          fieldM, fieldL, messages, fieldF: NumberFieldFactory,
-        });
+        return FieldPresenter.create(
+          model, listener, messages, NumberFieldFactory,
+        );
       case FieldType.PAYMENT:
-        return FieldPresenter.create({
-          fieldM, fieldL, messages, fieldF: PaymentFieldFactory,
-        });
+        return FieldPresenter.create(
+          model, listener, messages, PaymentFieldFactory,
+        );
       case FieldType.PASSWORD:
-        return FieldPresenter.create({
-          fieldM, fieldL, messages, fieldF: PasswordFieldFactory,
-        });
+        return FieldPresenter.create(
+          model, listener, messages, PasswordFieldFactory,
+        );
       case FieldType.TEL:
-        return FieldPresenter.create({
-          fieldM, fieldL, messages, fieldF: TelFieldFactory,
-        });
+        return FieldPresenter.create(
+          model, listener, messages, TelFieldFactory,
+        );
       case FieldType.TEXT:
-        return FieldPresenter.create({
-          fieldM, fieldL, messages, fieldF: TextFieldFactory,
-        });
+        return FieldPresenter.create(
+          model, listener, messages, TextFieldFactory,
+        );
       case FieldType.URL:
-        return FieldPresenter.create({
-          fieldM, fieldL, messages, fieldF: URLFieldFactory,
-        });
+        return FieldPresenter.create(
+          model, listener, messages, URLFieldFactory,
+        );
       default:
         throw new Error('Unexpected field model');
     }

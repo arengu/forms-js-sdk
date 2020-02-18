@@ -1,23 +1,21 @@
 import { IFieldModel, IFieldValue } from '../../model/FieldModel';
-import { IInputView, IInputValue } from '../../view/InputView';
+import { IInputView } from '../../view/InputView';
 import { IValueHandler } from './ValueHandler';
 
-export type IConvertibleValue = IInputValue & IFieldValue;
-
-export class DummyValueHandler<VA extends IConvertibleValue>
-  implements IValueHandler<IFieldModel, IInputView<VA>, VA> {
-  public async getValue( // eslint-disable-line class-methods-use-this
-    inputV: IInputView<VA>,
-  ): Promise<VA> {
-    return inputV.getValue();
-  }
-
-  public async setValue(): Promise<void> { // eslint-disable-line class-methods-use-this
-    // not supported yet
-  }
-
-  public static create<VA extends IConvertibleValue>():
-    IValueHandler<IFieldModel, IInputView<VA>, VA> {
-    return new this();
-  }
+export interface IDummyInput<VAL> extends IInputView {
+  getValue(): VAL;
 }
+
+export const DummyValueHandler = {
+  create<FV extends IFieldValue>(): IValueHandler<IFieldModel, IDummyInput<FV>, FV> {
+    return {
+      getValue(inputV: IDummyInput<FV>): FV {
+        return inputV.getValue();
+      },
+
+      setValue(inputV: IDummyInput<FV>, value: FV, fieldM: IFieldModel): void {
+        console.warn(`Setting a value for ${fieldM.id} field is not supported`);
+      }
+    };
+  },
+};

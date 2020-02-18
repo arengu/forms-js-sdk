@@ -20,7 +20,7 @@ export abstract class URLInputRenderer {
 
 export type IURLInputValue = string;
 
-export type IURLInputView = IInputView<IURLInputValue>;
+export type IURLInputView = IInputView;
 
 export class URLInputView extends StringInputView implements IURLInputView {
   public static create(fieldM: IURLFieldModel, uid: string,

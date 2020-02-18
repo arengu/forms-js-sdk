@@ -18,7 +18,7 @@ import { InvalidStep } from '../../error/InvalidStep';
 import { ArenguError } from '../../error/ArenguError';
 import { FieldPresenterFactory } from '../../field/presenter/FieldPresenterFactory';
 import { IUserValues, IFormData } from '../../form/model/SubmissionModel';
-import { IAnyFieldView } from '../../field/view/FieldView';
+import { IFieldView } from '../../field/view/FieldView';
 
 export type IStepListener = IStepViewListener;
 
@@ -62,7 +62,7 @@ export const StepPresenterHelper = {
     };
   },
 
-  getView(fieldP: IFieldPresenter): IAnyFieldView {
+  getView(fieldP: IFieldPresenter): IFieldView {
     return fieldP.getView();
   },
 
@@ -207,7 +207,6 @@ export class StepPresenter implements IStepPresenter, IFieldPresenterListener {
     const fieldP = this.getFieldPresenter(fieldId);
     fieldP.handleFieldError(err);
   }
-
 
   public handleInvalidFields(err: InvalidFields): void {
     return err.fields.forEach((fE) => this.handleFieldError(fE));

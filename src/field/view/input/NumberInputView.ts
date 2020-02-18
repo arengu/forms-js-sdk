@@ -21,7 +21,7 @@ export abstract class NumberInputRenderer {
 
 export type INumberInputValue = string;
 
-export type INumberInputView = IInputView<INumberInputValue>;
+export type INumberInputView = IInputView;
 
 export class NumberInputView extends StringInputView implements INumberInputView {
   public static create(fieldM: INumberFieldModel, uid: string,
