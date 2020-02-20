@@ -49,10 +49,8 @@ export class FieldValidator<FM extends IFieldModel,
      * Validations have to be executed sequentially because some of them depend on anothers
      * and we have to stop as soon as a rule is not satisfied.
      */
-    for (validation of this.validations) { // eslint-disable-line no-restricted-syntax
-      const result = validation( // eslint-disable-line no-await-in-loop
-        value, fieldM, inputV,
-      );
+    for (validation of this.validations) {
+      const result = validation(value, fieldM, inputV);
 
       if (!result.valid) {
         return result;
