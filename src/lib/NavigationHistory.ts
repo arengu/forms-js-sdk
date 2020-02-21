@@ -1,4 +1,4 @@
-import { IStepPresenter } from "../step/presenter/StepPresenter";
+import { IStepPresenter } from "../step/StepPresenter";
 
 export class NavigationHistory {
   private stack: IStepPresenter[];

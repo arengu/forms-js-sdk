@@ -2,23 +2,22 @@ import keyBy from 'lodash/keyBy';
 import isEmpty from 'lodash/isEmpty';
 import isNil from 'lodash/isNil';
 
-import { InvalidFields, FieldError } from '../../error/InvalidFields';
+import { InvalidFields, FieldError } from '../error/InvalidFields';
 
-import { ValidateFields, IStepValidationResult } from '../interactor/ValidateFields';
+import { ValidateFields, IStepValidationResult } from './interactor/StepValidator';
 
-import { Messages } from '../../lib/Messages';
+import { Messages } from '../lib/Messages';
 
-import { IStepModel } from '../model/StepModel';
-import { IFieldModel, IFieldValue } from '../../field/model/FieldModel';
-import { IPresenter } from '../../base/Presenter';
-import { IFieldPresenterListener, IFieldPresenter } from '../../field/presenter/FieldPresenter';
-import { IStepView, StepView, IStepViewListener } from '../view/StepView';
-import { AppErrorCode } from '../../error/ErrorCodes';
-import { InvalidStep } from '../../error/InvalidStep';
-import { ArenguError } from '../../error/ArenguError';
-import { FieldPresenterFactory } from '../../field/presenter/FieldPresenterFactory';
-import { IUserValues, IFormData } from '../../form/model/SubmissionModel';
-import { IFieldView } from '../../field/view/FieldView';
+import { IStepModel } from './model/StepModel';
+import { IFieldModel, IFieldValue } from '../field/model/FieldModel';
+import { IPresenter } from '../base/Presenter';
+import { IFieldPresenterListener, IFieldPresenter, FieldPresenter } from '../field/presenter/FieldPresenter';
+import { IStepView, StepView, IStepViewListener } from './view/StepView';
+import { AppErrorCode } from '../error/ErrorCodes';
+import { InvalidStep } from '../error/InvalidStep';
+import { ArenguError } from '../error/ArenguError';
+import { IUserValues, IFormData } from '../form/model/SubmissionModel';
+import { IFieldView } from '../field/view/FieldView';
 
 export type IStepListener = IStepViewListener;
 
@@ -32,7 +31,7 @@ export interface IStepPresenter extends IPresenter<IStepView> {
   updateStep(this: this, data: IFormData): void;
 
   hasStepValidation(this: this): boolean;
-  validateFields(this: this): Promise<IStepValidationResult>;
+  validate(this: this): Promise<IStepValidationResult>;
   getUserValues(this: this): Promise<IUserValues>;
 
   handleAnyError(this: this, err: Error): void;
@@ -51,7 +50,7 @@ export const StepPresenterHelper = {
   createFieldPresenter(fieldL: IFieldPresenterListener,
     messages: Messages): IFieldPresenterCreator {
     return function creator(this: void, fieldM: IFieldModel): IFieldPresenter {
-      return FieldPresenterFactory.create(fieldM, fieldL, messages);
+      return FieldPresenter.create(fieldM, fieldL, messages);
     };
   },
 
@@ -141,8 +140,14 @@ export class StepPresenter implements IStepPresenter, IFieldPresenterListener {
     return this.stepM.onNext;
   }
 
-  public async validateFields(): Promise<IStepValidationResult> {
-    return ValidateFields.execute(this.fieldsP);
+  public async validate(): Promise<IStepValidationResult> {
+    const result = await ValidateFields.execute(this.fieldsP);
+
+    if (!result.valid) {
+      this.handleFieldErrors(result.errors);
+    }
+
+    return result;
   }
 
   /**
@@ -210,6 +215,10 @@ export class StepPresenter implements IStepPresenter, IFieldPresenterListener {
 
   public handleInvalidFields(err: InvalidFields): void {
     return err.fields.forEach((fE) => this.handleFieldError(fE));
+  }
+
+  public handleFieldErrors(errs: FieldError[]): void {
+    return errs.forEach((fE) => this.handleFieldError(fE));
   }
 
   public handleInvalidStep(err: InvalidStep): void {

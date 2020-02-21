@@ -1,24 +1,24 @@
 import isNil from 'lodash/isNil';
 
-import { HiddenFields } from '../HiddenFields'; // eslint-disable-line no-unused-vars
+import { HiddenFields } from './HiddenFields'; // eslint-disable-line no-unused-vars
 
-import { IFormModel } from '../model/FormModel';
+import { IFormModel } from './model/FormModel';
 
-import { Messages } from '../../lib/Messages';
+import { Messages } from '../lib/Messages';
 
-import { IPresenter } from '../../base/Presenter';
-import { IFormView, FormView, IFormViewListener } from '../view/FormView';
-import { ISubmissionModel, IFormData, IUserValues } from '../model/SubmissionModel';
-import { FormRepository } from '../../repository/FormRepository';
-import { IConfirmationModel } from '../model/ConfirmationModel';
-import { ThankYouView } from '../view/ThankYouView';
-import { InvalidFields } from '../../error/InvalidFields';
-import { MetaDataModelFactory } from '../model/MetaDataModel';
-import { EventsFactory } from '../../lib/EventsFactory';
-import { IValidationModel } from '../model/ValidationModel';
-import { InvalidStep } from '../../error/InvalidStep';
-import { IStepPresenter, IStepListener, StepPresenter } from '../../step/presenter/StepPresenter';
-import { NavigationHistory } from '../../lib/NavigationHistory';
+import { IPresenter } from '../base/Presenter';
+import { IFormView, FormView, IFormViewListener } from './view/FormView';
+import { ISubmissionModel, IFormData, IUserValues } from './model/SubmissionModel';
+import { FormRepository } from '../repository/FormRepository';
+import { IConfirmationModel } from './model/ConfirmationModel';
+import { ThankYouView } from './view/ThankYouView';
+import { InvalidFields } from '../error/InvalidFields';
+import { MetaDataModelFactory } from './model/MetaDataModel';
+import { EventsFactory } from '../lib/EventsFactory';
+import { IValidationModel } from './model/ValidationModel';
+import { InvalidStep } from '../error/InvalidStep';
+import { IStepPresenter, IStepListener, StepPresenter } from '../step/StepPresenter';
+import { NavigationHistory } from '../lib/NavigationHistory';
 
 export abstract class FormPresenterHelper {
   public static getUserValues(stepP: IStepPresenter): Promise<IUserValues> {
@@ -192,13 +192,13 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
     try {
       stepP.startAsync();
 
-      const { valid } = await stepP.validateFields();
+      const stepValidation = await stepP.validate();
 
-      if (!valid) {
+      if (!stepValidation.valid) {
         return;
       }
 
-      await this.validateStep(stepP);
+      await this.executeFlow(stepP);
 
       if (this.isLastStep()) {
         await this.submitForm();
@@ -212,7 +212,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
     }
   }
 
-  public handleValidation(stepId: string, res: IValidationModel): void {
+  public handleFlowResult(stepId: string, res: IValidationModel): void {
     FormView.setCookies(res.cookies);
     this.signatures.set(stepId, res.signature);
   }
@@ -347,7 +347,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
     }
   }
 
-  public async validateStep(stepP: IStepPresenter): Promise<void> {
+  public async executeFlow(stepP: IStepPresenter): Promise<void> {
     if (!stepP.hasStepValidation()) {
       return;
     }
@@ -361,7 +361,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
 
     try {
       const res = await FormRepository.validateStep(formId, stepId, userValues, signature);
-      this.handleValidation(stepId, res);
+      this.handleFlowResult(stepId, res);
     } catch (err) {
       if (err instanceof InvalidStep) {
         FormView.setCookies(err.cookies);

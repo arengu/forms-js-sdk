@@ -1,4 +1,3 @@
-
 import { DEFAULT_MESSAGES } from '../lib/Messages';
 import { AppErrorCode, FieldErrorCode } from './ErrorCodes';
 import { ArenguError, IArenguError, IErrorDetails } from './ArenguError';

@@ -1,7 +1,7 @@
 import includes from 'lodash/includes';
 import isNil from 'lodash/isNil';
 
-import { FormPresenter, IFormPresenter } from './form/presenter/FormPresenter';
+import { FormPresenter, IFormPresenter } from './form/FormPresenter';
 
 import { HiddenFields } from './form/HiddenFields';
 

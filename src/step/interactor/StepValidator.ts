@@ -1,6 +1,6 @@
 import { IFieldPresenter } from '../../field/presenter/FieldPresenter';
 
-import { InvalidFields, FieldError } from '../../error/InvalidFields';
+import { FieldError } from '../../error/InvalidFields';
 import { IFailedFieldValidation, IFieldValidationResult } from '../../field/presenter/validator/FieldValidator';
 
 export interface ISuccessfulStepValidation {
@@ -8,23 +8,23 @@ export interface ISuccessfulStepValidation {
 }
 export interface IFailedStepValidation {
   readonly valid: false;
-  readonly error: InvalidFields;
+  readonly errors: FieldError[];
 }
 
 export type IStepValidationResult = ISuccessfulStepValidation | IFailedStepValidation;
 
-export abstract class ValidatorHelper {
-  public static isError(result: IFieldValidationResult): result is IFailedFieldValidation {
+export const ValidatorHelper = {
+  isError(result: IFieldValidationResult): result is IFailedFieldValidation {
     return result.valid === false;
-  }
+  },
 
-  public static getError(result: IFailedFieldValidation): FieldError {
+  getError(result: IFailedFieldValidation): FieldError {
     return result.error;
-  }
+  },
 }
 
-export abstract class ValidateFields {
-  public static async execute(fieldsP: IFieldPresenter[]): Promise<IStepValidationResult> {
+export const ValidateFields = {
+  async execute(fieldsP: IFieldPresenter[]): Promise<IStepValidationResult> {
     const proms = fieldsP.map((fP) => fP.validate());
     const results = await Promise.all(proms);
 
@@ -40,11 +40,9 @@ export abstract class ValidateFields {
 
     console.error('Some values are not valid', errors);
 
-    const err = InvalidFields.fromFieldErrors(errors);
-
     return {
       valid: false,
-      error: err,
+      errors,
     };
-  }
-}
+  },
+};
