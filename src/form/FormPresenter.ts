@@ -180,8 +180,8 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
     return this.formV;
   }
 
-  public onGoBack(): void {
-    this.goBack();
+  public onGoPrevious(): void {
+    this.goPrevious();
   }
 
   public onSubmitForm(): void {
@@ -255,7 +255,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepLi
     this.setContent(firstStep);
   }
 
-  public goBack(): void {
+  public goPrevious(): void {
     const currStep = this.getCurrentStep();
     const prevStep = this.history.popStep();
 

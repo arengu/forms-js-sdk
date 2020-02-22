@@ -18,7 +18,7 @@ export abstract class DateInputCreator {
       case DateFormat.TIME:
         return InputCreator.input(fieldM, uid, DateInputType.TIME);
       default:
-        throw new Error('Unknown format');
+        throw new Error(`Unknown format ${format}`);
     }
   }
 }

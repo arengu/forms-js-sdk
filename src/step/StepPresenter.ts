@@ -12,14 +12,19 @@ import { IStepModel } from './model/StepModel';
 import { IFieldModel, IFieldValue } from '../field/model/FieldModel';
 import { IPresenter } from '../base/Presenter';
 import { IFieldPresenterListener, IFieldPresenter, FieldPresenter } from '../field/presenter/FieldPresenter';
-import { IStepView, StepView, IStepViewListener } from './view/StepView';
+import { IStepView, StepView } from './view/StepView';
 import { AppErrorCode } from '../error/ErrorCodes';
 import { InvalidStep } from '../error/InvalidStep';
 import { ArenguError } from '../error/ArenguError';
 import { IUserValues, IFormData } from '../form/model/SubmissionModel';
-import { IFieldView } from '../field/view/FieldView';
+import { IComponentPresenter, IComponentModel, ComponentCategory } from '../component/ComponentTypes';
+import { ComponentHelper } from '../component/ComponentHelper';
+import { BlockPresenter } from '../block/BlockPresenter';
+import { NextButtonPresenter, INextButtonPresenter } from '../block/navigation/next/NextButtonPresenter';
 
-export type IStepListener = IStepViewListener;
+export interface IStepListener {
+  onGoPrevious(this: this): void;
+}
 
 export interface IStepPresenter extends IPresenter<IStepView> {
   getStepId(): string;
@@ -46,11 +51,20 @@ export interface IFieldPresenterCreator {
   (fieldM: IFieldModel): IFieldPresenter;
 }
 
+export interface IComponentCreator {
+  (compM: IComponentModel): IComponentPresenter;
+}
+
 export const StepPresenterHelper = {
-  createFieldPresenter(fieldL: IFieldPresenterListener,
-    messages: Messages): IFieldPresenterCreator {
-    return function creator(this: void, fieldM: IFieldModel): IFieldPresenter {
-      return FieldPresenter.create(fieldM, fieldL, messages);
+  createComponentFactory(fieldL: IFieldPresenterListener, stepL: IStepListener,
+    messages: Messages): IComponentCreator {
+    return function componentCreator(compM: IComponentModel): IComponentPresenter {
+      switch (compM.category) {
+        case ComponentCategory.FIELD:
+          return FieldPresenter.create(compM, fieldL, messages);
+        case ComponentCategory.BLOCK:
+          return BlockPresenter.create(compM, stepL);
+      }
     };
   },
 
@@ -59,10 +73,6 @@ export const StepPresenterHelper = {
       fieldId: fieldP.getFieldId(),
       value: await fieldP.getValue(),
     };
-  },
-
-  getView(fieldP: IFieldPresenter): IFieldView {
-    return fieldP.getView();
   },
 
   hasValue(pair: IPairFieldIdValue): boolean {
@@ -77,14 +87,13 @@ export class StepPresenter implements IStepPresenter, IFieldPresenterListener {
 
   protected readonly messages: Messages
 
+  protected readonly compsP: IComponentPresenter[];
+
+  protected readonly nextsP: INextButtonPresenter[];
+
   protected readonly fieldsP: IFieldPresenter[];
-
   protected readonly dynFieldsP: IFieldPresenter[];
-
-  /**
-   * Components indexed by identifier
-   */
-  protected readonly fieldsPI: Record<string, IFieldPresenter>;
+  protected readonly fieldsPI: Record<string, IFieldPresenter>; // indexed by fieldId
 
   protected readonly stepV: IStepView;
 
@@ -96,11 +105,18 @@ export class StepPresenter implements IStepPresenter, IFieldPresenterListener {
     this.stepM = stepM;
     this.invalidFields = new Set();
     this.messages = messages;
-    this.fieldsP = stepM.components.map(StepPresenterHelper.createFieldPresenter(this, messages));
+
+    this.compsP = stepM.components.map(StepPresenterHelper.createComponentFactory(this, stepL, messages));
+
+    this.nextsP = this.compsP.filter(NextButtonPresenter.matches);
+
+    this.fieldsP = this.compsP.filter(ComponentHelper.isFieldPresenter);
     this.dynFieldsP = this.fieldsP.filter((fP): boolean => fP.isDynamic());
     this.fieldsPI = keyBy(this.fieldsP, (fP) => fP.getFieldId());
-    const fieldsV = this.fieldsP.map((fV) => StepPresenterHelper.getView(fV));
-    this.stepV = StepView.create(stepM, fieldsV, stepL);
+
+    const compsV = this.compsP.map((cP) => cP.getView());
+    this.stepV = StepView.create(stepM, compsV);
+
     this.loadings = 0;
     this.disablements = 0;
   }
@@ -170,7 +186,7 @@ export class StepPresenter implements IStepPresenter, IFieldPresenterListener {
 
   public showLoading(): void {
     if (this.loadings === 0) {
-      this.stepV.showLoading();
+      this.nextsP.forEach((nP) => nP.showLoading());
     }
     this.loadings += 1;
   }
@@ -178,22 +194,22 @@ export class StepPresenter implements IStepPresenter, IFieldPresenterListener {
   public hideLoading(): void {
     this.loadings -= 1;
     if (this.loadings === 0) {
-      this.stepV.hideLoading();
+      this.nextsP.forEach((nP) => nP.hideLoading());
     }
-  }
-
-  public disableActions(): void {
-    if (this.disablements === 0) {
-      this.stepV.disableNavigation();
-    }
-    this.disablements += 1;
   }
 
   public enableActions(): void {
     this.disablements -= 1;
     if (this.disablements === 0) {
-      this.stepV.enableNavigation();
+      this.nextsP.forEach((nP) => nP.enable());
     }
+  }
+
+  public disableActions(): void {
+    if (this.disablements === 0) {
+      this.nextsP.forEach((nP) => nP.disable());
+    }
+    this.disablements += 1;
   }
 
   public startAsync(): void {
@@ -247,7 +263,7 @@ export class StepPresenter implements IStepPresenter, IFieldPresenterListener {
   }
 
   public reset(): void {
-    this.fieldsP.forEach((fP) => fP.reset());
+    this.compsP.forEach((cP) => cP.reset());
     this.stepV.reset();
   }
 

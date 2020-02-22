@@ -821,9 +821,13 @@
         Buttons
 ---------------------*/
 
-.af-step-navigation {
+.af-step-button {
   margin: 1.25em 0;
   text-align: center;
+}
+
+.af-step-button button {
+  width: 100%;
 }
 
 .af-button button[type=submit],
@@ -856,11 +860,6 @@
 .af-step-previous button[type=button]:hover {
   background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1));
   transition: background-image 0.3s ease;
-}
-
-.af-step-button {
-  display: inline-block;
-  margin: 0 15px;
 }
 
 .af-button button[disabled] {

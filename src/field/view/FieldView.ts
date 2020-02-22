@@ -1,9 +1,9 @@
 import isNil from 'lodash/isNil';
-import { IComponentView } from '../../component/ComponentView';
 import { IFieldModel } from '../model/FieldModel';
 import { FieldErrorMessage } from './FieldErrorMessage';
 import { IInputView } from './InputView';
 import { ILabelView, LabelView } from './LabelView';
+import { IComponentView } from '../../component/ComponentTypes';
 
 export interface IFieldView extends IComponentView {
   updateLabel(label: string): void;

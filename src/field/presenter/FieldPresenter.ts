@@ -67,8 +67,6 @@ export abstract class FieldPresenter {
         return GenericFieldPresenter.create(
           model, listener, messages, URLFieldFactory,
         );
-      default:
-        throw new Error('Unexpected field model');
     }
   }
 }

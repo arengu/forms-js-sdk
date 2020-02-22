@@ -1,3 +1,5 @@
+import { ComponentCategory } from "../../component/ComponentTypes";
+
 export enum FieldType {
   BOOLEAN = 'BOOLEAN',
   CHOICE = 'CHOICE',
@@ -20,6 +22,7 @@ export interface IFieldOptionModel {
 
 export interface IBaseFieldModel {
   readonly id: string;
+  readonly category: ComponentCategory.FIELD;
   readonly type: FieldType;
   readonly label?: string;
   readonly hint?: string;

@@ -1,8 +1,8 @@
 import escape from 'lodash/escape';
 import isString from 'lodash/isString';
 
-import { IComponentView } from '../../component/ComponentView';
 import { IFieldModel } from '../model/FieldModel';
+import { IHTMLView } from '../../base/view/HTMLView';
 
 export class LabelRenderer {
   public static renderLabel(text: string, required: boolean, uid: string): HTMLLabelElement {
@@ -27,8 +27,9 @@ export class LabelRenderer {
   }
 }
 
-export interface ILabelView extends IComponentView {
+export interface ILabelView extends IHTMLView {
   updateLabel(text: string): void;
+  reset(): void;
 }
 
 export class LabelView implements ILabelView {

@@ -1,22 +1,10 @@
 import { IFormPageView } from '../../form/view/FormView';
 import { IStepModel } from '../model/StepModel';
-import { IFieldView } from '../../field/view/FieldView';
 import { StepErrorMessage } from '../part/StepErrorMessage';
-import { NavigationView } from './NavigationView';
 import { HTMLHelper } from '../../lib/view/HTMLHelper';
-import { IComponentView } from '../../component/ComponentView';
-
-export interface IStepViewListener {
-  onGoBack(this: this): void;
-}
+import { IComponentView } from '../../component/ComponentTypes';
 
 export interface IStepView extends IFormPageView {
-  showLoading(this: this): void;
-  hideLoading(this: this): void;
-
-  disableNavigation(this: this): void;
-  enableNavigation(this: this): void;
-
   setError(this: this, msg: string): void;
   clearError(this: this): void;
 }
@@ -32,7 +20,7 @@ export abstract class StepRenderer {
   }
 
   public static renderRoot(stepM: IStepModel, compsV: IComponentView[],
-    errorV: StepErrorMessage, navV: NavigationView): HTMLDivElement {
+    errorV: StepErrorMessage): HTMLDivElement {
     const { id } = stepM;
 
     const root = document.createElement('div');
@@ -43,53 +31,32 @@ export abstract class StepRenderer {
       .forEach(HTMLHelper.appendChild(root));
 
     root.appendChild(this.renderMessage(errorV));
-    root.appendChild(navV.render());
+    // root.appendChild(navV.render());
 
     return root;
   }
 }
 
 export class StepView implements IStepView {
-  protected readonly fieldsV: IFieldView[];
+  protected readonly compsV: IComponentView[];
 
   protected readonly errorV: StepErrorMessage;
 
-  protected readonly navV: NavigationView;
-
   protected readonly rootE: HTMLDivElement;
 
-  protected constructor(stepM: IStepModel, fieldsV: IFieldView[], viewL: IStepViewListener) {
-    this.fieldsV = fieldsV;
+  protected constructor(stepM: IStepModel, compsV: IComponentView[]) {
+    this.compsV = compsV;
     this.errorV = StepErrorMessage.create();
-    this.navV = NavigationView.create(stepM.buttons, viewL);
 
-    this.rootE = StepRenderer.renderRoot(stepM, fieldsV, this.errorV, this.navV);
+    this.rootE = StepRenderer.renderRoot(stepM, compsV, this.errorV);
   }
 
-  public static create(stepM: IStepModel, fieldsV: IFieldView[],
-    viewL: IStepViewListener): IStepView {
-    return new this(stepM, fieldsV, viewL);
-  }
-
-  public enableNavigation(): void {
-    this.navV.enableNext();
-  }
-
-  public disableNavigation(): void {
-    this.navV.disableNext();
+  public static create(stepM: IStepModel, compsV: IComponentView[]): IStepView {
+    return new StepView(stepM, compsV);
   }
 
   public reset(): void {
     this.errorV.reset();
-    this.navV.reset();
-  }
-
-  public showLoading(): void {
-    this.navV.showLoading();
-  }
-
-  public hideLoading(): void {
-    this.navV.hideLoading();
   }
 
   public setError(msg: string): void {

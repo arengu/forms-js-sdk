@@ -119,7 +119,7 @@ export class BooleanInputView implements IBooleanInputView {
       case 'false':
         return value;
       default:
-        throw new Error('Unexpected value');
+        throw new Error(`Unexpected value ${value}`);
     }
   }
 
