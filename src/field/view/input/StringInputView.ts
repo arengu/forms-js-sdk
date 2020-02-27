@@ -1,25 +1,31 @@
-import { IInputView } from '../InputView';
+import { IInputView, IInputViewListener, BaseInputView } from '../InputView';
+import { InputConfigurator, IStringInputElement } from './InputHelper';
 
 export type IStringInputValue = string;
-
-export interface IStringInputElement extends HTMLElement {
-  value: string;
-  defaultValue: string;
-}
 
 export interface IStringInputView extends IInputView {
   getValue(): IStringInputValue;
   setValue(value: IStringInputValue): void;
 }
 
-export abstract class StringInputView implements IStringInputView {
-  protected readonly inputE: IStringInputElement;
+export abstract class StringInputView extends BaseInputView<IInputViewListener> implements IStringInputView {
+  protected readonly uid: string;
 
+  protected readonly inputE: IStringInputElement;
   protected readonly rootE: HTMLElement;
 
-  protected constructor(inputE: IStringInputElement, rootE?: HTMLElement) {
+  protected constructor(uid: string, inputE: IStringInputElement, rootE?: HTMLElement) {
+    super();
+
+    this.uid = uid;
     this.inputE = inputE;
     this.rootE = rootE || inputE;
+
+    InputConfigurator.addListeners(this.inputE, this);
+  }
+
+  public getInputId(): string {
+    return this.uid;
   }
 
   public getValue(): IStringInputValue {
@@ -32,6 +38,14 @@ export abstract class StringInputView implements IStringInputView {
 
   public reset(): void {
     this.inputE.value = this.inputE.defaultValue;
+  }
+
+  public block(): void {
+    this.inputE.disabled = true;
+  }
+
+  public unblock(): void {
+    this.inputE.disabled = false;
   }
 
   public render(): HTMLElement {

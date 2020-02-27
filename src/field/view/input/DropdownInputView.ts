@@ -1,40 +1,48 @@
 import {
-  IInputViewListener, IInputView, ISingleOptionValue, IMultiOptionValue,
+  IInputViewListener, IInputView, ISingleOptionValue, IMultiOptionValue, IHTMLInputListener, BaseInputView,
 } from '../InputView';
 import LegacyDropdown from './legacy/LegacyDropdown';
 import { IDropdownFieldModel } from '../../model/FieldModel';
 
 export abstract class DropdownInputRenderer {
   public static renderInput(fieldM: IDropdownFieldModel,
-    inputL: IInputViewListener): LegacyDropdown {
+    inputL: IHTMLInputListener): LegacyDropdown {
     return LegacyDropdown.create(fieldM, inputL);
   }
 }
 
 export type IDropdownInputValue = ISingleOptionValue | IMultiOptionValue;
 
-export type IDropdownInputView = IInputView;
+export interface IDropdownInputView extends IInputView {
+  getValue(): IDropdownInputValue;
+}
 
-export class DropdownInputView implements IDropdownInputView {
+export class DropdownInputView extends BaseInputView<IInputViewListener> implements IDropdownInputView {
   protected readonly inputV: LegacyDropdown;
 
-  protected constructor(fieldM: IDropdownFieldModel, inputL: IInputViewListener) {
-    this.inputV = DropdownInputRenderer.renderInput(fieldM, inputL);
+  protected constructor(fieldM: IDropdownFieldModel) {
+    super();
+
+    this.inputV = DropdownInputRenderer.renderInput(fieldM, this);
   }
 
-  public static create(fieldM: IDropdownFieldModel, inputL: IInputViewListener): DropdownInputView {
-    return new this(fieldM, inputL);
+  public static create(fieldM: IDropdownFieldModel): IDropdownInputView {
+    return new this(fieldM);
   }
 
   public getValue(): IDropdownInputValue {
     return this.inputV.value;
   }
 
-  public setValue(): void { // eslint-disable-line class-methods-use-this
-    throw new Error('Not supported yet');
+  public reset(): void {
+    // nothing to do here until LegacyDropdown supports it
   }
 
-  public reset(): void { // eslint-disable-line class-methods-use-this
+  public block(): void {
+    // nothing to do here until LegacyDropdown supports it
+  }
+
+  public unblock(): void {
     // nothing to do here until LegacyDropdown supports it
   }
 

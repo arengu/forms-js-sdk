@@ -3,14 +3,11 @@ import isNil from 'lodash/isNil';
 
 import { FormPresenter, IFormPresenter } from './form/FormPresenter';
 
-import { HiddenFields } from './form/HiddenFields';
-
 import { FormRepository } from './repository/FormRepository';
 
 import { CSSInjector } from './css/CSSInjector';
 
 import { EventsFactory } from './lib/EventsFactory';
-import { Messages } from './lib/Messages';
 
 import { SDKError } from './error/SDKError';
 import { SDKErrorCode } from './error/ErrorCodes';
@@ -108,9 +105,7 @@ export abstract class SDK {
 
       EventsFactory.embedForm(eventData);
 
-      const hiddenFields = HiddenFields.create(formData.hiddenFields, initValues);
-      const messages = Messages.create(formData.messages);
-      const presenter = FormPresenter.create(formData, hiddenFields, messages);
+      const presenter = FormPresenter.create(formData, initValues);
 
       const formNode = presenter.render();
 

@@ -1,14 +1,12 @@
 import { IFormModel } from '../form/model/FormModel';
-import { IConfirmationModel } from '../form/model/ConfirmationModel';
 import { AppErrorCode } from '../error/ErrorCodes';
 import { AppError } from '../error/AppError';
 import { InvalidFields } from '../error/InvalidFields';
-import { InvalidStep } from '../error/InvalidStep';
 import { IFormData } from '../form/model/SubmissionModel';
-import { IValidationModel } from '../form/model/ValidationModel';
 import {
   IHeaders, HTTPClient, ResponseHelper, HeaderName, AuthHelper,
 } from '../lib/HTTPClient';
+import { IFormInteraction } from '../form/FormInteraction';
 
 declare const API_URL: string;
 
@@ -28,7 +26,7 @@ export class FormRepository {
   }
 
   public static async createSubmission(formId: string, submission: object,
-    signature?: string): Promise<IConfirmationModel> {
+    signature?: string): Promise<IFormInteraction> {
     const reqUrl = `${API_URL}/forms/${formId}/submissions/`;
     const headers: IHeaders = {};
 
@@ -49,16 +47,13 @@ export class FormRepository {
     if (errorCode === AppErrorCode.INVALID_INPUT) {
       throw InvalidFields.fromSchemaError(body);
     }
-    if (errorCode === AppErrorCode.STEP_VALIDATION_FAILED) {
-      throw InvalidStep.create(body);
-    }
 
     console.error('Error creating submission', body);
     throw AppError.create(body);
   }
 
-  public static async validateStep(formId: string, stepId: string,
-    formData: IFormData, signature?: string): Promise<IValidationModel> {
+  public static async executeFlow(formId: string, stepId: string,
+    formData: IFormData, signature?: string): Promise<IFormInteraction> {
     const reqUrl = `${API_URL}/forms/${formId}/validations/${stepId}`;
     const headers: IHeaders = {};
 
@@ -78,9 +73,6 @@ export class FormRepository {
 
     if (errorCode === AppErrorCode.INVALID_INPUT) {
       throw InvalidFields.fromSchemaError(body);
-    }
-    if (errorCode === AppErrorCode.STEP_VALIDATION_FAILED) {
-      throw InvalidStep.create(body);
     }
 
     console.error('Error validating data', body);

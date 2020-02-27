@@ -1,14 +1,9 @@
-import { IFieldModel } from '../../field/model/FieldModel';
 
-export interface IStepButtonsModel {
-  readonly previous?: string;
-  readonly next: string;
-}
+import { IComponentModel } from '../../component/ComponentModel';
 
 export interface IStepModel {
   readonly id: string;
   readonly name: string;
-  readonly components: IFieldModel[];
-  readonly buttons: IStepButtonsModel;
+  readonly components: IComponentModel[];
   readonly onNext: boolean;
 }

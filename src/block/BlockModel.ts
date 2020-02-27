@@ -1,4 +1,4 @@
-import { ComponentCategory } from "../component/ComponentTypes";
+import { ComponentCategory } from "../component/ComponentModel";
 
 export enum BlockType {
   PREVIOUS_BUTTON = 'PREVIOUS_BUTTON',

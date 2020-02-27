@@ -1,7 +1,7 @@
-import { IInputViewListener, IInputView } from '../InputView';
-import { StringInputView } from './StringInputView';
-import { InputCreator, InputConfigurator } from './InputHelper';
-import { IDateFieldModel, DateFormat } from '../../model/FieldModel';
+import { UID } from '../../../lib/UID';
+import { DateFormat, IDateFieldModel } from '../../model/FieldModel';
+import { InputConfigurator, InputCreator } from './InputHelper';
+import { StringInputView, IStringInputView } from './StringInputView';
 
 export enum DateInputType {
   DATE = 'date',
@@ -24,26 +24,21 @@ export abstract class DateInputCreator {
 }
 
 export abstract class DateInputRenderer {
-  public static renderInput(fieldM: IDateFieldModel, uid: string,
-    inputL: IInputViewListener): HTMLInputElement {
+  public static renderInput(fieldM: IDateFieldModel, uid: string): HTMLInputElement {
     const inputE = DateInputCreator.fromFormat(fieldM, uid);
 
-    InputConfigurator.placeholder(inputE, fieldM);
     InputConfigurator.defaultValue(inputE, fieldM);
-    InputConfigurator.addListeners(inputE, inputL);
 
     return inputE;
   }
 }
 
-export type IDateInputValue = string;
-
-export type IDateInputView = IInputView;
+export type IDateInputView = IStringInputView;
 
 export class DateInputView extends StringInputView implements IDateInputView {
-  public static create(fieldM: IDateFieldModel, uid: string,
-    inputL: IInputViewListener): DateInputView {
-    const inputE = DateInputRenderer.renderInput(fieldM, uid, inputL);
-    return new this(inputE);
+  public static create(fieldM: IDateFieldModel): IDateInputView {
+    const uid = UID.create();
+    const inputE = DateInputRenderer.renderInput(fieldM, uid);
+    return new DateInputView(uid, inputE);
   }
 }

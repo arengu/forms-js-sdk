@@ -322,7 +322,7 @@ class LegacyDropdown {
   }
 
   _buildDropdownText() {
-    const { placeholder, config: { options, defaultValue } } = this.model;
+    const { config: { placeholder, options, defaultValue } } = this.model;
 
     const node = document.createElement('div');
     node.classList.add('af-dropdown-text');

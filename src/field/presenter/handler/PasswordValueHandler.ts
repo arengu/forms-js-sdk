@@ -25,22 +25,24 @@ export abstract class PasswordHasher {
   }
 }
 
-export const PasswordValueHandler: IValueHandler<IPasswordFieldModel,
-  IPasswordInputView, IPasswordFieldValue> = {
-  getValue(inputV: IPasswordInputView, fieldM: IPasswordFieldModel):
-    IPasswordFieldValue {
-    const value = inputV.getValue().trim();
+export const PasswordValueHandler = {
+  create(inputV: IPasswordInputView, fieldM: IPasswordFieldModel): IValueHandler<IPasswordFieldValue> {
+    return {
+      getValue(): IPasswordFieldValue {
+        const value = inputV.getValue().trim();
 
-    if (value === '') {
-      return undefined;
-    }
+        if (value === '') {
+          return undefined;
+        }
 
-    const hash = PasswordHasher.hash(value, fieldM.config.hash);
+        const hash = PasswordHasher.hash(value, fieldM.config.hash);
 
-    return hash;
-  },
+        return hash;
+      },
 
-  setValue(): void {
-    console.error('Setting a password is not allowed.');
+      setValue(): void {
+        console.error('Setting a password is not allowed.');
+      }
+    };
   },
 };

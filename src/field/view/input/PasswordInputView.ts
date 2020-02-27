@@ -1,7 +1,8 @@
-import { IInputViewListener, IInputView } from '../InputView';
+import { IInputViewListener, IInputView, BaseInputView } from '../InputView';
 import { InputCreator, InputConfigurator } from './InputHelper';
 import { IHTMLView } from '../../../base/view/HTMLView';
 import { IPasswordFieldModel } from '../../model/FieldModel';
+import { UID } from '../../../lib/UID';
 
 const PASSWORD_ICON_SECONDARY = 'af-password-icon-secondary';
 
@@ -12,11 +13,11 @@ export enum PasswordInputType {
 
 export abstract class PasswordInputRenderer {
   public static renderInput(fieldM: IPasswordFieldModel, uid: string,
-    inputL: IInputViewListener): HTMLInputElement {
+    inputV: PasswordInputView): HTMLInputElement {
     const input = InputCreator.input(fieldM, uid, PasswordInputType.hidden);
 
     InputConfigurator.placeholder(input, fieldM);
-    InputConfigurator.addListeners(input, inputL);
+    InputConfigurator.addListeners(input, inputV);
     input.autocomplete = 'current-password';
 
     return input;
@@ -103,22 +104,25 @@ export interface IPasswordInputView extends IInputView {
   getValue(): IPasswordInputValue;
 }
 
-export class PasswordInputView implements IPasswordInputView, IPasswordVisibilityListener {
+export class PasswordInputView extends BaseInputView<IInputViewListener> implements IPasswordInputView, IPasswordVisibilityListener {
   protected readonly maskV: PasswordMaskView;
 
   protected readonly inputE: HTMLInputElement;
 
   protected readonly rootE: HTMLElement;
 
-  protected constructor(fieldM: IPasswordFieldModel, uid: string, inputL: IInputViewListener) {
-    this.inputE = PasswordInputRenderer.renderInput(fieldM, uid, inputL);
+  protected constructor(fieldM: IPasswordFieldModel) {
+    super();
+
+    const uid = UID.create();
+
+    this.inputE = PasswordInputRenderer.renderInput(fieldM, uid, this);
     this.maskV = PasswordMaskView.create(this);
     this.rootE = PasswordInputRenderer.renderRoot(this.inputE, this.maskV);
   }
 
-  public static create(fieldM: IPasswordFieldModel, uid: string,
-    inputL: IInputViewListener): IPasswordInputView {
-    return new this(fieldM, uid, inputL);
+  public static create(fieldM: IPasswordFieldModel): IPasswordInputView {
+    return new this(fieldM);
   }
 
   public getValue(): IPasswordInputValue {
@@ -148,6 +152,14 @@ export class PasswordInputView implements IPasswordInputView, IPasswordVisibilit
   public reset(): void {
     this.inputE.value = this.inputE.defaultValue;
     this.hidePassword();
+  }
+
+  public block(): void {
+    this.inputE.disabled = true;
+  }
+
+  public unblock(): void {
+    this.inputE.disabled = false;
   }
 
   public render(): HTMLElement {

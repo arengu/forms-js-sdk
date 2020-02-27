@@ -1,16 +1,17 @@
-import { IInputViewListener, IInputView } from '../InputView';
+import { IInputViewListener, IInputView, BaseInputView } from '../InputView';
 import { InputCreator, InputConfigurator } from './InputHelper';
 import { ILegalFieldModel } from '../../model/FieldModel';
 import { IBooleanInputValue } from './BooleanInputView';
+import { UID } from '../../../lib/UID';
 
 const LegalInputType = 'checkbox';
 
 export class LegalInputRenderer {
   public static renderInput(fieldM: ILegalFieldModel, uid: string,
-    inputL: IInputViewListener): HTMLInputElement {
+    inputV: LegalInputView): HTMLInputElement {
     const input = InputCreator.input(fieldM, uid, LegalInputType);
 
-    InputConfigurator.addListeners(input, inputL);
+    InputConfigurator.addListeners(input, inputV);
     input.value = 'true';
 
     return input;
@@ -49,19 +50,22 @@ export type ILegalInputValue = IBooleanInputValue;
 
 export type ILegalInputView = IInputView;
 
-export class LegalInputView implements ILegalInputView {
+export class LegalInputView extends BaseInputView<IInputViewListener> implements ILegalInputView {
   protected readonly inputE: HTMLInputElement;
 
   protected readonly rootE: HTMLElement;
 
-  protected constructor(fieldM: ILegalFieldModel, uid: string, inputL: IInputViewListener) {
-    this.inputE = LegalInputRenderer.renderInput(fieldM, uid, inputL);
+  protected constructor(fieldM: ILegalFieldModel) {
+    super();
+
+    const uid = UID.create();
+
+    this.inputE = LegalInputRenderer.renderInput(fieldM, uid, this);
     this.rootE = LegalInputRenderer.renderRoot(fieldM, uid, this.inputE);
   }
 
-  public static create(fieldM: ILegalFieldModel, uid: string,
-    inputL: IInputViewListener): LegalInputView {
-    return new this(fieldM, uid, inputL);
+  public static create(fieldM: ILegalFieldModel): LegalInputView {
+    return new this(fieldM);
   }
 
   public getValue(): ILegalInputValue {
@@ -74,6 +78,14 @@ export class LegalInputView implements ILegalInputView {
 
   public reset(): void {
     this.inputE.checked = this.inputE.defaultChecked;
+  }
+
+  public block(): void {
+    this.inputE.disabled = true;
+  }
+
+  public unblock(): void {
+    this.inputE.disabled = false;
   }
 
   public render(): HTMLElement {

@@ -1,11 +1,8 @@
 import { IHTMLView } from '../base/view/HTMLView';
-import { IFieldModel } from '../field/model/FieldModel';
 import { IBlockModel } from '../block/BlockModel';
-import { IPresenter } from '../base/Presenter';
+import { IFieldModel } from '../field/model/FieldModel';
 
 export type IComponentView = IHTMLView;
-
-export type IComponentPresenter = IPresenter<IComponentView>;
 
 export enum ComponentCategory {
   BLOCK = 'BLOCK',

@@ -1,17 +1,22 @@
-import { IComponentPresenter } from "../component/ComponentTypes";
 import { BlockType, IBlockModel } from "./BlockModel";
-import { PreviousButtonPresenter, IPreviousButtonListener } from "./navigation/previous/PreviousButtonPresenter";
+import { PreviousButtonPresenter, IPreviousButtonPresenter } from "./navigation/previous/PreviousButtonPresenter";
 import { NextButtonPresenter } from "./navigation/next/NextButtonPresenter";
-
-export type IBlockListener = IPreviousButtonListener;
+import { IComponentPresenter } from "../component/ComponentPresenter";
+import { BaseComponentPresenter } from "../component/ComponentHelper";
 
 export type IBlockPresenter = IComponentPresenter;
 
+export class BaseBlockPresenter extends BaseComponentPresenter { }
+
+export interface IBlockPresenterListener {
+  onGoToPrevious?(this: this, buttonP: IPreviousButtonPresenter): void;
+}
+
 export abstract class BlockPresenter {
-  public static create(blockM: IBlockModel, blockL: IBlockListener): IBlockPresenter {
+  public static create(blockM: IBlockModel): IBlockPresenter {
     switch (blockM.type) {
       case BlockType.PREVIOUS_BUTTON:
-        return PreviousButtonPresenter.create(blockM, blockL);
+        return PreviousButtonPresenter.create(blockM);
       case BlockType.NEXT_BUTTON:
         return NextButtonPresenter.create(blockM);
     }

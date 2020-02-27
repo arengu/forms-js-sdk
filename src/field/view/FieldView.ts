@@ -3,7 +3,7 @@ import { IFieldModel } from '../model/FieldModel';
 import { FieldErrorMessage } from './FieldErrorMessage';
 import { IInputView } from './InputView';
 import { ILabelView, LabelView } from './LabelView';
-import { IComponentView } from '../../component/ComponentTypes';
+import { IComponentView } from '../../component/ComponentModel';
 
 export interface IFieldView extends IComponentView {
   updateLabel(label: string): void;
@@ -71,15 +71,12 @@ export abstract class FieldRenderer {
 export class FieldView implements IFieldView {
   protected readonly labelV?: ILabelView;
 
-  protected readonly inputV: IInputView;
-
   protected readonly errorV: FieldErrorMessage;
 
   protected readonly rootE: HTMLDivElement;
 
   protected constructor(fieldM: IFieldModel, uid: string, inputV: IInputView) {
     this.labelV = LabelView.create(fieldM, uid);
-    this.inputV = inputV; //deps.fieldF.createInputView(deps.fieldM, deps.fieldL, this.uid);
     this.errorV = FieldErrorMessage.create();
 
     this.rootE = FieldRenderer.renderRoot(fieldM, uid, inputV, this.errorV, this.labelV);
@@ -97,7 +94,6 @@ export class FieldView implements IFieldView {
 
   public reset(): void {
     this.errorV.reset();
-    this.inputV.reset();
   }
 
   public addErrorFlag(): void {

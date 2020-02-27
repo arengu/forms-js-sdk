@@ -1,7 +1,7 @@
 import isNil from 'lodash/isNil';
 
-import { IInputViewListener } from '../InputView';
 import { IFieldModel } from '../../model/FieldModel';
+import { IHTMLInputListener } from '../InputView';
 
 export abstract class InputHelper {
   public static isChecked(elem: HTMLInputElement): boolean {
@@ -14,10 +14,6 @@ export abstract class InputHelper {
 
   public static resetCheck(elem: HTMLInputElement): void {
     elem.checked = elem.defaultChecked; // eslint-disable-line no-param-reassign
-  }
-
-  public static resetValue(elem: HTMLInputElement): void {
-    elem.value = elem.defaultValue; // eslint-disable-line no-param-reassign
   }
 }
 
@@ -42,10 +38,12 @@ export abstract class InputCreator {
   }
 }
 
-export type ITextInput = HTMLInputElement | HTMLTextAreaElement;
+export type IStringInputElement = HTMLInputElement | HTMLTextAreaElement;
 
 export interface IFieldWithPlaceholder {
-  readonly placeholder?: string;
+  readonly config: {
+    readonly placeholder?: string;
+  };
 }
 export interface IFieldWithDefaultValue {
   readonly config: {
@@ -65,16 +63,20 @@ export interface IFieldWithRangeRules {
   };
 }
 
+interface IListenableHTMLElement extends HTMLElement {
+  readonly type: string;
+}
+
 export abstract class InputConfigurator {
-  public static placeholder(elem: ITextInput, fieldM: IFieldWithPlaceholder): void {
-    const { placeholder } = fieldM;
+  public static placeholder(elem: IStringInputElement, fieldM: IFieldWithPlaceholder): void {
+    const { placeholder } = fieldM.config;
 
     if (placeholder) {
       elem.placeholder = placeholder; // eslint-disable-line no-param-reassign
     }
   }
 
-  public static defaultValue(elem: ITextInput, fieldM: IFieldWithDefaultValue): void {
+  public static defaultValue(elem: IStringInputElement, fieldM: IFieldWithDefaultValue): void {
     const { defaultValue } = fieldM.config;
 
     if (!isNil(defaultValue)) {
@@ -82,7 +84,7 @@ export abstract class InputConfigurator {
     }
   }
 
-  public static lengthRules(elem: ITextInput, fieldM: IFieldWithLengthRules): void {
+  public static lengthRules(elem: IStringInputElement, fieldM: IFieldWithLengthRules): void {
     const { minLength, maxLength } = fieldM.config;
 
     if (minLength > 0) {
@@ -108,17 +110,17 @@ export abstract class InputConfigurator {
    * Old browsers do not support onInput event when input type is radio or checkbox,
    * so we have to check it and use a different event when needed.
    */
-  public static supportsOnInput(elem: ITextInput): boolean {
+  public static supportsOnInput(elem: IListenableHTMLElement): boolean {
     return elem.type !== 'radio' && elem.type !== 'checkbox';
   }
 
-  public static addListeners(elem: ITextInput, inputL: IInputViewListener): void {
-    elem.addEventListener('blur', inputL.onBlur.bind(inputL));
-    elem.addEventListener('change', inputL.onChange.bind(inputL));
-    elem.addEventListener('focus', inputL.onFocus.bind(inputL));
+  public static addListeners(elem: IListenableHTMLElement, inputL: IHTMLInputListener): void {
+    elem.addEventListener('blur', () => inputL.onBlur());
+    elem.addEventListener('change', () => inputL.onChange());
+    elem.addEventListener('focus', () => inputL.onFocus());
     elem.addEventListener(
       this.supportsOnInput(elem) ? 'input' : 'change',
-      inputL.onInput.bind(inputL),
+      () => inputL.onInput(),
     );
   }
 }

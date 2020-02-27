@@ -1,6 +1,8 @@
 import LegacyPaymentInput from './legacy/LegacyPaymentInput';
 import { IPaymentFieldModel } from '../../model/FieldModel';
 import { IInputView, IInputViewListener } from '../InputView';
+import { ListenableEntity } from '../../../lib/ListenableEntity';
+import { UID } from '../../../lib/UID';
 
 export interface ICardToken {
   id?: string;
@@ -38,8 +40,6 @@ export interface ILegacyPaymentListener {
   onBlur(this: this): void;
 }
 
-export type IPaymentInputValue = undefined;
-
 export interface IPaymentInputView extends IInputView {
   processCard(): Promise<void>;
   getToken(): ICardToken | undefined;
@@ -56,10 +56,8 @@ export interface IPaymentInputView extends IInputView {
  *  - processing error  4000000000000119
  */
 
-export class PaymentInputView implements IPaymentInputView, ILegacyPaymentListener {
+export class PaymentInputView extends ListenableEntity<IInputViewListener> implements IPaymentInputView, ILegacyPaymentListener {
   protected readonly paymentV: LegacyPaymentInput;
-
-  protected readonly inputL: IInputViewListener;
 
   /* Indicates if the input was modified between onFocus and onBlur to fire onChange */
   protected changed: boolean;
@@ -71,18 +69,20 @@ export class PaymentInputView implements IPaymentInputView, ILegacyPaymentListen
 
   protected error?: ICardError;
 
-  protected constructor(fieldM: IPaymentFieldModel, uid: string, inputL: IInputViewListener) {
+  protected constructor(fieldM: IPaymentFieldModel) {
+    super();
+
+    const uid = UID.create();
+
     this.paymentV = LegacyPaymentInput.create(fieldM, uid, this);
-    this.inputL = inputL;
     this.changed = false;
     this.fresh = false;
     this.token = undefined;
     this.error = undefined;
   }
 
-  public static create(fieldM: IPaymentFieldModel, uid: string,
-    inputL: IInputViewListener): IPaymentInputView {
-    return new this(fieldM, uid, inputL);
+  public static create(fieldM: IPaymentFieldModel): IPaymentInputView {
+    return new this(fieldM);
   }
 
   public async processCard(): Promise<void> {
@@ -125,22 +125,22 @@ export class PaymentInputView implements IPaymentInputView, ILegacyPaymentListen
   public onFocus(this: this): void {
     this.changed = false;
 
-    this.inputL.onFocus();
+    this.listeners.forEach((listener) => listener.onFocus && listener.onFocus());
   }
 
   public onBlur(this: this): void {
     if (this.changed) {
-      this.inputL.onChange();
+      this.listeners.forEach((listener) => listener.onChange && listener.onChange());
     }
 
-    this.inputL.onBlur();
+    this.listeners.forEach((listener) => listener.onBlur && listener.onBlur());
   }
 
   public onUpdate(this: this): void {
     this.changed = true;
 
     this.fresh = false;
-    this.inputL.onInput();
+    this.listeners.forEach((listener) => listener.onInput && listener.onInput());
   }
 
   public reset(): void {
@@ -148,6 +148,14 @@ export class PaymentInputView implements IPaymentInputView, ILegacyPaymentListen
     this.token = undefined;
     this.error = undefined;
     this.paymentV.reset();
+  }
+
+  public block(): void {
+    // not implemented yet
+  }
+
+  public unblock(): void {
+    // not implemented yet
   }
 
   public render(): HTMLElement {

@@ -2,7 +2,7 @@ import { IFormPageView } from '../../form/view/FormView';
 import { IStepModel } from '../model/StepModel';
 import { StepErrorMessage } from '../part/StepErrorMessage';
 import { HTMLHelper } from '../../lib/view/HTMLHelper';
-import { IComponentView } from '../../component/ComponentTypes';
+import { IComponentView } from '../../component/ComponentModel';
 
 export interface IStepView extends IFormPageView {
   setError(this: this, msg: string): void;

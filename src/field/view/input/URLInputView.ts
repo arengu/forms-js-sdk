@@ -1,31 +1,27 @@
-import { IInputViewListener, IInputView } from '../InputView';
-import { StringInputView } from './StringInputView';
-import { InputConfigurator, InputCreator } from './InputHelper';
+import { UID } from '../../../lib/UID';
 import { IURLFieldModel } from '../../model/FieldModel';
+import { InputConfigurator, InputCreator } from './InputHelper';
+import { StringInputView, IStringInputView } from './StringInputView';
 
 export const URLInputType = 'url';
 
 export abstract class URLInputRenderer {
-  public static renderInput(fieldM: IURLFieldModel, uid: string,
-    inputL: IInputViewListener): HTMLInputElement {
+  public static renderInput(fieldM: IURLFieldModel, uid: string): HTMLInputElement {
     const elem = InputCreator.input(fieldM, uid, URLInputType);
 
     InputConfigurator.placeholder(elem, fieldM);
     InputConfigurator.defaultValue(elem, fieldM);
-    InputConfigurator.addListeners(elem, inputL);
 
     return elem;
   }
 }
 
-export type IURLInputValue = string;
-
-export type IURLInputView = IInputView;
+export type IURLInputView = IStringInputView;
 
 export class URLInputView extends StringInputView implements IURLInputView {
-  public static create(fieldM: IURLFieldModel, uid: string,
-    inputL: IInputViewListener): URLInputView {
-    const inputE = URLInputRenderer.renderInput(fieldM, uid, inputL);
-    return new this(inputE);
+  public static create(fieldM: IURLFieldModel): IURLInputView {
+    const uid = UID.create();
+    const inputE = URLInputRenderer.renderInput(fieldM, uid);
+    return new URLInputView(uid, inputE);
   }
 }

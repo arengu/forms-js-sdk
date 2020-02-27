@@ -1,8 +1,8 @@
-import { IInputViewListener, IInputView } from '../InputView';
-import { InputCreator, InputConfigurator } from './InputHelper';
-import { StringInputView } from './StringInputView';
-import { CharCounterView } from './CharCounterView';
+import { UID } from '../../../lib/UID';
 import { ITextFieldModel } from '../../model/FieldModel';
+import { CharCounterView } from './CharCounterView';
+import { InputConfigurator, InputCreator } from './InputHelper';
+import { StringInputView, IStringInputView } from './StringInputView';
 
 export type TextInputElements = HTMLInputElement | HTMLTextAreaElement;
 
@@ -18,14 +18,12 @@ export class TextInputRenderer {
     return InputCreator.input(fieldM, uid, 'text');
   }
 
-  public static renderInput(fieldM: ITextFieldModel, uid: string,
-    inputL: IInputViewListener): TextInputElements {
+  public static renderInput(fieldM: ITextFieldModel, uid: string): TextInputElements {
     const input = this.createInput(fieldM, uid);
 
     InputConfigurator.defaultValue(input, fieldM);
     InputConfigurator.placeholder(input, fieldM);
     InputConfigurator.lengthRules(input, fieldM);
-    InputConfigurator.addListeners(input, inputL);
 
     return input;
   }
@@ -59,15 +57,13 @@ export class TextInputRenderer {
   }
 }
 
-export type ITextInputValue = string;
-
-export type ITextInputView = IInputView;
+export type ITextInputView = IStringInputView;
 
 export class TextInputView extends StringInputView implements ITextInputView {
-  public static create(fieldM: ITextFieldModel, uid: string,
-    inputL: IInputViewListener): TextInputView {
-    const inputE = TextInputRenderer.renderInput(fieldM, uid, inputL);
+  public static create(fieldM: ITextFieldModel): ITextInputView {
+    const uid = UID.create();
+    const inputE = TextInputRenderer.renderInput(fieldM, uid);
     const rootE = TextInputRenderer.renderRoot(fieldM, inputE);
-    return new this(inputE, rootE);
+    return new TextInputView(uid, inputE, rootE);
   }
 }

@@ -11,33 +11,44 @@ import { Messages } from '../lib/Messages';
 import { IStepModel } from './model/StepModel';
 import { IFieldModel, IFieldValue } from '../field/model/FieldModel';
 import { IPresenter } from '../base/Presenter';
-import { IFieldPresenterListener, IFieldPresenter, FieldPresenter } from '../field/presenter/FieldPresenter';
+import { IFieldPresenter } from '../field/presenter/presenter/FieldPresenter';
 import { IStepView, StepView } from './view/StepView';
 import { AppErrorCode } from '../error/ErrorCodes';
-import { InvalidStep } from '../error/InvalidStep';
 import { ArenguError } from '../error/ArenguError';
 import { IUserValues, IFormData } from '../form/model/SubmissionModel';
-import { IComponentPresenter, IComponentModel, ComponentCategory } from '../component/ComponentTypes';
+import { IComponentModel } from '../component/ComponentModel';
 import { ComponentHelper } from '../component/ComponentHelper';
-import { BlockPresenter } from '../block/BlockPresenter';
 import { NextButtonPresenter, INextButtonPresenter } from '../block/navigation/next/NextButtonPresenter';
+import { IFormDeps } from '../form/FormPresenter';
+import { ComponentPresenter, IComponentPresenterListener, IComponentPresenter } from '../component/ComponentPresenter';
+import { ISocialFieldPresenter } from '../field/presenter/presenter/SocialFieldPresenter';
 
-export interface IStepListener {
-  onGoPrevious(this: this): void;
+export interface IStepPresenterListener {
+  onGotoPreviousStep?(this: this, stepP: IStepPresenter): void;
+  onSocialLogin?(this: this, stepP: IStepPresenter, compP: ISocialFieldPresenter): void;
 }
 
 export interface IStepPresenter extends IPresenter<IStepView> {
   getStepId(): string;
 
-  startAsync(this: this): void;
-  endAsync(this: this): void;
+  showLoading(this: this): void;
+  hideLoading(this: this): void;
+
+  blockComponents(this: this): void;
+  unblockComponents(this: this): void;
+
+  onShow(this: this): void;
+  onHide(this: this): void;
 
   isDynamic(this: this): boolean;
   updateStep(this: this, data: IFormData): void;
 
-  hasStepValidation(this: this): boolean;
+  hasFlow(this: this): boolean;
   validate(this: this): Promise<IStepValidationResult>;
   getUserValues(this: this): Promise<IUserValues>;
+
+  setError(msg: string): void;
+  clearError(): void;
 
   handleAnyError(this: this, err: Error): void;
 }
@@ -56,18 +67,6 @@ export interface IComponentCreator {
 }
 
 export const StepPresenterHelper = {
-  createComponentFactory(fieldL: IFieldPresenterListener, stepL: IStepListener,
-    messages: Messages): IComponentCreator {
-    return function componentCreator(compM: IComponentModel): IComponentPresenter {
-      switch (compM.category) {
-        case ComponentCategory.FIELD:
-          return FieldPresenter.create(compM, fieldL, messages);
-        case ComponentCategory.BLOCK:
-          return BlockPresenter.create(compM, stepL);
-      }
-    };
-  },
-
   async getValue(fieldP: IFieldPresenter): Promise<IPairFieldIdValue> {
     return {
       fieldId: fieldP.getFieldId(),
@@ -80,50 +79,46 @@ export const StepPresenterHelper = {
   },
 }
 
-export class StepPresenter implements IStepPresenter, IFieldPresenterListener {
+export class StepPresenter implements IStepPresenter, IComponentPresenterListener {
   protected readonly stepM: IStepModel;
-
-  protected readonly invalidFields: Set<string>;
-
   protected readonly messages: Messages
 
   protected readonly compsP: IComponentPresenter[];
 
-  protected readonly nextsP: INextButtonPresenter[];
-
+  protected readonly invalidFields: Set<string>;
   protected readonly fieldsP: IFieldPresenter[];
   protected readonly dynFieldsP: IFieldPresenter[];
   protected readonly fieldsPI: Record<string, IFieldPresenter>; // indexed by fieldId
 
+  protected readonly nextsP: INextButtonPresenter[];
+
   protected readonly stepV: IStepView;
+  protected readonly stepL: IStepPresenterListener;
 
-  protected loadings: number;
+  protected socialP?: ISocialFieldPresenter;
 
-  protected disablements: number;
-
-  protected constructor(stepM: IStepModel, stepL: IStepListener, messages: Messages) {
+  protected constructor(stepM: IStepModel, formD: IFormDeps, stepL: IStepPresenterListener) {
     this.stepM = stepM;
+    this.messages = formD.messages;
+
+    this.compsP = stepM.components.map((cM) => ComponentPresenter.create(formD, cM));
+    this.compsP.forEach((cP) => cP.listen(this));
+
     this.invalidFields = new Set();
-    this.messages = messages;
-
-    this.compsP = stepM.components.map(StepPresenterHelper.createComponentFactory(this, stepL, messages));
-
-    this.nextsP = this.compsP.filter(NextButtonPresenter.matches);
-
     this.fieldsP = this.compsP.filter(ComponentHelper.isFieldPresenter);
     this.dynFieldsP = this.fieldsP.filter((fP): boolean => fP.isDynamic());
     this.fieldsPI = keyBy(this.fieldsP, (fP) => fP.getFieldId());
 
+
+    this.nextsP = this.compsP.filter(NextButtonPresenter.matches);
+
     const compsV = this.compsP.map((cP) => cP.getView());
     this.stepV = StepView.create(stepM, compsV);
-
-    this.loadings = 0;
-    this.disablements = 0;
+    this.stepL = stepL;
   }
 
-  public static create(stepM: IStepModel, stepL: IStepListener,
-    messages: Messages): IStepPresenter {
-    return new StepPresenter(stepM, stepL, messages);
+  public static create(stepM: IStepModel, formD: IFormDeps, stepL: IStepPresenterListener): IStepPresenter {
+    return new StepPresenter(stepM, formD, stepL);
   }
 
   public getStepId(): string {
@@ -152,18 +147,18 @@ export class StepPresenter implements IStepPresenter, IFieldPresenterListener {
     this.dynFieldsP.forEach((sP): void => sP.updateField(data));
   }
 
-  public hasStepValidation(this: this): boolean {
+  public hasFlow(this: this): boolean {
     return this.stepM.onNext;
   }
 
+  public getActiveFields(): IFieldPresenter[] {
+    return this.socialP ? [this.socialP] : this.fieldsP;
+  }
+
   public async validate(): Promise<IStepValidationResult> {
-    const result = await ValidateFields.execute(this.fieldsP);
+    const fieldsP = this.getActiveFields();
 
-    if (!result.valid) {
-      this.handleFieldErrors(result.errors);
-    }
-
-    return result;
+    return ValidateFields.execute(fieldsP);
   }
 
   /**
@@ -172,7 +167,9 @@ export class StepPresenter implements IStepPresenter, IFieldPresenterListener {
   public async getUserValues(): Promise<IUserValues> {
     const indexedValues: IUserValues = {};
 
-    const proms = this.fieldsP.map((fP) => StepPresenterHelper.getValue(fP));
+    const fieldsP = this.getActiveFields();
+
+    const proms = fieldsP.map((fP) => StepPresenterHelper.getValue(fP));
 
     const allValues = await Promise.all(proms);
     const validValues = allValues.filter((v) => StepPresenterHelper.hasValue(v));
@@ -185,41 +182,29 @@ export class StepPresenter implements IStepPresenter, IFieldPresenterListener {
   }
 
   public showLoading(): void {
-    if (this.loadings === 0) {
-      this.nextsP.forEach((nP) => nP.showLoading());
-    }
-    this.loadings += 1;
+    this.nextsP.forEach((nP) => nP.showLoading());
   }
 
   public hideLoading(): void {
-    this.loadings -= 1;
-    if (this.loadings === 0) {
-      this.nextsP.forEach((nP) => nP.hideLoading());
-    }
+    this.nextsP.forEach((nP) => nP.hideLoading());
   }
 
-  public enableActions(): void {
-    this.disablements -= 1;
-    if (this.disablements === 0) {
-      this.nextsP.forEach((nP) => nP.enable());
-    }
+  public unblockComponents(): void {
+    this.compsP.forEach((cP) => cP.unblock && cP.unblock());
   }
 
-  public disableActions(): void {
-    if (this.disablements === 0) {
-      this.nextsP.forEach((nP) => nP.disable());
-    }
-    this.disablements += 1;
+  public blockComponents(): void {
+    this.compsP.forEach((cP) => cP.block && cP.block());
   }
 
-  public startAsync(): void {
-    this.disableActions();
-    this.showLoading();
+  public onShow(): void {
+    this.socialP = undefined;
+    this.compsP.forEach((cP) => cP.onShow && cP.onShow());
   }
 
-  public endAsync(): void {
-    this.hideLoading();
-    this.enableActions();
+  public onHide(): void {
+    this.clearError();
+    this.compsP.forEach((cP) => cP.onHide && cP.onHide());
   }
 
   public handleFieldError(err: FieldError): void {
@@ -237,28 +222,18 @@ export class StepPresenter implements IStepPresenter, IFieldPresenterListener {
     return errs.forEach((fE) => this.handleFieldError(fE));
   }
 
-  public handleInvalidStep(err: InvalidStep): void {
-    this.setError(err.message);
-  }
-
   public handleArenguError(err: ArenguError): void {
     const msg = this.messages.fromError(err);
     this.setError(msg);
   }
 
-  public handleGenericError(err: Error): void {
-    this.setError(err.message);
-  }
-
   public handleAnyError(err: Error): void {
     if (err instanceof InvalidFields) {
       this.handleInvalidFields(err);
-    } else if (err instanceof InvalidStep) {
-      this.handleInvalidStep(err);
     } else if (err instanceof ArenguError) {
       this.handleArenguError(err);
     } else {
-      this.handleGenericError(err);
+      this.setError(err.message);
     }
   }
 
@@ -290,7 +265,6 @@ export class StepPresenter implements IStepPresenter, IFieldPresenterListener {
 
     if (!this.hasInvalidFields()) {
       this.notifyInvalidFields();
-      this.disableActions();
     }
 
     this.invalidFields.add(fieldId);
@@ -303,7 +277,15 @@ export class StepPresenter implements IStepPresenter, IFieldPresenterListener {
 
     if (!this.hasInvalidFields()) {
       this.clearError();
-      this.enableActions();
     }
+  }
+
+  public onGoToPrevious(): void {
+    this.stepL.onGotoPreviousStep && this.stepL.onGotoPreviousStep(this);
+  }
+
+  public onSocialLogin(fieldP: ISocialFieldPresenter): void {
+    this.socialP = fieldP;
+    this.stepL.onSocialLogin && this.stepL.onSocialLogin(this, fieldP);
   }
 }

@@ -1,3 +1,9 @@
+/* TODO: implement facebook style using a more specific class */
+.af-field-social button {
+  background-color: #4267b2;
+  color: white;
+}
+
 :root {
   --primary-color: #1398b3;
   --input-padding: 8px 10px;
@@ -755,26 +761,29 @@
         Loading
 ---------------------*/
 
-.af-button-ladda {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border: none;
-  background: var(--primary-color);
-  border-radius: 3px;
-  left: 0;
-  opacity: 0;
-  top: 0;
-}
-
 @keyframes af-button-ladda {
   to {
     transform: rotate(360deg);
   }
 }
 
+.af-button-ladda {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 3px;
+  left: 0;
+  top: 0;
+  display: none;
+}
+
+.af-button-loading .af-button-text {
+  visibility: hidden;
+}
+
 .af-button-loading .af-button-ladda {
-  opacity: 1;
+  display: inherit;
   transition: all 0.1s ease;
 }
 
@@ -782,7 +791,6 @@
   content: '';
   box-sizing: border-box;
   position: absolute;
-  opacity: 1;
   top: 50%;
   left: 50%;
   width: 20px;
@@ -821,13 +829,14 @@
         Buttons
 ---------------------*/
 
+.af-button button {
+  width: 100%;
+  position: relative;
+}
+
 .af-step-button {
   margin: 1.25em 0;
   text-align: center;
-}
-
-.af-step-button button {
-  width: 100%;
 }
 
 .af-button button[type=submit],
@@ -844,7 +853,6 @@
 .af-step-next button[type=submit] {
   background-color: var(--primary-color);
   color: #fff;
-  position: relative;
 }
 
 .af-step-next button[type=submit]:hover {
