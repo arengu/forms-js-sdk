@@ -1,28 +1,35 @@
 import { ICookieModel } from './model/CookieModel';
 
+export enum ActionType {
+  NEXT_STEP = 'NEXT_STEP',
+  JUMP_TO_STEP = 'JUMP_TO_STEP',
+  THANK_YOU = 'THANK_YOU',
+  ERROR_MESSAGE = 'ERROR_MESSAGE',
+}
+
 export interface IPageRedirection {
   target: string;
   delay?: number;
 }
 
 export interface INextStepAction {
-  type: 'NEXT_STEP';
+  type: ActionType.NEXT_STEP;
 }
 
-export interface IGotoStepAction {
-  type: 'GOTO_STEP';
+export interface IJumpToStepAction {
+  type: ActionType.JUMP_TO_STEP;
   stepId: string;
 }
 
 export interface IThankYouAction {
-  type: 'THANK_YOU';
+  type: ActionType.THANK_YOU;
   submissionId?: string;
   message?: string;
   redirection?: IPageRedirection;
 }
 
 export interface IErrorMessageAction {
-  type: 'ERROR_MESSAGE';
+  type: ActionType.ERROR_MESSAGE;
   message: string;
 }
 
@@ -45,7 +52,7 @@ export interface IFailedFormInteraction extends IBaseFormInteraction {
 
 export interface ISuccessfulFormInteraction extends IBaseFormInteraction {
   readonly result: FormInteractionResult.SUCCESS;
-  readonly action: INextStepAction | IGotoStepAction | IThankYouAction;
+  readonly action: INextStepAction | IJumpToStepAction | IThankYouAction;
   readonly signature: string;
 }
 

@@ -18,7 +18,7 @@ import { EventsFactory } from '../lib/EventsFactory';
 import { IStepPresenter, IStepPresenterListener, StepPresenter } from '../step/StepPresenter';
 import { NavigationHistory } from '../lib/NavigationHistory';
 import { ISocialFieldPresenter } from '../field/presenter/presenter/SocialFieldPresenter';
-import { IFormInteraction, FormInteractionResult } from './FormInteraction';
+import { IFormInteraction, FormInteractionResult, ActionType } from './FormInteraction';
 
 export abstract class FormPresenterHelper {
   public static getUserValues(stepP: IStepPresenter): Promise<IUserValues> {
@@ -267,10 +267,10 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
       return;
     }
 
-    if (action.type === 'GOTO_STEP') {
+    if (action.type === ActionType.JUMP_TO_STEP) {
       const nextStep = find(this.stepsP, (sP) => sP.getStepId() === action.stepId);
       if (nextStep) {
-        this.gotoStep(nextStep);
+        this.jumpToStep(nextStep);
       }
     }
   }
@@ -327,10 +327,10 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
       return;
     }
 
-    await this.gotoStep(nextStep);
+    await this.jumpToStep(nextStep);
   }
 
-  public async gotoStep(nextStep: IStepPresenter): Promise<void> {
+  public async jumpToStep(nextStep: IStepPresenter): Promise<void> {
     const currStep = this.getCurrentStep();
 
     this.history.pushStep(currStep);
