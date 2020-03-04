@@ -36,9 +36,20 @@ export interface ISocialButtonView extends IHTMLView {
   unblock(): void;
 }
 
-// TODO: use specific classes for this input
+export const SocialInputRenderer = {
+  renderRoot(buttonsV: ISocialButtonView[]): HTMLDivElement {
+    const root = document.createElement('div');
+    root.className = 'af-social';
+
+    buttonsV.forEach((bV) => root.appendChild(bV.render()));
+
+    return root;
+  },
+}
 
 export class SocialInputView extends ListenableEntity<ISocialInputViewListener> implements ISocialInputView, ISocialButtonListener {
+  protected readonly rootE: HTMLDivElement;
+
   protected readonly buttonsV: ISocialButtonView[];
   protected usedProviderV?: ISocialButtonView;
 
@@ -50,6 +61,9 @@ export class SocialInputView extends ListenableEntity<ISocialInputViewListener> 
     super();
 
     this.buttonsV = formD.social.map((sC) => ButtonViewFactory.create(sC, this));
+
+    this.rootE = SocialInputRenderer.renderRoot(this.buttonsV);
+
     this.visible = false;
   }
 
@@ -99,8 +113,7 @@ export class SocialInputView extends ListenableEntity<ISocialInputViewListener> 
   }
 
   public render(): HTMLElement {
-    // TODO: return all elements grouped into a parent div
-    return this.buttonsV[0].render();
+    return this.rootE;
   }
 
   public block(): void {
