@@ -1,4 +1,4 @@
-import { IHTMLView } from '../../../base/view/HTMLView';
+import { IView } from "../../../core/BaseTypes";
 import { IPreviousButtonBlockModel } from '../../BlockModel';
 import { IPreviousButtonView, PreviousButtonView } from './PreviousButtonView';
 import { IBlockPresenter } from '../../BlockPresenter';
@@ -22,8 +22,12 @@ export class PreviousButtonPresenter extends BaseComponentPresenter implements I
     this.listeners.forEach((listener) => listener.onGoToPrevious && listener.onGoToPrevious(this));
   }
 
-  public getView(): IHTMLView {
+  public getView(): IView {
     return this.buttonV;
+  }
+
+  public render(): HTMLElement {
+    return this.buttonV.render();
   }
 
   public reset(): void {

@@ -3,6 +3,7 @@ import { ComponentCategory } from "../component/ComponentModel";
 export enum BlockType {
   PREVIOUS_BUTTON = 'PREVIOUS_BUTTON',
   NEXT_BUTTON = 'NEXT_BUTTON',
+  HTML = 'HTML',
 }
 
 interface IBaseBlockModel {
@@ -25,4 +26,11 @@ export interface INextButtonBlockModel extends IBaseBlockModel {
   };
 }
 
-export type IBlockModel = IPreviousButtonBlockModel | INextButtonBlockModel;
+export interface IHTMLBlockModel extends IBaseBlockModel {
+  readonly type: BlockType.HTML;
+  readonly config: {
+    readonly content: string;
+  };
+}
+
+export type IBlockModel = IPreviousButtonBlockModel | INextButtonBlockModel | IHTMLBlockModel;

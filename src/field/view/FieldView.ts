@@ -6,6 +6,8 @@ import { ILabelView, LabelView } from './LabelView';
 import { IComponentView } from '../../component/ComponentModel';
 
 export interface IFieldView extends IComponentView {
+  reset(): void;
+
   updateLabel(label: string): void;
 
   setError(msg: string): void;

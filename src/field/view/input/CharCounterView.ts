@@ -1,4 +1,4 @@
-import { IHTMLView } from '../../../base/view/HTMLView';
+import { IView } from "../../../core/BaseTypes";
 
 const ALERT_CLASS = 'af-counter-alert';
 const ALERT_VALUE = 95;
@@ -58,7 +58,7 @@ export abstract class CharCounterRenderer {
   }
 }
 
-export class CharCounterView implements IHTMLView {
+export class CharCounterView implements IView {
   protected readonly inputE: CountableInput;
 
   protected readonly counterE: HTMLDivElement;

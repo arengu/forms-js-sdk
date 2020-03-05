@@ -1,6 +1,6 @@
 import { IInputViewListener, IInputView, BaseInputView } from '../InputView';
 import { InputCreator, InputConfigurator } from './InputHelper';
-import { IHTMLView } from '../../../base/view/HTMLView';
+import { IView } from "../../../core/BaseTypes";
 import { IPasswordFieldModel } from '../../model/FieldModel';
 import { UID } from '../../../lib/UID';
 
@@ -47,7 +47,7 @@ export interface IPasswordIconListener {
   onToggle(this: this): void;
 }
 
-export class PasswordMaskView implements IHTMLView, IPasswordIconListener {
+export class PasswordMaskView implements IView, IPasswordIconListener {
   protected readonly iconE: HTMLElement;
 
   protected readonly visL: IPasswordVisibilityListener;

@@ -1,4 +1,3 @@
-import { IHTMLView } from '../../../base/view/HTMLView';
 import { INextButtonBlockModel } from '../../BlockModel';
 import { INextButtonView, NextButtonView } from './NextButtonView';
 import { IBlockPresenter } from '../../BlockPresenter';
@@ -20,8 +19,8 @@ export class NextButtonPresenter extends BaseComponentPresenter implements INext
     this.buttonV = NextButtonView.create(buttonM.config.text);
   }
 
-  public getView(): IHTMLView {
-    return this.buttonV;
+  public render(): HTMLElement {
+    return this.buttonV.render();
   }
 
   public reset(): void {

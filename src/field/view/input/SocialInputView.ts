@@ -1,9 +1,9 @@
-import { IHTMLView } from '../../../base/view/HTMLView';
 import { SocialProvider } from '../../../form/model/FormModel';
 import { IInputView, IInputViewListener } from '../InputView';
 import { ButtonViewFactory } from './social/ButtonViewFactory';
 import { IFormDeps } from '../../../form/FormPresenter';
 import { ListenableEntity } from '../../../lib/ListenableEntity';
+import { IView } from '../../../core/BaseTypes';
 
 export type SocialInputElements = HTMLInputElement | HTMLTextAreaElement;
 
@@ -28,12 +28,13 @@ export interface ISocialButtonListener {
   onAccessToken(accessToken: string, buttonV: ISocialButtonView): void;
 }
 
-export interface ISocialButtonView extends IHTMLView {
+export interface ISocialButtonView extends IView {
   getProvider(): SocialProvider;
   showLoading(): void;
   hideLoading(): void;
   block(): void;
   unblock(): void;
+  reset(): void;
 }
 
 export const SocialInputRenderer = {

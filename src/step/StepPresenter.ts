@@ -10,7 +10,6 @@ import { Messages } from '../lib/Messages';
 
 import { IStepModel } from './model/StepModel';
 import { IFieldModel, IFieldValue } from '../field/model/FieldModel';
-import { IPresenter } from '../base/Presenter';
 import { IFieldPresenter } from '../field/presenter/presenter/FieldPresenter';
 import { IStepView, StepView } from './view/StepView';
 import { AppErrorCode } from '../error/ErrorCodes';
@@ -22,13 +21,14 @@ import { NextButtonPresenter, INextButtonPresenter } from '../block/navigation/n
 import { IFormDeps } from '../form/FormPresenter';
 import { ComponentPresenter, IComponentPresenterListener, IComponentPresenter } from '../component/ComponentPresenter';
 import { ISocialFieldPresenter } from '../field/presenter/presenter/SocialFieldPresenter';
+import { IPresenter } from '../core/BaseTypes';
 
 export interface IStepPresenterListener {
   onGotoPreviousStep?(this: this, stepP: IStepPresenter): void;
   onSocialLogin?(this: this, stepP: IStepPresenter, compP: ISocialFieldPresenter): void;
 }
 
-export interface IStepPresenter extends IPresenter<IStepView> {
+export interface IStepPresenter extends IPresenter {
   getStepId(): string;
 
   showLoading(this: this): void;
@@ -112,8 +112,8 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
 
     this.nextsP = this.compsP.filter(NextButtonPresenter.matches);
 
-    const compsV = this.compsP.map((cP) => cP.getView());
-    this.stepV = StepView.create(stepM, compsV);
+    const compsE = this.compsP.map((cP) => cP.render());
+    this.stepV = StepView.create(stepM, compsE);
     this.stepL = stepL;
   }
 
@@ -135,8 +135,8 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
     return fieldP;
   }
 
-  public getView(): IStepView {
-    return this.stepV;
+  public render(): HTMLElement {
+    return this.stepV.render();
   }
 
   public isDynamic(this: this): boolean {
@@ -239,7 +239,7 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
 
   public reset(): void {
     this.compsP.forEach((cP) => cP.reset());
-    this.stepV.reset();
+    // TODO: call errorView.reset directly
   }
 
   public hasInvalidFields(): boolean {

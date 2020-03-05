@@ -1,6 +1,6 @@
 import isNil from 'lodash/isNil';
 
-import { IHTMLView } from '../../base/view/HTMLView';
+import { IView } from "../../core/BaseTypes";
 import { HTMLHelper } from '../../lib/view/HTMLHelper';
 
 export enum ButtonType {
@@ -17,7 +17,8 @@ export interface IButtonCallback {
   (this: void): void;
 }
 
-export interface IGenericButtonView extends IHTMLView {
+export interface IGenericButtonView extends IView {
+  reset(): void;
   showLoading(): void;
   hideLoading(): void;
   block(): void;

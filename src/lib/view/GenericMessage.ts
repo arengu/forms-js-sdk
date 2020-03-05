@@ -1,4 +1,4 @@
-import { IHTMLView } from '../../base/view/HTMLView';
+import { IView } from "../../core/BaseTypes";
 import { HTMLHelper } from './HTMLHelper';
 
 export abstract class GenericMessageRenderer {
@@ -17,7 +17,7 @@ export abstract class GenericMessageRenderer {
   }
 }
 
-export class GenericMessageView implements IHTMLView {
+export class GenericMessageView implements IView {
   protected textE: HTMLElement;
 
   protected rootE: HTMLElement;

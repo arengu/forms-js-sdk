@@ -80,8 +80,8 @@ export abstract class BaseFieldPresenter<IV extends IInputView = IInputView> ext
     return this.invalid;
   }
 
-  public getView(): IFieldView {
-    return this.fieldV;
+  public render(): HTMLElement {
+    return this.fieldV.render();
   }
 
   public async onBlur(): Promise<void> {

@@ -2,7 +2,7 @@ import escape from 'lodash/escape';
 import isString from 'lodash/isString';
 
 import { IFieldModel } from '../model/FieldModel';
-import { IHTMLView } from '../../base/view/HTMLView';
+import { IView } from "../../core/BaseTypes";
 
 export class LabelRenderer {
   public static renderLabel(text: string, required: boolean, uid: string): HTMLLabelElement {
@@ -27,7 +27,7 @@ export class LabelRenderer {
   }
 }
 
-export interface ILabelView extends IHTMLView {
+export interface ILabelView extends IView {
   updateLabel(text: string): void;
   reset(): void;
 }

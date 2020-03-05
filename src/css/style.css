@@ -1,9 +1,3 @@
-/* TODO: implement facebook style using a more specific class */
-.af-field-social button {
-  background-color: #4267b2;
-  color: white;
-}
-
 :root {
   --primary-color: #1398b3;
   --input-padding: 8px 10px;
@@ -828,6 +822,15 @@
 /*--------------------
         Buttons
 ---------------------*/
+
+.af-social-facebook button {
+  background-color: #4267b2;
+  color: white;
+}
+
+.af-social-provider button {
+  margin-top: 0.5em;
+}
 
 .af-button button {
   width: 100%;

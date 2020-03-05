@@ -1,4 +1,4 @@
-import { IHTMLView } from '../../base/view/HTMLView';
+import { IView } from "../../core/BaseTypes";
 import { ListenableEntity, IListenableEntity } from '../../lib/ListenableEntity';
 
 export interface IHTMLInputListener {
@@ -15,8 +15,10 @@ export interface IInputViewListener {
   onBlur?(this: this): void;
 }
 
-export interface IInputView extends IHTMLView, IListenableEntity<IInputViewListener> {
+export interface IInputView extends IView, IListenableEntity<IInputViewListener> {
   getInputId?(): string;
+  render(): HTMLElement;
+  reset(): void;
   block(): void;
   unblock(): void;
   onShow?(): void;

@@ -1,6 +1,6 @@
 import isNil from 'lodash/isNil';
 
-import { IHTMLView } from '../../base/view/HTMLView';
+import { IView } from "../../core/BaseTypes";
 import { IFormModel } from '../model/FormModel';
 import { ICookieModel } from '../model/CookieModel';
 import { CookieHelper } from '../../lib/view/CookieHelper';
@@ -45,15 +45,15 @@ export interface IFormViewListener {
   onSubmitForm(this: void): void;
 }
 
-export type IFormPageView = IHTMLView;
+export type IFormPageView = IView;
 
 export interface IRedirectionParams {
   readonly delay?: number;
   readonly target: string;
 }
 
-export interface IFormView extends IHTMLView {
-  setContent(view: IFormPageView): void;
+export interface IFormView extends IView {
+  setContent(pageE: HTMLElement): void;
   scrollTopIfNeeded(): void;
 }
 
@@ -98,14 +98,13 @@ export class FormView implements IFormView {
     return new FormView(formM, viewL);
   }
 
-  public setContent(pageV: IFormPageView): void {
+  public setContent(newPageE: HTMLElement): void {
     const currPageE = this.formE.firstChild;
 
     if (currPageE) {
       this.formE.removeChild(currPageE);
     }
 
-    const newPageE = pageV.render();
     this.formE.appendChild(newPageE);
   }
 

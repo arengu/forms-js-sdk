@@ -2,7 +2,6 @@ import { IFormPageView } from '../../form/view/FormView';
 import { IStepModel } from '../model/StepModel';
 import { StepErrorMessage } from '../part/StepErrorMessage';
 import { HTMLHelper } from '../../lib/view/HTMLHelper';
-import { IComponentView } from '../../component/ComponentModel';
 
 export interface IStepView extends IFormPageView {
   setError(this: this, msg: string): void;
@@ -19,7 +18,7 @@ export abstract class StepRenderer {
     return wrapper;
   }
 
-  public static renderRoot(stepM: IStepModel, compsV: IComponentView[],
+  public static renderRoot(stepM: IStepModel, compsE: HTMLElement[],
     errorV: StepErrorMessage): HTMLDivElement {
     const { id } = stepM;
 
@@ -27,8 +26,7 @@ export abstract class StepRenderer {
     root.classList.add(`af-step-${id}`);
     root.classList.add('af-step');
 
-    compsV.map((cV) => cV.render())
-      .forEach(HTMLHelper.appendChild(root));
+    compsE.forEach(HTMLHelper.appendChild(root));
 
     root.appendChild(this.renderMessage(errorV));
     // root.appendChild(navV.render());
@@ -38,21 +36,17 @@ export abstract class StepRenderer {
 }
 
 export class StepView implements IStepView {
-  protected readonly compsV: IComponentView[];
-
   protected readonly errorV: StepErrorMessage;
 
   protected readonly rootE: HTMLDivElement;
 
-  protected constructor(stepM: IStepModel, compsV: IComponentView[]) {
-    this.compsV = compsV;
+  protected constructor(stepM: IStepModel, compsE: HTMLElement[]) {
     this.errorV = StepErrorMessage.create();
-
-    this.rootE = StepRenderer.renderRoot(stepM, compsV, this.errorV);
+    this.rootE = StepRenderer.renderRoot(stepM, compsE, this.errorV);
   }
 
-  public static create(stepM: IStepModel, compsV: IComponentView[]): IStepView {
-    return new StepView(stepM, compsV);
+  public static create(stepM: IStepModel, compsE: HTMLElement[]): IStepView {
+    return new StepView(stepM, compsE);
   }
 
   public reset(): void {

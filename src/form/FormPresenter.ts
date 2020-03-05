@@ -7,7 +7,6 @@ import { IFormModel, ISocialConfig } from './model/FormModel';
 
 import { Messages } from '../lib/Messages';
 
-import { IPresenter } from '../base/Presenter';
 import { IFormView, FormView, IFormViewListener } from './view/FormView';
 import { ISubmissionModel, IFormData, IUserValues } from './model/SubmissionModel';
 import { FormRepository } from '../repository/FormRepository';
@@ -19,6 +18,7 @@ import { IStepPresenter, IStepPresenterListener, StepPresenter } from '../step/S
 import { NavigationHistory } from '../lib/NavigationHistory';
 import { ISocialFieldPresenter } from '../field/presenter/presenter/SocialFieldPresenter';
 import { IFormInteraction, FormInteractionResult, ActionType } from './FormInteraction';
+import { IPresenter } from '../core/BaseTypes';
 
 export abstract class FormPresenterHelper {
   public static getUserValues(stepP: IStepPresenter): Promise<IUserValues> {
@@ -30,7 +30,7 @@ export abstract class FormPresenterHelper {
   }
 }
 
-export interface IFormPresenter extends IPresenter<IFormView> {
+export interface IFormPresenter extends IPresenter {
   getFormId(): string;
   setHiddenField(fieldId: string, value: string): void;
   render(): HTMLElement;
@@ -282,7 +282,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
 
     this.currentStep = newStep;
 
-    this.formV.setContent(newStep.getView());
+    this.formV.setContent(newStep.render());
 
     if (oldStep && oldStep.onHide) {
       oldStep.onHide();
@@ -359,7 +359,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     }
 
     this.currentStep = undefined;
-    this.formV.setContent(this.confV);
+    this.formV.setContent(this.confV.render());
 
     this.formV.scrollTopIfNeeded();
   }

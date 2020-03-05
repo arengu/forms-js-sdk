@@ -3,7 +3,7 @@ import { ISocialButtonListener, ISocialButtonView } from "../SocialInputView";
 import { SocialProvider, IFacebookSocialConfig } from "../../../../form/model/FormModel";
 import { IFacebookSDK, FacebookSDK } from "../../../../deps/FacebookSDK";
 
-const CSS_CLASSES: string[] = ['af-social-facebook'];
+const CSS_CLASSES: string[] = ['af-social-provider', 'af-social-facebook'];
 
 enum ResponseStatus {
   CONNECTED = 'connected',
