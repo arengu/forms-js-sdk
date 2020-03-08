@@ -190,21 +190,21 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     this.gotoPreviousStep();
   }
 
-  public onSocialLogin(stepP: IStepPresenter, compP: ISocialFieldPresenter): void {
+  public async onSocialLogin(stepP: IStepPresenter, compP: ISocialFieldPresenter): Promise<void> {
     try {
       compP.showLoading();
-      this.onGotoNextStep(stepP);
+      await this.onGotoNextStep(stepP);
     } finally {
       compP.hideLoading();
     }
   }
 
-  public onSubmitForm(): void {
+  public async onSubmitForm(): Promise<void> {
     const stepP = this.getCurrentStep();
 
     try {
       stepP.showLoading();
-      this.onGotoNextStep(stepP);
+      await this.onGotoNextStep(stepP);
     } finally {
       stepP.hideLoading();
     }
