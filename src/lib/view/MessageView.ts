@@ -1,6 +1,12 @@
 import { IView } from "../../core/BaseTypes";
 import { HTMLHelper } from './HTMLHelper';
 
+export interface IMessageView extends IView {
+  setText(txt: string): void;
+  clearText(): void;
+  reset(): void;
+}
+
 export abstract class GenericMessageRenderer {
   public static renderText(): HTMLElement {
     return document.createElement('p');
@@ -17,7 +23,7 @@ export abstract class GenericMessageRenderer {
   }
 }
 
-export class GenericMessageView implements IView {
+export class MessageView implements IMessageView {
   protected textE: HTMLElement;
 
   protected rootE: HTMLElement;
@@ -26,6 +32,10 @@ export class GenericMessageView implements IView {
     this.textE = GenericMessageRenderer.renderText();
     this.rootE = GenericMessageRenderer.renderRoot(cssClasses, this.textE);
     this.hide();
+  }
+
+  public static create(cssClasses: string[]): IMessageView {
+    return new MessageView(cssClasses);
   }
 
   protected show(): void {
@@ -52,9 +62,5 @@ export class GenericMessageView implements IView {
 
   public reset(): void {
     this.clearText();
-  }
-
-  public static create(cssClasses: string[]): GenericMessageView {
-    return new GenericMessageView(cssClasses);
   }
 }

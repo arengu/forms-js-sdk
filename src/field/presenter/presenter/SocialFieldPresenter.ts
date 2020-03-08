@@ -7,6 +7,7 @@ import { FieldValidator, IFieldValidator } from "../validator/FieldValidator";
 import { IFieldPresenter } from "./FieldPresenter";
 import { BaseFieldPresenter } from "./BaseFieldPresenter";
 import { IValueHandler } from "../handler/ValueHandler";
+import { IComponentPresenter } from "../../../component/ComponentPresenter";
 
 export interface ISocialFieldPresenter extends IFieldPresenter {
   showLoading(): void;
@@ -30,6 +31,10 @@ export class SocialFieldPresenter extends BaseFieldPresenter<ISocialInputView> i
     const valueH = DummyValueHandler.create(inputV, fieldM);
 
     return new SocialFieldPresenter(formD, fieldM, inputV, fieldVal, valueH);
+  }
+
+  public static matches(compP: IComponentPresenter): compP is SocialFieldPresenter {
+    return compP instanceof SocialFieldPresenter;
   }
 
   public onLogin(): void {

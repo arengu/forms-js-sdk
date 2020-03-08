@@ -1,25 +1,11 @@
 import { IFormPageView } from '../../form/view/FormView';
 import { IStepModel } from '../model/StepModel';
-import { StepErrorMessage } from '../part/StepErrorMessage';
 import { HTMLHelper } from '../../lib/view/HTMLHelper';
 
-export interface IStepView extends IFormPageView {
-  setError(this: this, msg: string): void;
-  clearError(this: this): void;
-}
+export type IStepView = IFormPageView;
 
 export abstract class StepRenderer {
-  public static renderMessage(msgV: StepErrorMessage): HTMLDivElement {
-    const wrapper = document.createElement('div');
-    wrapper.classList.add('af-step-messages');
-
-    wrapper.appendChild(msgV.render());
-
-    return wrapper;
-  }
-
-  public static renderRoot(stepM: IStepModel, compsE: HTMLElement[],
-    errorV: StepErrorMessage): HTMLDivElement {
+  public static renderRoot(stepM: IStepModel, compsE: HTMLElement[]): HTMLDivElement {
     const { id } = stepM;
 
     const root = document.createElement('div');
@@ -28,21 +14,15 @@ export abstract class StepRenderer {
 
     compsE.forEach(HTMLHelper.appendChild(root));
 
-    root.appendChild(this.renderMessage(errorV));
-    // root.appendChild(navV.render());
-
     return root;
   }
 }
 
 export class StepView implements IStepView {
-  protected readonly errorV: StepErrorMessage;
-
   protected readonly rootE: HTMLDivElement;
 
   protected constructor(stepM: IStepModel, compsE: HTMLElement[]) {
-    this.errorV = StepErrorMessage.create();
-    this.rootE = StepRenderer.renderRoot(stepM, compsE, this.errorV);
+    this.rootE = StepRenderer.renderRoot(stepM, compsE);
   }
 
   public static create(stepM: IStepModel, compsE: HTMLElement[]): IStepView {
@@ -50,15 +30,7 @@ export class StepView implements IStepView {
   }
 
   public reset(): void {
-    this.errorV.reset();
-  }
-
-  public setError(msg: string): void {
-    return this.errorV.setText(msg);
-  }
-
-  public clearError(): void {
-    return this.errorV.clearText();
+    // nothing to do here
   }
 
   public render(): HTMLDivElement {

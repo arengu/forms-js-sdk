@@ -1,4 +1,5 @@
 import keyBy from 'lodash/keyBy';
+import findIndex from 'lodash/findIndex';
 import isEmpty from 'lodash/isEmpty';
 import isNil from 'lodash/isNil';
 
@@ -20,8 +21,9 @@ import { ComponentHelper } from '../component/ComponentHelper';
 import { NextButtonPresenter, INextButtonPresenter } from '../block/navigation/next/NextButtonPresenter';
 import { IFormDeps } from '../form/FormPresenter';
 import { ComponentPresenter, IComponentPresenterListener, IComponentPresenter } from '../component/ComponentPresenter';
-import { ISocialFieldPresenter } from '../field/presenter/presenter/SocialFieldPresenter';
+import { ISocialFieldPresenter, SocialFieldPresenter } from '../field/presenter/presenter/SocialFieldPresenter';
 import { IPresenter } from '../core/BaseTypes';
+import { StepErrorPresenter, IStepErrorPresenter } from './part/StepErrorPresenter';
 
 export interface IStepPresenterListener {
   onGotoPreviousStep?(this: this, stepP: IStepPresenter): void;
@@ -77,6 +79,28 @@ export const StepPresenterHelper = {
   hasValue(pair: IPairFieldIdValue): boolean {
     return !isNil(pair.value) && !isEmpty(pair.value);
   },
+
+  insertAt<T>(arr: T[], pos: number, elem: T): T[] {
+    const output = Array.from(arr);
+    output.splice(pos, 0, elem);
+    return output;
+  },
+
+  addError(compsP: IComponentPresenter[], errorP: IStepErrorPresenter): IComponentPresenter[] {
+    const nextIndex = findIndex(compsP, NextButtonPresenter.matches);
+
+    if (nextIndex >= 0) {
+      return StepPresenterHelper.insertAt(compsP, nextIndex, errorP);
+    }
+
+    const socialIndex = findIndex(compsP, SocialFieldPresenter.matches);
+
+    if (socialIndex >= 0) {
+      return StepPresenterHelper.insertAt(compsP, socialIndex, errorP);
+    }
+
+    return [...compsP, errorP];
+  }
 }
 
 export class StepPresenter implements IStepPresenter, IComponentPresenterListener {
@@ -91,6 +115,8 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
   protected readonly fieldsPI: Record<string, IFieldPresenter>; // indexed by fieldId
 
   protected readonly nextsP: INextButtonPresenter[];
+
+  protected readonly errorP: IStepErrorPresenter;
 
   protected readonly stepV: IStepView;
   protected readonly stepL: IStepPresenterListener;
@@ -109,10 +135,12 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
     this.dynFieldsP = this.fieldsP.filter((fP): boolean => fP.isDynamic());
     this.fieldsPI = keyBy(this.fieldsP, (fP) => fP.getFieldId());
 
-
     this.nextsP = this.compsP.filter(NextButtonPresenter.matches);
 
-    const compsE = this.compsP.map((cP) => cP.render());
+    this.errorP = StepErrorPresenter.create();
+
+    const stepComps = StepPresenterHelper.addError(this.compsP, this.errorP);
+    const compsE = stepComps.map((cP) => cP.render());
     this.stepV = StepView.create(stepM, compsE);
     this.stepL = stepL;
   }
@@ -247,11 +275,11 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
   }
 
   public setError(msg: string): void {
-    this.stepV.setError(msg);
+    this.errorP.setError(msg);
   }
 
   public clearError(): void {
-    this.stepV.clearError();
+    this.errorP.clearError();
   }
 
   protected notifyInvalidFields(): void {
