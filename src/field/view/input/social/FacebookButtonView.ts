@@ -33,7 +33,7 @@ export class FacebookButtonView extends GenericButtonView implements ISocialButt
 
   protected constructor(fbC: IFacebookSocialConfig, buttonL: ISocialButtonListener) {
     super({
-      text: fbC.button,
+      text: fbC.text,
       type: ButtonType.BUTTON,
       callback: () => this.onClick(),
       containerClasses: CSS_CLASSES,

@@ -10,7 +10,7 @@ interface IBaseSocialConfig {
   provider: SocialProvider;
   clientId: string;
   scopes: string[];
-  button: string;
+  text: string;
 }
 
 export interface IFacebookSocialConfig extends IBaseSocialConfig {
