@@ -46,18 +46,15 @@ class LegacyPaymentInput {
   _buildElementStyles() {
     const styles = {
       base: {
-        color: '#323d47',
-        fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
-        fontSize: '16px',
+        color: getComputedStyle(document.documentElement).getPropertyValue('--input-color'),
+        fontFamily: getComputedStyle(document.documentElement).getPropertyValue('--font-family'),
+        fontSize: getComputedStyle(document.documentElement).getPropertyValue('--input-font-size'),
         '::placeholder': {
-          color: 'rgba(50, 61, 71, 0.3)',
+          color: getComputedStyle(document.documentElement).getPropertyValue('--placeholder-color'),
         },
       },
       invalid: {
-        color: '#d2383f',
-        '::placeholder': {
-          color: '#FFCCA5',
-        },
+        color: getComputedStyle(document.documentElement).getPropertyValue('--message-fail-color'),
       },
     };
 
