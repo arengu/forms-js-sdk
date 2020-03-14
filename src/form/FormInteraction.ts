@@ -1,6 +1,8 @@
 import { ICookieModel } from './model/CookieModel';
+import { IFormData } from './model/SubmissionModel';
+import { IMetaDataModel } from './model/MetaDataModel';
 
-export enum ActionType {
+export enum EffectType {
   NEXT_STEP = 'NEXT_STEP',
   JUMP_TO_STEP = 'JUMP_TO_STEP',
   THANK_YOU = 'THANK_YOU',
@@ -8,52 +10,42 @@ export enum ActionType {
 }
 
 export interface IPageRedirection {
-  target: string;
-  delay?: number;
+  readonly target: string;
+  readonly delay?: number;
 }
 
 export interface INextStepAction {
-  type: ActionType.NEXT_STEP;
+  readonly type: EffectType.NEXT_STEP;
+  readonly signature: string;
 }
 
 export interface IJumpToStepAction {
-  type: ActionType.JUMP_TO_STEP;
-  stepId: string;
+  readonly type: EffectType.JUMP_TO_STEP;
+  readonly stepId: string;
+  readonly signature: string;
 }
 
 export interface IThankYouAction {
-  type: ActionType.THANK_YOU;
-  submissionId?: string;
-  message?: string;
-  redirection?: IPageRedirection;
+  readonly type: EffectType.THANK_YOU;
+  readonly submissionId?: string;
+  readonly message?: string;
+  readonly redirection?: IPageRedirection;
 }
 
 export interface IErrorMessageAction {
-  type: ActionType.ERROR_MESSAGE;
-  message: string;
+  readonly type: EffectType.ERROR_MESSAGE;
+  readonly message: string;
 }
 
-interface IBaseFormInteraction {
-  readonly result: string;
-  readonly action: object;
+export interface IFormInteractionResponse {
+  readonly effect: INextStepAction | IJumpToStepAction | IThankYouAction | IErrorMessageAction;
   readonly data: object;
   readonly cookies: ICookieModel[];
 }
 
-export enum FormInteractionResult {
-  SUCCESS = 'SUCCESS',
-  FAILURE = 'FAILURE',
+export interface IFormInteractionRequest {
+  readonly formId: string;
+  readonly stepId: string;
+  readonly formData: IFormData;
+  readonly metaData: IMetaDataModel;
 }
-
-export interface IFailedFormInteraction extends IBaseFormInteraction {
-  readonly result: FormInteractionResult.FAILURE;
-  readonly action: IErrorMessageAction;
-}
-
-export interface ISuccessfulFormInteraction extends IBaseFormInteraction {
-  readonly result: FormInteractionResult.SUCCESS;
-  readonly action: INextStepAction | IJumpToStepAction | IThankYouAction;
-  readonly signature: string;
-}
-
-export type IFormInteraction = ISuccessfulFormInteraction | IFailedFormInteraction;

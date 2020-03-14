@@ -2,13 +2,23 @@ import { IFormModel } from '../form/model/FormModel';
 import { AppErrorCode } from '../error/ErrorCodes';
 import { AppError } from '../error/AppError';
 import { InvalidFields } from '../error/InvalidFields';
-import { IFormData } from '../form/model/SubmissionModel';
+import { ISubmissionData } from '../form/model/SubmissionModel';
 import {
   IHeaders, HTTPClient, ResponseHelper, HeaderName, AuthHelper,
 } from '../lib/HTTPClient';
-import { IFormInteraction } from '../form/FormInteraction';
+import { IFormInteractionResponse } from '../form/FormInteraction';
 
 declare const API_URL: string;
+
+export interface ISubmitFormParams {
+  readonly formId: string;
+  readonly signature?: string;
+  readonly data: ISubmissionData;
+}
+
+export interface IValidateStepParams extends ISubmitFormParams {
+  readonly stepId: string;
+}
 
 export class FormRepository {
   public static async getForm(formId: string): Promise<IFormModel> {
@@ -25,16 +35,15 @@ export class FormRepository {
     throw AppError.create(body);
   }
 
-  public static async createSubmission(formId: string, submission: object,
-    signature?: string): Promise<IFormInteraction> {
-    const reqUrl = `${API_URL}/forms/${formId}/submissions/`;
+  public static async submitForm(params: ISubmitFormParams): Promise<IFormInteractionResponse> {
+    const reqUrl = `${API_URL}/forms/${params.formId}/submissions/`;
     const headers: IHeaders = {};
 
-    if (signature) {
-      headers[HeaderName.Authorization] = AuthHelper.bearer(signature);
+    if (params.signature) {
+      headers[HeaderName.Authorization] = AuthHelper.bearer(params.signature);
     }
 
-    const res = await HTTPClient.post(reqUrl, submission, headers);
+    const res = await HTTPClient.post(reqUrl, params.data, headers);
 
     const { status, body } = res;
 
@@ -52,16 +61,15 @@ export class FormRepository {
     throw AppError.create(body);
   }
 
-  public static async executeFlow(formId: string, stepId: string,
-    formData: IFormData, signature?: string): Promise<IFormInteraction> {
-    const reqUrl = `${API_URL}/forms/${formId}/validations/${stepId}`;
+  public static async validateStep(params: IValidateStepParams): Promise<IFormInteractionResponse> {
+    const reqUrl = `${API_URL}/forms/${params.formId}/validations/${params.stepId}`;
     const headers: IHeaders = {};
 
-    if (signature) {
-      headers[HeaderName.Authorization] = AuthHelper.bearer(signature);
+    if (params.signature) {
+      headers[HeaderName.Authorization] = AuthHelper.bearer(params.signature);
     }
 
-    const res = await HTTPClient.post(reqUrl, formData, headers);
+    const res = await HTTPClient.post(reqUrl, params.data, headers);
 
     const { status, body } = res;
 

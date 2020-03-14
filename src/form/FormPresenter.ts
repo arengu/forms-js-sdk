@@ -1,15 +1,15 @@
 import find from 'lodash/find';
 import isNil from 'lodash/isNil';
 
-import { HiddenFields } from './HiddenFields'; // eslint-disable-line no-unused-vars
+import { HiddenFields } from './HiddenFields';
 
 import { IFormModel, ISocialConfig } from './model/FormModel';
 
 import { Messages } from '../lib/Messages';
 
 import { IFormView, FormView, IFormViewListener } from './view/FormView';
-import { ISubmissionModel, IFormData, IUserValues } from './model/SubmissionModel';
-import { FormRepository } from '../repository/FormRepository';
+import { ISubmissionData, IFormData, IUserValues } from './model/SubmissionModel';
+import { FormRepository, IValidateStepParams, ISubmitFormParams } from '../repository/FormRepository';
 import { ThankYouView } from './view/ThankYouView';
 import { InvalidFields } from '../error/InvalidFields';
 import { MetaDataModelFactory } from './model/MetaDataModel';
@@ -17,7 +17,7 @@ import { EventsFactory } from '../lib/EventsFactory';
 import { IStepPresenter, IStepPresenterListener, StepPresenter } from '../step/StepPresenter';
 import { NavigationHistory } from '../lib/NavigationHistory';
 import { ISocialFieldPresenter } from '../field/presenter/presenter/SocialFieldPresenter';
-import { IFormInteraction, FormInteractionResult, ActionType } from './FormInteraction';
+import { IFormInteractionResponse, EffectType, IFormInteractionRequest } from './FormInteraction';
 import { IPresenter } from '../core/BaseTypes';
 
 export abstract class FormPresenterHelper {
@@ -137,7 +137,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
   /**
    * Returns the final data we have to send to the server on form submission
    */
-  public async getSubmissionData(): Promise<ISubmissionModel> {
+  public async getSubmissionData(): Promise<ISubmissionData> {
     return {
       formData: await this.getFormValues(),
       metaData: MetaDataModelFactory.create(),
@@ -220,7 +220,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
         return;
       }
 
-      const flowRes = await this.executeFlow(stepP);
+      const flowRes = await this.validateStep(stepP);
 
       if (flowRes) {
         return;
@@ -238,37 +238,54 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     }
   }
 
-  public handleFormInteraction(currStep: IStepPresenter, res: IFormInteraction): void {
+  public handleFormInteraction(req: IFormInteractionRequest, res: IFormInteractionResponse): void {
+    const currStep = this.getCurrentStep();
+
     FormView.setCookies(res.cookies);
 
-    if (res.result === FormInteractionResult.SUCCESS) {
-      this.signatures.set(currStep.getStepId(), res.signature);
+    const { effect } = res;
+
+    if (effect.type === EffectType.NEXT_STEP || effect.type === EffectType.JUMP_TO_STEP) {
+      this.signatures.set(currStep.getStepId(), effect.signature);
     }
 
-    const { action } = res;
-
-    if (action.type === 'ERROR_MESSAGE') {
-      currStep.setError(action.message);
+    if (effect.type === 'ERROR_MESSAGE') {
+      currStep.setError(effect.message);
       return;
     }
 
-    if (action.type === 'NEXT_STEP') {
+    if (effect.type === 'NEXT_STEP') {
       this.gotoNextStep();
       return;
     }
 
-    if (action.type === 'THANK_YOU') {
-      if (action.message) {
-        this.gotoThankYou(action.message);
+    if (effect.type === 'THANK_YOU') {
+      EventsFactory.submitFormSuccess({
+        formId: req.formId,
+        formData: req.formData,
+        metaData: req.metaData,
+        confirmation: {
+          id: effect.submissionId,
+          message: effect.message,
+          data: res.data,
+          cookies: res.cookies,
+          ...effect.redirection,
+        }
+      });
+
+      if (effect.message) {
+        this.gotoThankYou(effect.message);
       }
-      if (action.redirection) {
-        FormView.redirect(action.redirection);
+
+      if (effect.redirection) {
+        FormView.redirect(effect.redirection);
       }
+
       return;
     }
 
-    if (action.type === ActionType.JUMP_TO_STEP) {
-      const nextStep = find(this.stepsP, (sP) => sP.getStepId() === action.stepId);
+    if (effect.type === EffectType.JUMP_TO_STEP) {
+      const nextStep = find(this.stepsP, (sP) => sP.getStepId() === effect.stepId);
       if (nextStep) {
         this.jumpToStep(nextStep);
       }
@@ -371,7 +388,8 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
   }
 
   public async submitForm(currStep: IStepPresenter): Promise<void> {
-    const formId = this.formM.id;
+    const formId = this.getFormId();
+    const stepId = currStep.getStepId();
     const submission = await this.getSubmissionData();
     const signature = this.getSubmissionSignature();
 
@@ -381,12 +399,22 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
       metaData: submission.metaData,
     };
 
+    const interReq: IFormInteractionRequest = {
+      formId,
+      stepId,
+      ...submission,
+    };
+
+    const repoParams: ISubmitFormParams = {
+      formId,
+      data: submission,
+      signature,
+    };
+
     try {
       EventsFactory.submitForm(eventData);
-      const res = await FormRepository.createSubmission(formId, submission, signature);
-      this.handleFormInteraction(currStep, res);
-      // TODO: support again af-submitForm-success event
-      // EventsFactory.submitFormSuccess({ ...eventData, confirmation: conf });
+      const interRes = await FormRepository.submitForm(repoParams);
+      this.handleFormInteraction(interReq, interRes);
     } catch (err) {
       if (err instanceof InvalidFields) {
         console.error('Some values are not valid:', err.fields);
@@ -399,23 +427,34 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     }
   }
 
-  public async executeFlow(stepP: IStepPresenter): Promise<IFormInteraction | undefined> {
-    if (!stepP.hasFlow()) {
+  public async validateStep(currStep: IStepPresenter): Promise<IFormInteractionResponse | undefined> {
+    if (!currStep.hasFlow()) {
       return;
     }
 
-    const formId = this.formM.id;
-
-    const userValues = await this.getFormValues();
-
-    const stepId = stepP.getStepId();
+    const formId = this.getFormId();
+    const stepId = currStep.getStepId();
+    const submission = await this.getSubmissionData();
     const signature = this.getValidationSignature();
 
-    const res = await FormRepository.executeFlow(formId, stepId, userValues, signature);
+    const interReq: IFormInteractionRequest = {
+      formId,
+      stepId,
+      ...submission,
+    };
 
-    this.handleFormInteraction(stepP, res);
+    const repoParams: IValidateStepParams = {
+      formId,
+      stepId,
+      data: submission,
+      signature,
+    }
 
-    return res;
+    const interRes = await FormRepository.validateStep(repoParams);
+
+    this.handleFormInteraction(interReq, interRes);
+
+    return interRes;
   }
 
   public render(): HTMLElement {

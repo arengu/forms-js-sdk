@@ -10,7 +10,7 @@ export interface IFormData {
   readonly [key: string]: IFieldValue | IHiddenFieldValue;
 }
 
-export interface ISubmissionModel {
+export interface ISubmissionData {
   readonly formData: IFormData;
   readonly metaData: IMetaDataModel;
 }
