@@ -13,8 +13,8 @@
     "coverage": "jest --coverage"
   },
   "dependencies": {
-    "@babel/runtime": "^7.8.4",
-    "@babel/runtime-corejs3": "^7.8.4",
+    "@babel/runtime": "^7.8.7",
+    "@babel/runtime-corejs3": "^7.8.7",
     "custom-event-polyfill": "^1.0.7",
     "hash.js": "^1.1.7",
     "lodash": "^4.17.15",
@@ -22,15 +22,15 @@
     "whatwg-fetch": "^3.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.8.4",
+    "@babel/core": "^7.8.7",
     "@babel/plugin-transform-runtime": "^7.8.3",
-    "@babel/preset-env": "^7.8.4",
+    "@babel/preset-env": "^7.8.7",
     "@babel/preset-typescript": "^7.8.3",
     "@types/crypto-js": "^3.1.43",
     "@types/jest": "^24.9.1",
     "@types/lodash": "^4.14.149",
-    "@typescript-eslint/eslint-plugin": "^2.20.0",
-    "@typescript-eslint/parser": "^2.20.0",
+    "@typescript-eslint/eslint-plugin": "^2.23.0",
+    "@typescript-eslint/parser": "^2.23.0",
     "babel-loader": "^8.0.6",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "css-loader": "^3.4.2",
@@ -45,8 +45,8 @@
     "postcss-preset-env": "^6.7.0",
     "to-string-loader": "^1.1.6",
     "typescript": "~3.5.3",
-    "webpack": "^4.41.6",
-    "webpack-bundle-analyzer": "^3.6.0",
+    "webpack": "^4.42.0",
+    "webpack-bundle-analyzer": "^3.6.1",
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.10.3",
     "webpack-merge": "^4.2.2"
