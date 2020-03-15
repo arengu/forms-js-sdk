@@ -1,4 +1,4 @@
-import { IInputView, IInputViewListener, BaseInputView } from '../InputView';
+import { IInputView, BaseInputView } from '../InputView';
 import { InputConfigurator, IStringInputElement } from './InputHelper';
 
 export type IStringInputValue = string;
@@ -8,7 +8,7 @@ export interface IStringInputView extends IInputView {
   setValue(value: IStringInputValue): void;
 }
 
-export abstract class StringInputView extends BaseInputView<IInputViewListener> implements IStringInputView {
+export abstract class StringInputView extends BaseInputView implements IStringInputView {
   protected readonly inputE: IStringInputElement;
   protected readonly rootE: HTMLElement;
 

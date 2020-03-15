@@ -28,7 +28,7 @@ export interface IInputView extends IView, IListenableEntity<IInputViewListener>
 export type ISingleOptionValue = string | undefined;
 export type IMultiOptionValue = string[];
 
-export abstract class BaseInputView<IL extends IInputViewListener> extends ListenableEntity<IL> implements IHTMLInputListener {
+export abstract class BaseInputView extends ListenableEntity<IInputViewListener> implements IHTMLInputListener {
   public onFocus(this: this): void {
     this.listeners.forEach((l) => l.onFocus && l.onFocus());
   }

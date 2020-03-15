@@ -1,7 +1,9 @@
-import { IInputViewListener, IInputView, BaseInputView } from '../InputView';
+import { IInputView } from '../InputView';
 import { InputCreator, InputConfigurator } from './InputHelper';
 import { IView } from "../../../core/BaseTypes";
 import { IPasswordFieldModel } from '../../model/FieldModel';
+import { StringInputView } from './StringInputView';
+import { ListenableEntity } from '../../../lib/ListenableEntity';
 
 const PASSWORD_ICON_SECONDARY = 'af-password-icon-secondary';
 
@@ -11,12 +13,10 @@ export enum PasswordInputType {
 }
 
 export const PasswordInputRenderer = {
-  renderInput(fieldM: IPasswordFieldModel,
-    inputV: PasswordInputView): HTMLInputElement {
+  renderInput(fieldM: IPasswordFieldModel): HTMLInputElement {
     const input = InputCreator.input(fieldM, PasswordInputType.hidden);
 
     InputConfigurator.placeholder(input, fieldM);
-    InputConfigurator.addListeners(input, inputV);
     input.autocomplete = 'current-password';
 
     return input;
@@ -46,21 +46,20 @@ export interface IPasswordIconListener {
   onToggle(this: this): void;
 }
 
-export class PasswordMaskView implements IView, IPasswordIconListener {
+export class PasswordMaskView extends ListenableEntity<IPasswordVisibilityListener> implements IView, IPasswordIconListener {
   protected readonly iconE: HTMLElement;
-
-  protected readonly visL: IPasswordVisibilityListener;
 
   protected visible: boolean;
 
-  protected constructor(visL: IPasswordVisibilityListener) {
+  protected constructor() {
+    super();
+
     this.iconE = PasswordInputRenderer.renderIcon(this);
-    this.visL = visL;
     this.visible = false;
   }
 
-  public static create(iconL: IPasswordVisibilityListener): PasswordMaskView {
-    return new this(iconL);
+  public static create(): PasswordMaskView {
+    return new this();
   }
 
   public onToggle(): void {
@@ -74,13 +73,13 @@ export class PasswordMaskView implements IView, IPasswordIconListener {
   public showPassword(): void {
     this.visible = true;
     this.iconE.classList.add(PASSWORD_ICON_SECONDARY);
-    this.visL.onShowPassword();
+    this.listeners.forEach((l) => l.onShowPassword());
   }
 
   public hidePassword(): void {
     this.visible = false;
     this.iconE.classList.remove(PASSWORD_ICON_SECONDARY);
-    this.visL.onHidePassword();
+    this.listeners.forEach((l) => l.onHidePassword());
   }
 
   public reset(): void {
@@ -103,31 +102,23 @@ export interface IPasswordInputView extends IInputView {
   getValue(): IPasswordInputValue;
 }
 
-export class PasswordInputView extends BaseInputView<IInputViewListener> implements IPasswordInputView, IPasswordVisibilityListener {
+export class PasswordInputView extends StringInputView implements IPasswordInputView, IPasswordVisibilityListener {
   protected readonly maskV: PasswordMaskView;
 
-  protected readonly inputE: HTMLInputElement;
-
-  protected readonly rootE: HTMLElement;
-
   protected constructor(fieldM: IPasswordFieldModel) {
-    super();
+    const maskV = PasswordMaskView.create();
+    const inputE = PasswordInputRenderer.renderInput(fieldM);
 
-    this.inputE = PasswordInputRenderer.renderInput(fieldM, this);
-    this.maskV = PasswordMaskView.create(this);
-    this.rootE = PasswordInputRenderer.renderRoot(this.inputE, this.maskV);
+    const rootE = PasswordInputRenderer.renderRoot(inputE, maskV);
+
+    super(inputE, rootE);
+
+    this.maskV = maskV;
+    this.maskV.listen(this);
   }
 
   public static create(fieldM: IPasswordFieldModel): IPasswordInputView {
     return new this(fieldM);
-  }
-
-  public getInputId(): string {
-    return this.inputE.id;
-  }
-
-  public getValue(): IPasswordInputValue {
-    return this.inputE.value;
   }
 
   public setValue(): void {
@@ -151,19 +142,7 @@ export class PasswordInputView extends BaseInputView<IInputViewListener> impleme
   }
 
   public reset(): void {
-    this.inputE.value = this.inputE.defaultValue;
+    super.reset();
     this.hidePassword();
-  }
-
-  public block(): void {
-    this.inputE.disabled = true;
-  }
-
-  public unblock(): void {
-    this.inputE.disabled = false;
-  }
-
-  public render(): HTMLElement {
-    return this.rootE;
   }
 }

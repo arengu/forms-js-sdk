@@ -1,4 +1,4 @@
-import { IInputViewListener, IInputView, BaseInputView } from '../InputView';
+import { IInputView, BaseInputView } from '../InputView';
 import { InputCreator, InputConfigurator } from './InputHelper';
 import { ILegalFieldModel } from '../../model/FieldModel';
 import { IBooleanInputValue } from './BooleanInputView';
@@ -49,7 +49,7 @@ export type ILegalInputValue = IBooleanInputValue;
 
 export type ILegalInputView = IInputView;
 
-export class LegalInputView extends BaseInputView<IInputViewListener> implements ILegalInputView {
+export class LegalInputView extends BaseInputView implements ILegalInputView {
   protected readonly inputE: HTMLInputElement;
 
   protected readonly rootE: HTMLElement;

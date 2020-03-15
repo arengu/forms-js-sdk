@@ -1,5 +1,5 @@
 import {
-  IInputViewListener, IInputView, ISingleOptionValue, IMultiOptionValue, IHTMLInputListener, BaseInputView,
+  IInputView, ISingleOptionValue, IMultiOptionValue, IHTMLInputListener, BaseInputView,
 } from '../InputView';
 import LegacyDropdown from './legacy/LegacyDropdown';
 import { IDropdownFieldModel } from '../../model/FieldModel';
@@ -17,7 +17,7 @@ export interface IDropdownInputView extends IInputView {
   getValue(): IDropdownInputValue;
 }
 
-export class DropdownInputView extends BaseInputView<IInputViewListener> implements IDropdownInputView {
+export class DropdownInputView extends BaseInputView implements IDropdownInputView {
   protected readonly inputV: LegacyDropdown;
 
   protected constructor(fieldM: IDropdownFieldModel) {

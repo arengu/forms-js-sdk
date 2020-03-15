@@ -1,4 +1,4 @@
-import { IInputViewListener, IInputView, BaseInputView } from '../InputView';
+import { IInputView, BaseInputView } from '../InputView';
 import { InputHelper, InputConfigurator } from './InputHelper';
 import { HTMLHelper } from '../../../lib/view/HTMLHelper';
 import { IBooleanFieldModel } from '../../model/FieldModel';
@@ -91,7 +91,7 @@ export type IBooleanInputValue = 'false' | 'true';
 
 export type IBooleanInputView = IInputView;
 
-export class BooleanInputView extends BaseInputView<IInputViewListener> implements IBooleanInputView {
+export class BooleanInputView extends BaseInputView implements IBooleanInputView {
   protected rootE: HTMLDivElement;
 
   protected optionsE: HTMLInputElement[];

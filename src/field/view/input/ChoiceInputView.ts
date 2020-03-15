@@ -2,7 +2,7 @@ import includes from 'lodash/includes';
 import isNil from 'lodash/isNil';
 
 import {
-  IInputView, IInputViewListener, ISingleOptionValue, IMultiOptionValue, BaseInputView,
+  IInputView, ISingleOptionValue, IMultiOptionValue, BaseInputView,
 } from '../InputView';
 import { HTMLHelper } from '../../../lib/view/HTMLHelper';
 import { UID } from '../../../lib/UID';
@@ -113,7 +113,7 @@ export type IChoiceInputValue = ISingleOptionValue | IMultiOptionValue;
 
 export type IChoiceInputView = IInputView;
 
-export class ChoiceInputView extends BaseInputView<IInputViewListener> implements IChoiceInputView {
+export class ChoiceInputView extends BaseInputView implements IChoiceInputView {
   protected readonly multiple: boolean;
 
   protected readonly rootE: HTMLDivElement;
