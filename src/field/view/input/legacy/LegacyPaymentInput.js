@@ -99,13 +99,14 @@ class LegacyPaymentInput {
     };
   }
 
-  _buildCardNumberLabel() {
+  _buildCardNumberLabel(uid) {
     const { required, config: { fields: { cardNumber: { label } } } } = this.model;
 
     const container = document.createElement('div');
     container.classList.add('af-field-label');
 
     const node = document.createElement('label');
+    node.setAttribute('for', uid);
     node.innerHTML = label;
     container.appendChild(node);
 
@@ -143,8 +144,11 @@ class LegacyPaymentInput {
     const node = document.createElement('div');
     node.classList.add('af-payment-cardNumber');
 
+    const cardNumberField = this._buildCardNumberField();
+    const cardNumberIcon = this._buildCardNumberIcon();
+
     if (label) {
-      const cardNumberLabel = this._buildCardNumberLabel();
+      const cardNumberLabel = this._buildCardNumberLabel(cardNumberField.id);
       node.appendChild(cardNumberLabel);
     }
 
@@ -152,10 +156,7 @@ class LegacyPaymentInput {
     wrapper.classList.add('af-payment-cardNumber-wrapper');
     node.appendChild(wrapper);
 
-    const cardNumberField = this._buildCardNumberField();
     wrapper.appendChild(cardNumberField);
-
-    const cardNumberIcon = this._buildCardNumberIcon();
     wrapper.appendChild(cardNumberIcon);
 
     return node;
@@ -204,13 +205,14 @@ class LegacyPaymentInput {
     return node;
   }
 
-  _buildExpirationDateLabel() {
+  _buildExpirationDateLabel(uid) {
     const { required, config: { fields: { expirationDate: { label } } } } = this.model;
 
     const container = document.createElement('div');
     container.classList.add('af-field-label');
 
     const node = document.createElement('label');
+    node.setAttribute('for', uid);
     node.innerHTML = label;
     container.appendChild(node);
 
@@ -227,8 +229,11 @@ class LegacyPaymentInput {
     const node = document.createElement('div');
     node.classList.add('af-payment-expirationDate');
 
+    const expirationDateField = this._buildExpirationDateField();
+    const expirationDateIcon = this._buildExpirationDateIcon();
+
     if (label) {
-      const expirationDateLabel = this._buildExpirationDateLabel();
+      const expirationDateLabel = this._buildExpirationDateLabel(expirationDateField.id);
       node.appendChild(expirationDateLabel);
     }
 
@@ -236,10 +241,7 @@ class LegacyPaymentInput {
     wrapper.classList.add('af-payment-expirationDate-wrapper');
     node.appendChild(wrapper);
 
-    const expirationDateField = this._buildExpirationDateField();
     wrapper.appendChild(expirationDateField);
-
-    const expirationDateIcon = this._buildExpirationDateIcon();
     wrapper.appendChild(expirationDateIcon);
 
     return node;
@@ -278,13 +280,14 @@ class LegacyPaymentInput {
     return node;
   }
 
-  _buildSecurityCodeLabel() {
+  _buildSecurityCodeLabel(uid) {
     const { required, config: { fields: { securityCode: { label } } } } = this.model;
 
     const container = document.createElement('div');
     container.classList.add('af-field-label');
 
     const node = document.createElement('label');
+    node.setAttribute('for', uid);
     node.innerHTML = label;
     container.appendChild(node);
 
@@ -310,8 +313,11 @@ class LegacyPaymentInput {
     const node = document.createElement('div');
     node.classList.add('af-payment-securityCode');
 
+    const securityCodeField = this._buildSecurityCodeField();
+    const securityCodeIcon = this._buildSecurityCodeIcon();
+
     if (label) {
-      const securityCodeLabel = this._buildSecurityCodeLabel();
+      const securityCodeLabel = this._buildSecurityCodeLabel(securityCodeField.id);
       node.appendChild(securityCodeLabel);
     }
 
@@ -319,10 +325,7 @@ class LegacyPaymentInput {
     wrapper.classList.add('af-payment-securityCode-wrapper');
     node.appendChild(wrapper);
 
-    const securityCodeField = this._buildSecurityCodeField();
     wrapper.appendChild(securityCodeField);
-
-    const securityCodeIcon = this._buildSecurityCodeIcon();
     wrapper.appendChild(securityCodeIcon);
 
     return node;
