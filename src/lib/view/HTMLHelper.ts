@@ -6,16 +6,16 @@ export interface IClassAdder {
   (this: void, clazz: string): void;
 }
 
-export abstract class HTMLHelper {
-  public static appendChild(div: HTMLDivElement): IChildAppender {
+export const HTMLHelper = {
+  appendChild(div: HTMLDivElement): IChildAppender {
     return function appender(this: void, elem: HTMLElement): void {
       div.appendChild(elem);
     };
-  }
+  },
 
-  public static addClass(elem: HTMLElement): IClassAdder {
+  addClass(elem: HTMLElement): IClassAdder {
     return function appender(this: void, clazz: string): void {
       elem.classList.add(clazz);
     };
-  }
-}
+  },
+};

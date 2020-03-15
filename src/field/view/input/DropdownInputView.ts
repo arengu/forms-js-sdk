@@ -4,12 +4,12 @@ import {
 import LegacyDropdown from './legacy/LegacyDropdown';
 import { IDropdownFieldModel } from '../../model/FieldModel';
 
-export abstract class DropdownInputRenderer {
-  public static renderInput(fieldM: IDropdownFieldModel,
+export const DropdownInputRenderer = {
+  renderInput(fieldM: IDropdownFieldModel,
     inputL: IHTMLInputListener): LegacyDropdown {
     return LegacyDropdown.create(fieldM, inputL);
-  }
-}
+  },
+};
 
 export type IDropdownInputValue = ISingleOptionValue | IMultiOptionValue;
 

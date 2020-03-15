@@ -12,8 +12,8 @@ export interface IBooleanOptionData {
   readonly defaultValue: string;
 }
 
-export abstract class BooleanInputRenderer {
-  public static renderInput(option: IBooleanOptionData,
+export const BooleanInputRenderer = {
+  renderInput(option: IBooleanOptionData,
     inputV: BooleanInputView): HTMLInputElement {
     const valueStr = option.value.toString();
 
@@ -27,17 +27,17 @@ export abstract class BooleanInputRenderer {
     InputConfigurator.addListeners(radio, inputV);
 
     return radio;
-  }
+  },
 
-  public static renderLabel(option: IBooleanOptionData): HTMLLabelElement {
+  renderLabel(option: IBooleanOptionData): HTMLLabelElement {
     const node = document.createElement('label');
     node.setAttribute('for', option.uid);
     node.textContent = option.label;
 
     return node;
-  }
+  },
 
-  public static renderOption(option: IBooleanOptionData,
+  renderOption(option: IBooleanOptionData,
     inputV: BooleanInputView): HTMLDivElement {
     const container = document.createElement('div');
     container.classList.add('af-boolean-option');
@@ -46,9 +46,9 @@ export abstract class BooleanInputRenderer {
     container.appendChild(this.renderLabel(option));
 
     return container;
-  }
+  },
 
-  public static renderAllOptions(fieldM: IBooleanFieldModel,
+  renderAllOptions(fieldM: IBooleanFieldModel,
     inputV: BooleanInputView): HTMLDivElement[] {
     const { defaultValue } = fieldM.config;
 
@@ -74,9 +74,9 @@ export abstract class BooleanInputRenderer {
         inputV,
       ),
     ];
-  }
+  },
 
-  public static renderRoot(fieldM: IBooleanFieldModel, inputV: BooleanInputView): HTMLDivElement {
+  renderRoot(fieldM: IBooleanFieldModel, inputV: BooleanInputView): HTMLDivElement {
     const root = document.createElement('div');
     root.classList.add('af-boolean');
 
@@ -84,8 +84,8 @@ export abstract class BooleanInputRenderer {
     options.forEach(HTMLHelper.appendChild(root));
 
     return root;
-  }
-}
+  },
+};
 
 export type IBooleanInputValue = 'false' | 'true';
 

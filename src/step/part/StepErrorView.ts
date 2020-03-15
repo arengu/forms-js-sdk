@@ -5,16 +5,16 @@ export const CSS_CLASSES = ['af-step-failure', 'af-step-message'];
 
 export type IStepErrorView = IMessageView;
 
-export abstract class StepErrorRenderer {
-  public static wrapError(errorE: HTMLElement): HTMLDivElement {
+export const StepErrorRenderer = {
+  wrapError(errorE: HTMLElement): HTMLDivElement {
     const wrapper = document.createElement('div');
     wrapper.classList.add('af-step-messages');
 
     wrapper.appendChild(errorE);
 
     return wrapper;
-  }
-}
+  },
+};
 
 export class StepErrorView extends MessageView implements IStepErrorView, IComponentView {
   protected constructor() {

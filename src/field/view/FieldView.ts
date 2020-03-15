@@ -14,8 +14,8 @@ export interface IFieldView extends IComponentView {
   clearError(): void;
 }
 
-export abstract class FieldRenderer {
-  public static renderHint(fieldM: IFieldModel): HTMLElement | undefined {
+export const FieldRenderer = {
+  renderHint(fieldM: IFieldModel): HTMLElement | undefined {
     const { hint } = fieldM;
 
     if (!hint) {
@@ -30,9 +30,9 @@ export abstract class FieldRenderer {
     wrapper.appendChild(node);
 
     return wrapper;
-  }
+  },
 
-  public static renderInput(inputV: IInputView): HTMLDivElement {
+  renderInput(inputV: IInputView): HTMLDivElement {
     const wrapper = document.createElement('div');
     wrapper.classList.add('af-field-input');
 
@@ -40,9 +40,9 @@ export abstract class FieldRenderer {
     wrapper.appendChild(inputE);
 
     return wrapper;
-  }
+  },
 
-  public static renderRoot(fieldM: IFieldModel, inputV: IInputView,
+  renderRoot(fieldM: IFieldModel, inputV: IInputView,
     errorV: FieldErrorMessage, labelV?: ILabelView): HTMLDivElement {
     const { id } = fieldM;
 
@@ -66,8 +66,8 @@ export abstract class FieldRenderer {
     root.appendChild(errorE);
 
     return root;
-  }
-}
+  },
+};
 
 export class FieldView implements IFieldView {
   protected readonly labelV?: ILabelView;

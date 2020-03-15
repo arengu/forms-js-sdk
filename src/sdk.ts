@@ -17,13 +17,18 @@ const MAGIC_SELECTOR = 'data-arengu-form-id';
 
 const Repository = FormRepository;
 
+export interface ISDK {
+  embed(form: string | IFormModel, parent: string | Element,
+    initValues?: Record<string, string>): Promise<IArenguForm>;
+}
+
 export interface IArenguForm {
   getId(): string;
   setHiddenField(key: string, value: string): void;
 }
 
-export abstract class ArenguForm {
-  public static create(formP: IFormPresenter): IArenguForm {
+export const ArenguForm = {
+  create(formP: IFormPresenter): IArenguForm {
     return {
       getId(): string {
         return formP.getFormId();
@@ -32,11 +37,11 @@ export abstract class ArenguForm {
         formP.setHiddenField(fieldId, value);
       },
     };
-  }
-}
+  },
+};
 
-export abstract class SDKHelper {
-  public static findNode(selector: string): Element {
+export const SDKHelper = {
+  findNode(selector: string): Element {
     const node = document.querySelector(selector);
 
     if (!node) {
@@ -44,9 +49,9 @@ export abstract class SDKHelper {
     }
 
     return node;
-  }
+  },
 
-  public static async getForm(formId: string | IFormModel): Promise<IFormModel> {
+  async getForm(formId: string | IFormModel): Promise<IFormModel> {
     if (typeof formId === 'object') {
       return formId;
     }
@@ -61,9 +66,9 @@ export abstract class SDKHelper {
         EventsFactory.getFormSuccess({ formId, data: form });
         return form;
       });
-  }
+  },
 
-  public static waitForDom(fn: Function): void {
+  waitForDom(fn: Function): void {
     const VALID_STATES = ['interactive', 'complete'];
 
     if (includes(VALID_STATES, document.readyState)) {
@@ -78,11 +83,11 @@ export abstract class SDKHelper {
         fn();
       }
     });
-  }
-}
+  },
+};
 
-export abstract class SDK {
-  public static async embed(form: string | IFormModel, parent: string | Element,
+export const SDK: ISDK = {
+  async embed(form: string | IFormModel, parent: string | Element,
     initValues?: Record<string, string>): Promise<IArenguForm> {
     if (isNil(form)) {
       throw SDKError.create(SDKErrorCode.MISSING_FORM_ID, 'Specify the form you want to embed');
@@ -118,11 +123,11 @@ export abstract class SDK {
       EventsFactory.embedFormError({ ...eventData, error: err });
       throw err;
     }
-  }
-}
+  },
+};
 
-export abstract class AutoMagic {
-  public static embed(): void {
+export const AutoMagic = {
+  embed(): void {
     const list: NodeListOf<HTMLElement> = document.querySelectorAll(`[${MAGIC_SELECTOR}]`);
     const array = Array.from(list); // old browsers do not implement NodeList.prototype.forEach
 
@@ -132,13 +137,13 @@ export abstract class AutoMagic {
         SDK.embed(formId, node);
       }
     });
-  }
+  },
 
-  public static init(): void {
+  init(): void {
     CSSInjector.injectDefault();
     SDKHelper.waitForDom((): void => {
       EventsFactory.sdkInit({ sdk: SDK });
       this.embed();
     });
-  }
-}
+  },
+};

@@ -2,8 +2,8 @@ import escape from 'lodash/escape';
 
 import { IView } from "../../core/BaseTypes";
 
-export class LabelRenderer {
-  public static renderLabel(text: string, required?: boolean, uid?: string): HTMLLabelElement {
+export const LabelRenderer = {
+  renderLabel(text: string, required?: boolean, uid?: string): HTMLLabelElement {
     const node = document.createElement('label');
     node.innerHTML = text;
 
@@ -16,17 +16,17 @@ export class LabelRenderer {
     }
 
     return node;
-  }
+  },
 
-  public static renderRoot(labelE: HTMLLabelElement): HTMLDivElement {
+  renderRoot(labelE: HTMLLabelElement): HTMLDivElement {
     const wrapperContainer = document.createElement('div');
     wrapperContainer.classList.add('af-field-label');
 
     wrapperContainer.appendChild(labelE);
 
     return wrapperContainer;
-  }
-}
+  },
+};
 
 export interface ILabelView extends IView {
   updateLabel(text: string): void;

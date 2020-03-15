@@ -1,7 +1,7 @@
 import cssRules from './style.css';
 
-export abstract class CSSInjector {
-  public static injectDefault(): void {
+export const CSSInjector = {
+  injectDefault(): void {
     const style = document.createElement('style');
     style.setAttribute('type', 'text/css');
 
@@ -12,5 +12,5 @@ export abstract class CSSInjector {
     if (head) {
       head.appendChild(style);
     }
-  }
-}
+  },
+};

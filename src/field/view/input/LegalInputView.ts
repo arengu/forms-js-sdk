@@ -5,8 +5,8 @@ import { IBooleanInputValue } from './BooleanInputView';
 
 const LegalInputType = 'checkbox';
 
-export class LegalInputRenderer {
-  public static renderInput(fieldM: ILegalFieldModel,
+export const LegalInputRenderer = {
+  renderInput(fieldM: ILegalFieldModel,
     inputV: LegalInputView): HTMLInputElement {
     const input = InputCreator.input(fieldM, LegalInputType);
 
@@ -14,9 +14,9 @@ export class LegalInputRenderer {
     input.value = 'true';
 
     return input;
-  }
+  },
 
-  public static renderLabel(fieldM: ILegalFieldModel, uid: string): HTMLLabelElement {
+  renderLabel(fieldM: ILegalFieldModel, uid: string): HTMLLabelElement {
     const { text } = fieldM.config;
 
     const label = document.createElement('label');
@@ -31,9 +31,9 @@ export class LegalInputRenderer {
     }
 
     return label;
-  }
+  },
 
-  public static renderRoot(fieldM: ILegalFieldModel,
+  renderRoot(fieldM: ILegalFieldModel,
     inputE: HTMLInputElement): HTMLDivElement {
     const container = document.createElement('div');
     container.classList.add('af-legal');
@@ -42,8 +42,8 @@ export class LegalInputRenderer {
     container.appendChild(this.renderLabel(fieldM, inputE.id));
 
     return container;
-  }
-}
+  },
+};
 
 export type ILegalInputValue = IBooleanInputValue;
 

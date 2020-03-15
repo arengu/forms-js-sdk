@@ -14,8 +14,8 @@ export interface IBlockPresenterListener {
   onGoToPrevious?(this: this, buttonP: IPreviousButtonPresenter): void;
 }
 
-export abstract class BlockPresenter {
-  public static create(blockM: IBlockModel): IBlockPresenter {
+export const BlockPresenter = {
+  create(blockM: IBlockModel): IBlockPresenter {
     switch (blockM.type) {
       case BlockType.PREVIOUS_BUTTON:
         return PreviousButtonPresenter.create(blockM);
@@ -26,5 +26,5 @@ export abstract class BlockPresenter {
       case BlockType.RICH_TEXT:
         return RichTextBlockPresenter.create(blockM);
     }
-  }
-}
+  },
+};

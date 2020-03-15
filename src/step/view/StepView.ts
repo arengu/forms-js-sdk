@@ -4,8 +4,8 @@ import { HTMLHelper } from '../../lib/view/HTMLHelper';
 
 export type IStepView = IFormPageView;
 
-export abstract class StepRenderer {
-  public static renderRoot(stepM: IStepModel, compsE: HTMLElement[]): HTMLDivElement {
+export const StepRenderer = {
+  renderRoot(stepM: IStepModel, compsE: HTMLElement[]): HTMLDivElement {
     const { id } = stepM;
 
     const root = document.createElement('div');
@@ -15,8 +15,8 @@ export abstract class StepRenderer {
     compsE.forEach(HTMLHelper.appendChild(root));
 
     return root;
-  }
-}
+  },
+};
 
 export class StepView implements IStepView {
   protected readonly rootE: HTMLDivElement;

@@ -11,8 +11,8 @@ export interface IVisibleArea {
   maxOffset: number;
 }
 
-export abstract class FormViewHelper {
-  public static getVisibleArea(): IVisibleArea {
+export const FormViewHelper = {
+  getVisibleArea(): IVisibleArea {
     const currScroll = window.scrollY;
     const vpHeight = window.innerHeight;
 
@@ -21,9 +21,9 @@ export abstract class FormViewHelper {
       height: vpHeight,
       maxOffset: currScroll + vpHeight,
     };
-  }
+  },
 
-  public static getOffset(elem: Element | undefined): number {
+  getOffset(elem: Element | undefined): number {
     if (!(elem instanceof HTMLElement)) {
       return 0;
     }
@@ -34,12 +34,12 @@ export abstract class FormViewHelper {
      */
     const offsetParent = elem.offsetParent || undefined;
     return this.getOffset(offsetParent) + (elem.offsetTop);
-  }
+  },
 
-  public static scrollTo(elem: HTMLElement): void {
+  scrollTo(elem: HTMLElement): void {
     elem.scrollIntoView({ behavior: 'smooth' });
-  }
-}
+  },
+};
 
 export interface IFormViewListener {
   onSubmitForm(this: void): void;
@@ -57,8 +57,8 @@ export interface IFormView extends IView {
   scrollTopIfNeeded(): void;
 }
 
-export abstract class FormRendererer {
-  public static renderForm(viewL: IFormViewListener): HTMLFormElement {
+export const FormRendererer = {
+  renderForm(viewL: IFormViewListener): HTMLFormElement {
     const form = document.createElement('form');
     form.setAttribute('method', 'POST');
     form.setAttribute('novalidate', 'novalidate');
@@ -69,9 +69,9 @@ export abstract class FormRendererer {
     };
 
     return form;
-  }
+  },
 
-  public static renderRoot(formM: IFormModel, formE: HTMLFormElement): HTMLDivElement {
+  renderRoot(formM: IFormModel, formE: HTMLFormElement): HTMLDivElement {
     const { id } = formM;
 
     const root = document.createElement('div');
@@ -81,8 +81,8 @@ export abstract class FormRendererer {
     root.appendChild(formE);
 
     return root;
-  }
-}
+  },
+};
 
 export class FormView implements IFormView {
   protected formE: HTMLFormElement;

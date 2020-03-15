@@ -4,8 +4,8 @@ import { StringInputView, IStringInputView } from './StringInputView';
 
 export const NumberInputType = 'number';
 
-export abstract class NumberInputRenderer {
-  public static renderInput(fieldM: INumberFieldModel): HTMLInputElement {
+export const NumberInputRenderer = {
+  renderInput(fieldM: INumberFieldModel): HTMLInputElement {
     const elem = InputCreator.input(fieldM, NumberInputType);
 
     InputConfigurator.placeholder(elem, fieldM);
@@ -13,8 +13,8 @@ export abstract class NumberInputRenderer {
     InputConfigurator.rangeRules(elem, fieldM);
 
     return elem;
-  }
-}
+  },
+};
 
 export type INumberInputView = IStringInputView;
 

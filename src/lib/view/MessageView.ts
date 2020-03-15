@@ -7,12 +7,12 @@ export interface IMessageView extends IView {
   reset(): void;
 }
 
-export abstract class GenericMessageRenderer {
-  public static renderText(): HTMLElement {
+export const GenericMessageRenderer = {
+  renderText(): HTMLElement {
     return document.createElement('p');
-  }
+  },
 
-  public static renderRoot(cssClasses: string[], textE: HTMLElement): HTMLElement {
+  renderRoot(cssClasses: string[], textE: HTMLElement): HTMLElement {
     const container = document.createElement('div');
     cssClasses.forEach(HTMLHelper.addClass(container));
     container.classList.add('af-message');
@@ -20,8 +20,8 @@ export abstract class GenericMessageRenderer {
     container.appendChild(textE);
 
     return container;
-  }
-}
+  },
+};
 
 export class MessageView implements IMessageView {
   protected textE: HTMLElement;

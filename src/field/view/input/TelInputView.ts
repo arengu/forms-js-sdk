@@ -4,8 +4,8 @@ import { StringInputView, IStringInputView } from './StringInputView';
 
 export const TelInputType = 'tel';
 
-export abstract class TelInputRenderer {
-  public static renderInput(fieldM: ITelFieldModel): HTMLInputElement {
+export const TelInputRenderer = {
+  renderInput(fieldM: ITelFieldModel): HTMLInputElement {
     const elem = InputCreator.input(fieldM, TelInputType);
 
     InputConfigurator.placeholder(elem, fieldM);
@@ -14,8 +14,8 @@ export abstract class TelInputRenderer {
     elem.autocomplete = 'tel-national';
 
     return elem;
-  }
-}
+  },
+};
 
 export type ITelInputValue = string;
 

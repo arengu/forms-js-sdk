@@ -24,8 +24,8 @@ export interface IOptionLabelData {
   readonly label: string;
 }
 
-export abstract class ChoiceInputRenderer {
-  public static isDefault(fieldM: IChoiceFieldModel, value: string): boolean {
+export const ChoiceInputRenderer = {
+  isDefault(fieldM: IChoiceFieldModel, value: string): boolean {
     const { defaultValue, multiple } = fieldM.config;
 
     return !isNil(defaultValue)
@@ -34,9 +34,9 @@ export abstract class ChoiceInputRenderer {
           ? includes(defaultValue, value)
           : defaultValue === value
       );
-  }
+  },
 
-  public static renderOptionInput(fieldM: IChoiceFieldModel, inputV: ChoiceInputView,
+  renderOptionInput(fieldM: IChoiceFieldModel, inputV: ChoiceInputView,
     inputData: IOptionInputData): HTMLInputElement {
     const { multiple } = fieldM.config;
 
@@ -55,9 +55,9 @@ export abstract class ChoiceInputRenderer {
     InputConfigurator.addListeners(node, inputV);
 
     return node;
-  }
+  },
 
-  public static renderOptionLabel(uid: string, label: string): HTMLLabelElement {
+  renderOptionLabel(uid: string, label: string): HTMLLabelElement {
     const elem = document.createElement('label');
     elem.setAttribute('for', uid);
 
@@ -67,9 +67,9 @@ export abstract class ChoiceInputRenderer {
     elem.appendChild(span);
 
     return elem;
-  }
+  },
 
-  public static renderOption(fieldM: IChoiceFieldModel, inputV: ChoiceInputView,
+  renderOption(fieldM: IChoiceFieldModel, inputV: ChoiceInputView,
     option: IFieldOptionModel): HTMLDivElement {
     const elem = document.createElement('div');
     elem.classList.add('af-choice-option');
@@ -84,9 +84,9 @@ export abstract class ChoiceInputRenderer {
     elem.appendChild(labelE);
 
     return elem;
-  }
+  },
 
-  public static renderAllOptions(fieldM: IChoiceFieldModel,
+  renderAllOptions(fieldM: IChoiceFieldModel,
     inputV: ChoiceInputView): HTMLDivElement[] {
     const { options } = fieldM.config;
 
@@ -94,9 +94,9 @@ export abstract class ChoiceInputRenderer {
     const optionsE = options.map(renderFn);
 
     return optionsE;
-  }
+  },
 
-  public static renderRoot(fieldM: IChoiceFieldModel, inputV: ChoiceInputView): HTMLDivElement {
+  renderRoot(fieldM: IChoiceFieldModel, inputV: ChoiceInputView): HTMLDivElement {
     const { multiple } = fieldM.config;
 
     const root = document.createElement('div');
@@ -106,8 +106,8 @@ export abstract class ChoiceInputRenderer {
     options.forEach(HTMLHelper.appendChild(root));
 
     return root;
-  }
-}
+  },
+};
 
 export type IChoiceInputValue = ISingleOptionValue | IMultiOptionValue;
 

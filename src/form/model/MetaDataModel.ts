@@ -40,8 +40,8 @@ export interface IMetaDataModel {
   };
 }
 
-export abstract class MetaDataModelFactory {
-  public static create(): IMetaDataModel {
+export const MetaDataModelFactory = {
+  create(): IMetaDataModel {
     return {
       navigator: {
         userAgent: window.navigator.userAgent,
@@ -83,5 +83,5 @@ export abstract class MetaDataModelFactory {
         },
       },
     };
-  }
-}
+  },
+};

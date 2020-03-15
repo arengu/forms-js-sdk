@@ -1,4 +1,4 @@
-import { SDK } from '../sdk';
+import { ISDK } from '../sdk';
 import { IFormModel } from '../form/model/FormModel';
 import { IMetaDataModel } from '../form/model/MetaDataModel';
 import { FieldError } from '../error/InvalidFields';
@@ -28,7 +28,7 @@ export enum EventNames {
 export type IEvent = object;
 
 export interface ISDKInitEvent extends IEvent {
-  readonly sdk: SDK;
+  readonly sdk: ISDK;
 }
 
 export interface IGetFormEvent extends IEvent {
@@ -98,73 +98,73 @@ export type IFieldFocusEvent = IFieldEvent;
 export type IFieldBlurEvent = IFieldEvent;
 export type IFieldChangeEvent = IFieldEvent;
 
-export class EventsFactory {
-  public static triggerEvent(name: EventNames, data: IEvent): void {
+export const EventsFactory = {
+  triggerEvent(name: EventNames, data: IEvent): void {
     const event = new CustomEvent(name, { detail: data });
     document.dispatchEvent(event);
-  }
+  },
 
-  public static sdkInit(details: ISDKInitEvent): void {
+  sdkInit(details: ISDKInitEvent): void {
     this.triggerEvent(EventNames.SDKInit, details);
-  }
+  },
 
-  public static getForm(details: IGetFormEvent): void {
+  getForm(details: IGetFormEvent): void {
     this.triggerEvent(EventNames.GetForm, details);
-  }
+  },
 
-  public static getFormError(details: IGetFormErrorEvent): void {
+  getFormError(details: IGetFormErrorEvent): void {
     this.triggerEvent(EventNames.GetFormError, details);
-  }
+  },
 
-  public static getFormSuccess(details: IGetFormSuccessEvent): void {
+  getFormSuccess(details: IGetFormSuccessEvent): void {
     this.triggerEvent(EventNames.GetFormSuccess, details);
-  }
+  },
 
-  public static embedForm(details: IEmbedFormEvent): void {
+  embedForm(details: IEmbedFormEvent): void {
     this.triggerEvent(EventNames.EmbedForm, details);
-  }
+  },
 
-  public static embedFormError(details: IEmbedFormErrorEvent): void {
+  embedFormError(details: IEmbedFormErrorEvent): void {
     this.triggerEvent(EventNames.EmbedFormError, details);
-  }
+  },
 
-  public static embedFormSuccess(details: IEmbedFormSuccessEvent): void {
+  embedFormSuccess(details: IEmbedFormSuccessEvent): void {
     this.triggerEvent(EventNames.EmbedFormSuccess, details);
-  }
+  },
 
-  public static previousStep(details: IPreviousStepEvent): void {
+  previousStep(details: IPreviousStepEvent): void {
     this.triggerEvent(EventNames.PreviousStep, details);
-  }
+  },
 
-  public static nextStep(details: INextStepEvent): void {
+  nextStep(details: INextStepEvent): void {
     this.triggerEvent(EventNames.NextStep, details);
-  }
+  },
 
-  public static submitForm(details: ISubmitFormEvent): void {
+  submitForm(details: ISubmitFormEvent): void {
     this.triggerEvent(EventNames.SubmitForm, details);
-  }
+  },
 
-  public static submitFormError(details: ISubmitFormErrorEvent): void {
+  submitFormError(details: ISubmitFormErrorEvent): void {
     this.triggerEvent(EventNames.SubmitFormError, details);
-  }
+  },
 
-  public static submitFormSuccess(details: ISubmitFormSuccessEvent): void {
+  submitFormSuccess(details: ISubmitFormSuccessEvent): void {
     this.triggerEvent(EventNames.SubmitFormSuccess, details);
-  }
+  },
 
-  public static invalidFieldsError(details: IInvalidFieldsErrorEvent): void {
+  invalidFieldsError(details: IInvalidFieldsErrorEvent): void {
     this.triggerEvent(EventNames.InvalidFieldsError, details);
-  }
+  },
 
-  public static onBlurField(details: IFieldBlurEvent): void {
+  onBlurField(details: IFieldBlurEvent): void {
     this.triggerEvent(EventNames.BlurField, details);
-  }
+  },
 
-  public static onChangeField(details: IFieldChangeEvent): void {
+  onChangeField(details: IFieldChangeEvent): void {
     this.triggerEvent(EventNames.ChangeField, details);
-  }
+  },
 
-  public static onFocusField(details: IFieldFocusEvent): void {
+  onFocusField(details: IFieldFocusEvent): void {
     this.triggerEvent(EventNames.FocusField, details);
-  }
-}
+  },
+};

@@ -4,8 +4,8 @@ import { StringInputView, IStringInputView } from './StringInputView';
 
 export const EmailInputType = 'email';
 
-export abstract class EmailInputRenderer {
-  public static renderInput(fieldM: IEmailFieldModel): HTMLInputElement {
+export const EmailInputRenderer = {
+  renderInput(fieldM: IEmailFieldModel): HTMLInputElement {
     const elem = InputCreator.input(fieldM, EmailInputType);
 
     InputConfigurator.placeholder(elem, fieldM);
@@ -13,8 +13,8 @@ export abstract class EmailInputRenderer {
     elem.autocomplete = 'email';
 
     return elem;
-  }
-}
+  },
+};
 
 export type IEmailInputView = IStringInputView;
 

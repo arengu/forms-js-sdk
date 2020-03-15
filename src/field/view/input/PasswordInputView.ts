@@ -10,8 +10,8 @@ export enum PasswordInputType {
   visible = 'text',
 }
 
-export abstract class PasswordInputRenderer {
-  public static renderInput(fieldM: IPasswordFieldModel,
+export const PasswordInputRenderer = {
+  renderInput(fieldM: IPasswordFieldModel,
     inputV: PasswordInputView): HTMLInputElement {
     const input = InputCreator.input(fieldM, PasswordInputType.hidden);
 
@@ -20,16 +20,16 @@ export abstract class PasswordInputRenderer {
     input.autocomplete = 'current-password';
 
     return input;
-  }
+  },
 
-  public static renderIcon(iconL: IPasswordIconListener): HTMLSpanElement {
+  renderIcon(iconL: IPasswordIconListener): HTMLSpanElement {
     const icon = document.createElement('span');
     icon.classList.add('af-password-icon');
     icon.addEventListener('click', iconL.onToggle.bind(iconL));
     return icon;
-  }
+  },
 
-  public static renderRoot(inputE: HTMLInputElement, maskV: PasswordMaskView): HTMLDivElement {
+  renderRoot(inputE: HTMLInputElement, maskV: PasswordMaskView): HTMLDivElement {
     const root = document.createElement('div');
     root.classList.add('af-password-wrapper');
 
@@ -39,8 +39,8 @@ export abstract class PasswordInputRenderer {
     root.appendChild(maskE);
 
     return root;
-  }
-}
+  },
+};
 
 export interface IPasswordIconListener {
   onToggle(this: this): void;

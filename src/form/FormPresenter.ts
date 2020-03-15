@@ -20,15 +20,15 @@ import { ISocialFieldPresenter } from '../field/presenter/presenter/SocialFieldP
 import { IFormInteractionResponse, EffectType, IFormInteractionRequest } from './FormInteraction';
 import { IPresenter } from '../core/BaseTypes';
 
-export abstract class FormPresenterHelper {
-  public static getUserValues(stepP: IStepPresenter): Promise<IUserValues> {
+export const FormPresenterHelper = {
+  getUserValues(stepP: IStepPresenter): Promise<IUserValues> {
     return stepP.getUserValues();
-  }
+  },
 
-  public static reset(presenter: IStepPresenter): void {
+  reset(presenter: IStepPresenter): void {
     return presenter.reset();
-  }
-}
+  },
+};
 
 export interface IFormPresenter extends IPresenter {
   getFormId(): string;

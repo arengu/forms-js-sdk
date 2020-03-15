@@ -7,8 +7,8 @@ export enum DateInputType {
   TIME = 'time',
 }
 
-export abstract class DateInputCreator {
-  public static fromFormat(fieldM: IDateFieldModel): HTMLInputElement {
+export const DateInputCreator = {
+  fromFormat(fieldM: IDateFieldModel): HTMLInputElement {
     const { format } = fieldM.config;
 
     switch (format) {
@@ -19,18 +19,18 @@ export abstract class DateInputCreator {
       default:
         throw new Error(`Unknown format ${format}`);
     }
-  }
-}
+  },
+};
 
-export abstract class DateInputRenderer {
-  public static renderInput(fieldM: IDateFieldModel): HTMLInputElement {
+export const DateInputRenderer = {
+  renderInput(fieldM: IDateFieldModel): HTMLInputElement {
     const inputE = DateInputCreator.fromFormat(fieldM);
 
     InputConfigurator.defaultValue(inputE, fieldM);
 
     return inputE;
-  }
-}
+  },
+};
 
 export type IDateInputView = IStringInputView;
 

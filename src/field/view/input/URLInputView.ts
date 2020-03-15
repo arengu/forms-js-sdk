@@ -4,16 +4,16 @@ import { StringInputView, IStringInputView } from './StringInputView';
 
 export const URLInputType = 'url';
 
-export abstract class URLInputRenderer {
-  public static renderInput(fieldM: IURLFieldModel): HTMLInputElement {
+export const URLInputRenderer = {
+  renderInput(fieldM: IURLFieldModel): HTMLInputElement {
     const elem = InputCreator.input(fieldM, URLInputType);
 
     InputConfigurator.placeholder(elem, fieldM);
     InputConfigurator.defaultValue(elem, fieldM);
 
     return elem;
-  }
-}
+  },
+};
 
 export type IURLInputView = IStringInputView;
 

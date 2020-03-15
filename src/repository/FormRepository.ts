@@ -20,8 +20,8 @@ export interface IValidateStepParams extends ISubmitFormParams {
   readonly stepId: string;
 }
 
-export class FormRepository {
-  public static async getForm(formId: string): Promise<IFormModel> {
+export const FormRepository = {
+  async getForm(formId: string): Promise<IFormModel> {
     const reqUrl = `${API_URL}/forms/${formId}`;
     const res = await HTTPClient.get(reqUrl);
 
@@ -33,9 +33,9 @@ export class FormRepository {
 
     console.error('Error retrieving form', body);
     throw AppError.create(body);
-  }
+  },
 
-  public static async submitForm(params: ISubmitFormParams): Promise<IFormInteractionResponse> {
+  async submitForm(params: ISubmitFormParams): Promise<IFormInteractionResponse> {
     const reqUrl = `${API_URL}/forms/${params.formId}/submissions/`;
     const headers: IHeaders = {};
 
@@ -59,9 +59,9 @@ export class FormRepository {
 
     console.error('Error creating submission', body);
     throw AppError.create(body);
-  }
+  },
 
-  public static async validateStep(params: IValidateStepParams): Promise<IFormInteractionResponse> {
+  async validateStep(params: IValidateStepParams): Promise<IFormInteractionResponse> {
     const reqUrl = `${API_URL}/forms/${params.formId}/validations/${params.stepId}`;
     const headers: IHeaders = {};
 
@@ -85,5 +85,5 @@ export class FormRepository {
 
     console.error('Error validating data', body);
     throw AppError.create(body);
-  }
-}
+  },
+};

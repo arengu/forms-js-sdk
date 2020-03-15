@@ -15,13 +15,13 @@ export interface IPropertyError extends IArenguError {
   readonly path: string;
 }
 
-export class FieldErrorHelper {
-  public static getFieldId(path: string): string {
+export const FieldErrorHelper = {
+  getFieldId(path: string): string {
     const tokens = path.split('/');
     const fieldId = tokens[2];
     return fieldId;
-  }
-}
+  },
+};
 
 export class FieldError extends ArenguError {
   public readonly fieldId: string;
@@ -57,11 +57,11 @@ export interface IInvalidFieldsDetails {
   readonly invalidProperties: FieldError[];
 }
 
-export abstract class InvalidFieldsHelper {
-  public static isFormField(err: IPropertyError): boolean {
+export const InvalidFieldsHelper = {
+  isFormField(err: IPropertyError): boolean {
     return err.path.startsWith(FIELD_PATH_PATTERN);
-  }
-}
+  },
+};
 
 export class InvalidFields extends ArenguError {
   public readonly details: IInvalidFieldsDetails;

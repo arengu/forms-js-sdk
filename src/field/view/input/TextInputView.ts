@@ -5,8 +5,8 @@ import { StringInputView, IStringInputView } from './StringInputView';
 
 export type TextInputElements = HTMLInputElement | HTMLTextAreaElement;
 
-export class TextInputRenderer {
-  public static createInput(fieldM: ITextFieldModel): HTMLInputElement | HTMLTextAreaElement {
+export const TextInputRenderer = {
+  createInput(fieldM: ITextFieldModel): HTMLInputElement | HTMLTextAreaElement {
     const { multiline } = fieldM.config;
 
     if (multiline) {
@@ -14,9 +14,9 @@ export class TextInputRenderer {
     }
 
     return InputCreator.input(fieldM, 'text');
-  }
+  },
 
-  public static renderInput(fieldM: ITextFieldModel): TextInputElements {
+  renderInput(fieldM: ITextFieldModel): TextInputElements {
     const input = this.createInput(fieldM);
 
     InputConfigurator.defaultValue(input, fieldM);
@@ -24,9 +24,9 @@ export class TextInputRenderer {
     InputConfigurator.lengthRules(input, fieldM);
 
     return input;
-  }
+  },
 
-  public static renderCount(inputE: TextInputElements,
+  renderCount(inputE: TextInputElements,
     fieldM: ITextFieldModel): CharCounterView | undefined {
     const { config: { maxLength } } = fieldM;
 
@@ -37,9 +37,9 @@ export class TextInputRenderer {
     const counter = CharCounterView.create(inputE, maxLength);
 
     return counter;
-  }
+  },
 
-  public static renderRoot(fieldM: ITextFieldModel,
+  renderRoot(fieldM: ITextFieldModel,
     inputE: TextInputElements): HTMLDivElement {
     const root = document.createElement('div');
     root.classList.add('af-field-wrapper');
@@ -52,8 +52,8 @@ export class TextInputRenderer {
     }
 
     return root;
-  }
-}
+  },
+};
 
 export type ITextInputView = IStringInputView;
 
