@@ -4,6 +4,7 @@ import { NextButtonPresenter } from "./navigation/next/NextButtonPresenter";
 import { IComponentPresenter } from "../component/ComponentPresenter";
 import { BaseComponentPresenter } from "../component/ComponentHelper";
 import { HTMLBlockPresenter } from "./HtmlBlockPresenter";
+import { RichTextBlockPresenter } from "./RichTextBlockPresenter";
 
 export type IBlockPresenter = IComponentPresenter;
 
@@ -22,6 +23,8 @@ export abstract class BlockPresenter {
         return NextButtonPresenter.create(blockM);
       case BlockType.HTML:
         return HTMLBlockPresenter.create(blockM);
+      case BlockType.RICH_TEXT:
+        return RichTextBlockPresenter.create(blockM);
     }
   }
 }

@@ -1,34 +1,16 @@
-import { IBlockPresenter } from "./BlockPresenter";
-import { BaseComponentPresenter } from "../component/ComponentHelper";
 import { IHTMLBlockModel } from "./BlockModel";
+import { ICodeBlockPresenter, CodeBlockPresenter } from "./CodeBlockPresenter";
 
-export type IHTMLBlockPresenter = IBlockPresenter;
+const CONTAINER_CLASS = 'af-html-block';
 
-export const HtmlBlockRenderer = {
-  renderRoot(content: string): HTMLDivElement {
-    const root = document.createElement('div');
-    root.className = 'af-html';
+export type IHTMLBlockPresenter = ICodeBlockPresenter;
 
-    root.innerHTML = content;
-
-    return root;
-  },
-}
-
-export class HTMLBlockPresenter extends BaseComponentPresenter implements IHTMLBlockPresenter {
-  protected rootE: HTMLElement;
-
+export class HTMLBlockPresenter extends CodeBlockPresenter implements IHTMLBlockPresenter {
   protected constructor(blockM: IHTMLBlockModel) {
-    super();
-    this.rootE = HtmlBlockRenderer.renderRoot(blockM.config.content);
-  }
-
-  public render(): HTMLElement {
-    return this.rootE;
-  }
-
-  public reset(): void {
-    // nothing to do here
+    super({
+      containerClass: CONTAINER_CLASS,
+      blockContent: blockM.config.content,
+    });
   }
 
   public static create(buttonM: IHTMLBlockModel): IHTMLBlockPresenter {
