@@ -42,9 +42,8 @@ export abstract class FieldRenderer {
     return wrapper;
   }
 
-  public static renderRoot(fieldM: IFieldModel, uid: string,
-    inputV: IInputView, errorV: FieldErrorMessage,
-    labelV?: ILabelView): HTMLDivElement {
+  public static renderRoot(fieldM: IFieldModel, inputV: IInputView,
+    errorV: FieldErrorMessage, labelV?: ILabelView): HTMLDivElement {
     const { id } = fieldM;
 
     const root = document.createElement('div');
@@ -77,15 +76,17 @@ export class FieldView implements IFieldView {
 
   protected readonly rootE: HTMLDivElement;
 
-  protected constructor(fieldM: IFieldModel, uid: string, inputV: IInputView) {
-    this.labelV = LabelView.create(fieldM, uid);
+  protected constructor(fieldM: IFieldModel, inputV: IInputView) {
+    const uid = inputV.getInputId && inputV.getInputId();
+
+    this.labelV = fieldM.label ? LabelView.create(fieldM.label, fieldM.required, uid) : undefined;
     this.errorV = FieldErrorMessage.create();
 
-    this.rootE = FieldRenderer.renderRoot(fieldM, uid, inputV, this.errorV, this.labelV);
+    this.rootE = FieldRenderer.renderRoot(fieldM, inputV, this.errorV, this.labelV);
   }
 
-  public static create(fieldM: IFieldModel, uid: string, inputV: IInputView): IFieldView {
-    return new FieldView(fieldM, uid, inputV);
+  public static create(fieldM: IFieldModel, inputV: IInputView): IFieldView {
+    return new FieldView(fieldM, inputV);
   }
 
   public updateLabel(label: string): void {

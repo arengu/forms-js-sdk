@@ -2,7 +2,6 @@ import { IInputViewListener, IInputView, BaseInputView } from '../InputView';
 import { InputCreator, InputConfigurator } from './InputHelper';
 import { IView } from "../../../core/BaseTypes";
 import { IPasswordFieldModel } from '../../model/FieldModel';
-import { UID } from '../../../lib/UID';
 
 const PASSWORD_ICON_SECONDARY = 'af-password-icon-secondary';
 
@@ -12,9 +11,9 @@ export enum PasswordInputType {
 }
 
 export abstract class PasswordInputRenderer {
-  public static renderInput(fieldM: IPasswordFieldModel, uid: string,
+  public static renderInput(fieldM: IPasswordFieldModel,
     inputV: PasswordInputView): HTMLInputElement {
-    const input = InputCreator.input(fieldM, uid, PasswordInputType.hidden);
+    const input = InputCreator.input(fieldM, PasswordInputType.hidden);
 
     InputConfigurator.placeholder(input, fieldM);
     InputConfigurator.addListeners(input, inputV);
@@ -114,15 +113,17 @@ export class PasswordInputView extends BaseInputView<IInputViewListener> impleme
   protected constructor(fieldM: IPasswordFieldModel) {
     super();
 
-    const uid = UID.create();
-
-    this.inputE = PasswordInputRenderer.renderInput(fieldM, uid, this);
+    this.inputE = PasswordInputRenderer.renderInput(fieldM, this);
     this.maskV = PasswordMaskView.create(this);
     this.rootE = PasswordInputRenderer.renderRoot(this.inputE, this.maskV);
   }
 
   public static create(fieldM: IPasswordFieldModel): IPasswordInputView {
     return new this(fieldM);
+  }
+
+  public getInputId(): string {
+    return this.inputE.id;
   }
 
   public getValue(): IPasswordInputValue {

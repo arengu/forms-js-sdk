@@ -1,14 +1,15 @@
 import escape from 'lodash/escape';
-import isString from 'lodash/isString';
 
-import { IFieldModel } from '../model/FieldModel';
 import { IView } from "../../core/BaseTypes";
 
 export class LabelRenderer {
-  public static renderLabel(text: string, required: boolean, uid: string): HTMLLabelElement {
+  public static renderLabel(text: string, required?: boolean, uid?: string): HTMLLabelElement {
     const node = document.createElement('label');
-    node.setAttribute('for', uid);
     node.innerHTML = text;
+
+    if (uid) {
+      node.setAttribute('for', uid);
+    }
 
     if (required) {
       node.classList.add('af-required');
@@ -39,16 +40,14 @@ export class LabelView implements ILabelView {
 
   protected readonly rootE: HTMLDivElement;
 
-  protected constructor(label: string, required: boolean, uid: string) {
+  protected constructor(label: string, required?: boolean, uid?: string) {
     this.defValue = label;
     this.textE = LabelRenderer.renderLabel(label, required, uid);
     this.rootE = LabelRenderer.renderRoot(this.textE);
   }
 
-  public static create(fieldM: IFieldModel, uid: string): ILabelView | undefined {
-    return isString(fieldM.label)
-      ? new LabelView(fieldM.label, fieldM.required, uid)
-      : undefined;
+  public static create(label: string, required?: boolean, uid?: string): ILabelView | undefined {
+    return new LabelView(label, required, uid);
   }
 
   public updateLabel(text: string): void {

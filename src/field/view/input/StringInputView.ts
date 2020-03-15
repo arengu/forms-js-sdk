@@ -9,15 +9,12 @@ export interface IStringInputView extends IInputView {
 }
 
 export abstract class StringInputView extends BaseInputView<IInputViewListener> implements IStringInputView {
-  protected readonly uid: string;
-
   protected readonly inputE: IStringInputElement;
   protected readonly rootE: HTMLElement;
 
-  protected constructor(uid: string, inputE: IStringInputElement, rootE?: HTMLElement) {
+  protected constructor(inputE: IStringInputElement, rootE?: HTMLElement) {
     super();
 
-    this.uid = uid;
     this.inputE = inputE;
     this.rootE = rootE || inputE;
 
@@ -25,7 +22,7 @@ export abstract class StringInputView extends BaseInputView<IInputViewListener> 
   }
 
   public getInputId(): string {
-    return this.uid;
+    return this.inputE.id;
   }
 
   public getValue(): IStringInputValue {

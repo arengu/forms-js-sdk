@@ -2,14 +2,13 @@ import { IInputViewListener, IInputView, BaseInputView } from '../InputView';
 import { InputCreator, InputConfigurator } from './InputHelper';
 import { ILegalFieldModel } from '../../model/FieldModel';
 import { IBooleanInputValue } from './BooleanInputView';
-import { UID } from '../../../lib/UID';
 
 const LegalInputType = 'checkbox';
 
 export class LegalInputRenderer {
-  public static renderInput(fieldM: ILegalFieldModel, uid: string,
+  public static renderInput(fieldM: ILegalFieldModel,
     inputV: LegalInputView): HTMLInputElement {
-    const input = InputCreator.input(fieldM, uid, LegalInputType);
+    const input = InputCreator.input(fieldM, LegalInputType);
 
     InputConfigurator.addListeners(input, inputV);
     input.value = 'true';
@@ -34,13 +33,13 @@ export class LegalInputRenderer {
     return label;
   }
 
-  public static renderRoot(fieldM: ILegalFieldModel, uid: string,
+  public static renderRoot(fieldM: ILegalFieldModel,
     inputE: HTMLInputElement): HTMLDivElement {
     const container = document.createElement('div');
     container.classList.add('af-legal');
 
     container.appendChild(inputE);
-    container.appendChild(this.renderLabel(fieldM, uid));
+    container.appendChild(this.renderLabel(fieldM, inputE.id));
 
     return container;
   }
@@ -58,10 +57,8 @@ export class LegalInputView extends BaseInputView<IInputViewListener> implements
   protected constructor(fieldM: ILegalFieldModel) {
     super();
 
-    const uid = UID.create();
-
-    this.inputE = LegalInputRenderer.renderInput(fieldM, uid, this);
-    this.rootE = LegalInputRenderer.renderRoot(fieldM, uid, this.inputE);
+    this.inputE = LegalInputRenderer.renderInput(fieldM, this);
+    this.rootE = LegalInputRenderer.renderRoot(fieldM, this.inputE);
   }
 
   public static create(fieldM: ILegalFieldModel): LegalInputView {

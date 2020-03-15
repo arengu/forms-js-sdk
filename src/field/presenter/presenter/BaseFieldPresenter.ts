@@ -7,7 +7,6 @@ import { IFormData } from '../../../form/model/SubmissionModel';
 import { EventsFactory } from '../../../lib/EventsFactory';
 import { MagicString } from '../../../lib/MagicString';
 import { Messages } from '../../../lib/Messages';
-import { UID } from '../../../lib/UID';
 import { URLHelper } from '../../../lib/URLHelper';
 import { IFieldModel, IFieldValue } from '../../model/FieldModel';
 import { FieldView, IFieldView } from '../../view/FieldView';
@@ -18,8 +17,6 @@ import { IFieldValidationResult, IFieldValidator } from '../validator/FieldValid
 import { BaseComponentPresenter } from '../../../component/ComponentHelper';
 
 export abstract class BaseFieldPresenter<IV extends IInputView = IInputView> extends BaseComponentPresenter implements IFieldPresenter, IInputViewListener {
-  protected readonly uid: string;
-
   protected readonly fieldM: IFieldModel;
 
   protected readonly messages: Messages;
@@ -41,13 +38,11 @@ export abstract class BaseFieldPresenter<IV extends IInputView = IInputView> ext
     fieldVal: IFieldValidator<IFieldValue>, valueH: IValueHandler<IFieldValue>) {
     super();
 
-    this.uid = UID.create();
-
     this.fieldM = fieldM;
     this.messages = formD.messages;
     this.invalid = false;
     this.inputV = inputV;
-    this.fieldV = FieldView.create(this.fieldM, this.uid, this.inputV);
+    this.fieldV = FieldView.create(this.fieldM, this.inputV);
     this.validator = fieldVal;
 
     this.valueH = valueH;

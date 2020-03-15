@@ -2,6 +2,7 @@ import isNil from 'lodash/isNil';
 
 import { IFieldModel } from '../../model/FieldModel';
 import { IHTMLInputListener } from '../InputView';
+import { UID } from '../../../lib/UID';
 
 export abstract class InputHelper {
   public static isChecked(elem: HTMLInputElement): boolean {
@@ -18,20 +19,20 @@ export abstract class InputHelper {
 }
 
 export abstract class InputCreator {
-  public static input(fieldM: IFieldModel, uid: string, inputType: string): HTMLInputElement {
+  public static input(fieldM: IFieldModel, inputType: string): HTMLInputElement {
     const elem = document.createElement('input');
 
     elem.type = inputType;
-    elem.id = uid;
+    elem.id = UID.create();
     elem.name = fieldM.id;
 
     return elem;
   }
 
-  public static textarea(fieldM: IFieldModel, uid: string): HTMLTextAreaElement {
+  public static textarea(fieldM: IFieldModel): HTMLTextAreaElement {
     const elem = document.createElement('textarea');
 
-    elem.id = uid;
+    elem.id = UID.create();
     elem.name = fieldM.id;
 
     return elem;
