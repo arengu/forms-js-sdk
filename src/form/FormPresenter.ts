@@ -238,28 +238,19 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     }
   }
 
-  public handleFormInteraction(req: IFormInteractionRequest, res: IFormInteractionResponse): void {
+  public async handleFormInteraction(req: IFormInteractionRequest, res: IFormInteractionResponse): Promise<void> {
     const currStep = this.getCurrentStep();
 
     FormView.setCookies(res.cookies);
 
     const { effect } = res;
 
-    if (effect.type === EffectType.NEXT_STEP || effect.type === EffectType.JUMP_TO_STEP) {
-      this.signatures.set(currStep.getStepId(), effect.signature);
-    }
-
-    if (effect.type === 'ERROR_MESSAGE') {
+    if (effect.type === EffectType.ERROR_MESSAGE) {
       currStep.setError(effect.message);
       return;
     }
 
-    if (effect.type === 'NEXT_STEP') {
-      this.gotoNextStep();
-      return;
-    }
-
-    if (effect.type === 'THANK_YOU') {
+    if (effect.type === EffectType.THANK_YOU) {
       EventsFactory.submitFormSuccess({
         formId: req.formId,
         formData: req.formData,
@@ -284,11 +275,27 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
       return;
     }
 
+    if (effect.type === EffectType.NEXT_STEP) {
+      this.signatures.set(currStep.getStepId(), effect.signature);
+
+      if (this.isLastStep()) {
+        await this.submitForm(currStep);
+      } else {
+        await this.gotoNextStep();
+      }
+
+      return;
+    }
+
     if (effect.type === EffectType.JUMP_TO_STEP) {
+      this.signatures.set(currStep.getStepId(), effect.signature);
+
       const nextStep = find(this.stepsP, (sP) => sP.getStepId() === effect.stepId);
       if (nextStep) {
         this.jumpToStep(nextStep);
       }
+
+      return;
     }
   }
 
@@ -414,7 +421,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     try {
       EventsFactory.submitForm(eventData);
       const interRes = await FormRepository.submitForm(repoParams);
-      this.handleFormInteraction(interReq, interRes);
+      await this.handleFormInteraction(interReq, interRes);
     } catch (err) {
       if (err instanceof InvalidFields) {
         console.error('Some values are not valid:', err.fields);
@@ -452,7 +459,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
 
     const interRes = await FormRepository.validateStep(repoParams);
 
-    this.handleFormInteraction(interReq, interRes);
+    await this.handleFormInteraction(interReq, interRes);
 
     return interRes;
   }
