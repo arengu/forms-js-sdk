@@ -133,7 +133,7 @@
   content: "";
   background: #fff;
   border: var(--input-border);
-  border-radius: var(----input-border-radius);
+  border-radius: var(--input-border-radius);
   min-width: 20px;
   min-height: 20px;
   box-sizing: border-box;
@@ -144,7 +144,7 @@
   content: "";
   background: #fff;
   border: var(--input-border);
-  border-radius: var(----input-border-radius);
+  border-radius: var(--input-border-radius);
   min-width: 18px;
   height: 18px;
   box-sizing: border-box;
