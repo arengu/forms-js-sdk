@@ -29,7 +29,7 @@ export interface IThankYouAction {
   readonly type: EffectType.THANK_YOU;
   readonly submissionId?: string;
   readonly message?: string;
-  readonly redirection?: IPageRedirection;
+  readonly redirect?: IPageRedirection;
 }
 
 export interface IErrorMessageAction {

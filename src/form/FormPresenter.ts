@@ -269,7 +269,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
           message: effect.message,
           data: res.data,
           cookies: res.cookies,
-          ...effect.redirection,
+          ...effect.redirect,
         }
       });
 
@@ -277,8 +277,8 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
         this.gotoThankYou(effect.message);
       }
 
-      if (effect.redirection) {
-        FormView.redirect(effect.redirection);
+      if (effect.redirect) {
+        FormView.redirect(effect.redirect);
       }
 
       return;

@@ -4,6 +4,7 @@ import { IView } from "../../core/BaseTypes";
 import { IFormModel } from '../model/FormModel';
 import { ICookieModel } from '../model/CookieModel';
 import { CookieHelper } from '../../lib/view/CookieHelper';
+import { IPageRedirection } from '../FormInteraction';
 
 export interface IVisibleArea {
   minOffset: number;
@@ -46,11 +47,6 @@ export interface IFormViewListener {
 }
 
 export type IFormPageView = IView;
-
-export interface IRedirectionParams {
-  readonly delay?: number;
-  readonly target: string;
-}
 
 export interface IFormView extends IView {
   setContent(pageE: HTMLElement): void;
@@ -143,7 +139,7 @@ export class FormView implements IFormView {
     return this.rootE;
   }
 
-  public static redirect(params: IRedirectionParams): void {
+  public static redirect(params: IPageRedirection): void {
     const { target, delay: delayS } = params;
 
     const delayMS = !isNil(delayS) ? delayS * 1000 : 0;
