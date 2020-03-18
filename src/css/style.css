@@ -5,6 +5,7 @@
   --input-color: #323d47;
   --input-border: 1px solid #e0e6f0;
   --input-border-radius: 3px;
+  --checkbox-border-radius: 3px;
   --input-height: 40px;
   --input-font-size: 16px;
   --boolean-background-color: #f7f9fc;
@@ -133,7 +134,7 @@
   content: "";
   background: #fff;
   border: var(--input-border);
-  border-radius: var(--input-border-radius);
+  border-radius: var(--checkbox-border-radius);
   min-width: 20px;
   min-height: 20px;
   box-sizing: border-box;
@@ -144,7 +145,7 @@
   content: "";
   background: #fff;
   border: var(--input-border);
-  border-radius: var(--input-border-radius);
+  border-radius: var(--checkbox-border-radius);
   min-width: 18px;
   height: 18px;
   box-sizing: border-box;
