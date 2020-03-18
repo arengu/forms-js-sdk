@@ -267,7 +267,6 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
 
   public reset(): void {
     this.compsP.forEach((cP) => cP.reset());
-    // TODO: call errorView.reset directly
   }
 
   public hasInvalidFields(): boolean {

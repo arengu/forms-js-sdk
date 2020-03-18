@@ -8,7 +8,7 @@ export enum ButtonType {
   SUBMIT = 'submit',
 }
 
-enum ButtonStatus {
+export enum ButtonStatus {
   ENABLED = 'ENABLED',
   DISABLED = 'DISABLED',
 }

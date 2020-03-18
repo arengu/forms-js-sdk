@@ -1,4 +1,4 @@
-import { GenericButtonView, ButtonType } from "../../../../block/navigation/GenericButtonView";
+import { GenericButtonView, ButtonType, ButtonStatus } from "../../../../block/navigation/GenericButtonView";
 import { ISocialButtonListener, ISocialButtonView } from "../SocialInputView";
 import { SocialProvider, IFacebookSocialConfig } from "../../../../form/model/FormModel";
 import { IFacebookSDK, FacebookSDK } from "../../../../deps/FacebookSDK";
@@ -37,11 +37,10 @@ export class FacebookButtonView extends GenericButtonView implements ISocialButt
       type: ButtonType.BUTTON,
       callback: () => this.onClick(),
       containerClasses: CSS_CLASSES,
+      initStatus: ButtonStatus.DISABLED,
     });
 
     this.config = fbC;
-
-    this.unblock();
 
     FacebookSDK.initSDK(fbC.clientId, (sdk: IFacebookSDK) => this.onInit(sdk));
 
