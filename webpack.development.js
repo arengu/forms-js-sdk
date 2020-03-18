@@ -9,6 +9,7 @@ const config = {
   mode: 'development',
   devtool: 'inline-source-map',
   devServer: {
+    https: true,
     contentBase: './dist',
   },
   plugins: [

@@ -1,7 +1,9 @@
-import { IInputViewListener, IInputView } from '../InputView';
+import { IInputView } from '../InputView';
 import { InputCreator, InputConfigurator } from './InputHelper';
-import { IHTMLView } from '../../../base/view/HTMLView';
+import { IView } from "../../../core/BaseTypes";
 import { IPasswordFieldModel } from '../../model/FieldModel';
+import { StringInputView } from './StringInputView';
+import { ListenableEntity } from '../../../lib/ListenableEntity';
 
 const PASSWORD_ICON_SECONDARY = 'af-password-icon-secondary';
 
@@ -10,26 +12,24 @@ export enum PasswordInputType {
   visible = 'text',
 }
 
-export abstract class PasswordInputRenderer {
-  public static renderInput(fieldM: IPasswordFieldModel, uid: string,
-    inputL: IInputViewListener): HTMLInputElement {
-    const input = InputCreator.input(fieldM, uid, PasswordInputType.hidden);
+export const PasswordInputRenderer = {
+  renderInput(fieldM: IPasswordFieldModel): HTMLInputElement {
+    const input = InputCreator.input(fieldM, PasswordInputType.hidden);
 
     InputConfigurator.placeholder(input, fieldM);
-    InputConfigurator.addListeners(input, inputL);
     input.autocomplete = 'current-password';
 
     return input;
-  }
+  },
 
-  public static renderIcon(iconL: IPasswordIconListener): HTMLSpanElement {
+  renderIcon(iconL: IPasswordIconListener): HTMLSpanElement {
     const icon = document.createElement('span');
     icon.classList.add('af-password-icon');
     icon.addEventListener('click', iconL.onToggle.bind(iconL));
     return icon;
-  }
+  },
 
-  public static renderRoot(inputE: HTMLInputElement, maskV: PasswordMaskView): HTMLDivElement {
+  renderRoot(inputE: HTMLInputElement, maskV: PasswordMaskView): HTMLDivElement {
     const root = document.createElement('div');
     root.classList.add('af-password-wrapper');
 
@@ -39,28 +39,27 @@ export abstract class PasswordInputRenderer {
     root.appendChild(maskE);
 
     return root;
-  }
-}
+  },
+};
 
 export interface IPasswordIconListener {
   onToggle(this: this): void;
 }
 
-export class PasswordMaskView implements IHTMLView, IPasswordIconListener {
+export class PasswordMaskView extends ListenableEntity<IPasswordVisibilityListener> implements IView, IPasswordIconListener {
   protected readonly iconE: HTMLElement;
-
-  protected readonly visL: IPasswordVisibilityListener;
 
   protected visible: boolean;
 
-  protected constructor(visL: IPasswordVisibilityListener) {
+  protected constructor() {
+    super();
+
     this.iconE = PasswordInputRenderer.renderIcon(this);
-    this.visL = visL;
     this.visible = false;
   }
 
-  public static create(iconL: IPasswordVisibilityListener): PasswordMaskView {
-    return new this(iconL);
+  public static create(): PasswordMaskView {
+    return new this();
   }
 
   public onToggle(): void {
@@ -74,13 +73,13 @@ export class PasswordMaskView implements IHTMLView, IPasswordIconListener {
   public showPassword(): void {
     this.visible = true;
     this.iconE.classList.add(PASSWORD_ICON_SECONDARY);
-    this.visL.onShowPassword();
+    this.listeners.forEach((l) => l.onShowPassword());
   }
 
   public hidePassword(): void {
     this.visible = false;
     this.iconE.classList.remove(PASSWORD_ICON_SECONDARY);
-    this.visL.onHidePassword();
+    this.listeners.forEach((l) => l.onHidePassword());
   }
 
   public reset(): void {
@@ -103,26 +102,23 @@ export interface IPasswordInputView extends IInputView {
   getValue(): IPasswordInputValue;
 }
 
-export class PasswordInputView implements IPasswordInputView, IPasswordVisibilityListener {
+export class PasswordInputView extends StringInputView implements IPasswordInputView, IPasswordVisibilityListener {
   protected readonly maskV: PasswordMaskView;
 
-  protected readonly inputE: HTMLInputElement;
+  protected constructor(fieldM: IPasswordFieldModel) {
+    const maskV = PasswordMaskView.create();
+    const inputE = PasswordInputRenderer.renderInput(fieldM);
 
-  protected readonly rootE: HTMLElement;
+    const rootE = PasswordInputRenderer.renderRoot(inputE, maskV);
 
-  protected constructor(fieldM: IPasswordFieldModel, uid: string, inputL: IInputViewListener) {
-    this.inputE = PasswordInputRenderer.renderInput(fieldM, uid, inputL);
-    this.maskV = PasswordMaskView.create(this);
-    this.rootE = PasswordInputRenderer.renderRoot(this.inputE, this.maskV);
+    super(inputE, rootE);
+
+    this.maskV = maskV;
+    this.maskV.listen(this);
   }
 
-  public static create(fieldM: IPasswordFieldModel, uid: string,
-    inputL: IInputViewListener): IPasswordInputView {
-    return new this(fieldM, uid, inputL);
-  }
-
-  public getValue(): IPasswordInputValue {
-    return this.inputE.value;
+  public static create(fieldM: IPasswordFieldModel): IPasswordInputView {
+    return new this(fieldM);
   }
 
   public setValue(): void {
@@ -146,11 +142,7 @@ export class PasswordInputView implements IPasswordInputView, IPasswordVisibilit
   }
 
   public reset(): void {
-    this.inputE.value = this.inputE.defaultValue;
+    super.reset();
     this.hidePassword();
-  }
-
-  public render(): HTMLElement {
-    return this.rootE;
   }
 }

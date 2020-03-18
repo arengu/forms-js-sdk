@@ -7,8 +7,8 @@ import { IValueHandler } from './ValueHandler';
 import { IPasswordFieldModel, IPasswordFieldValue, HashFunction } from '../../model/FieldModel';
 import { IPasswordInputView } from '../../view/input/PasswordInputView';
 
-export abstract class PasswordHasher {
-  public static hash(password: string, hash: HashFunction): string {
+export const PasswordHasher = {
+  hash(password: string, hash: HashFunction): string {
     switch (hash) {
       case HashFunction.MD5:
         return md5(password);
@@ -22,25 +22,27 @@ export abstract class PasswordHasher {
       default:
         return password;
     }
-  }
-}
-
-export const PasswordValueHandler: IValueHandler<IPasswordFieldModel,
-  IPasswordInputView, IPasswordFieldValue> = {
-  getValue(inputV: IPasswordInputView, fieldM: IPasswordFieldModel):
-    IPasswordFieldValue {
-    const value = inputV.getValue().trim();
-
-    if (value === '') {
-      return undefined;
-    }
-
-    const hash = PasswordHasher.hash(value, fieldM.config.hash);
-
-    return hash;
   },
+};
 
-  setValue(): void {
-    console.error('Setting a password is not allowed.');
+export const PasswordValueHandler = {
+  create(inputV: IPasswordInputView, fieldM: IPasswordFieldModel): IValueHandler<IPasswordFieldValue> {
+    return {
+      getValue(): IPasswordFieldValue {
+        const value = inputV.getValue().trim();
+
+        if (value === '') {
+          return undefined;
+        }
+
+        const hash = PasswordHasher.hash(value, fieldM.config.hash);
+
+        return hash;
+      },
+
+      setValue(): void {
+        console.error('Setting a password is not allowed.');
+      }
+    };
   },
 };

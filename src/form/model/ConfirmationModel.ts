@@ -1,7 +1,7 @@
 import { ICookieModel } from './CookieModel';
 
 export interface IConfirmationModel {
-  readonly id: string;
+  readonly id?: string;
   readonly message?: string;
   readonly data: object;
   readonly cookies: ICookieModel[];

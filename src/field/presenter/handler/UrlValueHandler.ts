@@ -1,7 +1,7 @@
 import { IValueHandler } from './ValueHandler';
-import { IURLFieldModel, IURLFieldValue } from '../../model/FieldModel';
-import { URLInputView } from '../../view/input/URLInputView';
+import { IURLFieldValue } from '../../model/FieldModel';
 import { StringValueHandler } from './StringValueHandler';
+import { IURLInputView } from '../../view/input/URLInputView';
 
 function ensurePrefix(str: string | undefined): string | undefined {
   if (!str) {
@@ -11,18 +11,22 @@ function ensurePrefix(str: string | undefined): string | undefined {
   return /^https?:\/\//i.test(str) ? str : `http://${str}`;
 }
 
-export const UrlValueHandler: IValueHandler<IURLFieldModel,
-  URLInputView, IURLFieldValue> = {
-  async getValue(inputV: URLInputView, fieldM: IURLFieldModel):
-    Promise<IURLFieldValue> {
-    const cleanValue = await StringValueHandler.getValue(inputV, fieldM);
+export const UrlValueHandler = {
+  create(inputV: IURLInputView): IValueHandler<IURLFieldValue> {
+    const stringHandler = StringValueHandler.create(inputV);
 
-    return ensurePrefix(cleanValue);
+    return {
+      async getValue(): Promise<IURLFieldValue> {
+        const cleanValue = await stringHandler.getValue();
+
+        return ensurePrefix(cleanValue);
+      },
+
+      setValue(value: IURLFieldValue): void {
+        const newValue = ensurePrefix(value);
+
+        stringHandler.setValue(newValue);
+      }
+    };
   },
-
-  setValue(inputV: URLInputView, value: IURLFieldValue, fieldM: IURLFieldModel): void {
-    const newValue = ensurePrefix(value);
-
-    StringValueHandler.setValue(inputV, newValue, fieldM);
-  }
 };

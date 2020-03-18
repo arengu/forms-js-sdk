@@ -1,36 +1,32 @@
-import { IInputViewListener, IInputView } from '../InputView';
-import { InputCreator, InputConfigurator } from './InputHelper';
-import { StringInputView } from './StringInputView';
-import { CharCounterView } from './CharCounterView';
 import { ITextFieldModel } from '../../model/FieldModel';
+import { CharCounterView } from './CharCounterView';
+import { InputConfigurator, InputCreator } from './InputHelper';
+import { StringInputView, IStringInputView } from './StringInputView';
 
 export type TextInputElements = HTMLInputElement | HTMLTextAreaElement;
 
-export class TextInputRenderer {
-  public static createInput(fieldM: ITextFieldModel,
-    uid: string): HTMLInputElement | HTMLTextAreaElement {
+export const TextInputRenderer = {
+  createInput(fieldM: ITextFieldModel): HTMLInputElement | HTMLTextAreaElement {
     const { multiline } = fieldM.config;
 
     if (multiline) {
-      return InputCreator.textarea(fieldM, uid);
+      return InputCreator.textarea(fieldM);
     }
 
-    return InputCreator.input(fieldM, uid, 'text');
-  }
+    return InputCreator.input(fieldM, 'text');
+  },
 
-  public static renderInput(fieldM: ITextFieldModel, uid: string,
-    inputL: IInputViewListener): TextInputElements {
-    const input = this.createInput(fieldM, uid);
+  renderInput(fieldM: ITextFieldModel): TextInputElements {
+    const input = this.createInput(fieldM);
 
     InputConfigurator.defaultValue(input, fieldM);
     InputConfigurator.placeholder(input, fieldM);
     InputConfigurator.lengthRules(input, fieldM);
-    InputConfigurator.addListeners(input, inputL);
 
     return input;
-  }
+  },
 
-  public static renderCount(inputE: TextInputElements,
+  renderCount(inputE: TextInputElements,
     fieldM: ITextFieldModel): CharCounterView | undefined {
     const { config: { maxLength } } = fieldM;
 
@@ -41,9 +37,9 @@ export class TextInputRenderer {
     const counter = CharCounterView.create(inputE, maxLength);
 
     return counter;
-  }
+  },
 
-  public static renderRoot(fieldM: ITextFieldModel,
+  renderRoot(fieldM: ITextFieldModel,
     inputE: TextInputElements): HTMLDivElement {
     const root = document.createElement('div');
     root.classList.add('af-field-wrapper');
@@ -56,18 +52,15 @@ export class TextInputRenderer {
     }
 
     return root;
-  }
-}
+  },
+};
 
-export type ITextInputValue = string;
-
-export type ITextInputView = IInputView;
+export type ITextInputView = IStringInputView;
 
 export class TextInputView extends StringInputView implements ITextInputView {
-  public static create(fieldM: ITextFieldModel, uid: string,
-    inputL: IInputViewListener): TextInputView {
-    const inputE = TextInputRenderer.renderInput(fieldM, uid, inputL);
+  public static create(fieldM: ITextFieldModel): ITextInputView {
+    const inputE = TextInputRenderer.renderInput(fieldM);
     const rootE = TextInputRenderer.renderRoot(fieldM, inputE);
-    return new this(inputE, rootE);
+    return new TextInputView(inputE, rootE);
   }
 }

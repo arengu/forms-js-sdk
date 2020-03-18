@@ -1,22 +1,22 @@
-import { IInputViewListener, IInputView } from '../InputView';
+import { IInputView, BaseInputView } from '../InputView';
 import { InputCreator, InputConfigurator } from './InputHelper';
 import { ILegalFieldModel } from '../../model/FieldModel';
 import { IBooleanInputValue } from './BooleanInputView';
 
 const LegalInputType = 'checkbox';
 
-export class LegalInputRenderer {
-  public static renderInput(fieldM: ILegalFieldModel, uid: string,
-    inputL: IInputViewListener): HTMLInputElement {
-    const input = InputCreator.input(fieldM, uid, LegalInputType);
+export const LegalInputRenderer = {
+  renderInput(fieldM: ILegalFieldModel,
+    inputV: LegalInputView): HTMLInputElement {
+    const input = InputCreator.input(fieldM, LegalInputType);
 
-    InputConfigurator.addListeners(input, inputL);
+    InputConfigurator.addListeners(input, inputV);
     input.value = 'true';
 
     return input;
-  }
+  },
 
-  public static renderLabel(fieldM: ILegalFieldModel, uid: string): HTMLLabelElement {
+  renderLabel(fieldM: ILegalFieldModel, uid: string): HTMLLabelElement {
     const { text } = fieldM.config;
 
     const label = document.createElement('label');
@@ -31,37 +31,38 @@ export class LegalInputRenderer {
     }
 
     return label;
-  }
+  },
 
-  public static renderRoot(fieldM: ILegalFieldModel, uid: string,
+  renderRoot(fieldM: ILegalFieldModel,
     inputE: HTMLInputElement): HTMLDivElement {
     const container = document.createElement('div');
     container.classList.add('af-legal');
 
     container.appendChild(inputE);
-    container.appendChild(this.renderLabel(fieldM, uid));
+    container.appendChild(this.renderLabel(fieldM, inputE.id));
 
     return container;
-  }
-}
+  },
+};
 
 export type ILegalInputValue = IBooleanInputValue;
 
 export type ILegalInputView = IInputView;
 
-export class LegalInputView implements ILegalInputView {
+export class LegalInputView extends BaseInputView implements ILegalInputView {
   protected readonly inputE: HTMLInputElement;
 
   protected readonly rootE: HTMLElement;
 
-  protected constructor(fieldM: ILegalFieldModel, uid: string, inputL: IInputViewListener) {
-    this.inputE = LegalInputRenderer.renderInput(fieldM, uid, inputL);
-    this.rootE = LegalInputRenderer.renderRoot(fieldM, uid, this.inputE);
+  protected constructor(fieldM: ILegalFieldModel) {
+    super();
+
+    this.inputE = LegalInputRenderer.renderInput(fieldM, this);
+    this.rootE = LegalInputRenderer.renderRoot(fieldM, this.inputE);
   }
 
-  public static create(fieldM: ILegalFieldModel, uid: string,
-    inputL: IInputViewListener): LegalInputView {
-    return new this(fieldM, uid, inputL);
+  public static create(fieldM: ILegalFieldModel): LegalInputView {
+    return new this(fieldM);
   }
 
   public getValue(): ILegalInputValue {
@@ -74,6 +75,14 @@ export class LegalInputView implements ILegalInputView {
 
   public reset(): void {
     this.inputE.checked = this.inputE.defaultChecked;
+  }
+
+  public block(): void {
+    this.inputE.disabled = true;
+  }
+
+  public unblock(): void {
+    this.inputE.disabled = false;
   }
 
   public render(): HTMLElement {

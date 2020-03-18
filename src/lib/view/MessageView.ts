@@ -1,12 +1,18 @@
-import { IHTMLView } from '../../base/view/HTMLView';
+import { IView } from "../../core/BaseTypes";
 import { HTMLHelper } from './HTMLHelper';
 
-export abstract class GenericMessageRenderer {
-  public static renderText(): HTMLElement {
-    return document.createElement('p');
-  }
+export interface IMessageView extends IView {
+  setText(txt: string): void;
+  clearText(): void;
+  reset(): void;
+}
 
-  public static renderRoot(cssClasses: string[], textE: HTMLElement): HTMLElement {
+export const GenericMessageRenderer = {
+  renderText(): HTMLElement {
+    return document.createElement('p');
+  },
+
+  renderRoot(cssClasses: string[], textE: HTMLElement): HTMLElement {
     const container = document.createElement('div');
     cssClasses.forEach(HTMLHelper.addClass(container));
     container.classList.add('af-message');
@@ -14,10 +20,10 @@ export abstract class GenericMessageRenderer {
     container.appendChild(textE);
 
     return container;
-  }
-}
+  },
+};
 
-export class GenericMessageView implements IHTMLView {
+export class MessageView implements IMessageView {
   protected textE: HTMLElement;
 
   protected rootE: HTMLElement;
@@ -26,6 +32,10 @@ export class GenericMessageView implements IHTMLView {
     this.textE = GenericMessageRenderer.renderText();
     this.rootE = GenericMessageRenderer.renderRoot(cssClasses, this.textE);
     this.hide();
+  }
+
+  public static create(cssClasses: string[]): IMessageView {
+    return new MessageView(cssClasses);
   }
 
   protected show(): void {
@@ -52,9 +62,5 @@ export class GenericMessageView implements IHTMLView {
 
   public reset(): void {
     this.clearText();
-  }
-
-  public static create(cssClasses: string[]): GenericMessageView {
-    return new GenericMessageView(cssClasses);
   }
 }

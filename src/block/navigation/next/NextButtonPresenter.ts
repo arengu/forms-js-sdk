@@ -1,25 +1,26 @@
-import { IHTMLView } from '../../../base/view/HTMLView';
 import { INextButtonBlockModel } from '../../BlockModel';
 import { INextButtonView, NextButtonView } from './NextButtonView';
 import { IBlockPresenter } from '../../BlockPresenter';
-import { IComponentPresenter } from '../../../component/ComponentTypes';
+import { BaseComponentPresenter } from '../../../component/ComponentHelper';
+import { IComponentPresenter } from '../../../component/ComponentPresenter';
 
 export interface INextButtonPresenter extends IBlockPresenter {
   showLoading(): void;
   hideLoading(): void;
-  enable(): void;
-  disable(): void;
+  block(): void;
+  unblock(): void;
 }
 
-export class NextButtonPresenter implements INextButtonPresenter {
+export class NextButtonPresenter extends BaseComponentPresenter implements INextButtonPresenter {
   protected buttonV: INextButtonView;
 
   protected constructor(buttonM: INextButtonBlockModel) {
+    super();
     this.buttonV = NextButtonView.create(buttonM.config.text);
   }
 
-  public getView(): IHTMLView {
-    return this.buttonV;
+  public render(): HTMLElement {
+    return this.buttonV.render();
   }
 
   public reset(): void {
@@ -34,12 +35,12 @@ export class NextButtonPresenter implements INextButtonPresenter {
     this.buttonV.hideLoading();
   }
 
-  public enable(): void {
-    this.buttonV.enable();
+  public block(): void {
+    this.buttonV.block();
   }
 
-  public disable(): void {
-    this.buttonV.disable();
+  public unblock(): void {
+    this.buttonV.unblock();
   }
 
   public static matches(compP: IComponentPresenter): compP is INextButtonPresenter {

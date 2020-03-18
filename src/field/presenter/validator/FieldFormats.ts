@@ -1,5 +1,5 @@
-import { IFieldValidationResult } from './FieldValidator';
-import { IFieldModel } from '../../model/FieldModel';
+import { IFieldValidationResult, IFieldValidationFunction } from './FieldValidator';
+import { IStringFieldValue, IURLFieldModel, IEmailFieldModel } from '../../model/FieldModel';
 import { FieldError } from '../../../error/InvalidFields';
 import { FieldErrorCode } from '../../../error/ErrorCodes';
 
@@ -9,37 +9,41 @@ export const URI_REGEX = /^(?:(?:http[s\u017F]?|ftp):\/\/)(?:(?:[\0-\x08\x0E-\x1
 export const VALID: IFieldValidationResult = { valid: true };
 
 export const FieldFormats = {
-  email(value: string, fieldM: IFieldModel): IFieldValidationResult {
-    if (!value || EMAIL_REGEX.test(value)) {
-      return VALID;
-    }
-
+  email(fieldM: IEmailFieldModel): IFieldValidationFunction<IStringFieldValue> {
     const fieldId = fieldM.id;
 
-    return {
-      valid: false,
-      error: FieldError.create(
-        fieldId,
-        FieldErrorCode.EMAIL_EXPECTED,
-        'Email is not valid',
-      ),
+    return function checkFormat(value: IStringFieldValue): IFieldValidationResult {
+      if (!value || EMAIL_REGEX.test(value)) {
+        return VALID;
+      }
+
+      return {
+        valid: false,
+        error: FieldError.create(
+          fieldId,
+          FieldErrorCode.EMAIL_EXPECTED,
+          'Email is not valid',
+        ),
+      };
     };
   },
 
-  url(value: string, fieldM: IFieldModel): IFieldValidationResult {
-    if (!value || URI_REGEX.test(value)) {
-      return VALID;
-    }
-
+  url(fieldM: IURLFieldModel): IFieldValidationFunction<IStringFieldValue> {
     const fieldId = fieldM.id;
 
-    return {
-      valid: false,
-      error: FieldError.create(
-        fieldId,
-        FieldErrorCode.URL_EXPECTED,
-        'URL is not valid',
-      ),
+    return function checkFormat(value: IStringFieldValue): IFieldValidationResult {
+      if (!value || URI_REGEX.test(value)) {
+        return VALID;
+      }
+
+      return {
+        valid: false,
+        error: FieldError.create(
+          fieldId,
+          FieldErrorCode.URL_EXPECTED,
+          'URL is not valid',
+        ),
+      };
     };
   },
 }

@@ -1,6 +1,6 @@
 import isNil from 'lodash/isNil';
 
-import { IHTMLView } from '../../base/view/HTMLView';
+import { IView } from "../../core/BaseTypes";
 import { HTMLHelper } from '../../lib/view/HTMLHelper';
 
 export enum ButtonType {
@@ -8,18 +8,36 @@ export enum ButtonType {
   SUBMIT = 'submit',
 }
 
+export enum ButtonStatus {
+  ENABLED = 'ENABLED',
+  DISABLED = 'DISABLED',
+}
+
 export interface IButtonCallback {
   (this: void): void;
 }
 
-export interface IGenericButtonView extends IHTMLView {
+export interface IGenericButtonView extends IView {
+  reset(): void;
   showLoading(): void;
   hideLoading(): void;
-  enable(): void;
-  disable(): void;
+  block(): void;
+  unblock(): void;
+}
+
+interface IButtonOptions {
+  text: string;
+  type: ButtonType;
+  callback?: IButtonCallback;
+  initStatus?: ButtonStatus;
+}
+
+interface IContainerOptions {
+  containerClasses?: string[];
 }
 
 export interface IGenericButtonOptions extends IButtonOptions, IContainerOptions { }
+
 
 export const GenericButtonRenderer = {
   renderButton(options: IButtonOptions): HTMLButtonElement {
@@ -31,11 +49,13 @@ export const GenericButtonRenderer = {
     text.textContent = options.text;
     button.appendChild(text);
 
-    if (options.type === 'submit') {
-      const ladda = document.createElement('span');
-      ladda.classList.add('af-button-ladda');
-      button.appendChild(ladda);
+    if (options.initStatus === ButtonStatus.DISABLED) {
+      button.disabled = true;
     }
+
+    const ladda = document.createElement('span');
+    ladda.classList.add('af-button-ladda');
+    button.appendChild(ladda);
 
     if (!isNil(options.callback)) {
       button.onclick = options.callback;
@@ -56,23 +76,21 @@ export const GenericButtonRenderer = {
     container.appendChild(button);
 
     return container;
+  },
+
+  renderLadda(buttonE: HTMLButtonElement): HTMLSpanElement {
+    const ladda = document.createElement('span');
+    ladda.classList.add('af-button-ladda');
+    buttonE.appendChild(ladda);
+
+    return ladda;
   }
 }
 
-interface IButtonOptions {
-  text: string;
-  type: ButtonType;
-  callback?: IButtonCallback;
-}
-
-interface IContainerOptions {
-  containerClasses?: string[];
-}
-
 export class GenericButtonView implements IGenericButtonView {
-  protected buttonE: HTMLButtonElement;
-
-  protected rootE: HTMLDivElement;
+  protected readonly buttonE: HTMLButtonElement;
+  protected laddaE?: HTMLSpanElement;
+  protected readonly rootE: HTMLDivElement;
 
   protected constructor(options: IGenericButtonOptions) {
     this.buttonE = GenericButtonRenderer.renderButton(options);
@@ -91,16 +109,16 @@ export class GenericButtonView implements IGenericButtonView {
     this.buttonE.classList.remove('af-button-loading');
   }
 
-  public enable(): void {
-    this.buttonE.removeAttribute('disabled');
+  public block(): void {
+    this.buttonE.disabled = true;
   }
 
-  public disable(): void {
-    this.buttonE.setAttribute('disabled', 'true');
+  public unblock(): void {
+    this.buttonE.disabled = false;
   }
 
   public reset(): void {
     this.hideLoading();
-    this.enable();
+    this.unblock();
   }
 }

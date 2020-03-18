@@ -1,4 +1,4 @@
-import { IFieldModel, IFieldValue } from '../../model/FieldModel';
+import { IFieldModel } from '../../model/FieldModel';
 import { IInputView } from '../../view/InputView';
 import { IValueHandler } from './ValueHandler';
 
@@ -7,13 +7,13 @@ export interface IDummyInput<VAL> extends IInputView {
 }
 
 export const DummyValueHandler = {
-  create<FV extends IFieldValue>(): IValueHandler<IFieldModel, IDummyInput<FV>, FV> {
+  create<FV>(inputV: IDummyInput<FV>, fieldM: IFieldModel): IValueHandler<FV> {
     return {
-      getValue(inputV: IDummyInput<FV>): FV {
+      getValue(): FV {
         return inputV.getValue();
       },
 
-      setValue(inputV: IDummyInput<FV>, value: FV, fieldM: IFieldModel): void {
+      setValue(): void {
         console.warn(`Setting a value for ${fieldM.id} field is not supported`);
       }
     };

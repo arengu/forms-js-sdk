@@ -1,4 +1,4 @@
-import { IHTMLView } from '../../../base/view/HTMLView';
+import { IView } from "../../../core/BaseTypes";
 
 const ALERT_CLASS = 'af-counter-alert';
 const ALERT_VALUE = 95;
@@ -7,32 +7,32 @@ const WARNING_VALUE = 80;
 
 export type CountableInput = HTMLInputElement | HTMLTextAreaElement;
 
-export abstract class CharCounterRenderer {
-  public static renderCounter(): HTMLDivElement {
+export const CharCounterRenderer = {
+  renderCounter(): HTMLDivElement {
     const counter = document.createElement('div');
     counter.classList.add('af-counter-current');
 
     return counter;
-  }
+  },
 
-  public static renderSeparator(): HTMLDivElement {
+  renderSeparator(): HTMLDivElement {
     const separator = document.createElement('div');
     separator.classList.add('af-counter-separator');
     separator.textContent = '/';
 
     return separator;
-  }
+  },
 
-  public static renderLimit(maxLength: number): HTMLDivElement {
+  renderLimit(maxLength: number): HTMLDivElement {
     const limit = document.createElement('div');
     limit.classList.add('af-counter-maximum');
 
     limit.textContent = maxLength.toString();
 
     return limit;
-  }
+  },
 
-  public static renderRoot(counterE: HTMLDivElement, maxLength: number): HTMLDivElement {
+  renderRoot(counterE: HTMLDivElement, maxLength: number): HTMLDivElement {
     const root = document.createElement('div');
     root.classList.add('af-counter');
 
@@ -45,9 +45,9 @@ export abstract class CharCounterRenderer {
     root.appendChild(limit);
 
     return root;
-  }
+  },
 
-  public static getClassByPercentage(percentage: number): string | undefined {
+  getClassByPercentage(percentage: number): string | undefined {
     if (percentage >= ALERT_VALUE) {
       return ALERT_CLASS;
     }
@@ -55,10 +55,10 @@ export abstract class CharCounterRenderer {
       return WARNING_CLASS;
     }
     return undefined;
-  }
-}
+  },
+};
 
-export class CharCounterView implements IHTMLView {
+export class CharCounterView implements IView {
   protected readonly inputE: CountableInput;
 
   protected readonly counterE: HTMLDivElement;

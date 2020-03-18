@@ -1,8 +1,8 @@
-import { GenericMessageView } from '../../lib/view/GenericMessage';
+import { MessageView } from '../../lib/view/MessageView';
 
 const CSS_CLASSES = ['af-step-success', 'af-step-message'];
 
-export class SuccessMessage extends GenericMessageView {
+export class SuccessMessage extends MessageView {
   protected constructor() {
     super(CSS_CLASSES);
   }

@@ -1,9 +1,9 @@
 import isNil from 'lodash/isNil';
 
-import { IFieldValidationResult } from './FieldValidator';
+import { IFieldValidationResult, IFieldValidationFunction } from './FieldValidator';
 import {
   ILegalFieldValue, ILegalFieldModel, IPaymentFieldValue,
-  IPaymentFieldModel, INumberFieldValue, IFieldModel,
+  IPaymentFieldModel, INumberFieldValue, INumberFieldModel,
 } from '../../model/FieldModel';
 import { FieldError } from '../../../error/InvalidFields';
 import { FieldErrorCode } from '../../../error/ErrorCodes';
@@ -11,88 +11,99 @@ import { IPaymentInputView } from '../../view/input/PaymentInputView';
 
 const VALID: IFieldValidationResult = { valid: true };
 
+function alwaysValid(): IFieldValidationResult {
+  return VALID;
+}
+
 export const CustomValidations = {
-  number(value: INumberFieldValue, fieldM: IFieldModel):
-    IFieldValidationResult {
+  number(fieldM: INumberFieldModel): IFieldValidationFunction<INumberFieldValue> {
     const { id: fieldId } = fieldM;
 
-    if (isNil(value)) {
-      return VALID;
-    }
+    return function parseNumber(value: INumberFieldValue): IFieldValidationResult {
+      if (isNil(value)) {
+        return VALID;
+      }
 
-    const numValue = +value;
+      const numValue = +value;
 
-    if (Number.isNaN(numValue) === false) {
-      return VALID;
-    }
-
-    return {
-      valid: false,
-      error: FieldError.create(
-        fieldId,
-        FieldErrorCode.NUMBER_EXPECTED,
-        'Please, enter a valid number.',
-      ),
-    };
-  },
-
-  legal(value: ILegalFieldValue, fieldM: ILegalFieldModel):
-    IFieldValidationResult {
-    const { id: fieldId, required } = fieldM;
-
-    if (required === false || value === 'true') {
-      return VALID;
-    }
-
-    return {
-      valid: false,
-      error: FieldError.create(
-        fieldId,
-        FieldErrorCode.ACCEPTANCE_REQUIRED,
-        'Please, check this field if you want to proceed.',
-      ),
-    };
-  },
-
-  payment(value: IPaymentFieldValue, fieldM: IPaymentFieldModel,
-    inputV: IPaymentInputView): IFieldValidationResult {
-    if (inputV.isEmpty()) {
-      if (!fieldM.required) {
+      if (Number.isNaN(numValue) === false) {
         return VALID;
       }
 
       return {
         valid: false,
         error: FieldError.create(
-          fieldM.id,
-          FieldErrorCode.REQUIRED_PROPERTY,
-          'This field is required',
+          fieldId,
+          FieldErrorCode.NUMBER_EXPECTED,
+          'Please, enter a valid number.',
         ),
       };
+    };
+  },
+
+  legal(fieldM: ILegalFieldModel): IFieldValidationFunction<ILegalFieldValue> {
+    const { id: fieldId, required } = fieldM;
+
+    if (required === false) {
+      return alwaysValid;
     }
 
-    if (!inputV.isComplete()) {
+    return function checkLegal(value: ILegalFieldValue): IFieldValidationResult {
+      if (value === 'true') {
+        return VALID;
+      }
+
       return {
         valid: false,
         error: FieldError.create(
-          fieldM.id,
-          FieldErrorCode.MISSING_CARD_INFO,
-          'Some details are empty',
+          fieldId,
+          FieldErrorCode.ACCEPTANCE_REQUIRED,
+          'Please, check this field if you want to proceed.',
         ),
       };
     }
+  },
 
-    if (!inputV.isValid()) {
-      return {
-        valid: false,
-        error: FieldError.create(
-          fieldM.id,
-          FieldErrorCode.INVALID_CARD,
-          'Some details are not valid',
-        ),
-      };
-    }
+  payment(fieldM: IPaymentFieldModel, inputV: IPaymentInputView): IFieldValidationFunction<IPaymentFieldValue> {
+    return function checkPayment(): IFieldValidationResult {
+      if (inputV.isEmpty()) {
+        if (!fieldM.required) {
+          return VALID;
+        }
 
-    return VALID;
+        return {
+          valid: false,
+          error: FieldError.create(
+            fieldM.id,
+            FieldErrorCode.REQUIRED_PROPERTY,
+            'This field is required',
+          ),
+        };
+      }
+
+      if (!inputV.isComplete()) {
+        return {
+          valid: false,
+          error: FieldError.create(
+            fieldM.id,
+            FieldErrorCode.MISSING_CARD_INFO,
+            'Some details are empty',
+          ),
+        };
+      }
+
+      if (!inputV.isValid()) {
+        return {
+          valid: false,
+          error: FieldError.create(
+            fieldM.id,
+            FieldErrorCode.INVALID_CARD,
+            'Some details are not valid',
+          ),
+        };
+      }
+
+      return VALID;
+    };
   },
 };

@@ -1,4 +1,5 @@
-import { ComponentCategory } from "../../component/ComponentTypes";
+import { ComponentCategory } from "../../component/ComponentModel";
+import { ISocialInputValue } from "../view/input/SocialInputView";
 
 export enum FieldType {
   BOOLEAN = 'BOOLEAN',
@@ -10,6 +11,7 @@ export enum FieldType {
   NUMBER = 'NUMBER',
   PASSWORD = 'PASSWORD',
   PAYMENT = 'PAYMENT',
+  SOCIAL = 'SOCIAL',
   TEL = 'TEL',
   TEXT = 'TEXT',
   URL = 'URL',
@@ -20,13 +22,12 @@ export interface IFieldOptionModel {
   readonly label: string;
 }
 
-export interface IBaseFieldModel {
+interface IBaseFieldModel {
   readonly id: string;
   readonly category: ComponentCategory.FIELD;
   readonly type: FieldType;
   readonly label?: string;
   readonly hint?: string;
-  readonly placeholder?: string;
   readonly required: boolean;
   readonly config: object;
 }
@@ -63,6 +64,7 @@ export interface IDateFieldModel extends IBaseFieldModel {
 export interface IDropdownFieldModel extends IBaseFieldModel {
   readonly type: FieldType.DROPDOWN;
   readonly config: {
+    readonly placeholder?: string;
     readonly multiple: boolean;
     readonly options: IFieldOptionModel[];
     readonly defaultValue?: string | string[];
@@ -73,6 +75,7 @@ export interface IDropdownFieldModel extends IBaseFieldModel {
 export interface IEmailFieldModel extends IBaseFieldModel {
   readonly type: FieldType.EMAIL;
   readonly config: {
+    readonly placeholder?: string;
     readonly defaultValue?: string;
   };
 }
@@ -93,6 +96,7 @@ export enum NumberFormat {
 export interface INumberFieldModel extends IBaseFieldModel {
   readonly type: FieldType.NUMBER;
   readonly config: {
+    readonly placeholder?: string;
     readonly format: NumberFormat;
     readonly defaultValue?: number;
     readonly minValue?: number;
@@ -111,6 +115,7 @@ export enum HashFunction {
 export interface IPasswordFieldModel extends IBaseFieldModel {
   readonly type: FieldType.PASSWORD;
   readonly config: {
+    readonly placeholder?: string;
     readonly hash: HashFunction;
   };
 }
@@ -135,9 +140,14 @@ export interface IPaymentFieldModel extends IBaseFieldModel {
   };
 }
 
+export interface ISocialFieldModel extends IBaseFieldModel {
+  readonly type: FieldType.SOCIAL;
+}
+
 export interface ITelFieldModel extends IBaseFieldModel {
   readonly type: FieldType.TEL;
   readonly config: {
+    readonly placeholder?: string;
     readonly defaultValue: string;
     readonly minLength: number;
     readonly maxLength?: number;
@@ -147,6 +157,7 @@ export interface ITelFieldModel extends IBaseFieldModel {
 export interface ITextFieldModel extends IBaseFieldModel {
   readonly type: FieldType.TEXT;
   readonly config: {
+    readonly placeholder?: string;
     readonly multiline: boolean;
     readonly defaultValue?: string;
     readonly minLength: number;
@@ -157,16 +168,20 @@ export interface ITextFieldModel extends IBaseFieldModel {
 export interface IURLFieldModel extends IBaseFieldModel {
   readonly type: FieldType.URL;
   readonly config: {
+    readonly placeholder?: string;
     readonly defaultValue?: string;
   };
 }
 
-export type IFieldModel = IBooleanFieldModel | IChoiceFieldModel | IDateFieldModel |
-  IDropdownFieldModel | IEmailFieldModel | ILegalFieldModel | INumberFieldModel |
-  IPasswordFieldModel | IPaymentFieldModel | ITelFieldModel | ITextFieldModel | IURLFieldModel;
+export type IFieldModel = IBooleanFieldModel | IChoiceFieldModel | IDateFieldModel
+  | IDropdownFieldModel | IEmailFieldModel | ILegalFieldModel | INumberFieldModel
+  | IPasswordFieldModel | IPaymentFieldModel | ISocialFieldModel | ITelFieldModel
+  | ITextFieldModel | IURLFieldModel;
 
 export type IStringFieldValue = string | undefined;
 export type IArrayFieldValue = string[];
+
+export type ISocialFieldValue = ISocialInputValue;
 
 export type IBooleanFieldValue = 'false' | 'true';
 export type IChoiceFieldValue = IStringFieldValue | IArrayFieldValue;
@@ -181,7 +196,7 @@ export type ITelFieldValue = IStringFieldValue;
 export type ITextFieldValue = IStringFieldValue;
 export type IURLFieldValue = IStringFieldValue;
 
-export type IFieldValue = IBooleanFieldValue | IChoiceFieldValue | IDateFieldValue |
-  IDropdownFieldValue | IEmailFieldValue | ILegalFieldValue | INumberFieldValue |
-  IPasswordFieldValue | IPaymentFieldValue | ITelFieldValue | ITextFieldValue |
-  IURLFieldValue;
+export type IFieldValue = IBooleanFieldValue | IChoiceFieldValue | IDateFieldValue
+  | IDropdownFieldValue | IEmailFieldValue | ILegalFieldValue | INumberFieldValue
+  | IPasswordFieldValue | IPaymentFieldValue | ISocialFieldValue | ITelFieldValue
+  | ITextFieldValue | IURLFieldValue;

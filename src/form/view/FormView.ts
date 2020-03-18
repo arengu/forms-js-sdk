@@ -1,9 +1,10 @@
 import isNil from 'lodash/isNil';
 
-import { IHTMLView } from '../../base/view/HTMLView';
+import { IView } from "../../core/BaseTypes";
 import { IFormModel } from '../model/FormModel';
 import { ICookieModel } from '../model/CookieModel';
 import { CookieHelper } from '../../lib/view/CookieHelper';
+import { IPageRedirection } from '../FormInteraction';
 
 export interface IVisibleArea {
   minOffset: number;
@@ -11,8 +12,8 @@ export interface IVisibleArea {
   maxOffset: number;
 }
 
-export abstract class FormViewHelper {
-  public static getVisibleArea(): IVisibleArea {
+export const FormViewHelper = {
+  getVisibleArea(): IVisibleArea {
     const currScroll = window.scrollY;
     const vpHeight = window.innerHeight;
 
@@ -21,9 +22,9 @@ export abstract class FormViewHelper {
       height: vpHeight,
       maxOffset: currScroll + vpHeight,
     };
-  }
+  },
 
-  public static getOffset(elem: Element | undefined): number {
+  getOffset(elem: Element | undefined): number {
     if (!(elem instanceof HTMLElement)) {
       return 0;
     }
@@ -34,31 +35,26 @@ export abstract class FormViewHelper {
      */
     const offsetParent = elem.offsetParent || undefined;
     return this.getOffset(offsetParent) + (elem.offsetTop);
-  }
+  },
 
-  public static scrollTo(elem: HTMLElement): void {
+  scrollTo(elem: HTMLElement): void {
     elem.scrollIntoView({ behavior: 'smooth' });
-  }
-}
+  },
+};
 
 export interface IFormViewListener {
   onSubmitForm(this: void): void;
 }
 
-export type IFormPageView = IHTMLView;
+export type IFormPageView = IView;
 
-export interface IRedirectionParams {
-  readonly delay?: number;
-  readonly target: string;
-}
-
-export interface IFormView extends IHTMLView {
-  setContent(view: IFormPageView): void;
+export interface IFormView extends IView {
+  setContent(pageE: HTMLElement): void;
   scrollTopIfNeeded(): void;
 }
 
-export abstract class FormRendererer {
-  public static renderForm(viewL: IFormViewListener): HTMLFormElement {
+export const FormRendererer = {
+  renderForm(viewL: IFormViewListener): HTMLFormElement {
     const form = document.createElement('form');
     form.setAttribute('method', 'POST');
     form.setAttribute('novalidate', 'novalidate');
@@ -69,9 +65,9 @@ export abstract class FormRendererer {
     };
 
     return form;
-  }
+  },
 
-  public static renderRoot(formM: IFormModel, formE: HTMLFormElement): HTMLDivElement {
+  renderRoot(formM: IFormModel, formE: HTMLFormElement): HTMLDivElement {
     const { id } = formM;
 
     const root = document.createElement('div');
@@ -81,8 +77,8 @@ export abstract class FormRendererer {
     root.appendChild(formE);
 
     return root;
-  }
-}
+  },
+};
 
 export class FormView implements IFormView {
   protected formE: HTMLFormElement;
@@ -98,14 +94,13 @@ export class FormView implements IFormView {
     return new FormView(formM, viewL);
   }
 
-  public setContent(pageV: IFormPageView): void {
+  public setContent(newPageE: HTMLElement): void {
     const currPageE = this.formE.firstChild;
 
     if (currPageE) {
       this.formE.removeChild(currPageE);
     }
 
-    const newPageE = pageV.render();
     this.formE.appendChild(newPageE);
   }
 
@@ -144,7 +139,7 @@ export class FormView implements IFormView {
     return this.rootE;
   }
 
-  public static redirect(params: IRedirectionParams): void {
+  public static redirect(params: IPageRedirection): void {
     const { target, delay: delayS } = params;
 
     const delayMS = !isNil(delayS) ? delayS * 1000 : 0;

@@ -1,7 +1,7 @@
 import { ICookieModel } from '../../form/model/CookieModel';
 
-export abstract class CookieHelper {
-  public static set(cookie: ICookieModel): void {
+export const CookieHelper = {
+  set(cookie: ICookieModel): void {
     const value = encodeURIComponent(cookie.value);
     let newCookie = `${cookie.name}=${value};path=${cookie.path};max-age=${cookie.maxAge}`;
 
@@ -16,5 +16,5 @@ export abstract class CookieHelper {
     newCookie += `;sameSite=${cookie.sameSite.toLowerCase()}`;
 
     document.cookie = newCookie;
-  }
-}
+  },
+};

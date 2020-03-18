@@ -3,17 +3,19 @@ import { IFieldModel } from '../model/FieldModel';
 import { FieldErrorMessage } from './FieldErrorMessage';
 import { IInputView } from './InputView';
 import { ILabelView, LabelView } from './LabelView';
-import { IComponentView } from '../../component/ComponentTypes';
+import { IComponentView } from '../../component/ComponentModel';
 
 export interface IFieldView extends IComponentView {
+  reset(): void;
+
   updateLabel(label: string): void;
 
   setError(msg: string): void;
   clearError(): void;
 }
 
-export abstract class FieldRenderer {
-  public static renderHint(fieldM: IFieldModel): HTMLElement | undefined {
+export const FieldRenderer = {
+  renderHint(fieldM: IFieldModel): HTMLElement | undefined {
     const { hint } = fieldM;
 
     if (!hint) {
@@ -28,9 +30,9 @@ export abstract class FieldRenderer {
     wrapper.appendChild(node);
 
     return wrapper;
-  }
+  },
 
-  public static renderInput(inputV: IInputView): HTMLDivElement {
+  renderInput(inputV: IInputView): HTMLDivElement {
     const wrapper = document.createElement('div');
     wrapper.classList.add('af-field-input');
 
@@ -38,11 +40,10 @@ export abstract class FieldRenderer {
     wrapper.appendChild(inputE);
 
     return wrapper;
-  }
+  },
 
-  public static renderRoot(fieldM: IFieldModel, uid: string,
-    inputV: IInputView, errorV: FieldErrorMessage,
-    labelV?: ILabelView): HTMLDivElement {
+  renderRoot(fieldM: IFieldModel, inputV: IInputView,
+    errorV: FieldErrorMessage, labelV?: ILabelView): HTMLDivElement {
     const { id } = fieldM;
 
     const root = document.createElement('div');
@@ -65,28 +66,27 @@ export abstract class FieldRenderer {
     root.appendChild(errorE);
 
     return root;
-  }
-}
+  },
+};
 
 export class FieldView implements IFieldView {
   protected readonly labelV?: ILabelView;
-
-  protected readonly inputV: IInputView;
 
   protected readonly errorV: FieldErrorMessage;
 
   protected readonly rootE: HTMLDivElement;
 
-  protected constructor(fieldM: IFieldModel, uid: string, inputV: IInputView) {
-    this.labelV = LabelView.create(fieldM, uid);
-    this.inputV = inputV; //deps.fieldF.createInputView(deps.fieldM, deps.fieldL, this.uid);
+  protected constructor(fieldM: IFieldModel, inputV: IInputView) {
+    const uid = inputV.getInputId && inputV.getInputId();
+
+    this.labelV = fieldM.label ? LabelView.create(fieldM.label, fieldM.required, uid) : undefined;
     this.errorV = FieldErrorMessage.create();
 
-    this.rootE = FieldRenderer.renderRoot(fieldM, uid, inputV, this.errorV, this.labelV);
+    this.rootE = FieldRenderer.renderRoot(fieldM, inputV, this.errorV, this.labelV);
   }
 
-  public static create(fieldM: IFieldModel, uid: string, inputV: IInputView): IFieldView {
-    return new FieldView(fieldM, uid, inputV);
+  public static create(fieldM: IFieldModel, inputV: IInputView): IFieldView {
+    return new FieldView(fieldM, inputV);
   }
 
   public updateLabel(label: string): void {
@@ -97,7 +97,6 @@ export class FieldView implements IFieldView {
 
   public reset(): void {
     this.errorV.reset();
-    this.inputV.reset();
   }
 
   public addErrorFlag(): void {

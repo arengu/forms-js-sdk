@@ -1,4 +1,4 @@
-import { IInputViewListener, IInputView } from '../InputView';
+import { IInputView, BaseInputView } from '../InputView';
 import { InputHelper, InputConfigurator } from './InputHelper';
 import { HTMLHelper } from '../../../lib/view/HTMLHelper';
 import { IBooleanFieldModel } from '../../model/FieldModel';
@@ -12,9 +12,9 @@ export interface IBooleanOptionData {
   readonly defaultValue: string;
 }
 
-export abstract class BooleanInputRenderer {
-  public static renderInput(option: IBooleanOptionData,
-    inputL: IInputViewListener): HTMLInputElement {
+export const BooleanInputRenderer = {
+  renderInput(option: IBooleanOptionData,
+    inputV: BooleanInputView): HTMLInputElement {
     const valueStr = option.value.toString();
 
     const radio = document.createElement('input');
@@ -24,32 +24,32 @@ export abstract class BooleanInputRenderer {
     radio.value = valueStr;
     radio.checked = (option.value === option.defaultValue);
 
-    InputConfigurator.addListeners(radio, inputL);
+    InputConfigurator.addListeners(radio, inputV);
 
     return radio;
-  }
+  },
 
-  public static renderLabel(option: IBooleanOptionData): HTMLLabelElement {
+  renderLabel(option: IBooleanOptionData): HTMLLabelElement {
     const node = document.createElement('label');
     node.setAttribute('for', option.uid);
     node.textContent = option.label;
 
     return node;
-  }
+  },
 
-  public static renderOption(option: IBooleanOptionData,
-    inputL: IInputViewListener): HTMLDivElement {
+  renderOption(option: IBooleanOptionData,
+    inputV: BooleanInputView): HTMLDivElement {
     const container = document.createElement('div');
     container.classList.add('af-boolean-option');
 
-    container.appendChild(this.renderInput(option, inputL));
+    container.appendChild(this.renderInput(option, inputV));
     container.appendChild(this.renderLabel(option));
 
     return container;
-  }
+  },
 
-  public static renderAllOptions(fieldM: IBooleanFieldModel,
-    inputL: IInputViewListener): HTMLDivElement[] {
+  renderAllOptions(fieldM: IBooleanFieldModel,
+    inputV: BooleanInputView): HTMLDivElement[] {
     const { defaultValue } = fieldM.config;
 
     return [
@@ -61,7 +61,7 @@ export abstract class BooleanInputRenderer {
           label: 'No',
           defaultValue,
         },
-        inputL,
+        inputV,
       ),
       this.renderOption(
         {
@@ -71,38 +71,40 @@ export abstract class BooleanInputRenderer {
           label: 'Yes',
           defaultValue,
         },
-        inputL,
+        inputV,
       ),
     ];
-  }
+  },
 
-  public static renderRoot(fieldM: IBooleanFieldModel, inputL: IInputViewListener): HTMLDivElement {
+  renderRoot(fieldM: IBooleanFieldModel, inputV: BooleanInputView): HTMLDivElement {
     const root = document.createElement('div');
     root.classList.add('af-boolean');
 
-    const options = this.renderAllOptions(fieldM, inputL);
+    const options = this.renderAllOptions(fieldM, inputV);
     options.forEach(HTMLHelper.appendChild(root));
 
     return root;
-  }
-}
+  },
+};
 
 export type IBooleanInputValue = 'false' | 'true';
 
 export type IBooleanInputView = IInputView;
 
-export class BooleanInputView implements IBooleanInputView {
+export class BooleanInputView extends BaseInputView implements IBooleanInputView {
   protected rootE: HTMLDivElement;
 
   protected optionsE: HTMLInputElement[];
 
-  protected constructor(fieldM: IBooleanFieldModel, inputL: IInputViewListener) {
-    this.rootE = BooleanInputRenderer.renderRoot(fieldM, inputL);
+  protected constructor(fieldM: IBooleanFieldModel) {
+    super();
+
+    this.rootE = BooleanInputRenderer.renderRoot(fieldM, this);
     this.optionsE = Array.from(this.rootE.querySelectorAll('input'));
   }
 
-  public static create(fieldM: IBooleanFieldModel, inputL: IInputViewListener): BooleanInputView {
-    return new this(fieldM, inputL);
+  public static create(fieldM: IBooleanFieldModel): BooleanInputView {
+    return new this(fieldM);
   }
 
   public getValue(): IBooleanInputValue {
@@ -129,6 +131,14 @@ export class BooleanInputView implements IBooleanInputView {
 
   public reset(): void {
     this.optionsE.forEach(InputHelper.resetCheck);
+  }
+
+  public block(): void {
+    this.optionsE.forEach((o) => o.disabled = true);
+  }
+
+  public unblock(): void {
+    this.optionsE.forEach((o) => o.disabled = false);
   }
 
   public render(): HTMLDivElement {

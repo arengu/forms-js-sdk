@@ -1,8 +1,10 @@
-import { ComponentCategory } from "../component/ComponentTypes";
+import { ComponentCategory } from "../component/ComponentModel";
 
 export enum BlockType {
   PREVIOUS_BUTTON = 'PREVIOUS_BUTTON',
   NEXT_BUTTON = 'NEXT_BUTTON',
+  HTML = 'HTML',
+  RICH_TEXT = 'RICH_TEXT',
 }
 
 interface IBaseBlockModel {
@@ -25,4 +27,18 @@ export interface INextButtonBlockModel extends IBaseBlockModel {
   };
 }
 
-export type IBlockModel = IPreviousButtonBlockModel | INextButtonBlockModel;
+export interface IHTMLBlockModel extends IBaseBlockModel {
+  readonly type: BlockType.HTML;
+  readonly config: {
+    readonly content: string;
+  };
+}
+
+export interface IRichTextBlockModel extends IBaseBlockModel {
+  readonly type: BlockType.RICH_TEXT;
+  readonly config: {
+    readonly content: string;
+  };
+}
+
+export type IBlockModel = IPreviousButtonBlockModel | INextButtonBlockModel | IHTMLBlockModel | IRichTextBlockModel;

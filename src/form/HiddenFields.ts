@@ -27,8 +27,8 @@ export interface IValueResolver {
   (defValue: IHiddenFieldValue, fieldId: string): IHiddenFieldValue;
 }
 
-export abstract class HiddenFieldsHelper {
-  public static createValueResolver(
+export const HiddenFieldsHelper = {
+  createValueResolver(
     initValues?: IHiddenFieldValuesSet,
   ): IValueResolver {
     return function valueResolver(
@@ -37,9 +37,9 @@ export abstract class HiddenFieldsHelper {
       const customValue = initValues ? toString(initValues[fieldId]) : undefined;
       return customValue || URLHelper.getParam(fieldId) || defValue || undefined;
     };
-  }
+  },
 
-  public static initFields(defs: IHiddenFieldDef[],
+  initFields(defs: IHiddenFieldDef[],
     initValues?: IHiddenFieldValuesSet): IHiddenFieldValuesSet {
     const index = keyBy(defs, 'key');
     const defaults = mapValues(index, 'value');
@@ -47,8 +47,8 @@ export abstract class HiddenFieldsHelper {
     const fields = mapValues(defaults, HiddenFieldsHelper.createValueResolver(initValues));
 
     return fields;
-  }
-}
+  },
+};
 
 export class HiddenFields {
   protected readonly fields: IHiddenFieldValuesSet;

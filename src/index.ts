@@ -1,6 +1,6 @@
-import { AutoMagic, SDK } from './sdk';
+import { AutoMagic, SDK, ISDK } from './sdk';
 
-declare const global: { ArenguForms?: SDK };
+declare const global: { ArenguForms?: ISDK };
 
 if (global.ArenguForms) {
   console.warn('Arengu Forms SDK has been loaded several times');

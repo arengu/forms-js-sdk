@@ -1,4 +1,4 @@
-import { IFieldPresenter } from '../../field/presenter/FieldPresenter';
+import { IFieldPresenter } from '../../field/presenter/presenter/FieldPresenter';
 
 import { FieldError } from '../../error/InvalidFields';
 import { IFailedFieldValidation, IFieldValidationResult } from '../../field/presenter/validator/FieldValidator';

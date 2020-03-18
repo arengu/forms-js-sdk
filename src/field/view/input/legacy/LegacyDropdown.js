@@ -49,7 +49,7 @@ class LegacyDropdown {
     const { id } = this.model;
 
     node.setAttribute('name', id);
-    node.setAttribute('id', id);
+    node.setAttribute('id', UID.create());
     node.setAttribute('tabindex', '-1');
 
     if (this.multiple) {
@@ -322,7 +322,7 @@ class LegacyDropdown {
   }
 
   _buildDropdownText() {
-    const { placeholder, config: { options, defaultValue } } = this.model;
+    const { config: { placeholder, options, defaultValue } } = this.model;
 
     const node = document.createElement('div');
     node.classList.add('af-dropdown-text');

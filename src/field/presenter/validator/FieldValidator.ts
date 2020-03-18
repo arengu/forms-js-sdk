@@ -1,5 +1,3 @@
-import { IFieldModel, IFieldValue } from '../../model/FieldModel';
-import { IInputView } from '../../view/InputView';
 import { FieldError } from '../../../error/InvalidFields';
 
 export interface ISuccessfulFieldValidation {
@@ -12,33 +10,26 @@ export interface IFailedFieldValidation {
 
 export type IFieldValidationResult = ISuccessfulFieldValidation | IFailedFieldValidation;
 
-export interface IFieldValidationFunction<FM extends IFieldModel,
-  IV extends IInputView, FVA extends IFieldValue> {
-  (this: void, value: FVA, fieldM: FM, inputV: IV): IFieldValidationResult;
+export interface IFieldValidationFunction<FVA> {
+  (this: void, value: FVA): IFieldValidationResult;
 }
 
-export interface IFieldValidator<FM extends IFieldModel,
-  IV extends IInputView, FVA extends IFieldValue> {
-  validate(value: FVA, fieldM: FM, inputV: IV): IFieldValidationResult;
+export interface IFieldValidator<FVA> {
+  validate(value: FVA): IFieldValidationResult;
 }
 
-export class FieldValidator<FM extends IFieldModel,
-  IV extends IInputView, FVA extends IFieldValue>
-  implements IFieldValidator<FM, IV, FVA> {
-  protected readonly validations: IFieldValidationFunction<FM, IV, FVA>[];
+export class FieldValidator<FVA> implements IFieldValidator<FVA> {
+  protected readonly validations: IFieldValidationFunction<FVA>[];
 
-  protected constructor(validations: IFieldValidationFunction<FM, IV, FVA>[]) {
+  protected constructor(validations: IFieldValidationFunction<FVA>[]) {
     this.validations = validations;
   }
 
-  public static create<FM extends IFieldModel, IV extends IInputView,
-    FVA extends IFieldValue>(
-      validations: IFieldValidationFunction<FM, IV, FVA>[],
-  ): FieldValidator<FM, IV, FVA> {
+  public static create<FVA>(validations: IFieldValidationFunction<FVA>[]): FieldValidator<FVA> {
     return new this(validations);
   }
 
-  public validate(value: FVA, fieldM: FM, inputV: IV): IFieldValidationResult {
+  public validate(value: FVA): IFieldValidationResult {
     /*
      * Firefox <51 do NOT support declaring this variable as const into for...of statement
      * See https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/for...of
@@ -50,7 +41,7 @@ export class FieldValidator<FM extends IFieldModel,
      * and we have to stop as soon as a rule is not satisfied.
      */
     for (validation of this.validations) {
-      const result = validation(value, fieldM, inputV);
+      const result = validation(value);
 
       if (!result.valid) {
         return result;

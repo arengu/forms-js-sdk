@@ -2,7 +2,7 @@ import includes from 'lodash/includes';
 import isNil from 'lodash/isNil';
 
 import {
-  IInputView, IInputViewListener, ISingleOptionValue, IMultiOptionValue,
+  IInputView, ISingleOptionValue, IMultiOptionValue, BaseInputView,
 } from '../InputView';
 import { HTMLHelper } from '../../../lib/view/HTMLHelper';
 import { UID } from '../../../lib/UID';
@@ -24,8 +24,8 @@ export interface IOptionLabelData {
   readonly label: string;
 }
 
-export abstract class ChoiceInputRenderer {
-  public static isDefault(fieldM: IChoiceFieldModel, value: string): boolean {
+export const ChoiceInputRenderer = {
+  isDefault(fieldM: IChoiceFieldModel, value: string): boolean {
     const { defaultValue, multiple } = fieldM.config;
 
     return !isNil(defaultValue)
@@ -34,9 +34,9 @@ export abstract class ChoiceInputRenderer {
           ? includes(defaultValue, value)
           : defaultValue === value
       );
-  }
+  },
 
-  public static renderOptionInput(fieldM: IChoiceFieldModel, inputL: IInputViewListener,
+  renderOptionInput(fieldM: IChoiceFieldModel, inputV: ChoiceInputView,
     inputData: IOptionInputData): HTMLInputElement {
     const { multiple } = fieldM.config;
 
@@ -52,12 +52,12 @@ export abstract class ChoiceInputRenderer {
       node.setAttribute('checked', 'checked');
     }
 
-    InputConfigurator.addListeners(node, inputL);
+    InputConfigurator.addListeners(node, inputV);
 
     return node;
-  }
+  },
 
-  public static renderOptionLabel(uid: string, label: string): HTMLLabelElement {
+  renderOptionLabel(uid: string, label: string): HTMLLabelElement {
     const elem = document.createElement('label');
     elem.setAttribute('for', uid);
 
@@ -67,9 +67,9 @@ export abstract class ChoiceInputRenderer {
     elem.appendChild(span);
 
     return elem;
-  }
+  },
 
-  public static renderOption(fieldM: IChoiceFieldModel, inputL: IInputViewListener,
+  renderOption(fieldM: IChoiceFieldModel, inputV: ChoiceInputView,
     option: IFieldOptionModel): HTMLDivElement {
     const elem = document.createElement('div');
     elem.classList.add('af-choice-option');
@@ -77,57 +77,58 @@ export abstract class ChoiceInputRenderer {
     const uid = UID.create();
 
     const inputData = { uid, value: option.value };
-    const inputE = this.renderOptionInput(fieldM, inputL, inputData);
+    const inputE = this.renderOptionInput(fieldM, inputV, inputData);
     elem.appendChild(inputE);
 
     const labelE = this.renderOptionLabel(uid, option.label);
     elem.appendChild(labelE);
 
     return elem;
-  }
+  },
 
-  public static renderAllOptions(fieldM: IChoiceFieldModel,
-    inputL: IInputViewListener): HTMLDivElement[] {
+  renderAllOptions(fieldM: IChoiceFieldModel,
+    inputV: ChoiceInputView): HTMLDivElement[] {
     const { options } = fieldM.config;
 
-    const renderFn = this.renderOption.bind(this, fieldM, inputL);
+    const renderFn = this.renderOption.bind(this, fieldM, inputV);
     const optionsE = options.map(renderFn);
 
     return optionsE;
-  }
+  },
 
-  public static renderRoot(fieldM: IChoiceFieldModel, inputL: IInputViewListener): HTMLDivElement {
+  renderRoot(fieldM: IChoiceFieldModel, inputV: ChoiceInputView): HTMLDivElement {
     const { multiple } = fieldM.config;
 
     const root = document.createElement('div');
     root.className = multiple ? 'af-choice-multiple' : 'af-choice';
 
-    const options = this.renderAllOptions(fieldM, inputL);
+    const options = this.renderAllOptions(fieldM, inputV);
     options.forEach(HTMLHelper.appendChild(root));
 
     return root;
-  }
-}
+  },
+};
 
 export type IChoiceInputValue = ISingleOptionValue | IMultiOptionValue;
 
 export type IChoiceInputView = IInputView;
 
-export class ChoiceInputView implements IChoiceInputView {
+export class ChoiceInputView extends BaseInputView implements IChoiceInputView {
   protected readonly multiple: boolean;
 
   protected readonly rootE: HTMLDivElement;
 
   protected readonly optionsE: HTMLInputElement[];
 
-  protected constructor(fieldM: IChoiceFieldModel, inputL: IInputViewListener) {
+  protected constructor(fieldM: IChoiceFieldModel) {
+    super();
     this.multiple = fieldM.config.multiple;
-    this.rootE = ChoiceInputRenderer.renderRoot(fieldM, inputL);
+    this.rootE = ChoiceInputRenderer.renderRoot(fieldM, this);
     this.optionsE = Array.from(this.rootE.querySelectorAll('input'));
   }
 
-  public static create(fieldM: IChoiceFieldModel, inputL: IInputViewListener): ChoiceInputView {
-    return new this(fieldM, inputL);
+  public static create(fieldM: IChoiceFieldModel): ChoiceInputView {
+    return new this(fieldM);
   }
 
   public getFirstChoice(): ISingleOptionValue {
@@ -150,6 +151,14 @@ export class ChoiceInputView implements IChoiceInputView {
 
   public reset(): void {
     this.optionsE.forEach(InputHelper.resetCheck);
+  }
+
+  public block(): void {
+    this.optionsE.forEach((o) => o.disabled = true);
+  }
+
+  public unblock(): void {
+    this.optionsE.forEach((o) => o.disabled = false);
   }
 
   public render(): HTMLDivElement {
