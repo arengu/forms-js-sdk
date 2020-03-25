@@ -2,7 +2,7 @@ import { INumberFieldModel } from '../../model/FieldModel';
 import { InputConfigurator, InputCreator, InputMode } from './InputHelper';
 import { StringInputView, IStringInputView } from './StringInputView';
 
-export const NumberInputType = 'number';
+export const NumberInputType = 'text';
 
 export const NumberInputRenderer = {
   renderInput(fieldM: INumberFieldModel): HTMLInputElement {
