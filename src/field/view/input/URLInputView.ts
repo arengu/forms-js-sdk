@@ -1,12 +1,12 @@
 import { IURLFieldModel } from '../../model/FieldModel';
-import { InputConfigurator, InputCreator } from './InputHelper';
+import { InputConfigurator, InputCreator, InputMode } from './InputHelper';
 import { StringInputView, IStringInputView } from './StringInputView';
 
 export const URLInputType = 'url';
 
 export const URLInputRenderer = {
   renderInput(fieldM: IURLFieldModel): HTMLInputElement {
-    const elem = InputCreator.input(fieldM, URLInputType);
+    const elem = InputCreator.input(fieldM, URLInputType, { inputMode: InputMode.URL });
 
     InputConfigurator.placeholder(elem, fieldM);
     InputConfigurator.defaultValue(elem, fieldM);

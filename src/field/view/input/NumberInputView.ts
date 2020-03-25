@@ -1,12 +1,12 @@
 import { INumberFieldModel } from '../../model/FieldModel';
-import { InputConfigurator, InputCreator } from './InputHelper';
+import { InputConfigurator, InputCreator, InputMode } from './InputHelper';
 import { StringInputView, IStringInputView } from './StringInputView';
 
 export const NumberInputType = 'number';
 
 export const NumberInputRenderer = {
   renderInput(fieldM: INumberFieldModel): HTMLInputElement {
-    const elem = InputCreator.input(fieldM, NumberInputType);
+    const elem = InputCreator.input(fieldM, NumberInputType, { inputMode: InputMode.NUMBER });
 
     InputConfigurator.placeholder(elem, fieldM);
     InputConfigurator.defaultValue(elem, fieldM);

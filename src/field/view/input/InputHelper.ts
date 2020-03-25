@@ -4,6 +4,17 @@ import { IFieldModel } from '../../model/FieldModel';
 import { IHTMLInputListener } from '../InputView';
 import { UID } from '../../../lib/UID';
 
+export enum InputMode {
+  TEL = 'tel',
+  NUMBER = 'decimal',
+  EMAIL = 'email',
+  URL = 'url',
+}
+
+interface IInputOptions {
+  inputMode?: InputMode;
+}
+
 export const InputHelper = {
   isChecked(elem: HTMLInputElement): boolean {
     return elem.checked;
@@ -19,12 +30,16 @@ export const InputHelper = {
 };
 
 export const InputCreator = {
-  input(fieldM: IFieldModel, inputType: string): HTMLInputElement {
+  input(fieldM: IFieldModel, inputType: string, options: IInputOptions = {}): HTMLInputElement {
     const elem = document.createElement('input');
 
     elem.type = inputType;
     elem.id = UID.create();
     elem.name = fieldM.id;
+
+    if (options.inputMode) {
+      elem.inputMode = options.inputMode;
+    }
 
     return elem;
   },

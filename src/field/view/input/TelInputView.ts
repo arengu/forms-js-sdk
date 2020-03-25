@@ -1,12 +1,12 @@
 import { ITelFieldModel } from '../../model/FieldModel';
-import { InputConfigurator, InputCreator } from './InputHelper';
+import { InputConfigurator, InputCreator, InputMode } from './InputHelper';
 import { StringInputView, IStringInputView } from './StringInputView';
 
 export const TelInputType = 'tel';
 
 export const TelInputRenderer = {
   renderInput(fieldM: ITelFieldModel): HTMLInputElement {
-    const elem = InputCreator.input(fieldM, TelInputType);
+    const elem = InputCreator.input(fieldM, TelInputType, { inputMode: InputMode.TEL });
 
     InputConfigurator.placeholder(elem, fieldM);
     InputConfigurator.defaultValue(elem, fieldM);

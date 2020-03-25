@@ -1,12 +1,12 @@
 import { IEmailFieldModel } from '../../model/FieldModel';
-import { InputConfigurator, InputCreator } from './InputHelper';
+import { InputConfigurator, InputCreator, InputMode } from './InputHelper';
 import { StringInputView, IStringInputView } from './StringInputView';
 
 export const EmailInputType = 'email';
 
 export const EmailInputRenderer = {
   renderInput(fieldM: IEmailFieldModel): HTMLInputElement {
-    const elem = InputCreator.input(fieldM, EmailInputType);
+    const elem = InputCreator.input(fieldM, EmailInputType, { inputMode: InputMode.EMAIL });
 
     InputConfigurator.placeholder(elem, fieldM);
     InputConfigurator.defaultValue(elem, fieldM);
