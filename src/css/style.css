@@ -56,6 +56,7 @@
 
 .af-form {
   font-family: var(--font-family);
+  text-align: left;
   max-width: 500px;
 }
 
