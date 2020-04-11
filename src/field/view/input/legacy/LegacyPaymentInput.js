@@ -17,19 +17,19 @@ class LegacyPaymentInput {
     this.cardNumberMounted = undefined;
     this.isCardNumberEmpty = true;
     this.isCardNumberComplete = false;
-    this.isCardNumberValid = false;
+    this.isCardNumberInvalid = false;
 
     this.expirationDate = undefined;
     this.expirationDateMounted = undefined;
     this.isExpirationDateEmpty = true;
     this.isExpirationDateComplete = false;
-    this.isExpirationDateValid = false;
+    this.isExpirationDateInvalid = false;
 
     this.securityCode = undefined;
     this.securityCodeMounted = undefined;
     this.isSecurityCodeEmpty = true;
     this.isSecurityCodeComplete = false;
-    this.isSecurityCodeValid = false;
+    this.isSecurityCodeInvalid = false;
 
     this.trustmarks = 'unknown';
     this.trustmarksSelector = undefined;
@@ -66,9 +66,13 @@ class LegacyPaymentInput {
     element.addEventListener('focus', () => self.listener.onFocus());
     element.addEventListener('blur', () => self.listener.onBlur());
     element.addEventListener('change', (e) => {
-      const node = self.trustmarksSelector;
-
       const hasError = e.error && !e.empty;
+
+      self.isCardNumberEmpty = e.empty;
+      self.isCardNumberComplete = e.complete;
+      self.isCardNumberInvalid = hasError;
+
+      const node = self.trustmarksSelector;
 
       if (hasError) {
         node.classList.add('af-payment-cardNumber-brand-error');
@@ -83,11 +87,6 @@ class LegacyPaymentInput {
         node.classList.add(`af-payment-cardNumber-brand-${newBrand}`);
         self.trustmarks = newBrand;
       }
-
-      self.isCardNumberEmpty = e.empty;
-      self.isCardNumberComplete = e.complete || !hasError ||
-        !e.error.code.startsWith('incomplete');
-      self.isCardNumberValid = !hasError;
 
       self.listener.onUpdate(); // stripe.onChange does not equal to html.onChange
     });
@@ -169,12 +168,11 @@ class LegacyPaymentInput {
     element.addEventListener('focus', () => self.listener.onFocus());
     element.addEventListener('blur', () => self.listener.onBlur());
     element.addEventListener('change', (e) => {
-      const hasError = !isNil(e.error);
+      const hasError = e.error && !e.empty;
 
       self.isExpirationDateEmpty = e.empty;
-      self.isExpirationDateComplete = e.complete || !hasError ||
-        !e.error.code.startsWith('incomplete');
-      self.isExpirationDateValid = !hasError;
+      self.isExpirationDateComplete = e.complete;
+      self.isExpirationDateInvalid = hasError;
 
       self.listener.onUpdate(); // stripe.onChange does not equal to html.onChange
     });
@@ -254,12 +252,11 @@ class LegacyPaymentInput {
     element.addEventListener('focus', () => self.listener.onFocus());
     element.addEventListener('blur', () => self.listener.onBlur());
     element.addEventListener('change', (e) => {
-      const hasError = !isNil(e.error);
+      const hasError = e.error && !e.empty;
 
       self.isSecurityCodeEmpty = e.empty;
-      self.isSecurityCodeComplete = e.complete || !hasError ||
-        !e.error.code.startsWith('incomplete');
-      self.isSecurityCodeValid = !hasError;
+      self.isSecurityCodeComplete = e.complete;
+      self.isSecurityCodeInvalid = hasError;
 
       self.listener.onUpdate(); // stripe.onChange does not equal to html.onChange
     });
@@ -445,8 +442,8 @@ class LegacyPaymentInput {
     return this.isCardNumberComplete && this.isExpirationDateComplete && this.isSecurityCodeComplete;
   }
 
-  isValid() {
-    return this.isCardNumberValid && this.isExpirationDateValid && this.isSecurityCodeValid;
+  isInvalid() {
+    return this.isCardNumberInvalid || this.isExpirationDateInvalid || this.isSecurityCodeInvalid;
   }
 }
 

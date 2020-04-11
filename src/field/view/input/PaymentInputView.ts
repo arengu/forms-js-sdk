@@ -45,7 +45,7 @@ export interface IPaymentInputView extends IInputView {
   getToken(): ICardToken | undefined;
   isEmpty(): boolean;
   isComplete(): boolean;
-  isValid(): boolean;
+  isInvalid(): boolean;
 }
 
 /*
@@ -118,8 +118,8 @@ export class PaymentInputView extends ListenableEntity<IInputViewListener> imple
     return this.paymentV.isComplete();
   }
 
-  public isValid(): boolean {
-    return this.paymentV.isValid();
+  public isInvalid(): boolean {
+    return this.paymentV.isInvalid();
   }
 
   public onFocus(this: this): void {

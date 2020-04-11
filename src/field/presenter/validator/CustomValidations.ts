@@ -81,6 +81,17 @@ export const CustomValidations = {
         };
       }
 
+      if (inputV.isInvalid()) {
+        return {
+          valid: false,
+          error: FieldError.create(
+            fieldM.id,
+            FieldErrorCode.INVALID_CARD,
+            'Some details are not valid',
+          ),
+        };
+      }
+
       if (!inputV.isComplete()) {
         return {
           valid: false,
@@ -88,17 +99,6 @@ export const CustomValidations = {
             fieldM.id,
             FieldErrorCode.MISSING_CARD_INFO,
             'Some details are empty',
-          ),
-        };
-      }
-
-      if (!inputV.isValid()) {
-        return {
-          valid: false,
-          error: FieldError.create(
-            fieldM.id,
-            FieldErrorCode.INVALID_CARD,
-            'Some details are not valid',
           ),
         };
       }
