@@ -369,9 +369,7 @@
   margin-bottom: 1.25em;
 }
 
-.af-payment-cardNumber-field,
-.af-payment-expirationDate-field,
-.af-payment-securityCode-field {
+.af-payment .StripeElement {
   width: 100%;
   border: var(--input-border);
   border-radius: var(--input-border-radius);
@@ -382,16 +380,13 @@
   height: var(--input-height);
 }
 
-.af-payment-cardNumber-field.StripeElement--focus,
-.af-payment-expirationDate-field.StripeElement--focus,
-.af-payment-securityCode-field.StripeElement--focus {
+.af-payment .StripeElement--focus {
   border-color: var(--border-focus-color);
   transition: border-color 0.3s ease;
 }
 
-.af-payment-cardNumber-field.StripeElement--invalid,
-.af-payment-expirationDate-field.StripeElement--invalid,
-.af-payment-securityCode-field.StripeElement--invalid {
+.af-payment .StripeElement--invalid:not(.StripeElement--empty),
+.af-field-has-error .StripeElement:not(.StripeElement--complete) {
   border-color: var(--invalid-field-border);
   background: var(--invalid-field-background);
 }

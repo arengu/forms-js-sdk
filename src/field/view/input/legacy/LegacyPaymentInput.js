@@ -68,7 +68,7 @@ class LegacyPaymentInput {
     element.addEventListener('change', (e) => {
       const node = self.trustmarksSelector;
 
-      const hasError = !isNil(e.error);
+      const hasError = e.error && !e.empty;
 
       if (hasError) {
         node.classList.add('af-payment-cardNumber-brand-error');
@@ -76,10 +76,12 @@ class LegacyPaymentInput {
         node.classList.remove('af-payment-cardNumber-brand-error');
       }
 
-      if (self.trustmarks !== e.brand) {
+      const newBrand = e.brand || 'unknown';
+
+      if (self.trustmarks !== newBrand) {
         node.classList.remove(`af-payment-cardNumber-brand-${self.trustmarks}`);
-        node.classList.add(`af-payment-cardNumber-brand-${e.brand}`);
-        self.trustmarks = e.brand;
+        node.classList.add(`af-payment-cardNumber-brand-${newBrand}`);
+        self.trustmarks = newBrand;
       }
 
       self.isCardNumberEmpty = e.empty;

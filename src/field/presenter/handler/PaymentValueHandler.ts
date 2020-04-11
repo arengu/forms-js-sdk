@@ -6,10 +6,6 @@ export const PaymentValueHandler = {
   create(inputV: IPaymentInputView): IValueHandler<IPaymentFieldValue> {
     return {
       async getValue(): Promise<IPaymentFieldValue> {
-        if (inputV.isEmpty()) {
-          return undefined;
-        }
-
         await inputV.processCard();
         const token = inputV.getToken();
         return token ? token.id : undefined;
