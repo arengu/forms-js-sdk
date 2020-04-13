@@ -85,6 +85,8 @@ export class FormView implements IFormView {
 
   protected rootE: HTMLDivElement;
 
+  protected currE?: HTMLElement;
+
   protected constructor(formM: IFormModel, viewL: IFormViewListener) {
     this.formE = FormRendererer.renderForm(viewL);
     this.rootE = FormRendererer.renderRoot(formM, this.formE);
@@ -95,13 +97,19 @@ export class FormView implements IFormView {
   }
 
   public setContent(newPageE: HTMLElement): void {
-    const currPageE = this.formE.firstChild;
+    const isChildren = this.formE.contains(newPageE);
 
-    if (currPageE) {
-      this.formE.removeChild(currPageE);
+    if (this.currE) {
+      this.currE.style.display = 'none';
     }
 
-    this.formE.appendChild(newPageE);
+    if (isChildren) {
+      newPageE.style.display = 'inherit';
+    } else {
+      this.formE.appendChild(newPageE);
+    }
+
+    this.currE = newPageE;
   }
 
   /**
