@@ -25,9 +25,21 @@ export const FieldRenderer = {
     const wrapper = document.createElement('div');
     wrapper.classList.add('af-field-hint');
 
-    const node = document.createElement('p');
-    node.innerHTML = hint;
-    wrapper.appendChild(node);
+    /**
+     * Old forms may contain plain text instead of HTML, so we have to
+     * check it and wrap the content only when needed.
+     *
+     * An automatic migration to unify behavior is already in progress.
+     */
+    const isParagraph = hint.startsWith('<p>');
+
+    if (isParagraph) {
+      wrapper.innerHTML = hint;
+    } else {
+      const node = document.createElement('p');
+      node.innerHTML = hint;
+      wrapper.appendChild(node);
+    }
 
     return wrapper;
   },
