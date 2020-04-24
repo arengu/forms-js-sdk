@@ -115,9 +115,12 @@ export const SDK: ISDK = {
       const formNode = presenter.render();
 
       parentNode.appendChild(formNode);
-      EventsFactory.embedFormSuccess({ ...eventData, parent: parentNode, node: formNode });
 
-      return ArenguForm.create(presenter);
+      const formInstance = ArenguForm.create(presenter);
+
+      EventsFactory.embedFormSuccess({ ...eventData, parent: parentNode, node: formNode, helper: formInstance });
+
+      return formInstance;
     } catch (err) {
       console.error('Error embedding form', err);
       EventsFactory.embedFormError({ ...eventData, error: err });

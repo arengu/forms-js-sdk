@@ -1,4 +1,4 @@
-import { ISDK } from '../sdk';
+import { ISDK, IArenguForm } from '../sdk';
 import { IFormModel } from '../form/model/FormModel';
 import { IMetaDataModel } from '../form/model/MetaDataModel';
 import { FieldError } from '../error/InvalidFields';
@@ -57,6 +57,7 @@ export interface IEmbedFormErrorEvent extends IEmbedFormEvent {
 export interface IEmbedFormSuccessEvent extends IEmbedFormEvent {
   readonly parent: Element; // legacy
   readonly node: Element; // legacy
+  readonly helper: IArenguForm;
 }
 
 export interface IPreviousStepEvent extends IEvent {
