@@ -55,9 +55,9 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
   protected readonly history: NavigationHistory;
   protected readonly signatures: Map<string, string>;
 
-  protected constructor(formM: IFormModel, initValues?: Record<string, string>) {
+  protected constructor(formM: IFormModel) {
     this.formM = formM;
-    this.hiddenFields = HiddenFields.create(formM.hiddenFields, initValues);
+    this.hiddenFields = HiddenFields.create(formM.hiddenFields);
 
     const formD: IFormDeps = {
       social: formM.social,
@@ -75,8 +75,8 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     this.signatures = new Map();
   }
 
-  public static create(model: IFormModel, initValues?: Record<string, string>): IFormPresenter {
-    return new this(model, initValues);
+  public static create(model: IFormModel): IFormPresenter {
+    return new this(model);
   }
 
   public getFormId(): string {

@@ -10,9 +10,7 @@ export const URLHelper = {
       return undefined;
     }
 
-    const trimValue = urlValue.trim();
-
-    return trimValue === '' ? undefined : trimValue;
+    return urlValue.trim();
   },
 
   getAllParams(): Record<string, string | string[]> {

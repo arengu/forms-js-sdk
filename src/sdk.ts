@@ -12,14 +12,19 @@ import { EventsFactory } from './lib/EventsFactory';
 import { SDKError } from './error/SDKError';
 import { SDKErrorCode } from './error/ErrorCodes';
 import { IFormModel } from './form/model/FormModel';
+import { FormProcessor } from './form/model/FormProcessor';
 
 const MAGIC_SELECTOR = 'data-arengu-form-id';
 
+const FIELD_PREFIX = 'data-field-';
+
 const Repository = FormRepository;
+
+export type ICustomValues = Record<string, string>;
 
 export interface ISDK {
   embed(form: string | IFormModel, parent: string | Element,
-    initValues?: Record<string, string>): Promise<IArenguForm>;
+    customValues?: ICustomValues): Promise<IArenguForm>;
 }
 
 export interface IArenguForm {
@@ -84,11 +89,34 @@ export const SDKHelper = {
       }
     });
   },
+
+  parseValues(node: HTMLElement): ICustomValues {
+    const custValues: ICustomValues = {};
+
+    try {
+      const fieldsJson = node.dataset.fields;
+      fieldsJson && Object.assign(custValues, JSON.parse(fieldsJson));
+    } catch (err) {
+      console.warn('Error parsing data-fields attribute', err.message);
+    }
+
+    const allAttrs = Array.from(node.attributes);
+    const dataAttrs = allAttrs.filter((at) => at.name.startsWith(FIELD_PREFIX));
+
+    dataAttrs.forEach((at) => {
+      const fieldName = at.name.substr(FIELD_PREFIX.length);
+      const fieldValue = at.value;
+
+      custValues[fieldName] = fieldValue;
+    });
+
+    return custValues;
+  }
 };
 
 export const SDK: ISDK = {
   async embed(form: string | IFormModel, parent: string | Element,
-    initValues?: Record<string, string>): Promise<IArenguForm> {
+    customValues: Record<string, string> = {}): Promise<IArenguForm> {
     if (isNil(form)) {
       throw SDKError.create(SDKErrorCode.MISSING_FORM_ID, 'Specify the form you want to embed');
     }
@@ -106,11 +134,12 @@ export const SDK: ISDK = {
     };
 
     try {
-      const formData = await SDKHelper.getForm(form);
+      const initFormData = await SDKHelper.getForm(form);
+      const procFormData = FormProcessor.overwriteForm(initFormData, customValues);
 
       EventsFactory.embedForm(eventData);
 
-      const presenter = FormPresenter.create(formData, initValues);
+      const presenter = FormPresenter.create(procFormData);
 
       const formNode = presenter.render();
 
@@ -130,23 +159,30 @@ export const SDK: ISDK = {
 };
 
 export const AutoMagic = {
-  embed(): void {
+  embedByNode(node: HTMLElement): void {
+    const formId = node.dataset.arenguFormId;
+
+    if (!formId) {
+      return;
+    }
+
+    const customValues = SDKHelper.parseValues(node);
+
+    SDK.embed(formId, node, customValues);
+  },
+
+  findNodesAndEmbed(): void {
     const list: NodeListOf<HTMLElement> = document.querySelectorAll(`[${MAGIC_SELECTOR}]`);
     const array = Array.from(list); // old browsers do not implement NodeList.prototype.forEach
 
-    array.forEach((node): void => {
-      const formId = node.dataset.arenguFormId;
-      if (formId) {
-        SDK.embed(formId, node);
-      }
-    });
+    array.forEach((node): void => AutoMagic.embedByNode(node));
   },
 
   init(): void {
     CSSInjector.injectDefault();
     SDKHelper.waitForDom((): void => {
       EventsFactory.sdkInit({ sdk: SDK });
-      this.embed();
+      this.findNodesAndEmbed();
     });
   },
 };

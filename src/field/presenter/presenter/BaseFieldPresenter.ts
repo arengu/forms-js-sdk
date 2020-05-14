@@ -7,7 +7,6 @@ import { IFormData } from '../../../form/model/SubmissionModel';
 import { EventsFactory } from '../../../lib/EventsFactory';
 import { MagicString } from '../../../lib/MagicString';
 import { Messages } from '../../../lib/Messages';
-import { URLHelper } from '../../../lib/URLHelper';
 import { IFieldModel, IFieldValue } from '../../model/FieldModel';
 import { FieldView, IFieldView } from '../../view/FieldView';
 import { IInputView, IInputViewListener } from '../../view/InputView';
@@ -50,21 +49,10 @@ export abstract class BaseFieldPresenter<IV extends IInputView = IInputView> ext
     this.debouncedValidate = debounce(this.validate, 500);
 
     this.inputV.listen(this);
-
-    this.initValue();
   }
 
   public getFieldId(): string {
     return this.fieldM.id;
-  }
-
-  public initValue(): void {
-    const urlValue = URLHelper.getParam(this.getFieldId());
-    const anyValue = urlValue as any; // eslint-disable-line @typescript-eslint/no-explicit-any
-
-    if (!isNil(urlValue)) {
-      this.valueH.setValue(anyValue);
-    }
   }
 
   public async getValue(): Promise<IFieldValue> {

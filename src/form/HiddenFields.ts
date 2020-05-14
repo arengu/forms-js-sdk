@@ -2,67 +2,35 @@ import isNil from 'lodash/isNil';
 import keyBy from 'lodash/keyBy';
 import includes from 'lodash/includes';
 import mapValues from 'lodash/mapValues';
-import toString from 'lodash/toString';
 
 import { SDKErrorCode } from '../error/ErrorCodes';
 import { SDKError } from '../error/SDKError';
-import { URLHelper } from '../lib/URLHelper';
 
 const MISSING_KEY_ERROR = 'The provided key does not belong to a hidden field';
 
 export type IHiddenFieldValue = string | undefined;
 
-export type IHiddenFieldValuesSet = Record<string, IHiddenFieldValue>;
+export type IHiddenFieldValues = Record<string, IHiddenFieldValue>;
 
-export interface IHiddenFieldDef {
+export interface IHiddenFieldItem {
   readonly key: string;
   readonly value: IHiddenFieldValue;
 }
 
-export interface IHiddenFields {
-  readonly [key: string]: IHiddenFieldValue;
-}
-
-export interface IValueResolver {
-  (defValue: IHiddenFieldValue, fieldId: string): IHiddenFieldValue;
-}
-
-export const HiddenFieldsHelper = {
-  createValueResolver(
-    initValues?: IHiddenFieldValuesSet,
-  ): IValueResolver {
-    return function valueResolver(
-      defValue: IHiddenFieldValue, fieldId: string,
-    ): IHiddenFieldValue {
-      const customValue = initValues ? toString(initValues[fieldId]) : undefined;
-      return customValue || URLHelper.getParam(fieldId) || defValue || undefined;
-    };
-  },
-
-  initFields(defs: IHiddenFieldDef[],
-    initValues?: IHiddenFieldValuesSet): IHiddenFieldValuesSet {
-    const index = keyBy(defs, 'key');
-    const defaults = mapValues(index, 'value');
-
-    const fields = mapValues(defaults, HiddenFieldsHelper.createValueResolver(initValues));
-
-    return fields;
-  },
-};
+export type IHiddenFieldsDef = IHiddenFieldItem[];
 
 export class HiddenFields {
-  protected readonly fields: IHiddenFieldValuesSet;
+  protected readonly fields: IHiddenFieldValues;
 
   protected readonly keys: string[];
 
-  protected constructor(fields: IHiddenFieldDef[], initValues?: IHiddenFieldValuesSet) {
-    this.fields = HiddenFieldsHelper.initFields(fields, initValues);
+  protected constructor(fields: IHiddenFieldsDef) {
+    this.fields = mapValues(keyBy(fields, 'key'), 'value');
     this.keys = Object.keys(this.fields);
   }
 
-  public static create(fields: IHiddenFieldDef[],
-    initValues?: IHiddenFieldValuesSet): HiddenFields {
-    return new HiddenFields(fields, initValues);
+  public static create(fields: IHiddenFieldsDef): HiddenFields {
+    return new HiddenFields(fields);
   }
 
   public hasKey(key: string): boolean {
@@ -87,7 +55,7 @@ export class HiddenFields {
     this.fields[key] = newValue;
   }
 
-  public getAll(): IHiddenFieldValuesSet {
+  public getAll(): IHiddenFieldValues {
     return this.fields;
   }
 }
