@@ -7,7 +7,7 @@ import { FormRepository } from './repository/FormRepository';
 
 import { CSSInjector } from './css/CSSInjector';
 
-import { EventsFactory } from './lib/EventsFactory';
+import { DOMEvents, EventNames } from './lib/DOMEvents';
 
 import { SDKError } from './error/SDKError';
 import { SDKErrorCode } from './error/ErrorCodes';
@@ -61,14 +61,14 @@ export const SDKHelper = {
       return formId;
     }
 
-    EventsFactory.getForm({ formId });
+    DOMEvents.emit(EventNames.GetForm, { formId });
     return Repository.getForm((formId))
       .catch((err): never => {
-        EventsFactory.getFormError({ formId, error: err });
+        DOMEvents.emit(EventNames.GetFormError, { formId, error: err });
         throw err;
       })
       .then((form): IFormModel => {
-        EventsFactory.getFormSuccess({ formId, data: form });
+        DOMEvents.emit(EventNames.GetFormSuccess, { formId, data: form });
         return form;
       });
   },
@@ -137,7 +137,7 @@ export const SDK: ISDK = {
       const initFormData = await SDKHelper.getForm(form);
       const procFormData = FormProcessor.overwriteForm(initFormData, customValues);
 
-      EventsFactory.embedForm(eventData);
+      DOMEvents.emit(EventNames.EmbedForm, eventData);
 
       const presenter = FormPresenter.create(procFormData);
 
@@ -147,12 +147,12 @@ export const SDK: ISDK = {
 
       const formInstance = ArenguForm.create(presenter);
 
-      EventsFactory.embedFormSuccess({ ...eventData, parent: parentNode, node: formNode, helper: formInstance });
+      DOMEvents.emit(EventNames.EmbedFormSuccess, { ...eventData, parent: parentNode, node: formNode, helper: formInstance });
 
       return formInstance;
     } catch (err) {
       console.error('Error embedding form', err);
-      EventsFactory.embedFormError({ ...eventData, error: err });
+      DOMEvents.emit(EventNames.EmbedFormError, { ...eventData, error: err });
       throw err;
     }
   },
@@ -181,7 +181,7 @@ export const AutoMagic = {
   init(): void {
     CSSInjector.injectDefault();
     SDKHelper.waitForDom((): void => {
-      EventsFactory.sdkInit({ sdk: SDK });
+      DOMEvents.emit(EventNames.SDKInit, { sdk: SDK });
       this.findNodesAndEmbed();
     });
   },

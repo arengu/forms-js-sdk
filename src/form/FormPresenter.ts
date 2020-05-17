@@ -13,7 +13,7 @@ import { FormRepository, IValidateStepParams, ISubmitFormParams } from '../repos
 import { ThankYouView } from './view/ThankYouView';
 import { InvalidFields } from '../error/InvalidFields';
 import { MetaDataModelFactory } from './model/MetaDataModel';
-import { EventsFactory } from '../lib/EventsFactory';
+import { DOMEvents, EventNames } from '../lib/DOMEvents';
 import { IStepPresenter, IStepPresenterListener, StepPresenter } from '../step/StepPresenter';
 import { NavigationHistory } from '../lib/NavigationHistory';
 import { ISocialFieldPresenter } from '../field/presenter/presenter/SocialFieldPresenter';
@@ -251,7 +251,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     }
 
     if (effect.type === EffectType.THANK_YOU) {
-      EventsFactory.submitFormSuccess({
+      DOMEvents.emit(EventNames.SubmitFormSuccess, {
         formId: req.formId,
         formData: req.formData,
         metaData: req.metaData,
@@ -337,7 +337,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
 
     this.setContent(prevStep);
 
-    EventsFactory.previousStep({
+    DOMEvents.emit(EventNames.PreviousStep, {
       formId: this.formM.id,
       current: currStep.getStepId(),
       previous: prevStep.getStepId(),
@@ -366,7 +366,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
 
     this.setContent(nextStep, { scrollTop: true });
 
-    EventsFactory.nextStep({
+    DOMEvents.emit(EventNames.NextStep, {
       formId: this.formM.id,
       current: currStep.getStepId(),
       next: nextStep.getStepId(),
@@ -419,16 +419,16 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     };
 
     try {
-      EventsFactory.submitForm(eventData);
+      DOMEvents.emit(EventNames.SubmitForm, eventData);
       const interRes = await FormRepository.submitForm(repoParams);
       await this.handleFormInteraction(interReq, interRes);
     } catch (err) {
       if (err instanceof InvalidFields) {
         console.error('Some values are not valid:', err.fields);
-        EventsFactory.invalidFieldsError({ ...eventData, fields: err.fields });
+        DOMEvents.emit(EventNames.InvalidFieldsError, { ...eventData, fields: err.fields });
       } else {
         console.error('Error sending submission:', err);
-        EventsFactory.submitFormError({ ...eventData, error: err });
+        DOMEvents.emit(EventNames.SubmitFormError, { ...eventData, error: err });
       }
       throw err;
     }

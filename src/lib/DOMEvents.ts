@@ -99,73 +99,28 @@ export type IFieldFocusEvent = IFieldEvent;
 export type IFieldBlurEvent = IFieldEvent;
 export type IFieldChangeEvent = IFieldEvent;
 
-export const EventsFactory = {
-  triggerEvent(name: EventNames, data: IEvent): void {
+interface IEventMap extends Record<EventNames, IEvent> {
+  SDKInit: ISDKInitEvent;
+  GetForm: IGetFormEvent;
+  GetFormError: IGetFormErrorEvent;
+  GetFormSuccess: IGetFormSuccessEvent;
+  EmbedForm: IEmbedFormEvent;
+  EmbedFormError: IEmbedFormErrorEvent;
+  EmbedFormSuccess: IEmbedFormSuccessEvent;
+  PreviousStep: IPreviousStepEvent;
+  NextStep: INextStepEvent;
+  SubmitForm: ISubmitFormEvent;
+  SubmitFormError: ISubmitFormErrorEvent;
+  SubmitFormSuccess: ISubmitFormSuccessEvent;
+  InvalidFieldsError: IInvalidFieldsErrorEvent;
+  BlurField: IFieldBlurEvent;
+  FocusField: IFieldFocusEvent;
+  ChangeField: IFieldChangeEvent;
+}
+
+export const DOMEvents = {
+  emit<K extends keyof IEventMap>(name: K, data: IEventMap[K]): void {
     const event = new CustomEvent(name, { detail: data });
     document.dispatchEvent(event);
-  },
-
-  sdkInit(details: ISDKInitEvent): void {
-    this.triggerEvent(EventNames.SDKInit, details);
-  },
-
-  getForm(details: IGetFormEvent): void {
-    this.triggerEvent(EventNames.GetForm, details);
-  },
-
-  getFormError(details: IGetFormErrorEvent): void {
-    this.triggerEvent(EventNames.GetFormError, details);
-  },
-
-  getFormSuccess(details: IGetFormSuccessEvent): void {
-    this.triggerEvent(EventNames.GetFormSuccess, details);
-  },
-
-  embedForm(details: IEmbedFormEvent): void {
-    this.triggerEvent(EventNames.EmbedForm, details);
-  },
-
-  embedFormError(details: IEmbedFormErrorEvent): void {
-    this.triggerEvent(EventNames.EmbedFormError, details);
-  },
-
-  embedFormSuccess(details: IEmbedFormSuccessEvent): void {
-    this.triggerEvent(EventNames.EmbedFormSuccess, details);
-  },
-
-  previousStep(details: IPreviousStepEvent): void {
-    this.triggerEvent(EventNames.PreviousStep, details);
-  },
-
-  nextStep(details: INextStepEvent): void {
-    this.triggerEvent(EventNames.NextStep, details);
-  },
-
-  submitForm(details: ISubmitFormEvent): void {
-    this.triggerEvent(EventNames.SubmitForm, details);
-  },
-
-  submitFormError(details: ISubmitFormErrorEvent): void {
-    this.triggerEvent(EventNames.SubmitFormError, details);
-  },
-
-  submitFormSuccess(details: ISubmitFormSuccessEvent): void {
-    this.triggerEvent(EventNames.SubmitFormSuccess, details);
-  },
-
-  invalidFieldsError(details: IInvalidFieldsErrorEvent): void {
-    this.triggerEvent(EventNames.InvalidFieldsError, details);
-  },
-
-  onBlurField(details: IFieldBlurEvent): void {
-    this.triggerEvent(EventNames.BlurField, details);
-  },
-
-  onChangeField(details: IFieldChangeEvent): void {
-    this.triggerEvent(EventNames.ChangeField, details);
-  },
-
-  onFocusField(details: IFieldFocusEvent): void {
-    this.triggerEvent(EventNames.FocusField, details);
   },
 };

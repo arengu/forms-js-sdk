@@ -5,7 +5,7 @@ import escapeHE from 'lodash/escape';
 import { FieldError } from '../../../error/InvalidFields';
 import { IFormDeps } from '../../../form/FormPresenter';
 import { IFormData } from '../../../form/model/SubmissionModel';
-import { EventsFactory } from '../../../lib/EventsFactory';
+import { DOMEvents, EventNames } from '../../../lib/DOMEvents';
 import { MagicString } from '../../../lib/MagicString';
 import { Messages } from '../../../lib/Messages';
 import { IFieldModel, IFieldValue } from '../../model/FieldModel';
@@ -69,7 +69,7 @@ export abstract class BaseFieldPresenter<IV extends IInputView = IInputView> ext
   }
 
   public async onBlur(): Promise<void> {
-    EventsFactory.onBlurField({
+    DOMEvents.emit(EventNames.BlurField, {
       fieldId: this.getFieldId(),
       value: await this.getValue(),
     });
@@ -82,14 +82,14 @@ export abstract class BaseFieldPresenter<IV extends IInputView = IInputView> ext
   }
 
   public async onChange(): Promise<void> {
-    EventsFactory.onChangeField({
+    DOMEvents.emit(EventNames.ChangeField, {
       fieldId: this.getFieldId(),
       value: await this.getValue(),
     });
   }
 
   public async onFocus(this: this): Promise<void> {
-    EventsFactory.onFocusField({
+    DOMEvents.emit(EventNames.FocusField, {
       fieldId: this.getFieldId(),
       value: await this.getValue(),
     });
