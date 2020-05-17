@@ -10,6 +10,7 @@ const config = {
   devtool: 'inline-source-map',
   devServer: {
     https: true,
+    port: 8083,
     contentBase: './dist',
   },
   plugins: [
