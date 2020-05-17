@@ -23,7 +23,7 @@ export const MagicString = {
     return input.slice(2, -2);
   },
 
-  render(input: string, data: IFormData): string {
+  render(input: string, data: IFormData, escape = toString): string {
     const tokens = MagicString.tokenize(input);
 
     if (tokens.length === 1) {
@@ -37,7 +37,7 @@ export const MagicString = {
 
       const ref = MagicString.getReference(str);
 
-      const value = toString(data[ref]);
+      const value = escape(data[ref]);
 
       return value;
     });
