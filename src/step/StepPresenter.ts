@@ -172,7 +172,7 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
   }
 
   public updateStep(this: this, data: IFormData): void {
-    this.dynFieldsP.forEach((sP): void => sP.updateField(data));
+    this.dynFieldsP.forEach((fP): void => fP.updateField(data));
   }
 
   public hasFlow(this: this): boolean {

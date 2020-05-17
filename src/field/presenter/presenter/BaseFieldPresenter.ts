@@ -142,11 +142,18 @@ export abstract class BaseFieldPresenter<IV extends IInputView = IInputView> ext
   }
 
   public updateField(this: this, data: IFormData): void {
-    const template = this.fieldM.label;
+    const initLabel = this.fieldM.label;
 
-    if (template) {
-      const label = MagicString.render(template, data, escapeHE);
-      this.fieldV.updateLabel(label);
+    if (initLabel) {
+      const dynLabel = MagicString.render(initLabel, data, escapeHE);
+      this.fieldV.updateLabel(dynLabel);
+    }
+
+    const initHint = this.fieldM.hint;
+
+    if (initHint) {
+      const dynHint = MagicString.render(initHint, data, escapeHE);
+      this.fieldV.updateHint(dynHint);
     }
   }
 

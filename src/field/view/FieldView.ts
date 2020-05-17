@@ -2,6 +2,7 @@ import isNil from 'lodash/isNil';
 import { IFieldModel } from '../model/FieldModel';
 import { FieldErrorMessage } from './FieldErrorMessage';
 import { IInputView } from './InputView';
+import { IHintView, HintView } from './HintView';
 import { ILabelView, LabelView } from './LabelView';
 import { IComponentView } from '../../component/ComponentModel';
 
@@ -9,41 +10,13 @@ export interface IFieldView extends IComponentView {
   reset(): void;
 
   updateLabel(label: string): void;
+  updateHint(hint: string): void;
 
   setError(msg: string): void;
   clearError(): void;
 }
 
 export const FieldRenderer = {
-  renderHint(fieldM: IFieldModel): HTMLElement | undefined {
-    const { hint } = fieldM;
-
-    if (!hint) {
-      return undefined;
-    }
-
-    const wrapper = document.createElement('div');
-    wrapper.classList.add('af-field-hint');
-
-    /**
-     * Old forms may contain plain text instead of HTML, so we have to
-     * check it and wrap the content only when needed.
-     *
-     * An automatic migration to unify behavior is already in progress.
-     */
-    const isParagraph = hint.startsWith('<p>');
-
-    if (isParagraph) {
-      wrapper.innerHTML = hint;
-    } else {
-      const node = document.createElement('p');
-      node.innerHTML = hint;
-      wrapper.appendChild(node);
-    }
-
-    return wrapper;
-  },
-
   renderInput(inputV: IInputView): HTMLDivElement {
     const wrapper = document.createElement('div');
     wrapper.classList.add('af-field-input');
@@ -55,7 +28,7 @@ export const FieldRenderer = {
   },
 
   renderRoot(fieldM: IFieldModel, inputV: IInputView,
-    errorV: FieldErrorMessage, labelV?: ILabelView): HTMLDivElement {
+    errorV: FieldErrorMessage, labelV?: ILabelView, hintV?: IHintView): HTMLDivElement {
     const { id } = fieldM;
 
     const root = document.createElement('div');
@@ -66,9 +39,8 @@ export const FieldRenderer = {
       root.appendChild(labelV.render());
     }
 
-    const hintE = this.renderHint(fieldM);
-    if (hintE) {
-      root.appendChild(hintE);
+    if (!isNil(hintV)) {
+      root.appendChild(hintV.render());
     }
 
     const inputE = this.renderInput(inputV);
@@ -83,6 +55,7 @@ export const FieldRenderer = {
 
 export class FieldView implements IFieldView {
   protected readonly labelV?: ILabelView;
+  protected readonly hintV?: IHintView;
 
   protected readonly errorV: FieldErrorMessage;
 
@@ -92,9 +65,11 @@ export class FieldView implements IFieldView {
     const uid = inputV.getInputId && inputV.getInputId();
 
     this.labelV = fieldM.label ? LabelView.create(fieldM.label, fieldM.required, uid) : undefined;
+    this.hintV = fieldM.hint ? HintView.create(fieldM.hint) : undefined;
+
     this.errorV = FieldErrorMessage.create();
 
-    this.rootE = FieldRenderer.renderRoot(fieldM, inputV, this.errorV, this.labelV);
+    this.rootE = FieldRenderer.renderRoot(fieldM, inputV, this.errorV, this.labelV, this.hintV);
   }
 
   public static create(fieldM: IFieldModel, inputV: IInputView): IFieldView {
@@ -104,6 +79,12 @@ export class FieldView implements IFieldView {
   public updateLabel(label: string): void {
     if (this.labelV) {
       this.labelV.updateLabel(label);
+    }
+  }
+
+  public updateHint(hint: string): void {
+    if (this.hintV) {
+      this.hintV.updateHint(hint);
     }
   }
 
