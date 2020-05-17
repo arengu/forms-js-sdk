@@ -1,6 +1,7 @@
 import debounce from 'lodash/debounce';
-import isNil from 'lodash/isNil';
 import isString from 'lodash/isString';
+import escapeHE from 'lodash/escape';
+
 import { FieldError } from '../../../error/InvalidFields';
 import { IFormDeps } from '../../../form/FormPresenter';
 import { IFormData } from '../../../form/model/SubmissionModel';
@@ -141,13 +142,12 @@ export abstract class BaseFieldPresenter<IV extends IInputView = IInputView> ext
   }
 
   public updateField(this: this, data: IFormData): void {
-    if (isNil(this.fieldV)) {
-      return;
-    }
+    const template = this.fieldM.label;
 
-    const template = this.fieldM.label || '';
-    const label = MagicString.render(template, data);
-    this.fieldV.updateLabel(label);
+    if (template) {
+      const label = MagicString.render(template, data, escapeHE);
+      this.fieldV.updateLabel(label);
+    }
   }
 
   public async validate(): Promise<IFieldValidationResult> {

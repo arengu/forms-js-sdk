@@ -1,5 +1,3 @@
-import escape from 'lodash/escape';
-
 import { IView } from "../../core/BaseTypes";
 
 export const LabelRenderer = {
@@ -51,8 +49,7 @@ export class LabelView implements ILabelView {
   }
 
   public updateLabel(text: string): void {
-    const escText = escape(text);
-    this.textE.innerHTML = escText;
+    this.textE.innerHTML = text;
   }
 
   public reset(): void {
