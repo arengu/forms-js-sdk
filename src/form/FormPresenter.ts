@@ -246,23 +246,41 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     const { effect } = res;
 
     if (effect.type === EffectType.ERROR_MESSAGE) {
+      DOMEvents.emit(
+        EventNames.FormEffectErrorMessage,
+        {
+          formId: req.formId,
+          stepId: req.stepId,
+          message: effect.message,
+        },
+      );
       currStep.setError(effect.message);
       return;
     }
 
     if (effect.type === EffectType.THANK_YOU) {
-      DOMEvents.emit(EventNames.SubmitFormSuccess, {
-        formId: req.formId,
-        formData: req.formData,
-        metaData: req.metaData,
-        confirmation: {
-          id: effect.submissionId,
-          message: effect.message,
-          data: res.data,
-          cookies: res.cookies,
-          ...effect.redirect,
-        }
-      });
+      DOMEvents.emit(
+        EventNames.FormEffectThankYou,
+        {
+          formId: req.formId,
+          stepId: req.stepId,
+        },
+      );
+      DOMEvents.emit(
+        EventNames.SubmitFormSuccess,
+        {
+          formId: req.formId,
+          formData: req.formData,
+          metaData: req.metaData,
+          confirmation: {
+            id: effect.submissionId,
+            message: effect.message,
+            data: res.data,
+            cookies: res.cookies,
+            ...effect.redirect,
+          },
+        },
+      );
 
       if (effect.message) {
         this.gotoThankYou(effect.message);

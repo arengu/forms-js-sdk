@@ -23,6 +23,8 @@ export enum EventNames {
   BlurField = 'af-blurField',
   FocusField = 'af-focusField',
   ChangeField = 'af-changeField',
+  FormEffectErrorMessage = 'af-formEffect-errorMessage',
+  FormEffectThankYou = 'af-formEffect-thankYou',
 }
 
 export type IEvent = object;
@@ -99,6 +101,17 @@ export type IFieldFocusEvent = IFieldEvent;
 export type IFieldBlurEvent = IFieldEvent;
 export type IFieldChangeEvent = IFieldEvent;
 
+export interface IFormEffectEvent extends IEvent {
+  readonly formId: string;
+  readonly stepId: string;
+}
+
+export interface IFormEffectErrorMessageEvent extends IFormEffectEvent {
+  readonly message: string;
+}
+
+export type IFormEffectThankYouEvent = IFormEffectEvent;
+
 interface IEventMap extends Record<EventNames, IEvent> {
   [EventNames.SDKInit]: ISDKInitEvent;
   [EventNames.GetForm]: IGetFormEvent;
@@ -116,6 +129,8 @@ interface IEventMap extends Record<EventNames, IEvent> {
   [EventNames.BlurField]: IFieldBlurEvent;
   [EventNames.FocusField]: IFieldFocusEvent;
   [EventNames.ChangeField]: IFieldChangeEvent;
+  [EventNames.FormEffectErrorMessage]: IFormEffectErrorMessageEvent;
+  [EventNames.FormEffectThankYou]: IFormEffectThankYouEvent;
 }
 
 export const DOMEvents = {
