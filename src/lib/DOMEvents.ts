@@ -100,22 +100,22 @@ export type IFieldBlurEvent = IFieldEvent;
 export type IFieldChangeEvent = IFieldEvent;
 
 interface IEventMap extends Record<EventNames, IEvent> {
-  SDKInit: ISDKInitEvent;
-  GetForm: IGetFormEvent;
-  GetFormError: IGetFormErrorEvent;
-  GetFormSuccess: IGetFormSuccessEvent;
-  EmbedForm: IEmbedFormEvent;
-  EmbedFormError: IEmbedFormErrorEvent;
-  EmbedFormSuccess: IEmbedFormSuccessEvent;
-  PreviousStep: IPreviousStepEvent;
-  NextStep: INextStepEvent;
-  SubmitForm: ISubmitFormEvent;
-  SubmitFormError: ISubmitFormErrorEvent;
-  SubmitFormSuccess: ISubmitFormSuccessEvent;
-  InvalidFieldsError: IInvalidFieldsErrorEvent;
-  BlurField: IFieldBlurEvent;
-  FocusField: IFieldFocusEvent;
-  ChangeField: IFieldChangeEvent;
+  [EventNames.SDKInit]: ISDKInitEvent;
+  [EventNames.GetForm]: IGetFormEvent;
+  [EventNames.GetFormError]: IGetFormErrorEvent;
+  [EventNames.GetFormSuccess]: IGetFormSuccessEvent;
+  [EventNames.EmbedForm]: IEmbedFormEvent;
+  [EventNames.EmbedFormError]: IEmbedFormErrorEvent;
+  [EventNames.EmbedFormSuccess]: IEmbedFormSuccessEvent;
+  [EventNames.PreviousStep]: IPreviousStepEvent;
+  [EventNames.NextStep]: INextStepEvent;
+  [EventNames.SubmitForm]: ISubmitFormEvent;
+  [EventNames.SubmitFormError]: ISubmitFormErrorEvent;
+  [EventNames.SubmitFormSuccess]: ISubmitFormSuccessEvent;
+  [EventNames.InvalidFieldsError]: IInvalidFieldsErrorEvent;
+  [EventNames.BlurField]: IFieldBlurEvent;
+  [EventNames.FocusField]: IFieldFocusEvent;
+  [EventNames.ChangeField]: IFieldChangeEvent;
 }
 
 export const DOMEvents = {
