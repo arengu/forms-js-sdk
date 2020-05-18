@@ -14,6 +14,8 @@ import { SDKErrorCode } from './error/ErrorCodes';
 import { IFormModel } from './form/model/FormModel';
 import { FormProcessor } from './form/model/FormProcessor';
 
+declare const SDK_VERSION: string;
+
 const MAGIC_SELECTOR = 'data-arengu-form-id';
 
 const FIELD_PREFIX = 'data-field-';
@@ -23,6 +25,8 @@ const Repository = FormRepository;
 export type ICustomValues = Record<string, string>;
 
 export interface ISDK {
+  VERSION: string;
+
   embed(form: string | IFormModel, parent: string | Element,
     customValues?: ICustomValues): Promise<IArenguForm>;
 }
@@ -115,6 +119,8 @@ export const SDKHelper = {
 };
 
 export const SDK: ISDK = {
+  VERSION: SDK_VERSION,
+
   async embed(form: string | IFormModel, parent: string | Element,
     customValues: Record<string, string> = {}): Promise<IArenguForm> {
     if (isNil(form)) {
