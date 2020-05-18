@@ -20,8 +20,6 @@ const SIMPLE_FIELDS: FieldType[] = [
   FieldType.TEL,
   FieldType.TEXT,
   FieldType.URL,
-  FieldType.CHOICE,
-  FieldType.DROPDOWN,
 ];
 
 const MULTI_FIELDS: FieldType[] = [
