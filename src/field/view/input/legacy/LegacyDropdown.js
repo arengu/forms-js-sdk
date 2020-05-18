@@ -1,3 +1,4 @@
+import find from 'lodash/find';
 import includes from 'lodash/includes';
 import isNil from 'lodash/isNil';
 
@@ -333,10 +334,12 @@ class LegacyDropdown {
     }
 
     if (defaultValue && !this.multiple) {
-      const option = options
-        .filter(o => o.value === defaultValue);
-      node.textContent = option[0].label;
-      node.classList.remove('af-default');
+      const option = find(options, { value: defaultValue });
+
+      if (option) {
+        node.textContent = option.label;
+        node.classList.remove('af-default');
+      }
     }
 
     this._addDropdownTextListeners(node);
