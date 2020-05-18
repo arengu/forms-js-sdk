@@ -3,7 +3,7 @@ export enum SameSitePolicy {
   LAX = 'lax'
 }
 
-export interface ICookieModel {
+export interface ICookieObjectModel {
   readonly name: string;
   readonly value: string;
   readonly path: string;
@@ -12,3 +12,5 @@ export interface ICookieModel {
   readonly secure: boolean;
   readonly sameSite: SameSitePolicy;
 }
+
+export type ICookieModel = ICookieObjectModel | string;
