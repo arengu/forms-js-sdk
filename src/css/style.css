@@ -44,6 +44,7 @@
   --message-success-color: #318233;
   --message-success-background-color: #fcfff5;
   --facebook-button-background: #4267b2;
+  --google-button-background: #dd4b39;
 }
 
 /*******************************
@@ -667,9 +668,9 @@
   color: #fff;
 }
 
-.af-social-facebook .af-button-text:before {
+.af-social-facebook .af-button-text:before,
+.af-social-google .af-button-text:before {
   content: "";
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' enable-background='new 0 0 24 24' viewBox='0 0 24 24'%3E%3Cg%3E%3Cpath d='m15.997 3.985h2.191v-3.816c-.378-.052-1.678-.169-3.192-.169-3.159 0-5.323 1.987-5.323 5.639v3.361h-3.486v4.266h3.486v10.734h4.274v-10.733h3.345l.531-4.266h-3.877v-2.939c.001-1.233.333-2.077 2.051-2.077z' fill='%23FFFFFF'/%3E%3C/g%3E%3C/svg%3E");
   background-size: 16px;
   background-repeat: no-repeat;
   background-position: center;
@@ -678,6 +679,24 @@
   position: absolute;
   transform: translateX(-30px);
   top: 0;
+}
+
+.af-social-facebook button {
+  background: var(--facebook-button-background);
+  color: #fff;
+}
+
+.af-social-google button {
+  background: var(--google-button-background);
+  color: #fff;
+}
+
+.af-social-facebook .af-button-text:before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M15.997 3.985h2.191V.169C17.81.117 16.51 0 14.996 0c-3.159 0-5.323 1.987-5.323 5.639V9H6.187v4.266h3.486V24h4.274V13.267h3.345l.531-4.266h-3.877V6.062c.001-1.233.333-2.077 2.051-2.077z'/%3E%3C/svg%3E");
+}
+
+.af-social-google .af-button-text:before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 488 512'%3E%3Cpath fill='%23fff' d='M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z'/%3E%3C/svg%3E");
 }
 
 .af-social button:hover {
