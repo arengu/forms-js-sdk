@@ -42,10 +42,10 @@ export class GoogleButtonView extends GenericButtonView implements ISocialButton
       return;
     }
 
-    const user = this.sdk.currentUser.get()
+    const user = this.sdk.currentUser.get();
 
     if (user.isSignedIn()) {
-      this.sendAccessToken(user, this.buttonL);
+      this.handleLogin(user, this.buttonL);
     } else {
       this.requestLogin()
     }
@@ -57,11 +57,11 @@ export class GoogleButtonView extends GenericButtonView implements ISocialButton
         scope: this.config.scopes.join(' '),
         prompt: 'select_account',
       })
-      .then((user) => this.sendAccessToken(user, this.buttonL))
+      .then((user) => this.handleLogin(user, this.buttonL))
       .catch(() => { /* pass */ });
   }
 
-  public sendAccessToken(user: IGoogleUser, buttonListener: ISocialButtonListener): void {
+  public handleLogin(user: IGoogleUser, buttonListener: ISocialButtonListener): void {
     const authResponse = user.getAuthResponse(true);
 
     buttonListener.onAccessToken(authResponse.id_token, this);
