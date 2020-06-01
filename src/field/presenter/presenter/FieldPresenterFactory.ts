@@ -42,7 +42,7 @@ export const FieldPresenterFactory = {
     const inputV = ChoiceInputView.create(fieldM);
 
     const fieldVal = FieldValidator.create([
-      FieldRules.require(fieldM),
+      FieldRules.multiple(fieldM),
     ]);
 
     const valueH = DummyValueHandler.create(inputV, fieldM);
