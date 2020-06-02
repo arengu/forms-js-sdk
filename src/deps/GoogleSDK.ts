@@ -51,7 +51,7 @@ export const GoogleSDK = {
 
     callbacks.push(callback);
 
-    if(window._arenguGoogleInit) {
+    if (window._arenguGoogleInit) {
       return;
     }
 
@@ -68,7 +68,7 @@ export const GoogleSDK = {
     }
 
     const parent = document.querySelector('body');
-    
+
     if (parent) {
       const node = document.createElement('script');
       node.type = 'text/javascript';

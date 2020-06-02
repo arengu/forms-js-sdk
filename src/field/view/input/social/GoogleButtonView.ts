@@ -53,7 +53,7 @@ export class GoogleButtonView extends GenericButtonView implements ISocialButton
 
   public requestLogin(): void {
     this.sdk && this.sdk
-      .signIn({ 
+      .signIn({
         scope: this.config.scopes.join(' '),
         prompt: 'select_account',
       })
