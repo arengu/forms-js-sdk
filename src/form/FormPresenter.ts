@@ -36,6 +36,10 @@ export interface IFormPresenter extends IPresenter {
   render(): HTMLElement;
 }
 
+interface ISetContentOptions {
+  readonly scrollTop?: boolean;
+}
+
 export interface IFormDeps {
   social: ISocialConfig[];
   messages: Messages;
@@ -317,7 +321,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     }
   }
 
-  public setContent(newStep: IStepPresenter, { scrollTop = true } = {}): void {
+  public setContent(newStep: IStepPresenter, { scrollTop = true }: ISetContentOptions = {}): void {
     const oldStep = this.currentStep;
 
     newStep.onShow();
@@ -335,14 +339,14 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     }
   }
 
-  public gotoFirstStep(): void {
+  public gotoFirstStep(options?: ISetContentOptions): void {
     const firstStep = this.stepsP[0];
 
     if (isNil(firstStep)) {
       return;
     }
 
-    this.setContent(firstStep);
+    this.setContent(firstStep, options);
   }
 
   public gotoPreviousStep(): void {
@@ -485,7 +489,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
   public render(): HTMLElement {
     const element = this.formV.render();
 
-    this.gotoFirstStep();
+    this.gotoFirstStep({ scrollTop: false });
 
     return element;
   }
