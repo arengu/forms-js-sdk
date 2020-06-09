@@ -23,18 +23,18 @@ You have to replace `YOUR_FORM_ID` with your **Form ID**, which you can find in 
 
 You can place **multiple HTML tags** on the same page, our SDK will detect all tags with `data-arengu-form-id` attribute and embed the forms inside them.
 
-You can populate field or hidden field values to your form using URL parameters or `data-arengu-fieldId` attribute.
+You can populate field or hidden field values to your form using URL parameters or `data-field-fieldId` attribute (where `fieldId` has to be replaced with its real identifier).
 
-Example using URL parameters:
+Example using URL parameters for `code` field:
 
 ```
-https://www.acme.com/?fieldId=foobar
+https://www.acme.com/?code=ABC123
 ```
 
-Example using custom attribute:
+Example using custom attribute for `code` field:
 
 ```html
-<div data-arengu-form-id="YOUR_FORM_ID" data-arengu-fieldId="foobar"></div>
+<div data-arengu-form-id="YOUR_FORM_ID" data-field-code="ABC123"></div>
 ```
 
 ### **Method 2:** Calling our `embed` method
@@ -76,4 +76,5 @@ Another example using the element directly:
 const container = document.querySelector('.form-container');
 ArenguForms.embed('5073697614331904', container);
 ```
+
 In this case, the snippet gets a reference to the element and passes it directly to the `embed()` method.
