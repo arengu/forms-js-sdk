@@ -51,7 +51,7 @@ The `embed` call has the following fields:
 | ------ | ------ | ------ |
 | formId _(required)_| [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) | The **Form ID** of your form. You can find it in your form settings or share page. |
 | selector _(required)_ | [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)\|[Element](https://developer.mozilla.org/en-US/docs/Web/API/Element) | Query selector or DOM element that the form will be appended to. |
-| customValues _(optional)_ | [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)) | Object id-value pair to populate field or hidden field values. |
+| customValues _(optional)_ | [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) | Object id-value pair to populate field or hidden field values. |
 
 Example using the query selector:
 
@@ -78,3 +78,19 @@ ArenguForms.embed('5073697614331904', container);
 ```
 
 In this case, the snippet gets a reference to the element and passes it directly to the `embed()` method.
+
+## Browser compatibility
+
+Our SDK is built for two different targets: modern browsers and legacy ones. The CDN automatically delivers the right one in function of the `User-Agent` header specified in the request.
+
+The following table specifies the minimum version supported by each target:
+
+| Browser | Standard | Legacy |
+| ------ | ------ | ------ |
+| Google Chrome | >= 55 | >= 40
+| Mozilla Firefox | >= 53 | >= 40
+| Safari (Desktop) | >= 11 | >= 10
+| Safari (iOS) | >= 11 | >= 10
+| Microsoft Edge | >= 17 | >= 13
+| Opera | >= 42 | >= 33
+| Internet Explorer | None | >= 11
