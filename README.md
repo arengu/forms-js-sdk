@@ -131,7 +131,7 @@ All these events pass data to the event handler as `detail` property.
 | Property | Description |
 | ------ | ------ |
 | `detail.formId` | The ID of the form. |
-| `detail.confirmation.id` | Confirmation of the submission. |
+| `detail.confirmation.id` | The ID of the submission. |
 | `detail.fielId` | The ID of the field. |
 | `detail.value` | The value of the field. |
 | `detail.current` | The ID of the current step. |
