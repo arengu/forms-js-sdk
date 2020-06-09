@@ -27,11 +27,15 @@ You can populate field or hidden field values to your form using URL parameters 
 
 Example using URL parameters:
 
+```
 https://www.acme.com/?fieldId=foobar
+```
 
 Example using custom attribute:
 
+```html
 <div data-arengu-form-id="YOUR_FORM_ID" data-arengu-fieldId="foobar"></div>
+```
 
 ### **Method 2:** Calling our `embed` method
 
