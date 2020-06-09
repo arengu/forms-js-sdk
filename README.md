@@ -87,10 +87,10 @@ The following table specifies the minimum version supported by each target:
 
 | Browser | Standard | Legacy |
 | ------ | ------ | ------ |
-| Google Chrome | >= 55 | >= 40
-| Mozilla Firefox | >= 53 | >= 40
-| Safari (Desktop) | >= 11 | >= 10
-| Safari (iOS) | >= 11 | >= 10
-| Microsoft Edge | >= 17 | >= 13
-| Opera | >= 42 | >= 33
-| Internet Explorer | None | >= 11
+| Google Chrome | >= 55 (Dec 2016) | >= 40 (Jan 2015)
+| Mozilla Firefox | >= 53 (Apr 2017) | >= 40 (Aug 2015)
+| Safari (Desktop) | >= 11 (Sept 2017) | >= 10 (Sept 2016)
+| Safari (iOS) | >= 11 (Sept 2017) | >= 10 (Sept 2016)
+| Microsoft Edge (EdgeHTML) | >= 17 (Apr 2018) | >= 13 (Sept 2015)
+| Opera | >= 42 (Dec 2016) | >= 33 (Oct 2015)
+| Internet Explorer | None | >= 11 (Oct 2013)
