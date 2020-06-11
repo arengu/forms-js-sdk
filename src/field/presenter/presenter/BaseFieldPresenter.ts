@@ -1,5 +1,4 @@
 import debounce from 'lodash/debounce';
-import isString from 'lodash/isString';
 import escapeHE from 'lodash/escape';
 
 import { FieldError } from '../../../error/InvalidFields';
@@ -137,8 +136,8 @@ export abstract class BaseFieldPresenter<IV extends IInputView = IInputView> ext
   }
 
   public isDynamic(this: this): boolean {
-    const { label } = this.fieldM;
-    return isString(label) && MagicString.isDynamic(label);
+    const { label, hint } = this.fieldM;
+    return MagicString.isDynamic(hint) || MagicString.isDynamic(label);
   }
 
   public updateField(this: this, data: IFormData): void {

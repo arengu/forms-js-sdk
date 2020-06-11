@@ -7,8 +7,8 @@ const TOKENIZE_REGEX = /(\\?{{[a-z0-9_-}]+}})/i;
 const REFERENCE_REGEX = /^{{[a-z0-9_-}]+}}$/i;
 
 export const MagicString = {
-  isDynamic(input: string): boolean {
-    return TOKENIZE_REGEX.test(input);
+  isDynamic(input: string | undefined): boolean {
+    return typeof input === 'string' && TOKENIZE_REGEX.test(input);
   },
 
   tokenize(input: string): string[] {
