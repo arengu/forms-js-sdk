@@ -1,6 +1,6 @@
 {
   "name": "arengu-forms-js-sdk",
-  "version": "2.8.0",
+  "version": "2.8.1",
   "license": "MIT",
   "scripts": {
     "start": "webpack-dev-server --config webpack.development.js",
