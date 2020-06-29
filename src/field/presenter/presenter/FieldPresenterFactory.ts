@@ -24,6 +24,7 @@ import { FieldValidator } from "../validator/FieldValidator";
 import { IFieldPresenter } from "./FieldPresenter";
 import { SimpleFieldPresenter } from "./SimpleFieldPresenter";
 import { SocialFieldPresenter } from "./SocialFieldPresenter";
+import { NumberValueHandler } from "../handler/NumberValueHandler";
 
 export const FieldPresenterFactory = {
   fromBoolean(formD: IFormDeps, fieldM: IBooleanFieldModel): IFieldPresenter {
@@ -110,7 +111,7 @@ export const FieldPresenterFactory = {
       FieldRules.maxValue(fieldM),
     ]);
 
-    const valueH = StringValueHandler.create(inputV);
+    const valueH = NumberValueHandler.create(inputV);
 
     return SimpleFieldPresenter.create(formD, fieldM, inputV, fieldVal, valueH);
   },
