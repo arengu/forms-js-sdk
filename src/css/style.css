@@ -278,6 +278,7 @@
 .af-field-has-error .af-field-input input[type="text"],
 .af-field-has-error .af-field-input input[type="file"],
 .af-field-has-error .af-field-input input[type="url"],
+.af-field-has-error .af-field-input textarea,
 .af-field-has-error .af-dropdown,
 .af-field-has-error .af-legal label:before {
   color: var(--invalid-field-border-color);
