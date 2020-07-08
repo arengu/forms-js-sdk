@@ -8,8 +8,9 @@ let isStripeLoaded = false;
 /* eslint-disable */
 
 class LegacyPaymentInput {
-  constructor(fieldM, uid, paymentL) {
+  constructor(fieldM, style, uid, paymentL) {
     this.model = fieldM;
+    this.style = style;
     this.uid = uid;
     this.listener = paymentL;
 
@@ -39,22 +40,28 @@ class LegacyPaymentInput {
     this.viewE = undefined;
   }
 
-  static create(fieldM, uid, paymentL) {
-    return new this(fieldM, uid, paymentL);
+  static create(fieldM, style, uid, paymentL) {
+    return new this(fieldM, style, uid, paymentL);
   }
 
   _buildElementStyles() {
+    const computedStyle = getComputedStyle(document.documentElement);
+
     const styles = {
       base: {
-        color: getComputedStyle(document.documentElement).getPropertyValue('--input-color'),
-        fontFamily: getComputedStyle(document.documentElement).getPropertyValue('--font-family'),
-        fontSize: getComputedStyle(document.documentElement).getPropertyValue('--input-font-size'),
+        color: this.style.input?.fontColor || computedStyle.getPropertyValue('--input-color'),
+        fontFamily: this.style.body?.fontFamily || computedStyle.getPropertyValue('--font-family'),
+        fontSize: this.style.input?.fontSize || computedStyle.getPropertyValue('--input-font-size'),
         '::placeholder': {
-          color: getComputedStyle(document.documentElement).getPropertyValue('--placeholder-color'),
+          color:
+            this.style.calculated?.placeholderFontColor ||
+            computedStyle.getPropertyValue('--placeholder-color'),
         },
       },
       invalid: {
-        color: getComputedStyle(document.documentElement).getPropertyValue('--message-fail-color'),
+        color:
+          this.style.error?.fontColor ||
+          computedStyle.getPropertyValue('--message-fail-color'),
       },
     };
 
@@ -342,16 +349,17 @@ class LegacyPaymentInput {
 
     const stripe = Stripe(publicKey);
     const elements = stripe.elements();
+    const style = this._buildElementStyles();
 
-    const cardNumber = elements.create('cardNumber', { style: this._buildElementStyles() });
+    const cardNumber = elements.create('cardNumber', { style });
     cardNumber.mount(this.cardNumber);
     this._addCardNumberListener(cardNumber);
 
-    const expirationDate = elements.create('cardExpiry', { style: this._buildElementStyles() });
+    const expirationDate = elements.create('cardExpiry', { style });
     expirationDate.mount(this.expirationDate);
     this._addExpirationDateListener(expirationDate);
 
-    const securityCode = elements.create('cardCvc', { style: this._buildElementStyles() });
+    const securityCode = elements.create('cardCvc', { style });
     securityCode.mount(this.securityCode);
     this._addSecurityCodeListener(securityCode);
 
@@ -426,6 +434,16 @@ class LegacyPaymentInput {
     this.viewE = container;
 
     return this.viewE;
+  }
+
+  onUpdateStyle(style) {
+    this.style = style;
+
+    const elemStyles = this._buildElementStyles();
+
+    this.cardNumberMounted.update({ style: elemStyles });
+    this.expirationDateMounted.update({ style: elemStyles });
+    this.securityCodeMounted.update({ style: elemStyles });
   }
 
   reset() {

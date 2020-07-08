@@ -8,6 +8,7 @@ import { FieldType, IFieldModel, IBooleanFieldModel, IDateFieldModel, IEmailFiel
 import { URLHelper } from '../../lib/URLHelper';
 import { IHiddenFieldsDef } from '../HiddenFields';
 import { ICustomValues } from '../../sdk';
+import { IStepModel } from '../../step/model/StepModel';
 
 type ISimpleField = IBooleanFieldModel | IDateFieldModel | IEmailFieldModel | ITelFieldModel | ITextFieldModel | IURLFieldModel;
 
@@ -99,20 +100,24 @@ export const FormProcessor = {
     return fieldM;
   },
 
+  overwriteSteps(steps: IStepModel[], custValues: ICustomValues): IStepModel[] {
+    return steps.map((step) => ({
+      ...step,
+      components: step.components.map((comp) => {
+        if (comp.category !== ComponentCategory.FIELD) {
+          return comp;
+        }
+
+        return FormProcessor.overwriteField(comp, custValues);
+      }),
+    }));
+  },
+
   overwriteForm(formM: IFormModel, custValues: ICustomValues): IFormModel {
     return {
       ...formM,
       hiddenFields: FormProcessor.overwriteHiddenFields(formM.hiddenFields, custValues),
-      steps: formM.steps.map((step) => ({
-        ...step,
-        components: step.components.map((comp) => {
-          if (comp.category !== ComponentCategory.FIELD) {
-            return comp;
-          }
-
-          return FormProcessor.overwriteField(comp, custValues);
-        }),
-      })),
+      steps: FormProcessor.overwriteSteps(formM.steps, custValues),
     };
   }
 }

@@ -3,6 +3,8 @@ import { IPaymentFieldModel } from '../../model/FieldModel';
 import { IInputView, IInputViewListener } from '../InputView';
 import { ListenableEntity } from '../../../lib/ListenableEntity';
 import { UID } from '../../../lib/UID';
+import { IFormDeps } from '../../../form/FormPresenter';
+import { IExtendedFormStyle } from '../../../form/model/FormStyle';
 
 export interface ICardToken {
   id?: string;
@@ -69,20 +71,20 @@ export class PaymentInputView extends ListenableEntity<IInputViewListener> imple
 
   protected error?: ICardError;
 
-  protected constructor(fieldM: IPaymentFieldModel) {
+  protected constructor(formD: IFormDeps, fieldM: IPaymentFieldModel) {
     super();
 
     const uid = UID.create();
 
-    this.paymentV = LegacyPaymentInput.create(fieldM, uid, this);
+    this.paymentV = LegacyPaymentInput.create(fieldM, formD.style, uid, this);
     this.changed = false;
     this.fresh = false;
     this.token = undefined;
     this.error = undefined;
   }
 
-  public static create(fieldM: IPaymentFieldModel): IPaymentInputView {
-    return new this(fieldM);
+  public static create(formD: IFormDeps, fieldM: IPaymentFieldModel): IPaymentInputView {
+    return new this(formD, fieldM);
   }
 
   public async processCard(): Promise<void> {
@@ -160,5 +162,9 @@ export class PaymentInputView extends ListenableEntity<IInputViewListener> imple
 
   public render(): HTMLElement {
     return this.paymentV.render();
+  }
+
+  public onUpdateStyle(style: IExtendedFormStyle): void {
+    this.paymentV.onUpdateStyle(style);
   }
 }

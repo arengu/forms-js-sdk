@@ -6,6 +6,7 @@ import { IFieldValidationResult } from '../validator/FieldValidator';
 import { FieldPresenterFactory } from './FieldPresenterFactory';
 import { IComponentPresenter } from '../../../component/ComponentPresenter';
 import { ISocialFieldPresenter } from './SocialFieldPresenter';
+import { IFormStyle } from '../../../form/model/FormStyle';
 
 export interface IFieldPresenter extends IComponentPresenter {
   getFieldId(this: this): string;
@@ -13,6 +14,7 @@ export interface IFieldPresenter extends IComponentPresenter {
 
   isDynamic(this: this): boolean;
   updateField(this: this, data: IFormData): void;
+  onUpdateStyle(style: IFormStyle): void;
 
   validate(this: this): Promise<IFieldValidationResult>;
 

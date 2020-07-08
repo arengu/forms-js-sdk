@@ -129,7 +129,7 @@ export const FieldPresenterFactory = {
   },
 
   fromPayment(formD: IFormDeps, fieldM: IPaymentFieldModel): IFieldPresenter {
-    const inputV = PaymentInputView.create(fieldM);
+    const inputV = PaymentInputView.create(formD, fieldM);
 
     const fieldVal = FieldValidator.create([
       CustomValidations.payment(fieldM, inputV),

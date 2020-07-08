@@ -24,6 +24,7 @@ import { ComponentPresenter, IComponentPresenterListener, IComponentPresenter } 
 import { ISocialFieldPresenter, SocialFieldPresenter } from '../field/presenter/presenter/SocialFieldPresenter';
 import { IPresenter } from '../core/BaseTypes';
 import { StepErrorPresenter, IStepErrorPresenter } from './part/StepErrorPresenter';
+import { IExtendedFormStyle } from '../form/model/FormStyle';
 
 export interface IStepPresenterListener {
   onGotoPreviousStep?(this: this, stepP: IStepPresenter): void;
@@ -44,6 +45,7 @@ export interface IStepPresenter extends IPresenter {
 
   isDynamic(this: this): boolean;
   updateStep(this: this, data: IFormData): void;
+  onUpdateStyle(style: IExtendedFormStyle): void;
 
   hasFlow(this: this): boolean;
   validate(this: this): Promise<IStepValidationResult>;
@@ -314,5 +316,9 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
   public onSocialLogin(fieldP: ISocialFieldPresenter): void {
     this.socialP = fieldP;
     this.stepL.onSocialLogin && this.stepL.onSocialLogin(this, fieldP);
+  }
+
+  public onUpdateStyle(style: IExtendedFormStyle): void {
+    this.fieldsP.forEach((fieldP) => fieldP.onUpdateStyle(style));
   }
 }

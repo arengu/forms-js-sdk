@@ -1,5 +1,6 @@
 import { IView } from "../../core/BaseTypes";
 import { ListenableEntity, IListenableEntity } from '../../lib/ListenableEntity';
+import { IExtendedFormStyle } from "../../form/model/FormStyle";
 
 export interface IHTMLInputListener {
   onFocus(this: this): void;
@@ -23,6 +24,7 @@ export interface IInputView extends IView, IListenableEntity<IInputViewListener>
   unblock(): void;
   onShow?(): void;
   onHide?(): void;
+  onUpdateStyle?(style: IExtendedFormStyle): void;
 }
 
 export type ISingleOptionValue = string | undefined;

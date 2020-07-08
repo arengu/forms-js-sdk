@@ -5,6 +5,10 @@ const common = require('./webpack.common.js');
 const helper = require('./webpack.helper.js');
 /* eslint-disable @typescript-eslint/no-var-requires, import/no-extraneous-dependencies */
 
+const babelLoader = helper.defineLoader({
+  plugins: ['@babel/plugin-proposal-optional-chaining']
+});
+
 const config = {
   mode: 'development',
   devtool: 'inline-source-map',
@@ -20,7 +24,7 @@ const config = {
   ],
   module: {
     rules: [
-      helper.defineLoader(),
+      babelLoader
     ],
   },
   output: {

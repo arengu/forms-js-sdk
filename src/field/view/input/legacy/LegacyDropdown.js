@@ -13,7 +13,6 @@ const KEY_CODE = {
   ENTER: 13,
   BACKSPACE: 8,
   DELETE: 46,
-
 };
 
 const CLASSES = {
@@ -21,6 +20,7 @@ const CLASSES = {
   FILTERED: 'af-filtered',
   ACTIVE: 'af-active',
   DISPLAY: 'af-display',
+  OPENED: 'af-opened',
 };
 
 const INDEX_ATTRIBUTE = 'data-af-dropdown-index';
@@ -666,6 +666,7 @@ class LegacyDropdown {
   _hideDropdownOptions() {
     const node = this.dropdown;
     node.classList.remove(CLASSES.DISPLAY);
+    this.html.classList.remove(CLASSES.OPENED);
 
     this._removeHoverDropdownOption();
 
@@ -675,6 +676,7 @@ class LegacyDropdown {
   _showDropdownOptions() {
     const node = this.dropdown;
     node.classList.add(CLASSES.DISPLAY);
+    this.html.classList.add(CLASSES.OPENED);
 
     return node;
   }

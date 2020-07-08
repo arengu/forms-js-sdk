@@ -4,6 +4,7 @@ import isNil from 'lodash/isNil';
 import { HiddenFields } from './HiddenFields';
 
 import { IFormModel, ISocialConfig } from './model/FormModel';
+import { IFormStyle, IExtendedFormStyle } from './model/FormStyle';
 
 import { Messages } from '../lib/Messages';
 
@@ -19,6 +20,7 @@ import { NavigationHistory } from '../lib/NavigationHistory';
 import { ISocialFieldPresenter } from '../field/presenter/presenter/SocialFieldPresenter';
 import { IFormInteractionResponse, EffectType, IFormInteractionRequest } from './FormInteraction';
 import { IPresenter } from '../core/BaseTypes';
+import { StyleHelper } from './view/StyleHelper';
 
 export const FormPresenterHelper = {
   getUserValues(stepP: IStepPresenter): Promise<IUserValues> {
@@ -34,6 +36,7 @@ export interface IFormPresenter extends IPresenter {
   getFormId(): string;
   setHiddenField(fieldId: string, value: string): void;
   render(): HTMLElement;
+  updateStyle(style: IFormStyle): void;
 }
 
 interface ISetContentOptions {
@@ -41,6 +44,7 @@ interface ISetContentOptions {
 }
 
 export interface IFormDeps {
+  style: IExtendedFormStyle;
   social: ISocialConfig[];
   messages: Messages;
 }
@@ -50,6 +54,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
   protected readonly hiddenFields: HiddenFields;
 
   protected readonly formV: IFormView;
+  protected readonly style: IExtendedFormStyle;
 
   protected currentStep?: IStepPresenter;
   protected readonly stepsP: IStepPresenter[];
@@ -63,7 +68,10 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     this.formM = formM;
     this.hiddenFields = HiddenFields.create(formM.hiddenFields);
 
+    this.style = StyleHelper.extendStyle(formM.style);
+
     const formD: IFormDeps = {
+      style: this.style,
       social: formM.social,
       messages: Messages.create(formM.messages),
     };
@@ -489,8 +497,17 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
   public render(): HTMLElement {
     const element = this.formV.render();
 
+    this.formV.setStyle(this.style);
+
     this.gotoFirstStep({ scrollTop: false });
 
     return element;
+  }
+
+  public updateStyle(style: IFormStyle): void {
+    const extendedStyle = StyleHelper.extendStyle(style);
+
+    this.formV.setStyle(extendedStyle);
+    this.stepsP.forEach((stepP) => stepP.onUpdateStyle(extendedStyle));
   }
 }

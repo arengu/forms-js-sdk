@@ -1,3 +1,4 @@
+import { IFormStyle } from './FormStyle';
 import { IStepModel } from '../../step/model/StepModel';
 import { IHiddenFieldsDef } from '../HiddenFields';
 import { IMessages } from '../../lib/Messages';
@@ -30,4 +31,5 @@ export interface IFormModel {
   readonly messages: IMessages;
   readonly steps: IStepModel[];
   readonly social: ISocialConfig[];
+  readonly style: IFormStyle;
 }

@@ -1,8 +1,33 @@
 :root {
-  --primary-color: #20c997;
-  --input-padding: 8px 10px;
+  /* deprecated, renamed variables */
   --input-background: #f7f9fc;
   --input-color: #323d47;
+  --dropdown-option-background-active-color: #6d7378;
+  --dropdown-option-background-hover-color: #f0f3f5;
+  --dropdown-option-text-color: #ffffff;
+  --label-color: #323d47;
+  --label-background-hover-color: #f0f3f5;
+  --counter-text-color: #323d47;
+  --counter-warning-color: #f5b800;
+  --counter-high-color: #d2383f;
+  --hint-color: #878d92;
+  --placeholder-color: rgba(50, 61, 71, 0.3);
+  --placeholder-focus-color: rgba(50, 61, 71, 0.6);
+  --invalid-field-border: #d2383f;
+  --invalid-field-background: #fff6f6;
+  --field-error-color: #d2383f;
+  --message-fail-color: #d2383f;
+  --message-fail-background: #fff0f0;
+  --message-success-color: #318233;
+  --facebook-button-background: #4267b2;
+  --google-button-background: #dd4b39;
+
+  /* current variables */
+  --primary-color: #20c997;
+  --primary-font-color: #fff;
+  --input-padding: 8px 10px;
+  --input-background-color: var(--input-background);
+  --input-font-color: var(--input-color);
   --input-border: 1px solid #e0e6f0;
   --input-border-radius: 3px;
   --checkbox-border-radius: 3px;
@@ -11,40 +36,46 @@
   --boolean-background-color: #f7f9fc;
   --dropdown-padding: 2px 40px 2px 10px;
   --dropdown-icon-color: #323d47;
+  --dropdown-background-color: #fff;
   --dropdown-option-background-color: #949a9e;
-  --dropdown-option-background-active-color: #6d7378;
-  --dropdown-option-text-color: #ffffff;
+  --dropdown-option-active-background-color: var(--dropdown-option-background-active-color);
+  --dropdown-option-hover-background-color: var(--dropdown-option-background-hover-color);
+  --dropdown-option-font-color: var(--dropdown-option-text-color);
   --font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-size: 16px;
+  --font-color: #323d47;
   --password-padding: 8px 50px 8px 10px;
   --payment-input-padding: 8px 50px 8px 10px;
   --border-focus-color: #8e8e8e;
   --label-required-color: #ed5757;
-  --label-color: #323d47;
+  --label-font-color: var(--label-color);
   --label-font-size: 15px;
   --label-font-weight: 500;
-  --label-background-hover-color: #f0f3f5;
+  --label-hover-background-color: var(--label-background-hover-color);
   --counter-font-size: 12px;
-  --counter-text-color: #323d47;
-  --counter-warning-color: #f5b800;
-  --counter-high-color: #d2383f;
-  --hint-color: #878d92;
+  --counter-font-color: var(--counter-text-color);
+  --counter-warning-font-color: var(--counter-warning-color);
+  --counter-high-font-color: var(--counter-high-font-color);
+  --hint-font-color: var(--hint-color);
   --hint-font-size: 14px;
-  --placeholder-color: rgba(50, 61, 71, 0.3);
-  --placeholder-focus-color: rgba(50, 61, 71, 0.6);
+  --placeholder-font-color: var(--placeholder-color);
+  --placeholder-focus-font-color: var(--placeholder-focus-color);
   --button-font-size: 15px;
   --button-font-weight: 500;
   --button-border-radius: 3px;
   --button-padding: 12px 24px;
-  --invalid-field-border: #d2383f;
-  --invalid-field-background: #fff6f6;
+  --invalid-field-border-color: var(--invalid-field-border);
+  --invalid-field-background-color: var(--invalid-field-background);
+  --field-error-font-color: var(--field-error-color);
+  --field-error-font-size: 14px;
   --message-border-radius: 3px;
-  --message-fail-color: #d2383f;
+  --message-fail-font-color: var(--message-fail-color);
   --message-fail-font-size: 14px;
-  --message-fail-background: #fff0f0;
-  --message-success-color: #318233;
+  --message-fail-background-color: var(--message-fail-background);
+  --message-success-font-color: var(--message-success-color);
   --message-success-background-color: #fcfff5;
-  --facebook-button-background: #4267b2;
-  --google-button-background: #dd4b39;
+  --facebook-button-background-color: var(--facebook-button-background);
+  --google-button-background-color: var(--google-button-background);
 }
 
 /*******************************
@@ -79,7 +110,7 @@
   font-weight: var(--label-font-weight);
   font-size: var(--label-font-size);
   margin: 0 0 0.3em 0;
-  color: var(--label-color);
+  color: var(--label-font-color);
 }
 
 /* Choice/Boolean */
@@ -90,7 +121,8 @@
 
 .af-choice-option label,
 .af-boolean-option label {
-  font-size: var(--label-font-size);
+  color: var(--font-color);
+  font-size: var(--font-size);
   font-family: var(--font-family);
   margin: 6px 0;
   box-sizing: border-box;
@@ -103,14 +135,17 @@
 }
 
 .af-boolean-option label {
-  background: var(--boolean-background-color);
+  background-color: var(--boolean-background-color);
   border-radius: var(--input-border-radius);
   border: var(--input-border);
+  border-width: var(--input-border-width);
+  border-color: var(--input-border-color);
   font-family: var(--font-family);
 }
 
 .af-legal label {
-  font-size: var(--label-font-size);
+  color: var(--legal-font-color);
+  font-size: var(--legal-font-size);
   font-family: var(--font-family);
   margin: 8px 0;
   box-sizing: border-box;
@@ -134,8 +169,10 @@
 
 .af-choice-option label:before {
   content: "";
-  background: #fff;
+  background-color: #fff;
   border: var(--input-border);
+  border-width: var(--input-border-width);
+  border-color: var(--input-border-color);
   border-radius: var(--checkbox-border-radius);
   min-width: 20px;
   min-height: 20px;
@@ -145,8 +182,10 @@
 
 .af-legal label:before {
   content: "";
-  background: #fff;
+  background-color: #fff;
   border: var(--input-border);
+  border-width: var(--input-border-width);
+  border-color: var(--input-border-color);
   border-radius: var(--checkbox-border-radius);
   min-width: 18px;
   height: 18px;
@@ -195,7 +234,7 @@
 .af-field-hint p {
   margin: 0 0 0.4em 0;
   font-size: var(--hint-font-size);
-  color: var(--hint-color);
+  color: var(--hint-font-color);
   font-family: var(--font-family);
 }
 
@@ -215,11 +254,13 @@
   width: 100%;
   vertical-align: top;
   border: var(--input-border);
+  border-width: var(--input-border-width);
+  border-color: var(--input-border-color);
   border-radius: var(--input-border-radius);
-  background: var(--input-background);
+  background-color: var(--input-background-color);
   font-size: var(--input-font-size);
   padding: var(--input-padding);
-  color: var(--input-color);
+  color: var(--input-font-color);
   box-sizing: border-box;
   font-family: var(--font-family);
   height: var(--input-height);
@@ -237,8 +278,9 @@
 .af-field-has-error .af-field-input input[type="url"],
 .af-field-has-error .af-dropdown,
 .af-field-has-error .af-legal label:before {
+  color: var(--invalid-field-border);
   border-color: var(--invalid-field-border);
-  background: var(--invalid-field-background);
+  background-color: var(--invalid-field-background-color);
 }
 
 .af-field-has-error .af-field-input input:not([type]):focus,
@@ -277,11 +319,13 @@
   width: 100%;
   vertical-align: top;
   border: var(--input-border);
+  border-width: var(--input-border-width);
+  border-color: var(--input-border-color);
   border-radius: var(--input-border-radius);
-  background: var(--input-background);
+  background-color: var(--input-background-color);
   font-size: var(--input-font-size);
   padding: var(--input-padding);
-  color: var(--input-color);
+  color: var(--input-font-color);
   box-sizing: border-box;
   font-family: var(--font-family);
   min-height: 65px;
@@ -373,10 +417,12 @@
 .af-payment .StripeElement {
   width: 100%;
   border: var(--input-border);
+  border-width: var(--input-border-width);
+  border-color: var(--input-border-color);
   border-radius: var(--input-border-radius);
-  background: var(--input-background);
+  background-color: var(--input-background-color);
   padding: var(--payment-input-padding);
-  color: var(--input-color);
+  color: var(--input-font-color);
   box-sizing: border-box;
   height: var(--input-height);
 }
@@ -389,7 +435,7 @@
 .af-payment .StripeElement--invalid:not(.StripeElement--empty),
 .af-field-has-error .StripeElement:not(.StripeElement--complete) {
   border-color: var(--invalid-field-border);
-  background: var(--invalid-field-background);
+  background-color: var(--invalid-field-background-color);
 }
 
 .af-payment-expirationDate,
@@ -497,12 +543,19 @@
   width: 100%;
   vertical-align: top;
   border: var(--input-border);
+  border-width: var(--input-border-width);
+  border-color: var(--input-border-color);
   border-radius: var(--input-border-radius);
-  background: var(--input-background);
+  background-color: var(--input-background-color);
   padding: var(--dropdown-padding);
   box-sizing: border-box;
   text-align: left;
   min-height: var(--input-height);
+}
+
+.af-dropdown.af-opened {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
 }
 
 .af-dropdown ::-webkit-scrollbar {
@@ -514,17 +567,18 @@
 .af-dropdown ::-webkit-scrollbar-thumb {
   cursor: pointer;
   border-radius: 5px;
-  background: rgba(0, 0, 0, .25);
+  background-color: rgba(0, 0, 0, .25);
   -webkit-transition: color .2s ease;
   transition: color .2s ease;
 }
 
 .af-dropdown ::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, .1);
+  background-color: rgba(0, 0, 0, .1);
   border-radius: 0;
 }
 
 .af-dropdown-text {
+  color: var(--input-font-color);
   position: absolute;
   height: calc(var(--input-height) - 2px);
   top: 0;
@@ -541,7 +595,7 @@
 
 .af-dropdown-text.af-default,
 .af-dropdown-message {
-  color: var(--placeholder-color);
+  color: var(--placeholder-font-color);
 }
 
 .af-dropdown a~.af-dropdown-text {
@@ -554,8 +608,12 @@
   left: 0;
   width: calc(100% + 2px);
   margin: 0 -1px 40px -1px;
-  background: #fff;
+  background-color: var(--dropdown-background-color);
   border: var(--input-border);
+  border-width: var(--input-border-width);
+  border-color: var(--input-border-color);
+  border-bottom-left-radius: var(--input-border-radius);
+  border-bottom-right-radius: var(--input-border-radius);
   display: none;
   box-sizing: border-box;
   overflow-x: hidden;
@@ -566,6 +624,8 @@
 
 .af-dropdown-search-options div {
   padding: var(--input-padding);
+  background-color: var(--input-background-color);
+  color: var(--input-font-color);
 }
 
 .af-dropdown-search-options div:not(.af-dropdown-message) {
@@ -574,14 +634,14 @@
 
 .af-dropdown-search-options div:hover:not(.af-dropdown-message),
 .af-dropdown-search-options .af-hover {
-  background: var(--label-background-hover-color);
+  background-color: var(--dropdown-option-hover-background-color);
 }
 
 .af-dropdown .af-dropdown-search {
   border: none;
   font-size: var(--input-font-size);
-  color: var(--input-color);
-  background: none;
+  color: var(--input-font-color);
+  background-color: transparent;
   padding: 8px 0 0 0;
   position: static;
   font-family: var(--font-family);
@@ -605,7 +665,7 @@
   background-color: var(--dropdown-option-background-color);
   display: inline-block;
   position: relative;
-  color: var(--dropdown-option-text-color);
+  color: var(--dropdown-option-font-color);
   border-radius: 3px;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -615,7 +675,7 @@
 }
 
 .af-dropdown a.af-active {
-  background-color: var(--dropdown-option-background-active-color);
+  background-color: var(--dropdown-option-active-background-color);
   transition: background-color 0.3s ease;
 }
 
@@ -663,11 +723,6 @@
   margin-bottom: 0;
 }
 
-.af-social-facebook button {
-  background: var(--facebook-button-background);
-  color: #fff;
-}
-
 .af-social-facebook .af-button-text:before,
 .af-social-google .af-button-text:before {
   content: "";
@@ -682,12 +737,12 @@
 }
 
 .af-social-facebook button {
-  background: var(--facebook-button-background);
+  background-color: var(--facebook-button-background-color);
   color: #fff;
 }
 
 .af-social-google button {
-  background: var(--google-button-background);
+  background-color: var(--google-button-background-color);
   color: #fff;
 }
 
@@ -705,6 +760,16 @@
 }
 
 /*******************************
+            Blocks
+*******************************/
+
+.af-html-block, .af-rich-text-block {
+  color: var(--font-color);
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+}
+
+/*******************************
             States
 *******************************/
 
@@ -715,27 +780,27 @@
 /* browsers require these rules separate */
 
 .af-form ::-webkit-input-placeholder {
-  color: var(--placeholder-color);
+  color: var(--placeholder-font-color);
 }
 
 .af-form :-ms-input-placeholder {
-  color: var(--placeholder-color);
+  color: var(--placeholder-font-color);
 }
 
 .af-form ::-moz-placeholder {
-  color: var(--placeholder-color);
+  color: var(--placeholder-font-color);
 }
 
 .af-form :focus::-webkit-input-placeholder {
-  color: var(--placeholder-focus-color);
+  color: var(--placeholder-focus-font-color);
 }
 
 .af-form :focus:-ms-input-placeholder {
-  color: var(--placeholder-focus-color);
+  color: var(--placeholder-focus-font-color);
 }
 
 .af-form :focus::-moz-placeholder {
-  color: var(--placeholder-focus-color);
+  color: var(--placeholder-focus-font-color);
 }
 
 /*--------------------
@@ -770,7 +835,7 @@
 /* Choice/Boolean */
 .af-choice-option label:hover,
 .af-boolean-option label:hover {
-  background: var(--label-background-hover-color);
+  background-color: var(--label-hover-background-color);
 }
 
 /*--------------------
@@ -791,7 +856,7 @@
 
 .af-choice-option input:checked+label:before,
 .af-legal input:checked+label:before {
-  background: var(--primary-color);
+  background-color: var(--primary-color);
   transition: background-color .2s ease;
 }
 
@@ -803,9 +868,9 @@
 
 .af-boolean-option input:checked+label {
   transition: all .2s ease;
-  background: var(--primary-color);
+  background-color: var(--primary-color);
   border-color: var(--primary-color);
-  color: #fff;
+  color: var(--primary-font-color);
 }
 
 /*--------------------
@@ -883,6 +948,7 @@
 .af-button button {
   width: 100%;
   position: relative;
+  font-family: var(--font-family);
 }
 
 .af-step-button {
@@ -914,7 +980,7 @@
 
 .af-step-previous button[type=button] {
   color: rgba(0, 0, 0, 0.8);
-  background: none;
+  background-color: transparent;
   padding: 0;
   width: auto;
 }
@@ -951,9 +1017,10 @@
 .af-counter {
   text-align: right;
   margin: 4px;
-  color: var(--counter-text-color);
+  color: var(--counter-font-color);
   float: right;
   font-size: var(--counter-font-size);
+  font-family: var(--font-family);
   transition: color .3s ease;
 }
 
@@ -970,25 +1037,28 @@
 }
 
 .af-counter.af-counter-warning {
-  color: var(--counter-warning-color);
+  color: var(--counter-warning-font-color);
 }
 
 /*--------------------
         Messages
 ---------------------*/
 
+.af-message {
+  border-radius: var(--message-border-radius);
+}
+
 .af-field-error p {
-  color: var(--message-fail-color);
-  font-size: var(--message-fail-font-size);
+  color: var(--field-error-font-color);
+  font-size: var(--field-error-font-size);
   margin: .3em 0 .6em 0;
 }
 
 .af-step-failure {
-  color: var(--message-fail-color);
+  color: var(--message-fail-font-color);
   padding: .75em 1em;
-  border: 1px solid var(--message-fail-color);
-  background: var(--message-fail-background);
-  border-radius: var(--message-border-radius);
+  border: 1px solid var(--message-fail-font-color);
+  background-color: var(--message-fail-background-color);
 }
 
 .af-step-messages {
@@ -1008,9 +1078,8 @@
 }
 
 .af-step-success {
-  color: var(--message-success-color);
+  color: var(--message-success-font-color);
   padding: .75em 1em;
-  border: 1px solid var(--message-success-color);
-  background: var(--message-success-background-color);
-  border-radius: var(--message-border-radius);
+  border: 1px solid var(--message-success-font-color);
+  background-color: var(--message-success-background-color);
 }

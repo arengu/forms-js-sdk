@@ -14,6 +14,7 @@ import { IFieldPresenter } from './FieldPresenter';
 import { IValueHandler } from '../handler/ValueHandler';
 import { IFieldValidationResult, IFieldValidator } from '../validator/FieldValidator';
 import { BaseComponentPresenter } from '../../../component/ComponentHelper';
+import { IExtendedFormStyle } from '../../../form/model/FormStyle';
 
 export abstract class BaseFieldPresenter<IV extends IInputView = IInputView> extends BaseComponentPresenter implements IFieldPresenter, IInputViewListener {
   protected readonly fieldM: IFieldModel;
@@ -167,5 +168,11 @@ export abstract class BaseFieldPresenter<IV extends IInputView = IInputView> ext
     }
 
     return result;
+  }
+
+  public onUpdateStyle(style: IExtendedFormStyle): void {
+    if (this.inputV.onUpdateStyle) {
+      this.inputV.onUpdateStyle(style);
+    }
   }
 }
