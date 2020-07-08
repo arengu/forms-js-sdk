@@ -31,5 +31,5 @@ export interface IFormModel {
   readonly messages: IMessages;
   readonly steps: IStepModel[];
   readonly social: ISocialConfig[];
-  readonly style: IFormStyle;
+  readonly style?: IFormStyle;
 }

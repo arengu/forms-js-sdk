@@ -8,7 +8,6 @@ import { ICookieModel } from '../model/CookieModel';
 import { CookieHelper } from '../../lib/view/CookieHelper';
 import { IPageRedirection } from '../FormInteraction';
 import { IExtendedFormStyle } from '../model/FormStyle';
-import { UID } from '../../lib/UID';
 
 export interface IVisibleArea {
   minOffset: number;
