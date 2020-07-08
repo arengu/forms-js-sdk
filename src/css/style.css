@@ -1,9 +1,8 @@
 :root {
-  /* deprecated, renamed variables */
+  /* deprecated variables */
   --input-background: #f7f9fc;
   --input-color: #323d47;
   --dropdown-option-background-active-color: #6d7378;
-  --dropdown-option-background-hover-color: #f0f3f5;
   --dropdown-option-text-color: #ffffff;
   --label-color: #323d47;
   --label-background-hover-color: #f0f3f5;
@@ -15,7 +14,6 @@
   --placeholder-focus-color: rgba(50, 61, 71, 0.6);
   --invalid-field-border: #d2383f;
   --invalid-field-background: #fff6f6;
-  --field-error-color: #d2383f;
   --message-fail-color: #d2383f;
   --message-fail-background: #fff0f0;
   --message-success-color: #318233;
@@ -26,8 +24,6 @@
   --primary-color: #20c997;
   --primary-font-color: #fff;
   --input-padding: 8px 10px;
-  --input-background-color: var(--input-background);
-  --input-font-color: var(--input-color);
   --input-border: 1px solid #e0e6f0;
   --input-border-radius: 3px;
   --checkbox-border-radius: 3px;
@@ -38,9 +34,7 @@
   --dropdown-icon-color: #323d47;
   --dropdown-background-color: #fff;
   --dropdown-option-background-color: #949a9e;
-  --dropdown-option-active-background-color: var(--dropdown-option-background-active-color);
-  --dropdown-option-hover-background-color: var(--dropdown-option-background-hover-color);
-  --dropdown-option-font-color: var(--dropdown-option-text-color);
+  --dropdown-option-hover-background-color: #f0f3f5;
   --font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   --font-size: 16px;
   --font-color: #323d47;
@@ -48,32 +42,40 @@
   --payment-input-padding: 8px 50px 8px 10px;
   --border-focus-color: #8e8e8e;
   --label-required-color: #ed5757;
-  --label-font-color: var(--label-color);
   --label-font-size: 15px;
   --label-font-weight: 500;
-  --label-hover-background-color: var(--label-background-hover-color);
   --counter-font-size: 12px;
-  --counter-font-color: var(--counter-text-color);
-  --counter-warning-font-color: var(--counter-warning-color);
-  --counter-high-font-color: var(--counter-high-font-color);
-  --hint-font-color: var(--hint-color);
   --hint-font-size: 14px;
-  --placeholder-font-color: var(--placeholder-color);
-  --placeholder-focus-font-color: var(--placeholder-focus-color);
   --button-font-size: 15px;
   --button-font-weight: 500;
   --button-border-radius: 3px;
   --button-padding: 12px 24px;
+  --field-error-font-size: 14px;
+  --field-error-font-color: #d2383f;
+  --message-border-radius: 3px;
+  --message-fail-font-size: 14px;
+  --message-success-background-color: #fcfff5;
+}
+
+.af-form {
+  /* mapping from deprecated to new variables */
+  --input-background-color: var(--input-background);
+  --input-font-color: var(--input-color);
+  --dropdown-option-active-background-color: var(--dropdown-option-background-active-color);
+  --dropdown-option-font-color: var(--dropdown-option-text-color);
+  --label-font-color: var(--label-color);
+  --label-hover-background-color: var(--label-background-hover-color);
+  --counter-font-color: var(--counter-text-color);
+  --counter-warning-font-color: var(--counter-warning-color);
+  --counter-high-font-color: var(--counter-high-color);
+  --hint-font-color: var(--hint-color);
+  --placeholder-font-color: var(--placeholder-color);
+  --placeholder-focus-font-color: var(--placeholder-focus-color);
   --invalid-field-border-color: var(--invalid-field-border);
   --invalid-field-background-color: var(--invalid-field-background);
-  --field-error-font-color: var(--field-error-color);
-  --field-error-font-size: 14px;
-  --message-border-radius: 3px;
   --message-fail-font-color: var(--message-fail-color);
-  --message-fail-font-size: 14px;
   --message-fail-background-color: var(--message-fail-background);
   --message-success-font-color: var(--message-success-color);
-  --message-success-background-color: #fcfff5;
   --facebook-button-background-color: var(--facebook-button-background);
   --google-button-background-color: var(--google-button-background);
 }
@@ -278,8 +280,8 @@
 .af-field-has-error .af-field-input input[type="url"],
 .af-field-has-error .af-dropdown,
 .af-field-has-error .af-legal label:before {
-  color: var(--invalid-field-border);
-  border-color: var(--invalid-field-border);
+  color: var(--invalid-field-border-color);
+  border-color: var(--invalid-field-border-color);
   background-color: var(--invalid-field-background-color);
 }
 
@@ -293,11 +295,11 @@
 .af-field-has-error .af-field-input input[type="text"]:focus,
 .af-field-has-error .af-field-input input[type="file"]:focus,
 .af-field-has-error .af-field-input input[type="url"]:focus {
-  border-color: var(--invalid-field-border);
+  border-color: var(--invalid-field-border-color);
 }
 
 .af-field-has-error .af-dropdown-icon svg {
-  fill: var(--invalid-field-border);
+  fill: var(--invalid-field-border-color);
 }
 
 
@@ -434,7 +436,7 @@
 
 .af-payment .StripeElement--invalid:not(.StripeElement--empty),
 .af-field-has-error .StripeElement:not(.StripeElement--complete) {
-  border-color: var(--invalid-field-border);
+  border-color: var(--invalid-field-border-color);
   background-color: var(--invalid-field-background-color);
 }
 
@@ -1033,7 +1035,7 @@
 }
 
 .af-counter.af-counter-alert {
-  color: var(--counter-high-color);
+  color: var(--counter-high-font-color);
 }
 
 .af-counter.af-counter-warning {
