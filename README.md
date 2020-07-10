@@ -3,12 +3,9 @@ Embed our forms easily into your website with our JavaScript SDK.
 
 ## Table of Contents
   - [Getting started](#getting-started)
-  - [Embed options](#embed-options)
-    - [Method 1: Using a HTML tag (Recommended)](#method-1-using-a-html-tag-recommended)
-    - [Method 2: Calling our `embed` method](#method-2-calling-our-embed-method)
+  - [Embed a form](#embed-a-form)
+  - [Style customization](#style-customization)
   - [Custom DOM events](#custom-dom-events)
-    - [List of custom DOM events:](#list-of-custom-dom-events)
-    - [List of available properties of the event object:](#list-of-available-properties-of-the-event-object)
   - [Browser compatibility](#browser-compatibility)
 
 ## Getting started
@@ -20,7 +17,7 @@ To get started, paste this snippet into the `head` tag of your website:
 
 This snippet will load our JavaScript SDK into your website asynchronously, so it won’t affect your website load speed.
 
-## Embed options
+## Embed a form
 
 Specify where you want to embed our form using any of the following techniques.
 
@@ -90,6 +87,58 @@ ArenguForms.embed('5073697614331904', container);
 ```
 
 In this case, the snippet gets a reference to the element and passes it directly to the `embed()` method.
+
+## Style customization
+The look and feel of ours forms can be personalized to use your branding colors and share the same design when they are embedded into your website.
+
+These configuration can be modified while you preview the result in our forms editor.
+1. Log into Arengu
+1. Go to Forms module.
+1. Edit the corresponding form.
+1. Go to Design panel.
+1. Edit the theme.
+
+Based on your choice, the SDK will calculate automatically the rest of settings.
+
+### Advanced personalization
+
+Sometimes, the calculated style do not satisfy the branding requirements. For those cases, our SDK allows you to override the calculated look and feel.
+
+We do not want you to define tens of CSS rules and selectors, so we have defined a list of variables that you can define and our SDK uses automatically.
+
+* Backgrounds: `primary-color`, `boolean-background-color`, `dropdown-icon-color`, `dropdown-background-color`, `dropdown-option-background-color`, `dropdown-option-hover-background-color`, `message-success-background-color`
+* Paddings: `input-padding`, `dropdown-padding`, `password-padding`, `payment-input-padding`, `button-padding`
+* Borders:
+  * Style: `input-border`,
+  * Color: `border-focus-color`
+  * Radius: `input-border-radius`, `checkbox-border-radius`, `button-border-radius`, `message-border-radius`
+* Sizes: `input-height`
+* Fonts:
+  * Sizes: `font-size`, `input-font-size`, `label-font-size`, `counter-font-size`, `hint-font-size`, `button-font-size`, `field-error-font-size`, `message-fail-font-size`
+  * Colors: `font-color`, `primary-font-color`, `field-error-font-color`, `label-required-color`
+  * Family: `font-family`
+  * Weights: `label-font-weight`, `button-font-weight`
+
+You can define those variables using the generic CSS selector `.af-form`. For example:
+
+```
+.af-form {
+  --primary-color: #20C997;
+  --font-size: '16px';
+}
+```
+
+If you want to define different styles for multiple forms, a more specific CSS selector `.af-form-FORMID` is available. For example:
+
+```
+.af-form-159308471972087980 {
+  --primary-color: #20C997;
+}
+
+.af-form-5639313064722432 {
+  --primary-color: #15798F;
+}
+```
 
 ## Custom DOM events
 
