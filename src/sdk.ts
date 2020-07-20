@@ -1,6 +1,5 @@
 import includes from 'lodash/includes';
 import isNil from 'lodash/isNil';
-import lowerFirst from 'lodash/lowerFirst';
 
 import { FormPresenter, IFormPresenter } from './form/FormPresenter';
 
@@ -20,7 +19,7 @@ declare const SDK_VERSION: string;
 
 const MAGIC_SELECTOR = 'data-arengu-form-id';
 
-const FIELD_ATTR_PREFIX = 'field';
+const FIELD_PREFIX = 'data-field-';
 
 const Repository = FormRepository;
 
@@ -103,27 +102,21 @@ export const SDKHelper = {
   parseValues(node: HTMLElement): ICustomValues {
     const custValues: ICustomValues = {};
 
-    const { dataset } = node;
-
     try {
-      const fieldsJson = dataset.fields;
+      const fieldsJson = node.dataset.fields;
       fieldsJson && Object.assign(custValues, JSON.parse(fieldsJson));
     } catch (err) {
       console.warn('Error parsing data-fields attribute', err.message);
     }
 
-    const allAttrs = Object.keys(dataset);
-    const fieldAttrs = allAttrs.filter((name) => name.startsWith(FIELD_ATTR_PREFIX));
+    const allAttrs = Array.from(node.attributes);
+    const dataAttrs = allAttrs.filter((at) => at.name.startsWith(FIELD_PREFIX));
 
-    fieldAttrs.forEach((attrName) => {
-      const fieldValue = dataset[attrName];
+    dataAttrs.forEach((at) => {
+      const fieldName = at.name.substr(FIELD_PREFIX.length);
+      const fieldValue = at.value;
 
-      if (typeof (fieldValue) !== 'string') {
-        return;
-      }
-
-      const fieldId = lowerFirst(attrName.replace(FIELD_ATTR_PREFIX, ''));
-      custValues[fieldId] = fieldValue;
+      custValues[fieldName] = fieldValue;
     });
 
     return custValues;
