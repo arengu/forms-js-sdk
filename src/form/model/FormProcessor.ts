@@ -1,6 +1,8 @@
 import defaultTo from 'lodash/defaultTo';
 import includes from 'lodash/includes';
 import isNil from 'lodash/isNil';
+import isString from 'lodash/isString';
+import toLower from 'lodash/toLower';
 
 import { IFormModel } from "./FormModel";
 import { ComponentCategory } from "../../component/ComponentModel";
@@ -46,7 +48,21 @@ const ProcessorHelper = {
   },
 
   getCustomValue(fieldId: string, custValues: ICustomValues): string | undefined {
-    return defaultTo(URLHelper.getParam(fieldId), custValues[fieldId]);
+    let value = URLHelper.getParam(fieldId);
+
+    if (isString(value)) {
+      return value;
+    }
+
+    value = custValues[fieldId];
+
+    if (isString(value)) {
+      return value;
+    }
+
+    const lcFieldId = toLower(fieldId);
+
+    return custValues[lcFieldId];
   },
 };
 

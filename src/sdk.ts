@@ -1,5 +1,6 @@
 import includes from 'lodash/includes';
 import isNil from 'lodash/isNil';
+import toLower from 'lodash/toLower';
 
 import { FormPresenter, IFormPresenter } from './form/FormPresenter';
 
@@ -113,10 +114,10 @@ export const SDKHelper = {
     const dataAttrs = allAttrs.filter((at) => at.name.startsWith(FIELD_PREFIX));
 
     dataAttrs.forEach((at) => {
-      const fieldName = at.name.substr(FIELD_PREFIX.length);
+      const fieldId = toLower(at.name.substr(FIELD_PREFIX.length));
       const fieldValue = at.value;
 
-      custValues[fieldName] = fieldValue;
+      custValues[fieldId] = fieldValue;
     });
 
     return custValues;
