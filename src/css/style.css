@@ -344,12 +344,14 @@
   justify-content: center;
 }
 
-.af-choice-option {
-  position: relative;
-}
-
 .af-choice-option span {
   margin-left: 10px;
+}
+
+.af-choice-option,
+.af-legal,
+.af-boolean {
+  position: relative;
 }
 
 .af-choice-option input,
@@ -379,12 +381,12 @@
 }
 
 /* Password */
-.af-password-wrapper {
-  position: relative;
-}
-
 .af-field-input input[type=password] {
   padding: var(--password-padding);
+}
+
+.af-password-wrapper {
+  position: relative;
 }
 
 .af-password-icon {
@@ -525,7 +527,9 @@
 /*--------------------
        Dropdown
 ---------------------*/
-
+.af-dropdown {
+  position: relative;
+}
 
 .af-dropdown select {
   position: absolute;
@@ -544,7 +548,6 @@
 }
 
 .af-dropdown {
-  position: relative;
   width: 100%;
   vertical-align: top;
   border: var(--input-border);
