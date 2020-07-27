@@ -109,9 +109,9 @@ We do not want you to define tens of CSS rules and selectors, so we have defined
 * Backgrounds: `primary-color`, `boolean-background-color`, `dropdown-icon-color`, `dropdown-background-color`, `dropdown-option-background-color`, `dropdown-option-hover-background-color`, `message-success-background-color`
 * Paddings: `input-padding`, `dropdown-padding`, `password-padding`, `payment-input-padding`, `button-padding`
 * Borders:
-  * Style: `input-border`,
-  * Color: `border-focus-color`
+  * Color: `input-border-color`, `border-focus-color`
   * Radius: `input-border-radius`, `checkbox-border-radius`, `button-border-radius`, `message-border-radius`
+  * Widths: `input-border-width`
 * Sizes: `input-height`
 * Fonts:
   * Sizes: `font-size`, `input-font-size`, `label-font-size`, `counter-font-size`, `hint-font-size`, `button-font-size`, `field-error-font-size`, `message-fail-font-size`
