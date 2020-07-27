@@ -228,6 +228,9 @@ export const StyleHelper = {
 
     // temporary hack to keep supporting legacy --input-border variable as
     // well as the new --input-border-width and --input-border-color
+    // (note that we use borderTop* instead of border* in the computed
+    // style because Firefox doesn't populate the shorthand properties,
+    // see https://bugzilla.mozilla.org/show_bug.cgi?id=137688)
     const doc = document.documentElement;
     const compStyle = getComputedStyle(doc);
     const inputBorder = compStyle.getPropertyValue('--input-border');
@@ -244,15 +247,15 @@ export const StyleHelper = {
 
       newStyle.calculated = {
         ...newStyle.calculated,
-        inputBorderColor: compStyle.borderColor || undefined,
+        inputBorderColor: compStyle.borderTopColor || undefined,
       };
 
-      if (compStyle.borderColor) {
-        doc.style.setProperty('--input-border-color', compStyle.borderColor);
+      if (compStyle.borderTopColor) {
+        doc.style.setProperty('--input-border-color', compStyle.borderTopColor);
       }
 
-      if (compStyle.borderWidth) {
-        doc.style.setProperty('--input-border-width', compStyle.borderWidth);
+      if (compStyle.borderTopWidth) {
+        doc.style.setProperty('--input-border-width', compStyle.borderTopWidth);
       }
     }
 
