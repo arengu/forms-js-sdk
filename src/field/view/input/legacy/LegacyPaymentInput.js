@@ -1,4 +1,5 @@
 import isNil from 'lodash/isNil';
+import defaultTo from 'lodash/defaultTo';
 
 const STRIPE_SDK_URL = 'https://js.stripe.com/v3/';
 const STRIPE_SDK_LOAD = 'af-stripeLoad';
@@ -346,20 +347,26 @@ class LegacyPaymentInput {
 
   _initStripeSdk() {
     const { config: { credentials: { publicKey } } } = this.model;
+    const { config: { fields } } = this.model;
+
+    const
+      cardNumberPlaceholder = defaultTo(fields.cardNumber.placeholder, undefined),
+      expirationDatePlaceholder = defaultTo(fields.expirationDate.placeholder, undefined),
+      securityCodePlaceholder = defaultTo(fields.securityCode.placeholder, undefined);
 
     const stripe = Stripe(publicKey);
     const elements = stripe.elements();
     const style = this._buildElementStyles();
 
-    const cardNumber = elements.create('cardNumber', { style });
+    const cardNumber = elements.create('cardNumber', { style, placeholder: cardNumberPlaceholder });
     cardNumber.mount(this.cardNumber);
     this._addCardNumberListener(cardNumber);
 
-    const expirationDate = elements.create('cardExpiry', { style });
+    const expirationDate = elements.create('cardExpiry', { style, placeholder: expirationDatePlaceholder });
     expirationDate.mount(this.expirationDate);
     this._addExpirationDateListener(expirationDate);
 
-    const securityCode = elements.create('cardCvc', { style });
+    const securityCode = elements.create('cardCvc', { style, placeholder: securityCodePlaceholder });
     securityCode.mount(this.securityCode);
     this._addSecurityCodeListener(securityCode);
 
