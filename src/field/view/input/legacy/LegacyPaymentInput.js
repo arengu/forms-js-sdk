@@ -50,19 +50,25 @@ class LegacyPaymentInput {
 
     const styles = {
       base: {
-        color: this.style.input?.fontColor || computedStyle.getPropertyValue('--input-color'),
-        fontFamily: this.style.body?.fontFamily || computedStyle.getPropertyValue('--font-family'),
-        fontSize: this.style.input?.fontSize || computedStyle.getPropertyValue('--input-font-size'),
+        color:
+          this.style.input?.fontColor ||
+          computedStyle.getPropertyValue('--input-color').trim(),
+        fontFamily:
+          this.style.body?.fontFamily ||
+          computedStyle.getPropertyValue('--font-family').trim(),
+        fontSize:
+          this.style.input?.fontSize ||
+          computedStyle.getPropertyValue('--input-font-size').trim(),
         '::placeholder': {
           color:
             this.style.calculated?.placeholderFontColor ||
-            computedStyle.getPropertyValue('--placeholder-color'),
+            computedStyle.getPropertyValue('--placeholder-color').trim(),
         },
       },
       invalid: {
         color:
           this.style.error?.fontColor ||
-          computedStyle.getPropertyValue('--message-fail-color'),
+          computedStyle.getPropertyValue('--message-fail-color').trim(),
       },
     };
 

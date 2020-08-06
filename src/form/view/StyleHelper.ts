@@ -233,7 +233,7 @@ export const StyleHelper = {
     // see https://bugzilla.mozilla.org/show_bug.cgi?id=137688)
     const doc = document.documentElement;
     const compStyle = getComputedStyle(doc);
-    const inputBorder = compStyle.getPropertyValue('--input-border');
+    const inputBorder = compStyle.getPropertyValue('--input-border').trim();
 
     if (compStyle && inputBorder) {
       const input = document.createElement('input');
@@ -251,11 +251,11 @@ export const StyleHelper = {
       };
 
       if (compStyle.borderTopColor) {
-        doc.style.setProperty('--input-border-color', compStyle.borderTopColor);
+        doc.style.setProperty('--input-border-color', compStyle.borderTopColor.trim());
       }
 
       if (compStyle.borderTopWidth) {
-        doc.style.setProperty('--input-border-width', compStyle.borderTopWidth);
+        doc.style.setProperty('--input-border-width', compStyle.borderTopWidth.trim());
       }
     }
 
