@@ -141,7 +141,7 @@ export abstract class BaseFieldPresenter<IV extends IInputView = IInputView> ext
     return MagicString.isDynamic(hint) || MagicString.isDynamic(label);
   }
 
-  public updateField(this: this, data: IFormData): void {
+  public updateContent(this: this, data: IFormData): void {
     const initLabel = this.fieldM.label;
 
     if (initLabel) {

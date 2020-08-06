@@ -2,11 +2,11 @@ import { IView } from "../../../core/BaseTypes";
 import { IPreviousButtonBlockModel } from '../../BlockModel';
 import { IPreviousButtonView, PreviousButtonView } from './PreviousButtonView';
 import { IBlockPresenter } from '../../BlockPresenter';
-import { BaseComponentPresenter } from '../../../component/ComponentHelper';
+import { BaseBlockPresenter } from "../../BaseBlockPresenter";
 
 export type IPreviousButtonPresenter = IBlockPresenter;
 
-export class PreviousButtonPresenter extends BaseComponentPresenter implements IPreviousButtonPresenter {
+export class PreviousButtonPresenter extends BaseBlockPresenter implements IPreviousButtonPresenter {
   protected buttonV: IPreviousButtonView;
 
   protected constructor(buttonM: IPreviousButtonBlockModel) {

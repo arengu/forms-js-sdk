@@ -1,6 +1,5 @@
 import { FieldError } from '../../../error/InvalidFields';
 import { IFormDeps } from '../../../form/FormPresenter';
-import { IFormData } from '../../../form/model/SubmissionModel';
 import { FieldType, IFieldModel, IFieldValue } from '../../model/FieldModel';
 import { IFieldValidationResult } from '../validator/FieldValidator';
 import { FieldPresenterFactory } from './FieldPresenterFactory';
@@ -12,8 +11,6 @@ export interface IFieldPresenter extends IComponentPresenter {
   getFieldId(this: this): string;
   getValue(this: this): Promise<IFieldValue>;
 
-  isDynamic(this: this): boolean;
-  updateField(this: this, data: IFormData): void;
   onUpdateStyle(style: IFormStyle): void;
 
   validate(this: this): Promise<IFieldValidationResult>;

@@ -113,8 +113,9 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
 
   protected readonly invalidFields: Set<string>;
   protected readonly fieldsP: IFieldPresenter[];
-  protected readonly dynFieldsP: IFieldPresenter[];
   protected readonly fieldsPI: Record<string, IFieldPresenter>; // indexed by fieldId
+
+  protected readonly dynComponentsP: IComponentPresenter[];
 
   protected readonly nextsP: INextButtonPresenter[];
 
@@ -134,8 +135,9 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
 
     this.invalidFields = new Set();
     this.fieldsP = this.compsP.filter(ComponentHelper.isFieldPresenter);
-    this.dynFieldsP = this.fieldsP.filter((fP): boolean => fP.isDynamic());
     this.fieldsPI = keyBy(this.fieldsP, (fP) => fP.getFieldId());
+
+    this.dynComponentsP = this.compsP.filter((cP): boolean => cP.isDynamic());
 
     this.nextsP = this.compsP.filter(NextButtonPresenter.matches);
 
@@ -170,11 +172,11 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
   }
 
   public isDynamic(this: this): boolean {
-    return this.dynFieldsP.length > 0;
+    return this.dynComponentsP.length > 0;
   }
 
   public updateStep(this: this, data: IFormData): void {
-    this.dynFieldsP.forEach((fP): void => fP.updateField(data));
+    this.dynComponentsP.forEach((cP): void => cP.updateContent(data));
   }
 
   public hasFlow(this: this): boolean {
