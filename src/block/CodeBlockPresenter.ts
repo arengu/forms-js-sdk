@@ -1,5 +1,5 @@
 import { IBlockPresenter } from "./BlockPresenter";
-import { BaseBlockPresenter } from "./BaseBlockPresenter";
+import { BaseBlockPresenter } from "../core/BasePresenters";
 
 export type ICodeBlockPresenter = IBlockPresenter;
 

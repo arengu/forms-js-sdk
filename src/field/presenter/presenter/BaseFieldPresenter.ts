@@ -13,7 +13,7 @@ import { IInputView, IInputViewListener } from '../../view/InputView';
 import { IFieldPresenter } from './FieldPresenter';
 import { IValueHandler } from '../handler/ValueHandler';
 import { IFieldValidationResult, IFieldValidator } from '../validator/FieldValidator';
-import { BaseComponentPresenter } from '../../../component/ComponentHelper';
+import { BaseComponentPresenter } from '../../../core/BasePresenters';
 import { IExtendedFormStyle } from '../../../form/model/FormStyle';
 
 export abstract class BaseFieldPresenter<IV extends IInputView = IInputView> extends BaseComponentPresenter implements IFieldPresenter, IInputViewListener {

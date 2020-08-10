@@ -2,7 +2,7 @@ import { IView } from "../../../core/BaseTypes";
 import { IPreviousButtonBlockModel } from '../../BlockModel';
 import { IPreviousButtonView, PreviousButtonView } from './PreviousButtonView';
 import { IBlockPresenter } from '../../BlockPresenter';
-import { BaseBlockPresenter } from "../../BaseBlockPresenter";
+import { BaseBlockPresenter } from "../../../core/BasePresenters";
 
 export type IPreviousButtonPresenter = IBlockPresenter;
 
