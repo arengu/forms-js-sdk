@@ -38,7 +38,6 @@ export interface IFormStyle {
 export interface IExtendedFormStyle extends IFormStyle {
   calculated: {
     primaryFontColor?: string;
-    dropdownIconColor?: string;
     dropdownBackgroundColor?: string;
     dropdownOptionBackgroundColor?: string;
     dropdownOptionActiveBackgroundColor?: string;
@@ -60,5 +59,7 @@ export interface IExtendedFormStyle extends IFormStyle {
     messageFailFontSize?: string;
     messageFailBackgroundColor?: string;
     messageSuccessBackgroundColor?: string;
+    altInputIcons?: boolean;
+    altDropdownIcons?: boolean;
   };
 }

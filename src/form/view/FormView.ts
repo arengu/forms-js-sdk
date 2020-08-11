@@ -8,6 +8,7 @@ import { ICookieModel } from '../model/CookieModel';
 import { CookieHelper } from '../../lib/view/CookieHelper';
 import { IPageRedirection } from '../FormInteraction';
 import { IExtendedFormStyle } from '../model/FormStyle';
+import { HTMLHelper } from '../../lib/view/HTMLHelper';
 
 export interface IVisibleArea {
   minOffset: number;
@@ -100,7 +101,6 @@ export const FormRendererer = {
       '--placeholder-font-color': style.calculated?.placeholderFontColor,
       '--placeholder-focus-font-color': style.calculated?.placeholderFocusFontColor,
 
-      '--dropdown-icon-color': style.calculated?.dropdownIconColor,
       '--dropdown-background-color': style.calculated?.dropdownBackgroundColor,
       '--dropdown-option-background-color': style.calculated?.dropdownOptionBackgroundColor,
       '--dropdown-option-active-background-color': style.calculated?.dropdownOptionActiveBackgroundColor,
@@ -223,6 +223,18 @@ export class FormView implements IFormView {
   }
 
   public setStyle(style: IExtendedFormStyle): void {
+    HTMLHelper.toggleClass(
+      this.formE,
+      'af-alt-input-icons',
+      style.calculated.altInputIcons
+    );
+
+    HTMLHelper.toggleClass(
+      this.formE,
+      'af-alt-dropdown-icons',
+      style.calculated.altDropdownIcons
+    );
+
     this.styleE.textContent = FormRendererer.buildCss(style, this.formM.id);
   }
 }
