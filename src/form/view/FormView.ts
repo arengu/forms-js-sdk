@@ -129,7 +129,7 @@ export const FormRendererer = {
     root.classList.add(`af-form-${id}`, 'af-form');
 
     root.appendChild(formE);
-    root.append(styleE);
+    root.appendChild(styleE);
 
     return root;
   },
