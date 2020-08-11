@@ -44,7 +44,7 @@ export const StyleHelper = {
     return Math.abs(StyleHelper.getBrightness(color1) - StyleHelper.getBrightness(color2));
   },
 
-  enoughContrast(color1: IColor, color2: IColor, minimum: number): boolean {
+  hasEnoughContrast(color1: IColor, color2: IColor, minimum: number): boolean {
     return StyleHelper.getContrast(color1, color2) > minimum;
   },
 
@@ -184,8 +184,8 @@ export const StyleHelper = {
 
       newStyle.calculated = {
         ...newStyle.calculated,
-        altInputIcons: !StyleHelper.enoughContrast(inputBackgroundColor, inputIconColor, 35),
-        altDropdownIcons: !StyleHelper.enoughContrast(inputBackgroundColor, dropdownIconColor, 80),
+        altInputIcons: !StyleHelper.hasEnoughContrast(inputBackgroundColor, inputIconColor, 35),
+        altDropdownIcons: !StyleHelper.hasEnoughContrast(inputBackgroundColor, dropdownIconColor, 80),
         dropdownBackgroundColor: StyleHelper.colorToRgba(StyleHelper.setOpacity(inputBackgroundColor, 1)),
       };
     }
