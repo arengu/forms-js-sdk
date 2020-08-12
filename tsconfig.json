@@ -6,7 +6,8 @@
     "target": "es2016",
     "strict": true,
     "noEmit": true,
-    "outDir": "build/"
+    "outDir": "build/",
+    "moduleResolution": "Node",
   },
   "include": [
     "src/**/*"
