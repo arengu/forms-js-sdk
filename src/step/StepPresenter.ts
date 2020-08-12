@@ -15,7 +15,7 @@ import { IFieldPresenter } from '../field/presenter/presenter/FieldPresenter';
 import { IStepView, StepView } from './view/StepView';
 import { AppErrorCode } from '../error/ErrorCodes';
 import { ArenguError } from '../error/ArenguError';
-import { IUserValues, IFormData } from '../form/model/SubmissionModel';
+import { IUserValues } from '../form/model/SubmissionModel';
 import { IComponentModel } from '../component/ComponentModel';
 import { ComponentHelper } from '../component/ComponentHelper';
 import { NextButtonPresenter, INextButtonPresenter } from '../block/navigation/next/NextButtonPresenter';
@@ -25,6 +25,7 @@ import { ISocialFieldPresenter, SocialFieldPresenter } from '../field/presenter/
 import { IPresenter } from '../core/BaseTypes';
 import { StepErrorPresenter, IStepErrorPresenter } from './part/StepErrorPresenter';
 import { IExtendedFormStyle } from '../form/model/FormStyle';
+import { IRefScope } from '../form/model/FormModel';
 
 export interface IStepPresenterListener {
   onGotoPreviousStep?(this: this, stepP: IStepPresenter): void;
@@ -44,7 +45,7 @@ export interface IStepPresenter extends IPresenter {
   onHide(this: this): void;
 
   isDynamic(this: this): boolean;
-  updateStep(this: this, data: IFormData): void;
+  updateStep(this: this, data: IRefScope): void;
   onUpdateStyle(style: IExtendedFormStyle): void;
 
   hasFlow(this: this): boolean;
@@ -175,7 +176,7 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
     return this.dynComponentsP.length > 0;
   }
 
-  public updateStep(this: this, data: IFormData): void {
+  public updateStep(this: this, data: IRefScope): void {
     this.dynComponentsP.forEach((cP): void => cP.updateContent(data));
   }
 

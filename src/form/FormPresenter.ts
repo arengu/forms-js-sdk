@@ -391,7 +391,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
 
     if (nextStep.isDynamic()) {
       const formValues = await this.getFormValues();
-      nextStep.updateStep(formValues);
+      nextStep.updateStep({ field: formValues, ...formValues });
     }
 
     this.setContent(nextStep, { scrollTop: true });

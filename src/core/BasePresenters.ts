@@ -1,6 +1,6 @@
 import { ListenableEntity } from "../lib/ListenableEntity";
 import { IComponentPresenter, IComponentPresenterListener } from "../component/ComponentPresenter";
-import { IFormData } from "../form/model/SubmissionModel";
+import { IRefScope } from "../form/model/FormModel";
 
 export abstract class BaseComponentPresenter extends ListenableEntity<IComponentPresenterListener> implements IComponentPresenter {
   public isDynamic(): boolean {
@@ -8,7 +8,7 @@ export abstract class BaseComponentPresenter extends ListenableEntity<IComponent
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public updateContent(this: this, data: IFormData): void {
+  public updateContent(this: this, data: IRefScope): void {
     // nothing to do
   }
 

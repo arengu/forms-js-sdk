@@ -2,6 +2,7 @@ import { IFormStyle } from './FormStyle';
 import { IStepModel } from '../../step/model/StepModel';
 import { IHiddenFieldsDef } from '../HiddenFields';
 import { IMessages } from '../../lib/Messages';
+import { IFormData } from './SubmissionModel';
 
 export enum SocialProvider {
   FACEBOOK = 'FACEBOOK',
@@ -32,4 +33,9 @@ export interface IFormModel {
   readonly steps: IStepModel[];
   readonly social: ISocialConfig[];
   readonly style?: IFormStyle;
+}
+
+export type IRefScope = {
+  readonly field: IFormData;
+  readonly [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
