@@ -25,14 +25,12 @@ export const HTMLHelper = {
    * dropped for it we can remove this and use directly the native method.
    */
   toggleClass(elem: Element, className: string, force?: boolean): void {
-    if(force === undefined) {
+    if (force === undefined) {
       elem.classList.toggle(className);
-    } else {
+    } else if (force === true) {
+      elem.classList.add(className);
+    } else if (force === false) {
       elem.classList.remove(className);
-
-      if (force) {
-        elem.classList.add(className);
-      }
     }
   }
 };

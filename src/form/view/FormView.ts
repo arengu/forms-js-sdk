@@ -90,6 +90,7 @@ export const FormRendererer = {
       '--message-success-font-color': style.success?.fontColor,
       '--message-fail-font-color': style.error?.fontColor,
       '--invalid-field-border-color': style.error?.fontColor,
+      '--dropdown-background-color': style.input?.backgroundColor,
 
       '--primary-font-color': style.calculated?.primaryFontColor,
 
@@ -101,7 +102,6 @@ export const FormRendererer = {
       '--placeholder-font-color': style.calculated?.placeholderFontColor,
       '--placeholder-focus-font-color': style.calculated?.placeholderFocusFontColor,
 
-      '--dropdown-background-color': style.calculated?.dropdownBackgroundColor,
       '--dropdown-option-background-color': style.calculated?.dropdownOptionBackgroundColor,
       '--dropdown-option-active-background-color': style.calculated?.dropdownOptionActiveBackgroundColor,
       '--dropdown-option-hover-background-color': style.calculated?.dropdownOptionHoverBackgroundColor,

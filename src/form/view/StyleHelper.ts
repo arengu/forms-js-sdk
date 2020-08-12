@@ -34,12 +34,19 @@ export const StyleHelper = {
     return Math.max(low, Math.min(num, high));
   },
 
-  // based on bgrins/tinycolor
+  /**
+   * Gets the brightness of a color as a number between 0 and 255 (both included).
+   */
   getBrightness(color: IColor): number {
-    // 0 <= lightness <= 255
-    return color.red * .299 + color.green * .587 + color.blue * .114;
+    // based on bgrins/tinycolor
+    return color.red * 0.299 + color.green * 0.587 + color.blue * 0.114;
   },
 
+  /**
+   * Gets the contrast (defined as difference in brightness) between two colors as
+   * a number between 0 and 255 (both included) where a smaller value implies
+   * colors that are not going to be visually different enough when put together.
+   */
   getContrast(color1: IColor, color2: IColor): number {
     return Math.abs(StyleHelper.getBrightness(color1) - StyleHelper.getBrightness(color2));
   },
@@ -186,7 +193,6 @@ export const StyleHelper = {
         ...newStyle.calculated,
         altInputIcons: !StyleHelper.hasEnoughContrast(inputBackgroundColor, inputIconColor, 35),
         altDropdownIcons: !StyleHelper.hasEnoughContrast(inputBackgroundColor, dropdownIconColor, 80),
-        dropdownBackgroundColor: StyleHelper.colorToRgba(StyleHelper.setOpacity(inputBackgroundColor, 1)),
       };
     }
 

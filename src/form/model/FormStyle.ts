@@ -38,7 +38,6 @@ export interface IFormStyle {
 export interface IExtendedFormStyle extends IFormStyle {
   calculated: {
     primaryFontColor?: string;
-    dropdownBackgroundColor?: string;
     dropdownOptionBackgroundColor?: string;
     dropdownOptionActiveBackgroundColor?: string;
     dropdownOptionHoverBackgroundColor?: string;
