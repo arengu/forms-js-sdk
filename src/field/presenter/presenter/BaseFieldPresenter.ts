@@ -13,7 +13,7 @@ import { IInputView, IInputViewListener } from '../../view/InputView';
 import { IFieldPresenter } from './FieldPresenter';
 import { IValueHandler } from '../handler/ValueHandler';
 import { IFieldValidationResult, IFieldValidator } from '../validator/FieldValidator';
-import { BaseComponentPresenter } from '../../../component/ComponentHelper';
+import { BaseComponentPresenter } from '../../../core/BasePresenters';
 import { IExtendedFormStyle } from '../../../form/model/FormStyle';
 
 export abstract class BaseFieldPresenter<IV extends IInputView = IInputView> extends BaseComponentPresenter implements IFieldPresenter, IInputViewListener {
@@ -141,7 +141,7 @@ export abstract class BaseFieldPresenter<IV extends IInputView = IInputView> ext
     return MagicString.isDynamic(hint) || MagicString.isDynamic(label);
   }
 
-  public updateField(this: this, data: IFormData): void {
+  public updateContent(this: this, data: IFormData): void {
     const initLabel = this.fieldM.label;
 
     if (initLabel) {

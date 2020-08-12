@@ -1,5 +1,5 @@
 import { IBlockPresenter } from "./BlockPresenter";
-import { BaseComponentPresenter } from "../component/ComponentHelper";
+import { BaseBlockPresenter } from "../core/BasePresenters";
 
 export type ICodeBlockPresenter = IBlockPresenter;
 
@@ -19,7 +19,7 @@ export const CodeBlockRenderer = {
   },
 }
 
-export class CodeBlockPresenter extends BaseComponentPresenter implements ICodeBlockPresenter {
+export class CodeBlockPresenter extends BaseBlockPresenter implements ICodeBlockPresenter {
   protected rootE: HTMLElement;
 
   protected constructor(params: ICodeBlockParams) {

@@ -2,13 +2,10 @@ import { BlockType, IBlockModel } from "./BlockModel";
 import { PreviousButtonPresenter, IPreviousButtonPresenter } from "./navigation/previous/PreviousButtonPresenter";
 import { NextButtonPresenter } from "./navigation/next/NextButtonPresenter";
 import { IComponentPresenter } from "../component/ComponentPresenter";
-import { BaseComponentPresenter } from "../component/ComponentHelper";
 import { HTMLBlockPresenter } from "./HtmlBlockPresenter";
 import { RichTextBlockPresenter } from "./RichTextBlockPresenter";
 
 export type IBlockPresenter = IComponentPresenter;
-
-export class BaseBlockPresenter extends BaseComponentPresenter { }
 
 export interface IBlockPresenterListener {
   onGoToPrevious?(this: this, buttonP: IPreviousButtonPresenter): void;

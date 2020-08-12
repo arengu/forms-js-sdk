@@ -1,4 +1,4 @@
-import { BaseComponentPresenter } from '../../component/ComponentHelper';
+import { BaseComponentPresenter } from '../../core/BasePresenters';
 import { IBlockPresenter } from '../../block/BlockPresenter';
 import { StepErrorView, IStepErrorView } from './StepErrorView';
 

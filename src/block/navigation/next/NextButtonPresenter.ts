@@ -1,8 +1,8 @@
 import { INextButtonBlockModel } from '../../BlockModel';
 import { INextButtonView, NextButtonView } from './NextButtonView';
 import { IBlockPresenter } from '../../BlockPresenter';
-import { BaseComponentPresenter } from '../../../component/ComponentHelper';
 import { IComponentPresenter } from '../../../component/ComponentPresenter';
+import { BaseBlockPresenter } from '../../../core/BasePresenters';
 
 export interface INextButtonPresenter extends IBlockPresenter {
   showLoading(): void;
@@ -11,7 +11,7 @@ export interface INextButtonPresenter extends IBlockPresenter {
   unblock(): void;
 }
 
-export class NextButtonPresenter extends BaseComponentPresenter implements INextButtonPresenter {
+export class NextButtonPresenter extends BaseBlockPresenter implements INextButtonPresenter {
   protected buttonV: INextButtonView;
 
   protected constructor(buttonM: INextButtonBlockModel) {
