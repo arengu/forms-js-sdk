@@ -34,10 +34,29 @@ export const StyleHelper = {
     return Math.max(low, Math.min(num, high));
   },
 
-  // based on bgrins/tinycolor
+  /**
+   * Gets the brightness of a color as a number between 0 and 255 (both included).
+   */
+  getBrightness(color: IColor): number {
+    // based on bgrins/tinycolor
+    return color.red * 0.299 + color.green * 0.587 + color.blue * 0.114;
+  },
+
+  /**
+   * Gets the contrast (defined as difference in brightness) between two colors as
+   * a number between 0 and 255 (both included) where a smaller value implies
+   * colors that are not going to be visually different enough when put together.
+   */
+  getContrast(color1: IColor, color2: IColor): number {
+    return Math.abs(StyleHelper.getBrightness(color1) - StyleHelper.getBrightness(color2));
+  },
+
+  hasEnoughContrast(color1: IColor, color2: IColor, minimum: number): boolean {
+    return StyleHelper.getContrast(color1, color2) > minimum;
+  },
+
   isDark(color: IColor): boolean {
-    // 0 <= lightness <= 255000
-    return color.red * 299 + color.green * 587 + color.blue * 114 < 128000;
+    return StyleHelper.getBrightness(color) < 128;
   },
 
   // based on https://github.com/PimpTrizkit/PJs/wiki/12.-Shade,-Blend-and-Convert-a-Web-Color-(pSBC.js)
@@ -165,12 +184,15 @@ export const StyleHelper = {
     }
 
     if (style.input?.backgroundColor) {
-      const parsedInputBackgroundColor = StyleHelper.colorFromHex(style.input?.backgroundColor);
+      const inputIconColor = { red: 200, green: 204, blue: 211, alpha: 1 }; // #c8ccd3
+      const dropdownIconColor = { red: 50, green: 61, blue: 71, alpha: 1 }; // #323d47
+
+      const inputBackgroundColor = StyleHelper.colorFromHex(style.input?.backgroundColor);
 
       newStyle.calculated = {
         ...newStyle.calculated,
-        dropdownIconColor: StyleHelper.isDark(parsedInputBackgroundColor) ? '#fff' : '#323d47',
-        dropdownBackgroundColor: StyleHelper.colorToRgba(StyleHelper.setOpacity(parsedInputBackgroundColor, 1)),
+        altInputIcons: !StyleHelper.hasEnoughContrast(inputBackgroundColor, inputIconColor, 35),
+        altDropdownIcons: !StyleHelper.hasEnoughContrast(inputBackgroundColor, dropdownIconColor, 80),
       };
     }
 
