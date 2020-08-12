@@ -3,7 +3,7 @@ import escapeHE from 'lodash/escape';
 
 import { FieldError } from '../../../error/InvalidFields';
 import { IFormDeps } from '../../../form/FormPresenter';
-import { IRefsScope } from '../../../form/model/FormModel';
+import { IRefScope } from '../../../form/model/FormModel';
 import { DOMEvents, EventNames } from '../../../lib/DOMEvents';
 import { MagicString } from '../../../lib/MagicString';
 import { Messages } from '../../../lib/Messages';
@@ -141,7 +141,7 @@ export abstract class BaseFieldPresenter<IV extends IInputView = IInputView> ext
     return MagicString.isDynamic(hint) || MagicString.isDynamic(label);
   }
 
-  public updateContent(this: this, data: IRefsScope): void {
+  public updateContent(this: this, data: IRefScope): void {
     const initLabel = this.fieldM.label;
 
     if (initLabel) {

@@ -1,7 +1,7 @@
 import getValue from 'lodash/get';
 import identity from 'lodash/identity';
 
-import { IRefsScope } from '../form/model/FormModel';
+import { IRefScope } from '../form/model/FormModel';
 import { StringUtils } from './util/StringUtils';
 
 const TOKENIZE_REGEX = /({{[a-z0-9_-]+(?:\.[a-z0-9_-]+)*}})/i;
@@ -29,7 +29,7 @@ export const MagicString = {
     return input.slice(2, -2);
   },
 
-  render(input: string, data: IRefsScope, escape: IEscapeFunction = identity): string {
+  render(input: string, data: IRefScope, escape: IEscapeFunction = identity): string {
     const tokens = MagicString.tokenize(input);
 
     if (tokens.length === 1) {

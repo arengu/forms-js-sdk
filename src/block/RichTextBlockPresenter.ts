@@ -3,7 +3,7 @@ import escapeHE from 'lodash/escape';
 import { IRichTextBlockModel } from "./BlockModel";
 import { ICodeBlockPresenter, CodeBlockPresenter } from "./CodeBlockPresenter";
 import { MagicString } from "../lib/MagicString";
-import { IRefsScope } from '../form/model/FormModel';
+import { IRefScope } from '../form/model/FormModel';
 
 const CONTAINER_CLASS = 'af-rich-text-block';
 
@@ -29,7 +29,7 @@ export class RichTextBlockPresenter extends CodeBlockPresenter implements IRichT
     return MagicString.isDynamic(this.content);
   }
 
-  public updateContent(this: this, data: IRefsScope): void {
+  public updateContent(this: this, data: IRefScope): void {
     this.rootE.innerHTML = MagicString.render(this.rootE.innerHTML, data, escapeHE);
   }
 }

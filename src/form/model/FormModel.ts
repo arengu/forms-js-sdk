@@ -35,7 +35,7 @@ export interface IFormModel {
   readonly style?: IFormStyle;
 }
 
-export type IRefsScope = {
+export type IRefScope = {
   readonly field: IFormData;
   readonly [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }

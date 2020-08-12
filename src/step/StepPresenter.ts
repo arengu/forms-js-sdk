@@ -25,7 +25,7 @@ import { ISocialFieldPresenter, SocialFieldPresenter } from '../field/presenter/
 import { IPresenter } from '../core/BaseTypes';
 import { StepErrorPresenter, IStepErrorPresenter } from './part/StepErrorPresenter';
 import { IExtendedFormStyle } from '../form/model/FormStyle';
-import { IRefsScope } from '../form/model/FormModel';
+import { IRefScope } from '../form/model/FormModel';
 
 export interface IStepPresenterListener {
   onGotoPreviousStep?(this: this, stepP: IStepPresenter): void;
@@ -45,7 +45,7 @@ export interface IStepPresenter extends IPresenter {
   onHide(this: this): void;
 
   isDynamic(this: this): boolean;
-  updateStep(this: this, data: IRefsScope): void;
+  updateStep(this: this, data: IRefScope): void;
   onUpdateStyle(style: IExtendedFormStyle): void;
 
   hasFlow(this: this): boolean;
@@ -176,7 +176,7 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
     return this.dynComponentsP.length > 0;
   }
 
-  public updateStep(this: this, data: IRefsScope): void {
+  public updateStep(this: this, data: IRefScope): void {
     this.dynComponentsP.forEach((cP): void => cP.updateContent(data));
   }
 
