@@ -1,4 +1,5 @@
 import isNil from 'lodash/isNil';
+import defaultTo from 'lodash/defaultTo';
 
 import { StyleHelper } from "./StyleHelper";
 
@@ -226,13 +227,13 @@ export class FormView implements IFormView {
     HTMLHelper.toggleClass(
       this.formE,
       'af-alt-input-icons',
-      style.calculated.altInputIcons
+      defaultTo(style.calculated.altInputIcons, false),
     );
 
     HTMLHelper.toggleClass(
       this.formE,
       'af-alt-dropdown-icons',
-      style.calculated.altDropdownIcons
+      defaultTo(style.calculated.altDropdownIcons, false),
     );
 
     this.styleE.textContent = FormRendererer.buildCss(style, this.formM.id);
