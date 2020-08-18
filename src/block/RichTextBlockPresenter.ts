@@ -30,6 +30,6 @@ export class RichTextBlockPresenter extends CodeBlockPresenter implements IRichT
   }
 
   public updateContent(this: this, data: IRefScope): void {
-    this.rootE.innerHTML = MagicString.render(this.rootE.innerHTML, data, escapeHE);
+    this.rootE.innerHTML = MagicString.render(this.content, data, escapeHE);
   }
 }
