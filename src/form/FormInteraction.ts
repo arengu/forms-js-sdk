@@ -1,4 +1,3 @@
-import { ICookieModel } from './model/CookieModel';
 import { IFormData } from './model/SubmissionModel';
 import { IMetaDataModel } from './model/MetaDataModel';
 
@@ -40,7 +39,7 @@ export interface IErrorMessageAction {
 export interface IFormInteractionResponse {
   readonly effect: INextStepAction | IJumpToStepAction | IThankYouAction | IErrorMessageAction;
   readonly data: object;
-  readonly cookies: ICookieModel[];
+  readonly cookies: string[];
 }
 
 export interface IFormInteractionRequest {

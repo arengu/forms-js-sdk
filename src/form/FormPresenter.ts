@@ -68,7 +68,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     this.formM = formM;
     this.hiddenFields = HiddenFields.create(formM.hiddenFields);
 
-    this.style = StyleHelper.extendStyle(formM.style || {});
+    this.style = StyleHelper.extendStyle(formM.style);
 
     const formD: IFormDeps = {
       style: this.style,

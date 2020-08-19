@@ -5,8 +5,6 @@ import { StyleHelper } from "./StyleHelper";
 
 import { IView } from "../../core/BaseTypes";
 import { IFormModel } from '../model/FormModel';
-import { ICookieModel } from '../model/CookieModel';
-import { CookieHelper } from '../../lib/view/CookieHelper';
 import { IPageRedirection } from '../FormInteraction';
 import { IExtendedFormStyle } from '../model/FormStyle';
 import { HTMLHelper } from '../../lib/view/HTMLHelper';
@@ -219,8 +217,8 @@ export class FormView implements IFormView {
     }, delayMS);
   }
 
-  public static setCookies(cookies: ICookieModel[]): void {
-    cookies.forEach((c) => CookieHelper.set(c));
+  public static setCookies(cookies: string[]): void {
+    cookies.forEach((c) => document.cookie = c);
   }
 
   public setStyle(style: IExtendedFormStyle): void {
