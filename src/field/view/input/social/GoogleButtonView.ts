@@ -42,13 +42,7 @@ export class GoogleButtonView extends GenericButtonView implements ISocialButton
       return;
     }
 
-    const user = this.sdk.currentUser.get();
-
-    if (user.isSignedIn()) {
-      this.handleLogin(user, this.buttonL);
-    } else {
-      this.requestLogin()
-    }
+    this.requestLogin();
   }
 
   public requestLogin(): void {
