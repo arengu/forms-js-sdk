@@ -1,7 +1,7 @@
 import find from 'lodash/find';
 import isNil from 'lodash/isNil';
 
-import { HiddenFields } from './HiddenFields';
+import { HiddenFields, IHiddenFieldValues } from './HiddenFields';
 
 import { IFormModel, ISocialConfig } from './model/FormModel';
 import { IFormStyle, IExtendedFormStyle } from './model/FormStyle';
@@ -126,7 +126,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     return userValues;
   }
 
-  public getHiddenFields(): object {
+  public getHiddenFields(): IHiddenFieldValues {
     return this.hiddenFields.getAll();
   }
 
@@ -352,6 +352,11 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
 
     if (isNil(firstStep)) {
       return;
+    }
+
+    if (firstStep.isDynamic()) {
+      const hiddenFields = this.getHiddenFields(); // no user values on first step
+      firstStep.updateStep({ field: hiddenFields, ...hiddenFields });
     }
 
     this.setContent(firstStep, options);
