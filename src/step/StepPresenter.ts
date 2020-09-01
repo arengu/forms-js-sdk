@@ -15,7 +15,7 @@ import { IFieldPresenter } from '../field/presenter/presenter/FieldPresenter';
 import { IStepView, StepView } from './view/StepView';
 import { AppErrorCode } from '../error/ErrorCodes';
 import { ArenguError } from '../error/ArenguError';
-import { IUserValues } from '../form/model/SubmissionModel';
+import { IUserValues, IFormData } from '../form/model/SubmissionModel';
 import { IComponentModel } from '../component/ComponentModel';
 import { ComponentHelper } from '../component/ComponentHelper';
 import { NextButtonPresenter, INextButtonPresenter } from '../block/navigation/next/NextButtonPresenter';
@@ -45,7 +45,7 @@ export interface IStepPresenter extends IPresenter {
   onHide(this: this): void;
 
   isDynamic(this: this): boolean;
-  updateStep(this: this, data: IRefScope): void;
+  updateStep(this: this, formData: IFormData): void;
   onUpdateStyle(style: IExtendedFormStyle): void;
 
   hasFlow(this: this): boolean;
@@ -176,8 +176,10 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
     return this.dynComponentsP.length > 0;
   }
 
-  public updateStep(this: this, data: IRefScope): void {
-    this.dynComponentsP.forEach((cP): void => cP.updateContent(data));
+  public updateStep(this: this, formData: IFormData): void {
+    // we have to support temporarily both old and new formats to ensure backward compatibility
+    const newScope: IRefScope = { field: formData, ...formData };
+    this.dynComponentsP.forEach((cP): void => cP.updateContent(newScope));
   }
 
   public hasFlow(this: this): boolean {

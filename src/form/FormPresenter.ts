@@ -356,7 +356,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
 
     if (firstStep.isDynamic()) {
       const hiddenFields = this.getHiddenFields(); // no user values on first step
-      firstStep.updateStep({ field: hiddenFields, ...hiddenFields });
+      firstStep.updateStep(hiddenFields);
     }
 
     this.setContent(firstStep, options);
@@ -396,7 +396,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
 
     if (nextStep.isDynamic()) {
       const formValues = await this.getFormValues();
-      nextStep.updateStep({ field: formValues, ...formValues });
+      nextStep.updateStep(formValues);
     }
 
     this.setContent(nextStep, { scrollTop: true });
