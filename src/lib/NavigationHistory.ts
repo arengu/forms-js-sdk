@@ -33,7 +33,7 @@ export class NavigationHistory {
    * Returns the list of arrays sorted from the most recent to the first
    */
   public getHistory(): IStepPresenter[] {
-    return this.stack.reverse();
+    return this.getSequence().reverse();
   }
 
   /**
