@@ -3,6 +3,7 @@ import { InputHelper, InputConfigurator } from './InputHelper';
 import { HTMLHelper } from '../../../lib/view/HTMLHelper';
 import { IBooleanFieldModel } from '../../model/FieldModel';
 import { UID } from '../../../lib/UID';
+import defaultTo from 'lodash/defaultTo';
 
 export interface IBooleanOptionData {
   readonly uid: string;
@@ -50,7 +51,7 @@ export const BooleanInputRenderer = {
 
   renderAllOptions(fieldM: IBooleanFieldModel,
     inputV: BooleanInputView): HTMLDivElement[] {
-    const { defaultValue } = fieldM.config;
+    const { defaultValue, options } = fieldM.config;
 
     return [
       this.renderOption(
@@ -58,7 +59,7 @@ export const BooleanInputRenderer = {
           uid: UID.create(),
           fieldId: fieldM.id,
           value: 'false',
-          label: 'No',
+          label: defaultTo(options?.false, 'No'),
           defaultValue,
         },
         inputV,
@@ -68,7 +69,7 @@ export const BooleanInputRenderer = {
           uid: UID.create(),
           fieldId: fieldM.id,
           value: 'true',
-          label: 'Yes',
+          label: defaultTo(options?.true, 'Yes'),
           defaultValue,
         },
         inputV,

@@ -32,10 +32,16 @@ interface IBaseFieldModel {
   readonly config: object;
 }
 
+export interface IBooleanOptions {
+  true: string;
+  false: string;
+}
+
 export interface IBooleanFieldModel extends IBaseFieldModel {
   readonly type: FieldType.BOOLEAN;
   readonly config: {
     readonly defaultValue: string;
+    readonly options?: IBooleanOptions;
   };
 }
 
