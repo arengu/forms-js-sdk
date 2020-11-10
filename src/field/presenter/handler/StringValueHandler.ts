@@ -1,7 +1,7 @@
 import isNil from 'lodash/isNil';
 
 import { IStringFieldValue } from '../../model/FieldModel';
-import { IValueHandler } from './ValueHandler';
+import { ISyncValueHandler } from './ValueHandler';
 import { IStringInputView } from '../../view/input/StringInputView';
 
 /**
@@ -9,7 +9,7 @@ import { IStringInputView } from '../../view/input/StringInputView';
  * trims value and returns undefined when the string is empty
  */
 export const StringValueHandler = {
-  create(inputV: IStringInputView): IValueHandler<IStringFieldValue> {
+  create(inputV: IStringInputView): ISyncValueHandler<IStringFieldValue> {
     return {
       getValue(): IStringFieldValue {
         const value = inputV.getValue().trim();

@@ -3,7 +3,7 @@ import sha1 from 'hash.js/lib/hash/sha/1';
 import sha256 from 'hash.js/lib/hash/sha/256';
 import sha512 from 'hash.js/lib/hash/sha/512';
 
-import { IValueHandler } from './ValueHandler';
+import { ISyncValueHandler } from './ValueHandler';
 import { IPasswordFieldModel, IPasswordFieldValue, HashFunction } from '../../model/FieldModel';
 import { IPasswordInputView } from '../../view/input/PasswordInputView';
 
@@ -26,7 +26,7 @@ export const PasswordHasher = {
 };
 
 export const PasswordValueHandler = {
-  create(inputV: IPasswordInputView, fieldM: IPasswordFieldModel): IValueHandler<IPasswordFieldValue> {
+  create(inputV: IPasswordInputView, fieldM: IPasswordFieldModel): ISyncValueHandler<IPasswordFieldValue> {
     return {
       getValue(): IPasswordFieldValue {
         const value = inputV.getValue().trim();

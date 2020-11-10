@@ -1,13 +1,13 @@
 import { IFieldModel } from '../../model/FieldModel';
 import { IInputView } from '../../view/InputView';
-import { IValueHandler } from './ValueHandler';
+import { ISyncValueHandler } from './ValueHandler';
 
 export interface IDummyInput<VAL> extends IInputView {
   getValue(): VAL;
 }
 
 export const DummyValueHandler = {
-  create<FV>(inputV: IDummyInput<FV>, fieldM: IFieldModel): IValueHandler<FV> {
+  create<FV>(inputV: IDummyInput<FV>, fieldM: IFieldModel): ISyncValueHandler<FV> {
     return {
       getValue(): FV {
         return inputV.getValue();

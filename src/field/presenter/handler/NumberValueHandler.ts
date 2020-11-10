@@ -1,11 +1,11 @@
 import isNil from 'lodash/isNil';
 
-import { IValueHandler } from './ValueHandler';
+import { ISyncValueHandler } from './ValueHandler';
 import { INumberFieldValue } from '../../model/FieldModel';
 import { INumberInputView } from '../../view/input/NumberInputView';
 
 export const NumberValueHandler = {
-  create(inputV: INumberInputView): IValueHandler<INumberFieldValue> {
+  create(inputV: INumberInputView): ISyncValueHandler<INumberFieldValue> {
     return {
       getValue(): INumberFieldValue {
         const strValue = inputV.getValue().trim();
