@@ -1,8 +1,7 @@
-import { IInputView } from '../InputView';
 import { InputCreator, InputConfigurator } from './InputHelper';
 import { IView } from "../../../core/BaseTypes";
 import { IPasswordFieldModel } from '../../model/FieldModel';
-import { StringInputView } from './StringInputView';
+import { IStringInputView, StringInputView } from './StringInputView';
 import { ListenableEntity } from '../../../lib/ListenableEntity';
 
 const PASSWORD_ICON_SECONDARY = 'af-password-icon-secondary';
@@ -98,8 +97,9 @@ export interface IPasswordVisibilityListener {
 
 export type IPasswordInputValue = string;
 
-export interface IPasswordInputView extends IInputView {
+export interface IPasswordInputView extends IStringInputView {
   getValue(): IPasswordInputValue;
+  setValue(): never;
 }
 
 export class PasswordInputView extends StringInputView implements IPasswordInputView, IPasswordVisibilityListener {
@@ -121,7 +121,7 @@ export class PasswordInputView extends StringInputView implements IPasswordInput
     return new this(fieldM);
   }
 
-  public setValue(): void {
+  public setValue(): never {
     throw new Error('Not allowed for security purposes');
   }
 
