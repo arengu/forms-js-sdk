@@ -121,6 +121,8 @@ export const FieldPresenterFactory = {
 
     const fieldVal = FieldValidator.create([
       FieldRules.require(fieldM),
+      CustomValidations.passwordMinLength(fieldM, inputV),
+      CustomValidations.passwordMaxLength(fieldM, inputV),
     ]);
 
     const valueH = PasswordValueHandler.create(inputV, fieldM);

@@ -123,6 +123,8 @@ export interface IPasswordFieldModel extends IBaseFieldModel {
   readonly config: {
     readonly placeholder?: string;
     readonly hash: HashFunction;
+    readonly minLength?: number;
+    readonly maxLength?: number;
   };
 }
 

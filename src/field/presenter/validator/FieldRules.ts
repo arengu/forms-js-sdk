@@ -3,7 +3,7 @@ import isNil from 'lodash/isNil';
 import { IFieldValidationResult, IFieldValidationFunction } from './FieldValidator';
 import {
   IFieldModel, ITextFieldModel, ITelFieldModel, INumberFieldModel,
-  IChoiceFieldValue, IDropdownFieldValue, IStringFieldValue, IFieldValue,
+  IChoiceFieldValue, IDropdownFieldValue, IStringFieldValue, IFieldValue, IPasswordFieldModel,
 } from '../../model/FieldModel';
 import { FieldError } from '../../../error/InvalidFields';
 import { FieldErrorCode } from '../../../error/ErrorCodes';
@@ -38,7 +38,7 @@ export const FieldRules = {
     }
   },
 
-  minLength(fieldM: ITextFieldModel | ITelFieldModel): IFieldValidationFunction<IStringFieldValue> {
+  minLength(fieldM: ITextFieldModel | ITelFieldModel | IPasswordFieldModel): IFieldValidationFunction<IStringFieldValue> {
     const { minLength } = fieldM.config;
 
     if (isNil(minLength)) {
@@ -64,7 +64,7 @@ export const FieldRules = {
     }
   },
 
-  maxLength(fieldM: ITextFieldModel | ITelFieldModel): IFieldValidationFunction<IStringFieldValue> {
+  maxLength(fieldM: ITextFieldModel | ITelFieldModel | IPasswordFieldModel): IFieldValidationFunction<IStringFieldValue> {
     const { maxLength } = fieldM.config;
 
     if (isNil(maxLength)) {

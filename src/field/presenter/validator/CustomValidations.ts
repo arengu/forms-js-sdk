@@ -3,11 +3,14 @@ import isNil from 'lodash/isNil';
 import { IFieldValidationResult, IFieldValidationFunction } from './FieldValidator';
 import {
   ILegalFieldValue, ILegalFieldModel, IPaymentFieldValue,
-  IPaymentFieldModel, INumberFieldValue, INumberFieldModel,
+  IPaymentFieldModel, INumberFieldValue, INumberFieldModel, IPasswordFieldModel, IPasswordFieldValue,
 } from '../../model/FieldModel';
 import { FieldError } from '../../../error/InvalidFields';
 import { FieldErrorCode } from '../../../error/ErrorCodes';
 import { IPaymentInputView } from '../../view/input/PaymentInputView';
+import { IPasswordInputView } from '../../view/input/PasswordInputView';
+import { FieldRules } from './FieldRules';
+import { StringValueHandler } from '../handler/StringValueHandler';
 
 const VALID: IFieldValidationResult = { valid: true };
 
@@ -105,5 +108,22 @@ export const CustomValidations = {
 
       return VALID;
     };
+  },
+
+  passwordMinLength(fieldM: IPasswordFieldModel, inputV: IPasswordInputView): IFieldValidationFunction<IPasswordFieldValue> {
+    const validator = FieldRules.minLength(fieldM);
+    const handler = StringValueHandler.create(inputV);
+
+    return function checkMinLength(): IFieldValidationResult {
+      return validator(handler.getValue());
+    }
+  },
+
+  passwordMaxLength(fieldM: IPasswordFieldModel, inputV: IPasswordInputView): IFieldValidationFunction<IPasswordFieldValue> {
+    const validator = FieldRules.maxLength(fieldM);
+
+    return function checkMaxLength(): IFieldValidationResult {
+      return validator(inputV.getValue());
+    }
   },
 };
