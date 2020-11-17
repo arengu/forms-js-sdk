@@ -52,6 +52,7 @@ export class SocialInputView extends ListenableEntity<ISocialInputViewListener> 
   protected readonly rootE: HTMLDivElement;
 
   protected readonly buttonsV: ISocialButtonView[];
+  /** Provider used on latest social login */
   protected usedProviderV?: ISocialButtonView;
 
   protected accessToken?: ISocialLoginData;
@@ -76,6 +77,11 @@ export class SocialInputView extends ListenableEntity<ISocialInputViewListener> 
     this.buttonsV.forEach((bV) => bV.reset());
   }
 
+  public clearState(): void {
+    this.accessToken = undefined;
+    this.usedProviderV = undefined;
+  }
+
   public onAccessToken(accessToken: string, buttonV: ISocialButtonView): void {
     if (!this.visible) {
       return;
@@ -97,8 +103,8 @@ export class SocialInputView extends ListenableEntity<ISocialInputViewListener> 
   }
 
   public onShow(): void {
+    this.clearState();
     this.visible = true;
-    this.usedProviderV = undefined;
   }
 
   public onHide(): void {
