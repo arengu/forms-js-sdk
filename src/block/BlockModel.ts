@@ -10,6 +10,7 @@ export enum BlockType {
 interface IBaseBlockModel {
   readonly category: ComponentCategory.BLOCK;
   readonly type: BlockType;
+  readonly id?: string;
   readonly config: object;
 }
 
