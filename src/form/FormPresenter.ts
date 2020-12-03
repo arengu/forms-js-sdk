@@ -3,7 +3,7 @@ import isNil from 'lodash/isNil';
 
 import { HiddenFields, IHiddenFieldValues } from './HiddenFields';
 
-import { IFormModel, ISocialConfig } from './model/FormModel';
+import { IFormModel, ISocialProviderConfig } from './model/FormModel';
 import { IFormStyle, IExtendedFormStyle } from './model/FormStyle';
 
 import { Messages } from '../lib/Messages';
@@ -45,7 +45,7 @@ interface ISetContentOptions {
 
 export interface IFormDeps {
   style: IExtendedFormStyle;
-  social: ISocialConfig[];
+  social: ISocialProviderConfig[];
   messages: Messages;
 }
 

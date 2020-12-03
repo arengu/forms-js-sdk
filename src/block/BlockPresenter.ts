@@ -4,6 +4,7 @@ import { NextButtonPresenter } from "./navigation/next/NextButtonPresenter";
 import { IComponentPresenter } from "../component/ComponentPresenter";
 import { HTMLBlockPresenter } from "./HtmlBlockPresenter";
 import { RichTextBlockPresenter } from "./RichTextBlockPresenter";
+import { JumpButtonPresenter } from "./navigation/jump/JumpButtonPresenter";
 
 export type IBlockPresenter = IComponentPresenter;
 
@@ -18,6 +19,8 @@ export const BlockPresenter = {
         return PreviousButtonPresenter.create(blockM);
       case BlockType.NEXT_BUTTON:
         return NextButtonPresenter.create(blockM);
+      case BlockType.JUMP_BUTTON:
+        return JumpButtonPresenter.create(blockM);
       case BlockType.HTML:
         return HTMLBlockPresenter.create(blockM);
       case BlockType.RICH_TEXT:

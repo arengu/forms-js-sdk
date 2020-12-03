@@ -1,19 +1,20 @@
-import { GenericButtonView, ButtonType, IGenericButtonView } from '../GenericButtonView';
+import { AsyncButtonView, IAsyncButtonView } from '../button/async/AsyncButtonView';
+import { ButtonType } from '../button/base/ButtonView';
 
 export const CSS_CLASSES = ['af-step-next', 'af-step-button'];
 
-export type INextButtonView = IGenericButtonView;
+export type INextButtonView = IAsyncButtonView;
 
-export class NextButtonView extends GenericButtonView {
-  protected constructor(text: string) {
-    super({
-      text,
-      type: ButtonType.SUBMIT,
-      containerClasses: CSS_CLASSES,
+export const NextButtonView = {
+  create(text: string): INextButtonView {
+    return AsyncButtonView.create({
+      button: {
+        text,
+        type: ButtonType.SUBMIT,
+      },
+      container: {
+        classes: CSS_CLASSES,
+      },
     });
-  }
-
-  public static create(text: string): INextButtonView {
-    return new NextButtonView(text);
-  }
-}
+  },
+};

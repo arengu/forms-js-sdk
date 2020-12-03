@@ -1,24 +1,19 @@
-import { GenericButtonView, ButtonType, IGenericButtonView } from '../GenericButtonView';
+import { ButtonType, IButtonView, ButtonView } from '../button/base/ButtonView';
 
 export const CSS_CLASSES = ['af-step-previous', 'af-step-button'];
 
-export interface IPreviousButtonCallback {
-  (this: void): void;
-}
+export type IPreviousButtonView = IButtonView;
 
-export type IPreviousButtonView = IGenericButtonView;
-
-export class PreviousButtonView extends GenericButtonView {
-  protected constructor(text: string, callback?: IPreviousButtonCallback) {
-    super({
-      text,
-      type: ButtonType.BUTTON,
-      callback,
-      containerClasses: CSS_CLASSES,
+export const PreviousButtonView = {
+  create(text: string): IPreviousButtonView {
+    return ButtonView.create({
+      button: {
+        text,
+        type: ButtonType.BUTTON,
+      },
+      container: {
+        classes: CSS_CLASSES,
+      },
     });
-  }
-
-  public static create(text: string, callback?: IPreviousButtonCallback): IPreviousButtonView {
-    return new PreviousButtonView(text, callback);
-  }
-}
+  },
+};

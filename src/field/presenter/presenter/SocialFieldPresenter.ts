@@ -1,40 +1,34 @@
 import { IFormDeps } from "../../../form/FormPresenter";
 import { ISocialFieldModel, ISocialFieldValue } from "../../model/FieldModel";
-import { ISocialInputViewListener, SocialInputView, ISocialInputView } from "../../view/input/SocialInputView";
+import { SocialInputView, ISocialInputView } from "../../view/input/SocialInputView";
 import { DummyValueHandler } from "../handler/DummyValueHandler";
-import { FieldRules } from "../validator/FieldRules";
 import { FieldValidator, IFieldValidator } from "../validator/FieldValidator";
 import { IFieldPresenter } from "./FieldPresenter";
 import { BaseFieldPresenter } from "./BaseFieldPresenter";
 import { IValueHandler } from "../handler/ValueHandler";
 import { IComponentPresenter } from "../../../component/ComponentPresenter";
+import { SocialProviderFactory } from "../../view/input/social/SocialProviderFactory";
+import { ISocialProviderPresenter } from "../../view/input/social/base/SocialProviderPresenter";
 
 export interface ISocialFieldPresenter extends IFieldPresenter {
   showLoading(): void;
   hideLoading(): void;
 }
 
-export class SocialFieldPresenter extends BaseFieldPresenter<ISocialInputView> implements ISocialInputViewListener, ISocialFieldPresenter {
-  private constructor(
+export class SocialFieldPresenterImpl extends BaseFieldPresenter<ISocialInputView> implements ISocialFieldPresenter {
+  protected readonly providersP: ISocialProviderPresenter[];
+
+  protected usedProvider?: ISocialProviderPresenter;
+
+  public constructor(
     formD: IFormDeps, fieldM: ISocialFieldModel, inputV: ISocialInputView,
-    fieldVal: IFieldValidator<ISocialFieldValue>, valueH: IValueHandler<ISocialFieldValue>) {
+    fieldVal: IFieldValidator<ISocialFieldValue>, valueH: IValueHandler<ISocialFieldValue>,
+    providersP: ISocialProviderPresenter[]) {
     super(formD, fieldM, inputV, fieldVal, valueH);
-  }
 
-  public static create(formD: IFormDeps, fieldM: ISocialFieldModel): ISocialFieldPresenter {
-    const inputV = SocialInputView.create(formD);
+    this.providersP = providersP;
 
-    const fieldVal = FieldValidator.create([
-      FieldRules.require(fieldM),
-    ]);
-
-    const valueH = DummyValueHandler.create(inputV, fieldM);
-
-    return new SocialFieldPresenter(formD, fieldM, inputV, fieldVal, valueH);
-  }
-
-  public static matches(compP: IComponentPresenter): compP is SocialFieldPresenter {
-    return compP instanceof SocialFieldPresenter;
+    // TODO: subscribe to providers
   }
 
   public onLogin(): void {
@@ -42,19 +36,52 @@ export class SocialFieldPresenter extends BaseFieldPresenter<ISocialInputView> i
   }
 
   public onShow(): void {
-    this.inputV.onShow && this.inputV.onShow();
+    this.usedProvider = undefined;
   }
 
-  public onHide(): void {
-    super.onHide();
-    this.inputV.onHide && this.inputV.onHide();
+  public reset(): void {
+    this.providersP.forEach((p) => p.reset());
+    super.reset();
   }
 
-  showLoading(): void {
-    this.inputV.showLoading();
+  public getValue(): Promise<ISocialFieldValue> {
+    return Promise.resolve(this.usedProvider?.getLoginData());
   }
 
-  hideLoading(): void {
-    this.inputV.hideLoading();
+  public block(): void {
+    this.providersP.forEach((p) => p.block());
+    super.block();
   }
+  
+  public unblock(): void {
+    this.providersP.forEach((p) => p.unblock());
+    super.unblock();
+  }
+
+  public showLoading(): void {
+    this.usedProvider?.showLoading();
+  }
+
+  public hideLoading(): void {
+    this.usedProvider?.hideLoading();
+  }
+}
+
+export const SocialFieldPresenter = {
+  create(formD: IFormDeps, fieldM: ISocialFieldModel): ISocialFieldPresenter {
+    const providersP = formD.social.map((p) => SocialProviderFactory.create(p));
+    const providersV = providersP.map((p) => p.getView());
+
+    const inputV = SocialInputView.create(providersV);
+
+    const fieldVal = FieldValidator.create([]);
+
+    const valueH = DummyValueHandler.create(inputV, fieldM);
+
+    return new SocialFieldPresenterImpl(formD, fieldM, inputV, fieldVal, valueH, providersP);
+  },
+
+  matches(compP: IComponentPresenter): compP is ISocialFieldPresenter {
+    return compP instanceof SocialFieldPresenterImpl;
+  },
 }

@@ -56,8 +56,8 @@ export abstract class BaseFieldPresenter<IV extends IInputView = IInputView> ext
     return this.fieldM.id;
   }
 
-  public async getValue(): Promise<IFieldValue> {
-    return this.valueH.getValue();
+  public getValue(): Promise<IFieldValue> {
+    return Promise.resolve(this.valueH.getValue());
   }
 
   protected hasError(): boolean {
@@ -104,7 +104,7 @@ export abstract class BaseFieldPresenter<IV extends IInputView = IInputView> ext
   }
 
   public reset(): void {
-    this.invalid = false;
+    this.clearError();
     this.inputV.reset();
     this.fieldV.reset();
   }
@@ -133,6 +133,7 @@ export abstract class BaseFieldPresenter<IV extends IInputView = IInputView> ext
   }
 
   public onHide(): void {
+    // TODO: move this to StepPresenter
     this.clearError();
   }
 

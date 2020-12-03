@@ -1,44 +1,25 @@
-import { IView } from "../../../core/BaseTypes";
 import { IPreviousButtonBlockModel } from '../../BlockModel';
 import { IPreviousButtonView, PreviousButtonView } from './PreviousButtonView';
 import { IBlockPresenter } from '../../BlockPresenter';
-import { BaseBlockPresenter } from "../../../core/BasePresenters";
+import { ButtonPresenterImpl } from "../button/base/ButtonPresenter";
 
 export type IPreviousButtonPresenter = IBlockPresenter;
 
-export class PreviousButtonPresenter extends BaseBlockPresenter implements IPreviousButtonPresenter {
-  protected buttonV: IPreviousButtonView;
-
-  protected constructor(buttonM: IPreviousButtonBlockModel) {
-    super();
-    this.buttonV = PreviousButtonView.create(buttonM.config.text, () => this.onPrevious());
+export class PreviousButtonPresenterImpl extends ButtonPresenterImpl<IPreviousButtonView> implements IPreviousButtonPresenter {
+  public constructor(buttonV: IPreviousButtonView) {
+    super(buttonV);
+    this.buttonV.subscribe(this);
   }
 
-  public static create(buttonM: IPreviousButtonBlockModel): IPreviousButtonPresenter {
-    return new PreviousButtonPresenter(buttonM)
+  public onClick(this: this): void {
+    this.listeners.forEach((listener) => listener.onGoToPrevious?.(this));
   }
+}
 
-  public onPrevious(): void {
-    this.listeners.forEach((listener) => listener.onGoToPrevious && listener.onGoToPrevious(this));
-  }
-
-  public getView(): IView {
-    return this.buttonV;
-  }
-
-  public render(): HTMLElement {
-    return this.buttonV.render();
-  }
-
-  public reset(): void {
-    return this.buttonV.reset();
-  }
-
-  public block(): void {
-    this.buttonV.block();
-  }
-
-  public unblock(): void {
-    this.buttonV.unblock();
-  }
+export const PreviousButtonPresenter = {
+  create(buttonM: IPreviousButtonBlockModel): IPreviousButtonPresenter {
+    return new PreviousButtonPresenterImpl(
+      PreviousButtonView.create(buttonM.config.text),
+    );
+  },
 }

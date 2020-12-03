@@ -24,14 +24,14 @@ export interface IGoogleSocialConfig extends IBaseSocialConfig {
   provider: SocialProvider.GOOGLE;
 }
 
-export type ISocialConfig = IFacebookSocialConfig | IGoogleSocialConfig;
+export type ISocialProviderConfig = IFacebookSocialConfig | IGoogleSocialConfig;
 
 export interface IFormModel {
   readonly id: string;
   readonly hiddenFields: IHiddenFieldsDef;
   readonly messages: IMessages;
   readonly steps: IStepModel[];
-  readonly social: ISocialConfig[];
+  readonly social: ISocialProviderConfig[];
   readonly style: IFormStyle;
 }
 

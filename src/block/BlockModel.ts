@@ -3,6 +3,7 @@ import { ComponentCategory } from "../component/ComponentModel";
 export enum BlockType {
   PREVIOUS_BUTTON = 'PREVIOUS_BUTTON',
   NEXT_BUTTON = 'NEXT_BUTTON',
+  JUMP_BUTTON = 'JUMP_BUTTON',
   HTML = 'HTML',
   RICH_TEXT = 'RICH_TEXT',
 }
@@ -28,6 +29,16 @@ export interface INextButtonBlockModel extends IBaseBlockModel {
   };
 }
 
+export interface IJumpButtonBlockModel extends IBaseBlockModel {
+  readonly type: BlockType.JUMP_BUTTON;
+  readonly config: {
+    readonly text: string;
+    readonly style: {
+      readonly backgroundColor?: string;
+    };
+  };
+}
+
 export interface IHTMLBlockModel extends IBaseBlockModel {
   readonly type: BlockType.HTML;
   readonly config: {
@@ -42,4 +53,5 @@ export interface IRichTextBlockModel extends IBaseBlockModel {
   };
 }
 
-export type IBlockModel = IPreviousButtonBlockModel | INextButtonBlockModel | IHTMLBlockModel | IRichTextBlockModel;
+export type IBlockModel = IPreviousButtonBlockModel | INextButtonBlockModel | IJumpButtonBlockModel
+  | IHTMLBlockModel | IRichTextBlockModel;
