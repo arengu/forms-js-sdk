@@ -9,6 +9,7 @@ export const NextButtonView = {
     return AsyncButtonView.create({
       button: {
         text,
+        isSubmit: true
       },
       container: {
         classes: CSS_CLASSES,

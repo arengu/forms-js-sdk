@@ -15,7 +15,6 @@ export interface ISocialFieldPresenter extends IFieldPresenter {
   hideLoading(): void;
 
   clearValue(): void;
-  hasValue(): boolean;
 }
 
 export class SocialFieldPresenterImpl extends BaseFieldPresenter<ISocialInputView> implements ISocialFieldPresenter, ISocialProviderSubscriber {
@@ -60,10 +59,6 @@ export class SocialFieldPresenterImpl extends BaseFieldPresenter<ISocialInputVie
 
   public getValue(): Promise<ISocialFieldValue> {
     return Promise.resolve(this.usedProvider?.getLoginData());
-  }
-
-  public hasValue(): boolean {
-    return this.usedProvider?.getLoginData() != undefined;
   }
 
   public clearValue(): void {

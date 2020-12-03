@@ -44,6 +44,11 @@ interface ISetContentOptions {
   readonly scrollTop?: boolean;
 }
 
+interface IComponentWithLoader {
+  showLoading(): void;
+  hideLoading(): void;
+}
+
 export interface IFormDeps {
   style: IExtendedFormStyle;
   social: ISocialProviderConfig[];
@@ -203,30 +208,21 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     this.gotoPreviousStep();
   }
 
-  public async onSocialLogin(stepP: IStepPresenter, compP: ISocialFieldPresenter): Promise<void> {
-    try {
-      compP.showLoading();
-      await this.goForward(stepP);
-    } finally {
-      compP.hideLoading();
-    }
+  public async onSocialLogin(compP: ISocialFieldPresenter, stepP: IStepPresenter): Promise<void> {
+    await this.goForward(compP, stepP);
   }
 
   public onSubmitForm(): void {
     this.getCurrentStep().fireNextStep();
   }
 
-  public async onGoForward(stepP: IStepPresenter, buttonP: IAsyncButtonPresenter): Promise<void> {
-    try {
-      buttonP.showLoading();
-      await this.goForward(stepP);
-    } finally {
-      buttonP.hideLoading();
-    }
+  public onGoForward(buttonP: IAsyncButtonPresenter, stepP: IStepPresenter): void {
+    this.goForward(buttonP, stepP);
   }
 
-  public async goForward(stepP: IStepPresenter): Promise<void> {
+  public async goForward(compP: IComponentWithLoader, stepP: IStepPresenter): Promise<void> {
     try {
+      compP.showLoading();
       stepP.blockComponents();
 
       const stepVal = await stepP.validate();
@@ -250,6 +246,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
       stepP.handleAnyError(err);
     } finally {
       stepP.unblockComponents();
+      compP.hideLoading();
     }
   }
 

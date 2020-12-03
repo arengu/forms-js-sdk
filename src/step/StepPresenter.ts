@@ -28,11 +28,12 @@ import { StepErrorPresenter, IStepErrorPresenter } from './part/StepErrorPresent
 import { IExtendedFormStyle } from '../form/model/FormStyle';
 import { IRefScope } from '../form/model/FormModel';
 import { IAsyncButtonPresenter } from '../block/navigation/button/async/AsyncButtonPresenter';
+import { IPreviousButtonPresenter } from '../block/navigation/previous/PreviousButtonPresenter';
 
 export interface IStepPresenterListener {
-  onGotoPreviousStep?(this: this, stepP: IStepPresenter): void;
-  onGoForward?(this: this, stepP: IStepPresenter, buttonP: IAsyncButtonPresenter): void;
-  onSocialLogin?(this: this, stepP: IStepPresenter, compP: ISocialFieldPresenter): void;
+  onGotoPreviousStep?(this: this, buttonP: IPreviousButtonPresenter, stepP: IStepPresenter): void;
+  onGoForward?(this: this, buttonP: IAsyncButtonPresenter, stepP: IStepPresenter): void;
+  onSocialLogin?(this: this, compP: ISocialFieldPresenter, stepP: IStepPresenter): void;
 }
 
 export interface IStepPresenter extends IPresenter {
@@ -194,7 +195,7 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
 
   public getActiveFields(): IFieldPresenter[] {
     /* Ignore the rest of fields when social login is used */
-    return this.lastSocialP?.hasValue() ? [this.lastSocialP] : this.fieldsP;
+    return this.lastSocialP ? [this.lastSocialP] : this.fieldsP;
   }
 
   public async validate(): Promise<IStepValidationResult> {
@@ -240,7 +241,6 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
   }
 
   public onShow(): void {
-    this.clearSocialLogin();
     this.compsP.forEach((cP) => cP.onShow && cP.onShow());
   }
 
@@ -256,14 +256,10 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
   }
 
   public handleInvalidFields(err: InvalidFields): void {
-    this.clearSocialLogin();
-
     return err.fields.forEach((fE) => this.handleFieldError(fE));
   }
 
   public handleArenguError(err: ArenguError): void {
-    this.clearSocialLogin();
-
     const msg = this.messages.fromError(err);
     this.setStepError(msg);
   }
@@ -284,6 +280,7 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
 
   public clearSocialLogin(): void {
     this.lastSocialP?.clearValue();
+    this.lastSocialP = undefined;
   }
 
   public hasInvalidFields(): boolean {
@@ -291,7 +288,6 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
   }
 
   public setStepError(msg: string): void {
-    this.clearSocialLogin();
     this.errorP.setError(msg);
   }
 
@@ -334,17 +330,19 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
     }
   }
 
-  public onGoToPrevious(): void {
-    this.stepL.onGotoPreviousStep && this.stepL.onGotoPreviousStep(this);
+  public onGoToPrevious(buttonP: IPreviousButtonPresenter): void {
+    this.clearSocialLogin();
+    this.stepL.onGotoPreviousStep && this.stepL.onGotoPreviousStep(buttonP, this);
   }
 
   public onGoForward(buttonP: IAsyncButtonPresenter): void {
-    this.stepL.onGoForward?.(this, buttonP);
+    this.clearSocialLogin();
+    this.stepL.onGoForward?.(buttonP, this);
   }
 
   public onSocialLogin(fieldP: ISocialFieldPresenter): void {
     this.lastSocialP = fieldP;
-    this.stepL.onSocialLogin && this.stepL.onSocialLogin(this, fieldP);
+    this.stepL.onSocialLogin && this.stepL.onSocialLogin(fieldP, this);
   }
 
   public onUpdateStyle(style: IExtendedFormStyle): void {
