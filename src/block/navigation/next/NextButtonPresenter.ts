@@ -6,6 +6,14 @@ import { AsyncButtonPresenterImpl, IAsyncButtonPresenter } from "../button/async
 export type INextButtonPresenter = IAsyncButtonPresenter<INextButtonView>;
 
 export class NextButtonPresenterImpl extends AsyncButtonPresenterImpl<INextButtonView> implements INextButtonPresenter {
+  public constructor(buttonV: INextButtonView) {
+    super(buttonV);
+    this.buttonV.subscribe(this);
+  }
+
+  public onClick(this: this): void {
+    this.listeners.forEach((listener) => listener.onGoForward?.(this));
+  }
 }
 
 export const NextButtonPresenter = {

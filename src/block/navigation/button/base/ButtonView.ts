@@ -1,11 +1,6 @@
 import { IView } from "../../../../core/BaseTypes";
 import { HTMLHelper } from '../../../../lib/view/HTMLHelper';
 
-export enum ButtonType {
-  BUTTON = 'button',
-  SUBMIT = 'submit',
-}
-
 export interface IButtonViewSubscriber {
   onClick?(): void;
 }
@@ -23,7 +18,6 @@ export interface IButtonStyle {
 
 interface IButtonOptions {
   text: string;
-  type?: ButtonType;
   style?: IButtonStyle;
 }
 
@@ -39,7 +33,7 @@ export interface IButtonViewOptions {
 export const ButtonRenderer = {
   renderButton(options: IButtonOptions): HTMLButtonElement {
     const button = document.createElement('button');
-    button.setAttribute('type', options.type ?? ButtonType.BUTTON);
+    button.setAttribute('type', 'button');
 
     const text = document.createElement('span');
     text.classList.add('af-button-text');

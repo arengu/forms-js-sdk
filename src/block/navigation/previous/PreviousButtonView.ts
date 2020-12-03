@@ -1,4 +1,4 @@
-import { ButtonType, IButtonView, ButtonView } from '../button/base/ButtonView';
+import { IButtonView, ButtonView } from '../button/base/ButtonView';
 
 export const CSS_CLASSES = ['af-step-previous', 'af-step-button'];
 
@@ -9,7 +9,6 @@ export const PreviousButtonView = {
     return ButtonView.create({
       button: {
         text,
-        type: ButtonType.BUTTON,
       },
       container: {
         classes: CSS_CLASSES,

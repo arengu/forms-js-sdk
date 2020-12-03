@@ -989,8 +989,7 @@
   text-align: center;
 }
 
-.af-button button[type=submit],
-.af-button button[type=button] {
+.af-button button {
   font-size: var(--button-font-size);
   padding: var(--button-padding);
   text-align: center;
@@ -1000,25 +999,25 @@
   border-radius: var(--button-border-radius);
 }
 
-.af-step-next button[type=submit] {
+.af-step-next button {
   background-color: var(--primary-color);
   color: #fff;
 }
 
-.af-step-next button[type=submit]:hover {
+.af-step-next button:hover {
   color: #fff;
   background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1));
   transition: background-image 0.3s ease;
 }
 
-.af-step-previous button[type=button] {
+.af-step-previous button {
   color: rgba(0, 0, 0, 0.8);
   background-color: transparent;
   padding: 0;
   width: auto;
 }
 
-.af-step-previous button[type=button]:hover {
+.af-step-previous button:hover {
   text-decoration: underline;
 }
 

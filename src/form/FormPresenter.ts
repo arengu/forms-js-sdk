@@ -21,6 +21,7 @@ import { ISocialFieldPresenter } from '../field/presenter/presenter/SocialFieldP
 import { IFormInteractionResponse, EffectType, IFormInteractionRequest } from './FormInteraction';
 import { IPresenter } from '../core/BaseTypes';
 import { StyleHelper } from './view/StyleHelper';
+import { IAsyncButtonPresenter } from '../block/navigation/button/async/AsyncButtonPresenter';
 
 export const FormPresenterHelper = {
   getUserValues(stepP: IStepPresenter): Promise<IUserValues> {
@@ -205,24 +206,26 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
   public async onSocialLogin(stepP: IStepPresenter, compP: ISocialFieldPresenter): Promise<void> {
     try {
       compP.showLoading();
-      await this.onGotoNextStep(stepP);
+      await this.goForward(stepP);
     } finally {
       compP.hideLoading();
     }
   }
 
-  public async onSubmitForm(): Promise<void> {
-    const stepP = this.getCurrentStep();
+  public onSubmitForm(): void {
+    this.getCurrentStep().fireNextStep();
+  }
 
+  public async onGoForward(stepP: IStepPresenter, buttonP: IAsyncButtonPresenter): Promise<void> {
     try {
-      stepP.showLoading();
-      await this.onGotoNextStep(stepP);
+      buttonP.showLoading();
+      await this.goForward(stepP);
     } finally {
-      stepP.hideLoading();
+      buttonP.hideLoading();
     }
   }
 
-  public async onGotoNextStep(stepP: IStepPresenter): Promise<void> {
+  public async goForward(stepP: IStepPresenter): Promise<void> {
     try {
       stepP.blockComponents();
 

@@ -2,6 +2,7 @@ import keyBy from 'lodash/keyBy';
 import findIndex from 'lodash/findIndex';
 import isEmpty from 'lodash/isEmpty';
 import isNil from 'lodash/isNil';
+import find from 'lodash/find';
 
 import { InvalidFields, FieldError } from '../error/InvalidFields';
 
@@ -26,9 +27,11 @@ import { IPresenter } from '../core/BaseTypes';
 import { StepErrorPresenter, IStepErrorPresenter } from './part/StepErrorPresenter';
 import { IExtendedFormStyle } from '../form/model/FormStyle';
 import { IRefScope } from '../form/model/FormModel';
+import { IAsyncButtonPresenter } from '../block/navigation/button/async/AsyncButtonPresenter';
 
 export interface IStepPresenterListener {
   onGotoPreviousStep?(this: this, stepP: IStepPresenter): void;
+  onGoForward?(this: this, stepP: IStepPresenter, buttonP: IAsyncButtonPresenter): void;
   onSocialLogin?(this: this, stepP: IStepPresenter, compP: ISocialFieldPresenter): void;
 }
 
@@ -56,6 +59,8 @@ export interface IStepPresenter extends IPresenter {
   handleAnyError(this: this, err: Error): void;
 
   clearAllErrors(): void;
+
+  fireNextStep(): void;
 }
 
 export interface IPairFieldIdValue {
@@ -333,6 +338,10 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
     this.stepL.onGotoPreviousStep && this.stepL.onGotoPreviousStep(this);
   }
 
+  public onGoForward(buttonP: IAsyncButtonPresenter): void {
+    this.stepL.onGoForward?.(this, buttonP);
+  }
+
   public onSocialLogin(fieldP: ISocialFieldPresenter): void {
     this.lastSocialP = fieldP;
     this.stepL.onSocialLogin && this.stepL.onSocialLogin(this, fieldP);
@@ -340,5 +349,13 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
 
   public onUpdateStyle(style: IExtendedFormStyle): void {
     this.fieldsP.forEach((fieldP) => fieldP.onUpdateStyle(style));
+  }
+
+  public fireNextStep(): void {
+    const firstNext = find(this.compsP, NextButtonPresenter.matches);
+
+    if (firstNext) {
+      this.onGoForward(firstNext);
+    }
   }
 }

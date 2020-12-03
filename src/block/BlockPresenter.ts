@@ -5,11 +5,13 @@ import { IComponentPresenter } from "../component/ComponentPresenter";
 import { HTMLBlockPresenter } from "./HtmlBlockPresenter";
 import { RichTextBlockPresenter } from "./RichTextBlockPresenter";
 import { JumpButtonPresenter } from "./navigation/jump/JumpButtonPresenter";
+import { IAsyncButtonPresenter } from "./navigation/button/async/AsyncButtonPresenter";
 
 export type IBlockPresenter = IComponentPresenter;
 
 export interface IBlockPresenterListener {
   onGoToPrevious?(this: this, buttonP: IPreviousButtonPresenter): void;
+  onGoForward?(this: this, buttonP: IAsyncButtonPresenter): void;
 }
 
 export const BlockPresenter = {

@@ -1,18 +1,17 @@
 import { IJumpButtonBlockModel } from '../../BlockModel';
 import { IJumpButtonView, JumpButtonView } from './JumpButtonView';
-import { IBlockPresenter } from '../../BlockPresenter';
-import { ButtonPresenterImpl } from "../button/base/ButtonPresenter";
+import { IAsyncButtonPresenter, AsyncButtonPresenterImpl } from "../button/async/AsyncButtonPresenter";
 
-export type IJumpButtonPresenter = IBlockPresenter;
+export type IJumpButtonPresenter = IAsyncButtonPresenter<IJumpButtonView>;
 
-export class JumpButtonPresenterImpl extends ButtonPresenterImpl<IJumpButtonView> implements IJumpButtonPresenter {
+export class JumpButtonPresenterImpl extends AsyncButtonPresenterImpl<IJumpButtonView> implements IJumpButtonPresenter {
   public constructor(buttonV: IJumpButtonView) {
     super(buttonV);
     this.buttonV.subscribe(this);
   }
 
   public onClick(this: this): void {
-    this.listeners.forEach((listener) => listener.onGoToPrevious?.(this));
+    this.listeners.forEach((listener) => listener.onGoForward?.(this));
   }
 }
 
