@@ -6,7 +6,10 @@ const helper = require('./webpack.helper.js');
 /* eslint-disable @typescript-eslint/no-var-requires, import/no-extraneous-dependencies */
 
 const babelLoader = helper.defineLoader({
-  plugins: ['@babel/plugin-proposal-optional-chaining']
+  plugins: [
+    '@babel/plugin-proposal-optional-chaining',
+    '@babel/plugin-proposal-nullish-coalescing-operator',
+  ]
 });
 
 const config = {
