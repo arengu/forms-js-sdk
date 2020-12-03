@@ -5,7 +5,6 @@ import { ISocialLoginData } from './social/base/SocialProviderPresenter';
 
 export type ISocialInputValue = undefined | ISocialLoginData;
 
-// TODO: change inheritance to IView
 export interface ISocialInputView extends IInputView {
   getValue(): undefined;
 }

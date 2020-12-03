@@ -1,6 +1,5 @@
 import { AsyncButtonPresenterImpl, IAsyncButtonPresenter } from "../../../../../block/navigation/button/async/AsyncButtonPresenter";
 import { IAsyncButtonView } from "../../../../../block/navigation/button/async/AsyncButtonView";
-import { IButtonViewSubscriber } from "../../../../../block/navigation/button/base/ButtonView";
 import { SocialProvider } from "../../../../../form/model/FormModel";
 
 export interface ISocialLoginData<P extends SocialProvider = SocialProvider> {
@@ -8,17 +7,14 @@ export interface ISocialLoginData<P extends SocialProvider = SocialProvider> {
   accessToken: string;
 }
 
-export interface ISocialButtonViewSubscriber<P extends SocialProvider> extends IButtonViewSubscriber {
-  onSocialLogin?(login: ISocialLoginData<P>): void;
-}
-
 export interface ISocialProviderSubscriber<P extends SocialProvider = SocialProvider> {
-  onSocialLogin?(login: ISocialLoginData<P>): void;
+  onSocialLogin?(provider: ISocialProviderPresenter<P>, login: ISocialLoginData<P>, ): void;
 }
 
 export interface ISocialProviderPresenter<P extends SocialProvider = SocialProvider> extends IAsyncButtonPresenter {
   getProvider(): SocialProvider;
   getLoginData(): ISocialLoginData<P> | undefined;
+  subscribe(subscriber: ISocialProviderSubscriber): void;
 }
 
 export class SocialProviderPresenterImpl<P extends SocialProvider = SocialProvider> extends AsyncButtonPresenterImpl<IAsyncButtonView> implements ISocialProviderPresenter<P> {
@@ -49,12 +45,14 @@ export class SocialProviderPresenterImpl<P extends SocialProvider = SocialProvid
   }
 
   public onAccessToken(accessToken: string): void {
-    const loginData: ISocialLoginData<P> = {
+    const loginData = {
       provider: this.provider,
       accessToken,
     };
 
-    this.subscribers.forEach((s) => s.onSocialLogin?.(loginData));
+    this.loginData = loginData;
+
+    this.subscribers.forEach((s) => s.onSocialLogin?.(this, loginData));
   }
 
   public getLoginData(): ISocialLoginData<P> | undefined {

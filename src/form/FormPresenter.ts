@@ -266,7 +266,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
           message: effect.message,
         },
       );
-      currStep.setError(effect.message);
+      currStep.setStepError(effect.message);
       return;
     }
 
@@ -329,7 +329,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     }
   }
 
-  public setContent(newStep: IStepPresenter, { scrollTop = true }: ISetContentOptions = {}): void {
+  public setContent(newStep: IStepPresenter): void {
     const oldStep = this.currentStep;
 
     newStep.onShow();
@@ -338,16 +338,13 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
 
     this.formV.setContent(newStep.render());
 
-    if (oldStep && oldStep.onHide) {
+    if (oldStep) {
       oldStep.onHide();
-    }
-
-    if (scrollTop) {
-      this.formV.scrollTopIfNeeded();
+      this.formV.scrollTopIfNeeded(); // do not scroll on first content
     }
   }
 
-  public gotoFirstStep(options?: ISetContentOptions): void {
+  public gotoFirstStep(): void {
     const firstStep = this.stepsP[0];
 
     if (isNil(firstStep)) {
@@ -359,7 +356,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
       firstStep.updateStep(hiddenFields);
     }
 
-    this.setContent(firstStep, options);
+    this.setContent(firstStep);
   }
 
   public gotoPreviousStep(): void {
@@ -369,6 +366,8 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     if (isNil(currStep) || isNil(prevStep)) {
       return;
     }
+
+    currStep.clearAllErrors();
 
     this.setContent(prevStep);
 
@@ -399,7 +398,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
       nextStep.updateStep(formValues);
     }
 
-    this.setContent(nextStep, { scrollTop: true });
+    this.setContent(nextStep);
 
     DOMEvents.emit(EventNames.NextStep, {
       formId: this.formM.id,
@@ -414,7 +413,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     const oldStep = this.currentStep;
 
     if (oldStep && oldStep.onHide) {
-      oldStep.onHide();
+      oldStep?.onHide();
     }
 
     this.currentStep = undefined;
@@ -504,7 +503,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
 
     this.formV.setStyle(this.style);
 
-    this.gotoFirstStep({ scrollTop: false });
+    this.gotoFirstStep();
 
     return element;
   }

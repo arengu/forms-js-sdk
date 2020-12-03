@@ -52,10 +52,10 @@ export interface IStepPresenter extends IPresenter {
   validate(this: this): Promise<IStepValidationResult>;
   getUserValues(this: this): Promise<IUserValues>;
 
-  setError(msg: string): void;
-  clearError(): void;
-
+  setStepError(msg: string): void;
   handleAnyError(this: this, err: Error): void;
+
+  clearAllErrors(): void;
 }
 
 export interface IPairFieldIdValue {
@@ -235,12 +235,11 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
   }
 
   public onShow(): void {
-    this.clearCache();
+    this.clearSocialLogin();
     this.compsP.forEach((cP) => cP.onShow && cP.onShow());
   }
 
   public onHide(): void {
-    this.clearError();
     this.compsP.forEach((cP) => cP.onHide && cP.onHide());
   }
 
@@ -255,13 +254,9 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
     return err.fields.forEach((fE) => this.handleFieldError(fE));
   }
 
-  public handleFieldErrors(errs: FieldError[]): void {
-    return errs.forEach((fE) => this.handleFieldError(fE));
-  }
-
   public handleArenguError(err: ArenguError): void {
     const msg = this.messages.fromError(err);
-    this.setError(msg);
+    this.setStepError(msg);
   }
 
   public handleAnyError(err: Error): void {
@@ -270,7 +265,7 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
     } else if (err instanceof ArenguError) {
       this.handleArenguError(err);
     } else {
-      this.setError(err.message);
+      this.setStepError(err.message);
     }
   }
 
@@ -278,7 +273,7 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
     this.compsP.forEach((cP) => cP.reset());
   }
 
-  public clearCache(): void {
+  public clearSocialLogin(): void {
     this.usedSocialP = undefined;
   }
 
@@ -286,18 +281,28 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
     return this.invalidFields.size > 0;
   }
 
-  public setError(msg: string): void {
+  public setStepError(msg: string): void {
+    this.clearSocialLogin();
     this.errorP.setError(msg);
   }
 
-  public clearError(): void {
+  public clearStepError(): void {
     this.errorP.clearError();
+  }
+
+  public clearFieldErrors(): void {
+    this.fieldsP.forEach((p) => p.clearError());
+  }
+
+  public clearAllErrors(): void {
+    this.clearStepError();
+    this.clearFieldErrors();
   }
 
   protected notifyInvalidFields(): void {
     const code = AppErrorCode.INVALID_INPUT;
     const msg = this.messages.fromCode(code);
-    this.setError(msg);
+    this.setStepError(msg);
   }
 
   public onInvalidField(error: FieldError, message: string, fieldP: IFieldPresenter): void {
@@ -316,7 +321,7 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
     this.invalidFields.delete(fieldId);
 
     if (!this.hasInvalidFields()) {
-      this.clearError();
+      this.clearStepError();
     }
   }
 

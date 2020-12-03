@@ -8,17 +8,19 @@ import { BaseFieldPresenter } from "./BaseFieldPresenter";
 import { IValueHandler } from "../handler/ValueHandler";
 import { IComponentPresenter } from "../../../component/ComponentPresenter";
 import { SocialProviderFactory } from "../../view/input/social/SocialProviderFactory";
-import { ISocialProviderPresenter } from "../../view/input/social/base/SocialProviderPresenter";
+import { ISocialProviderPresenter, ISocialProviderSubscriber } from "../../view/input/social/base/SocialProviderPresenter";
 
 export interface ISocialFieldPresenter extends IFieldPresenter {
   showLoading(): void;
   hideLoading(): void;
 }
 
-export class SocialFieldPresenterImpl extends BaseFieldPresenter<ISocialInputView> implements ISocialFieldPresenter {
+export class SocialFieldPresenterImpl extends BaseFieldPresenter<ISocialInputView> implements ISocialFieldPresenter, ISocialProviderSubscriber {
   protected readonly providersP: ISocialProviderPresenter[];
 
   protected usedProvider?: ISocialProviderPresenter;
+
+  protected visible: boolean;
 
   public constructor(
     formD: IFormDeps, fieldM: ISocialFieldModel, inputV: ISocialInputView,
@@ -27,20 +29,30 @@ export class SocialFieldPresenterImpl extends BaseFieldPresenter<ISocialInputVie
     super(formD, fieldM, inputV, fieldVal, valueH);
 
     this.providersP = providersP;
+    this.providersP.forEach((p) => p.subscribe(this));
 
-    // TODO: subscribe to providers
+    this.visible = false;
   }
 
-  public onLogin(): void {
-    this.listeners.forEach((listener) => listener.onSocialLogin && listener.onSocialLogin(this));
+  onSocialLogin(providerP: ISocialProviderPresenter): void {
+    if (this.visible) {
+      this.usedProvider = providerP;
+      this.listeners.forEach((listener) => listener.onSocialLogin && listener.onSocialLogin(this));
+    }
   }
 
   public onShow(): void {
     this.usedProvider = undefined;
+    this.visible = true;
+  }
+
+  public onHide(): void {
+    this.visible = false;
   }
 
   public reset(): void {
     this.providersP.forEach((p) => p.reset());
+    this.visible = false;
     super.reset();
   }
 

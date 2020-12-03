@@ -16,6 +16,7 @@ export interface IFieldPresenter extends IComponentPresenter {
   validate(this: this): Promise<IFieldValidationResult>;
 
   handleFieldError(this: this, err: FieldError): void;
+  clearError(): void;
 }
 
 export interface IFieldPresenterListener {

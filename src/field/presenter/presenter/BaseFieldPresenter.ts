@@ -132,11 +132,6 @@ export abstract class BaseFieldPresenter<IV extends IInputView = IInputView> ext
     this.listeners.forEach((listener) => listener.onValidField && listener.onValidField(this));
   }
 
-  public onHide(): void {
-    // TODO: move this to StepPresenter
-    this.clearError();
-  }
-
   public isDynamic(this: this): boolean {
     const { label, hint } = this.fieldM;
     return MagicString.isDynamic(hint) || MagicString.isDynamic(label);
