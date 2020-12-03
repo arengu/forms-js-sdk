@@ -1,6 +1,7 @@
 import { IJumpButtonBlockModel } from '../../BlockModel';
 import { IJumpButtonView, JumpButtonView } from './JumpButtonView';
 import { IAsyncButtonPresenter, AsyncButtonPresenterImpl } from "../button/async/AsyncButtonPresenter";
+import { IComponentPresenter } from '../../../component/ComponentPresenter';
 
 export type IJumpButtonPresenter = IAsyncButtonPresenter<IJumpButtonView>;
 
@@ -21,4 +22,8 @@ export const JumpButtonPresenter = {
       JumpButtonView.create(buttonM.config.text, buttonM.config.style),
     );
   },
+
+  matches(compP: IComponentPresenter): compP is IJumpButtonPresenter {
+    return compP instanceof JumpButtonPresenterImpl;
+  }
 }

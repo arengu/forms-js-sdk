@@ -65,12 +65,26 @@ export const FormRendererer = {
 
     form.classList.add('af-custom-style');
 
+    const button = document.createElement('button');
+    button.setAttribute('type', 'submit');
+    button.style.display = 'none'
+    form.appendChild(button);
+
     form.onsubmit = function onSubmit(evt: Event): void {
       evt.preventDefault();
       viewL.onSubmitForm();
     };
 
     return form;
+  },
+
+  renderSubmit(): HTMLButtonElement {
+    const button = document.createElement('button');
+
+    button.setAttribute('type', 'submit');
+    button.style.display = 'none'
+
+    return button;
   },
 
   buildCss(style: IExtendedFormStyle, formId: string): string {
@@ -148,7 +162,10 @@ export class FormView implements IFormView {
   protected constructor(formM: IFormModel, viewL: IFormViewListener) {
     this.formM = formM;
     this.styleE = document.createElement('style');
+
     this.formE = FormRendererer.renderForm(viewL);
+    this.formE.appendChild(FormRendererer.renderSubmit());
+
     this.rootE = FormRendererer.renderRoot(this.formM, this.formE, this.styleE);
   }
 

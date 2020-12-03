@@ -2,7 +2,6 @@ import keyBy from 'lodash/keyBy';
 import findIndex from 'lodash/findIndex';
 import isEmpty from 'lodash/isEmpty';
 import isNil from 'lodash/isNil';
-import find from 'lodash/find';
 
 import { InvalidFields, FieldError } from '../error/InvalidFields';
 
@@ -19,7 +18,7 @@ import { ArenguError } from '../error/ArenguError';
 import { IUserValues, IFormData } from '../form/model/SubmissionModel';
 import { IComponentModel } from '../component/ComponentModel';
 import { ComponentHelper } from '../component/ComponentHelper';
-import { NextButtonPresenter, INextButtonPresenter } from '../block/navigation/next/NextButtonPresenter';
+import { NextButtonPresenter } from '../block/navigation/next/NextButtonPresenter';
 import { IFormDeps } from '../form/FormPresenter';
 import { ComponentPresenter, IComponentPresenterListener, IComponentPresenter } from '../component/ComponentPresenter';
 import { ISocialFieldPresenter, SocialFieldPresenter } from '../field/presenter/presenter/SocialFieldPresenter';
@@ -106,7 +105,7 @@ export const StepPresenterHelper = {
     }
 
     return [...compsP, errorP];
-  }
+  },
 }
 
 export class StepPresenter implements IStepPresenter, IComponentPresenterListener {
@@ -120,8 +119,6 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
   protected readonly fieldsPI: Record<string, IFieldPresenter>; // indexed by fieldId
 
   protected readonly dynComponentsP: IComponentPresenter[];
-
-  protected readonly nextsP: INextButtonPresenter[];
 
   protected readonly errorP: IStepErrorPresenter;
 
@@ -143,8 +140,6 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
     this.fieldsPI = keyBy(this.fieldsP, (fP) => fP.getFieldId());
 
     this.dynComponentsP = this.compsP.filter((cP): boolean => cP.isDynamic());
-
-    this.nextsP = this.compsP.filter(NextButtonPresenter.matches);
 
     this.errorP = StepErrorPresenter.create();
 
@@ -339,10 +334,11 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
   }
 
   public fireNextStep(): void {
-    const firstNext = find(this.compsP, NextButtonPresenter.matches);
+    const buttonsP = this.compsP.filter(ComponentHelper.isForwardButton);
 
-    if (firstNext) {
-      this.onGoForward(firstNext);
+    // fire go forward only when ambiguity is impossible
+    if (buttonsP.length === 1) {
+      this.onGoForward(buttonsP[0]);
     }
   }
 }

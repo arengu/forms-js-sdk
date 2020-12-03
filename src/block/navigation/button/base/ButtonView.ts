@@ -18,7 +18,6 @@ export interface IButtonStyle {
 
 interface IButtonOptions {
   text: string;
-  isSubmit?: boolean;
   style?: IButtonStyle;
 }
 
@@ -34,7 +33,7 @@ export interface IButtonViewOptions {
 export const ButtonRenderer = {
   renderButton(options: IButtonOptions): HTMLButtonElement {
     const button = document.createElement('button');
-    button.setAttribute('type', options.isSubmit ? 'submit' : 'button');
+    button.setAttribute('type', 'button');
 
     const text = document.createElement('span');
     text.classList.add('af-button-text');
