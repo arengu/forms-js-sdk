@@ -12,9 +12,10 @@ export interface ISocialProviderSubscriber<P extends SocialProvider = SocialProv
 }
 
 export interface ISocialProviderPresenter<P extends SocialProvider = SocialProvider> extends IAsyncButtonPresenter {
-  getProvider(): SocialProvider;
-  getLoginData(): ISocialLoginData<P> | undefined;
   subscribe(subscriber: ISocialProviderSubscriber): void;
+
+  getLoginData(): ISocialLoginData<P> | undefined;
+  clearLoginData(): void;
 }
 
 export class SocialProviderPresenterImpl<P extends SocialProvider = SocialProvider> extends AsyncButtonPresenterImpl<IAsyncButtonView> implements ISocialProviderPresenter<P> {
@@ -29,10 +30,6 @@ export class SocialProviderPresenterImpl<P extends SocialProvider = SocialProvid
 
     this.provider = provider;
     this.subscribers = [];
-  }
-
-  getProvider(): SocialProvider {
-    return this.provider;
   }
 
   reset(): void {
@@ -57,5 +54,9 @@ export class SocialProviderPresenterImpl<P extends SocialProvider = SocialProvid
 
   public getLoginData(): ISocialLoginData<P> | undefined {
     return this.loginData;
+  }
+
+  public clearLoginData(): void {
+    this.loginData = undefined;
   }
 }
