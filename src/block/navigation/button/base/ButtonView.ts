@@ -46,7 +46,17 @@ export const ButtonRenderer = {
     text.textContent = options.text;
     button.appendChild(text);
 
+    ButtonRenderer.applyStyle(button, options.style)
+
     return button;
+  },
+
+  applyStyle(buttonE: HTMLButtonElement, style?: IButtonStyle): void {
+    if (!style) {
+      return;
+    }
+
+    buttonE.style.backgroundColor = style.backgroundColor ?? '';
   },
 
   renderContainer(options: IContainerOptions, button: HTMLButtonElement): HTMLDivElement {
