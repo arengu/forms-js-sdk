@@ -39,9 +39,6 @@ export interface IStepPresenterListener {
 export interface IStepPresenter extends IPresenter {
   getStepId(): string;
 
-  showLoading(this: this): void;
-  hideLoading(this: this): void;
-
   blockComponents(this: this): void;
   unblockComponents(this: this): void;
 
@@ -222,14 +219,6 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
     });
 
     return indexedValues;
-  }
-
-  public showLoading(): void {
-    this.nextsP.forEach((nP) => nP.showLoading());
-  }
-
-  public hideLoading(): void {
-    this.nextsP.forEach((nP) => nP.hideLoading());
   }
 
   public unblockComponents(): void {

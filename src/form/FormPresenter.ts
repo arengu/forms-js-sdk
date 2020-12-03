@@ -40,10 +40,6 @@ export interface IFormPresenter extends IPresenter {
   updateStyle(style: IFormStyle): void;
 }
 
-interface ISetContentOptions {
-  readonly scrollTop?: boolean;
-}
-
 interface IComponentWithLoader {
   showLoading(): void;
   hideLoading(): void;
