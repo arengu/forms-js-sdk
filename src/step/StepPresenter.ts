@@ -126,7 +126,7 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
   protected readonly stepL: IStepPresenterListener;
 
   /** Indicates if social login has been used in this step */
-  protected lastSocialP?: ISocialFieldPresenter;
+  protected usedSocialP?: ISocialFieldPresenter;
 
   protected constructor(stepM: IStepModel, formD: IFormDeps, stepL: IStepPresenterListener) {
     this.stepM = stepM;
@@ -187,7 +187,7 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
 
   public getActiveFields(): IFieldPresenter[] {
     /* Ignore the rest of fields when social login is used */
-    return this.lastSocialP ? [this.lastSocialP] : this.fieldsP;
+    return this.usedSocialP ? [this.usedSocialP] : this.fieldsP;
   }
 
   public async validateFields(): Promise<IStepValidationResult> {
@@ -263,8 +263,8 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
   }
 
   public clearSocialLogin(): void {
-    this.lastSocialP?.clearValue();
-    this.lastSocialP = undefined;
+    this.usedSocialP?.clearValue();
+    this.usedSocialP = undefined;
   }
 
   public hasInvalidFields(): boolean {
@@ -326,7 +326,7 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
   }
 
   public onSocialLogin(fieldP: ISocialFieldPresenter): void {
-    this.lastSocialP = fieldP;
+    this.usedSocialP = fieldP;
     this.stepL.onSocialLogin && this.stepL.onSocialLogin(fieldP, this);
   }
 
