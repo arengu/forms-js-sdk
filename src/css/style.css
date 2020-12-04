@@ -1001,11 +1001,15 @@
 
 .af-step-next button {
   background-color: var(--primary-color);
+}
+
+.af-step-next button,
+.af-step-jump button {
   color: #fff;
 }
 
-.af-step-next button:hover {
-  color: #fff;
+.af-step-next button:hover,
+.af-step-jump button:hover {
   background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1));
   transition: background-image 0.3s ease;
 }
