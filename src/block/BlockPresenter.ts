@@ -1,11 +1,10 @@
 import { BlockType, IBlockModel } from "./BlockModel";
-import { PreviousButtonPresenter, IPreviousButtonPresenter } from "./navigation/previous/PreviousButtonPresenter";
-import { NextButtonPresenter } from "./navigation/next/NextButtonPresenter";
+import { PreviousButtonPresenter, IPreviousButtonPresenter } from "./navigation/button/PreviousButton";
 import { IComponentPresenter } from "../component/ComponentPresenter";
 import { HTMLBlockPresenter } from "./HtmlBlockPresenter";
 import { RichTextBlockPresenter } from "./RichTextBlockPresenter";
-import { JumpButtonPresenter } from "./navigation/jump/JumpButtonPresenter";
 import { IAsyncButtonPresenter } from "./navigation/button/async/AsyncButtonPresenter";
+import { ForwardButtonFactory } from "./navigation/forward/ForwardButtonFactory";
 
 export type IBlockPresenter = IComponentPresenter;
 
@@ -20,9 +19,9 @@ export const BlockPresenter = {
       case BlockType.PREVIOUS_BUTTON:
         return PreviousButtonPresenter.create(blockM);
       case BlockType.NEXT_BUTTON:
-        return NextButtonPresenter.create(blockM);
+        return ForwardButtonFactory.fromNextButton(blockM);
       case BlockType.JUMP_BUTTON:
-        return JumpButtonPresenter.create(blockM);
+        return ForwardButtonFactory.fromJumpButton(blockM);
       case BlockType.HTML:
         return HTMLBlockPresenter.create(blockM);
       case BlockType.RICH_TEXT:

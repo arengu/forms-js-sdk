@@ -1,9 +1,13 @@
 import { IPreviousButtonBlockModel } from '../../BlockModel';
-import { IPreviousButtonView, PreviousButtonView } from './PreviousButtonView';
 import { IBlockPresenter } from '../../BlockPresenter';
-import { ButtonPresenterImpl } from "../button/base/ButtonPresenter";
+import { ButtonPresenterImpl } from "./base/ButtonPresenter";
+import { ButtonView, IButtonView } from './base/ButtonView';
+
+export const CSS_CLASSES = ['af-step-previous', 'af-step-button'];
 
 export type IPreviousButtonPresenter = IBlockPresenter;
+
+export type IPreviousButtonView = IButtonView;
 
 export class PreviousButtonPresenterImpl extends ButtonPresenterImpl<IPreviousButtonView> implements IPreviousButtonPresenter {
   public constructor(buttonV: IPreviousButtonView) {
@@ -19,7 +23,14 @@ export class PreviousButtonPresenterImpl extends ButtonPresenterImpl<IPreviousBu
 export const PreviousButtonPresenter = {
   create(buttonM: IPreviousButtonBlockModel): IPreviousButtonPresenter {
     return new PreviousButtonPresenterImpl(
-      PreviousButtonView.create(buttonM.config.text),
+      ButtonView.create({
+        button: {
+          text: buttonM.config.text,
+        },
+        container: {
+          classes: CSS_CLASSES,
+        },
+      })
     );
   },
 }

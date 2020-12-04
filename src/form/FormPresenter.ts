@@ -21,7 +21,7 @@ import { ISocialFieldPresenter } from '../field/presenter/presenter/SocialFieldP
 import { IFormInteractionResponse, EffectType, IFormInteractionRequest } from './FormInteraction';
 import { IPresenter } from '../core/BaseTypes';
 import { StyleHelper } from './view/StyleHelper';
-import { IForwardButtonPresenter } from '../component/ComponentHelper';
+import { IForwardButtonPresenter } from '../block/navigation/forward/ForwardButton';
 
 export const FormPresenterHelper = {
   getUserValues(stepP: IStepPresenter): Promise<IUserValues> {

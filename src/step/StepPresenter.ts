@@ -18,7 +18,6 @@ import { ArenguError } from '../error/ArenguError';
 import { IUserValues, IFormData } from '../form/model/SubmissionModel';
 import { IComponentModel } from '../component/ComponentModel';
 import { ComponentHelper } from '../component/ComponentHelper';
-import { NextButtonPresenter } from '../block/navigation/next/NextButtonPresenter';
 import { IFormDeps } from '../form/FormPresenter';
 import { ComponentPresenter, IComponentPresenterListener, IComponentPresenter } from '../component/ComponentPresenter';
 import { ISocialFieldPresenter, SocialFieldPresenter } from '../field/presenter/presenter/SocialFieldPresenter';
@@ -27,7 +26,8 @@ import { StepErrorPresenter, IStepErrorPresenter } from './part/StepErrorPresent
 import { IExtendedFormStyle } from '../form/model/FormStyle';
 import { IRefScope } from '../form/model/FormModel';
 import { IAsyncButtonPresenter } from '../block/navigation/button/async/AsyncButtonPresenter';
-import { IPreviousButtonPresenter } from '../block/navigation/previous/PreviousButtonPresenter';
+import { IPreviousButtonPresenter } from '../block/navigation/button/PreviousButton';
+import { ForwardButtonPresenter } from '../block/navigation/forward/ForwardButton';
 
 export interface IStepPresenterListener {
   onGotoPreviousStep?(this: this, buttonP: IPreviousButtonPresenter, stepP: IStepPresenter): void;
@@ -92,7 +92,7 @@ export const StepPresenterHelper = {
   },
 
   addError(compsP: IComponentPresenter[], errorP: IStepErrorPresenter): IComponentPresenter[] {
-    const nextIndex = findIndex(compsP, NextButtonPresenter.matches);
+    const nextIndex = findIndex(compsP, ForwardButtonPresenter.matches);
 
     if (nextIndex >= 0) {
       return StepPresenterHelper.insertAt(compsP, nextIndex, errorP);
@@ -334,7 +334,7 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
   }
 
   public fireNextStep(): void {
-    const buttonsP = this.compsP.filter(ComponentHelper.isForwardButton);
+    const buttonsP = this.compsP.filter(ForwardButtonPresenter.matches);
 
     // fire go forward only when ambiguity is impossible
     if (buttonsP.length === 1) {
