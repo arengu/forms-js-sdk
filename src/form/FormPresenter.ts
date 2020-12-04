@@ -21,7 +21,7 @@ import { ISocialFieldPresenter } from '../field/presenter/presenter/SocialFieldP
 import { IFormInteractionResponse, EffectType, IFormInteractionRequest } from './FormInteraction';
 import { IPresenter } from '../core/BaseTypes';
 import { StyleHelper } from './view/StyleHelper';
-import { IAsyncButtonPresenter } from '../block/navigation/button/async/AsyncButtonPresenter';
+import { IForwardButtonPresenter } from '../component/ComponentHelper';
 
 export const FormPresenterHelper = {
   getUserValues(stepP: IStepPresenter): Promise<IUserValues> {
@@ -151,10 +151,10 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
   /**
    * Returns the final data we have to send to the server on form submission
    */
-  public async getSubmissionData(): Promise<ISubmissionData> {
+  public async getSubmissionData(buttonId: string | undefined): Promise<ISubmissionData> {
     return {
       formData: await this.getFormValues(),
-      metaData: MetaDataModelFactory.create(),
+      metaData: MetaDataModelFactory.create(buttonId),
     };
   }
 
@@ -205,36 +205,36 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
   }
 
   public async onSocialLogin(compP: ISocialFieldPresenter, stepP: IStepPresenter): Promise<void> {
-    await this.goForward(compP, stepP);
+    await this.goForward(compP.getFieldId(), compP, stepP);
   }
 
   public onSubmitForm(): void {
     this.getCurrentStep().fireNextStep();
   }
 
-  public onGoForward(buttonP: IAsyncButtonPresenter, stepP: IStepPresenter): void {
-    this.goForward(buttonP, stepP);
+  public onGoForward(buttonP: IForwardButtonPresenter, stepP: IStepPresenter): void {
+    this.goForward(buttonP.getId(), buttonP, stepP);
   }
 
-  public async goForward(compP: IComponentWithLoader, stepP: IStepPresenter): Promise<void> {
+  public async goForward(buttonId: string | undefined, compP: IComponentWithLoader, stepP: IStepPresenter): Promise<void> {
     try {
       compP.showLoading();
       stepP.blockComponents();
 
-      const stepVal = await stepP.validate();
+      const stepVal = await stepP.validateFields();
 
       if (!stepVal.valid) {
         return;
       }
 
-      const flowRes = await this.validateStep(stepP);
+      const flowRes = await this.executeFlow(buttonId, stepP);
 
       if (flowRes) {
         return;
       }
 
       if (this.isLastStep()) {
-        await this.submitForm(stepP);
+        await this.submitForm(buttonId, stepP);
       } else {
         await this.gotoNextStep();
       }
@@ -305,7 +305,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
       this.signatures.set(currStep.getStepId(), effect.signature);
 
       if (this.isLastStep()) {
-        await this.submitForm(currStep);
+        await this.submitForm(req.metaData.trigger.buttonId, currStep);
       } else {
         await this.gotoNextStep();
       }
@@ -424,10 +424,10 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     this.gotoFirstStep();
   }
 
-  public async submitForm(currStep: IStepPresenter): Promise<void> {
+  public async submitForm(buttonId: string | undefined, currStep: IStepPresenter): Promise<void> {
     const formId = this.getFormId();
     const stepId = currStep.getStepId();
-    const submission = await this.getSubmissionData();
+    const submission = await this.getSubmissionData(buttonId);
     const signature = this.getSubmissionSignature();
 
     const eventData = {
@@ -464,14 +464,14 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     }
   }
 
-  public async validateStep(currStep: IStepPresenter): Promise<IFormInteractionResponse | undefined> {
+  public async executeFlow(buttonId: string | undefined, currStep: IStepPresenter): Promise<IFormInteractionResponse | undefined> {
     if (!currStep.hasFlow()) {
       return;
     }
 
     const formId = this.getFormId();
     const stepId = currStep.getStepId();
-    const submission = await this.getSubmissionData();
+    const submission = await this.getSubmissionData(buttonId);
     const signature = this.getValidationSignature();
 
     const interReq: IFormInteractionRequest = {

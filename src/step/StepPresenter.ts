@@ -49,7 +49,7 @@ export interface IStepPresenter extends IPresenter {
   onUpdateStyle(style: IExtendedFormStyle): void;
 
   hasFlow(this: this): boolean;
-  validate(this: this): Promise<IStepValidationResult>;
+  validateFields(this: this): Promise<IStepValidationResult>;
   getUserValues(this: this): Promise<IUserValues>;
 
   setStepError(msg: string): void;
@@ -190,7 +190,7 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
     return this.lastSocialP ? [this.lastSocialP] : this.fieldsP;
   }
 
-  public async validate(): Promise<IStepValidationResult> {
+  public async validateFields(): Promise<IStepValidationResult> {
     const fieldsP = this.getActiveFields();
 
     return ValidateFields.execute(fieldsP);

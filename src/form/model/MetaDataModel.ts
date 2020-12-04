@@ -1,6 +1,9 @@
 import { URLHelper } from '../../lib/URLHelper';
 
 export interface IMetaDataModel {
+  readonly trigger: {
+    readonly buttonId?: string;
+  };
   readonly navigator: {
     readonly userAgent: string;
     readonly language: string;
@@ -41,8 +44,11 @@ export interface IMetaDataModel {
 }
 
 export const MetaDataModelFactory = {
-  create(): IMetaDataModel {
+  create(buttonId: string | undefined): IMetaDataModel {
     return {
+      trigger: {
+        buttonId,
+      },
       navigator: {
         userAgent: window.navigator.userAgent,
         language: window.navigator.language,

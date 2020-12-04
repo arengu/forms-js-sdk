@@ -3,12 +3,23 @@ import { INextButtonView, NextButtonView } from './NextButtonView';
 import { IComponentPresenter } from '../../../component/ComponentPresenter';
 import { AsyncButtonPresenterImpl, IAsyncButtonPresenter } from "../button/async/AsyncButtonPresenter";
 
-export type INextButtonPresenter = IAsyncButtonPresenter<INextButtonView>;
+export interface INextButtonPresenter extends IAsyncButtonPresenter<INextButtonView> {
+  getId(): string | undefined;
+}
 
 export class NextButtonPresenterImpl extends AsyncButtonPresenterImpl<INextButtonView> implements INextButtonPresenter {
-  public constructor(buttonV: INextButtonView) {
+  readonly fieldId: string | undefined;
+
+  public constructor(buttonM: INextButtonBlockModel, buttonV: INextButtonView) {
     super(buttonV);
+
     this.buttonV.subscribe(this);
+
+    this.fieldId = buttonM.id;
+  }
+
+  public getId(): string | undefined {
+    return this.fieldId;
   }
 
   public onClick(this: this): void {
@@ -19,6 +30,7 @@ export class NextButtonPresenterImpl extends AsyncButtonPresenterImpl<INextButto
 export const NextButtonPresenter = {
   create(buttonM: INextButtonBlockModel): INextButtonPresenter {
     return new NextButtonPresenterImpl(
+      buttonM,
       NextButtonView.create(buttonM.config.text),
     );
   },
