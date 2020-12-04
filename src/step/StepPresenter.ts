@@ -281,6 +281,7 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
 
   public clearFieldErrors(): void {
     this.fieldsP.forEach((p) => p.clearError());
+    this.invalidFields.clear();
   }
 
   public clearAllErrors(): void {
