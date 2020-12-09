@@ -153,8 +153,9 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
    */
   public async getSubmissionData(buttonId: string | undefined): Promise<ISubmissionData> {
     return {
+      buttonId,
       formData: await this.getFormValues(),
-      metaData: MetaDataModelFactory.create(buttonId),
+      metaData: MetaDataModelFactory.create(),
     };
   }
 
@@ -305,7 +306,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
       this.signatures.set(currStep.getStepId(), effect.signature);
 
       if (this.isLastStep()) {
-        await this.submitForm(req.metaData.trigger.buttonId, currStep);
+        await this.submitForm(req.buttonId, currStep);
       } else {
         await this.gotoNextStep();
       }

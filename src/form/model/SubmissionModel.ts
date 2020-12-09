@@ -11,6 +11,7 @@ export interface IFormData {
 }
 
 export interface ISubmissionData {
+  readonly buttonId: string | undefined;
   readonly formData: IFormData;
   readonly metaData: IMetaDataModel;
 }

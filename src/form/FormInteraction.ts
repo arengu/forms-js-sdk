@@ -45,6 +45,7 @@ export interface IFormInteractionResponse {
 export interface IFormInteractionRequest {
   readonly formId: string;
   readonly stepId: string;
+  readonly buttonId: string | undefined;
   readonly formData: IFormData;
   readonly metaData: IMetaDataModel;
 }
