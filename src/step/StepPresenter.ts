@@ -25,13 +25,14 @@ import { IPresenter } from '../core/BaseTypes';
 import { StepErrorPresenter, IStepErrorPresenter } from './part/StepErrorPresenter';
 import { IExtendedFormStyle } from '../form/model/FormStyle';
 import { IRefScope } from '../form/model/FormModel';
-import { IAsyncButtonPresenter } from '../block/navigation/button/async/AsyncButtonPresenter';
 import { IPreviousButtonPresenter } from '../block/navigation/button/PreviousButton';
-import { ForwardButtonPresenter } from '../block/navigation/forward/ForwardButton';
+import { INextButtonPresenter, NextButtonPresenter } from '../block/navigation/button/NextButton';
+import { IJumpButtonPresenter, JumpButtonPresenter } from '../block/navigation/button/JumpButton';
 
 export interface IStepPresenterListener {
-  onGotoPreviousStep?(this: this, buttonP: IPreviousButtonPresenter, stepP: IStepPresenter): void;
-  onGoForward?(this: this, buttonP: IAsyncButtonPresenter, stepP: IStepPresenter): void;
+  onPreviousButton?(this: this, buttonP: IPreviousButtonPresenter, stepP: IStepPresenter): void;
+  onNextButton?(this: this, buttonP: INextButtonPresenter, stepP: IStepPresenter): void;
+  onJumpButton?(this: this, buttonP: IJumpButtonPresenter, stepP: IStepPresenter): void;
   onSocialLogin?(this: this, compP: ISocialFieldPresenter, stepP: IStepPresenter): void;
 }
 
@@ -92,7 +93,7 @@ export const StepPresenterHelper = {
   },
 
   addError(compsP: IComponentPresenter[], errorP: IStepErrorPresenter): IComponentPresenter[] {
-    const nextIndex = findIndex(compsP, ForwardButtonPresenter.matches);
+    const nextIndex = findIndex(compsP, ComponentHelper.isForwardButton);
 
     if (nextIndex >= 0) {
       return StepPresenterHelper.insertAt(compsP, nextIndex, errorP);
@@ -128,6 +129,8 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
   /** Indicates if social login has been used in this step */
   protected usedSocialP?: ISocialFieldPresenter;
 
+  protected skipFields: boolean;
+
   protected constructor(stepM: IStepModel, formD: IFormDeps, stepL: IStepPresenterListener) {
     this.stepM = stepM;
     this.messages = formD.messages;
@@ -147,6 +150,8 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
     const compsE = stepComps.map((cP) => cP.render());
     this.stepV = StepView.create(stepM, compsE);
     this.stepL = stepL;
+
+    this.skipFields = false;
   }
 
   public static create(stepM: IStepModel, formD: IFormDeps, stepL: IStepPresenterListener): IStepPresenter {
@@ -186,8 +191,15 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
   }
 
   public getActiveFields(): IFieldPresenter[] {
-    /* Ignore the rest of fields when social login is used */
-    return this.usedSocialP ? [this.usedSocialP] : this.fieldsP;
+    if (this.skipFields) {
+      return [];
+    }
+
+    if (this.usedSocialP) {
+      return [this.usedSocialP]
+    }
+
+    return this.fieldsP;
   }
 
   public async validateFields(): Promise<IStepValidationResult> {
@@ -315,18 +327,33 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
     }
   }
 
-  public onGoToPrevious(buttonP: IPreviousButtonPresenter): void {
+  public onPreviousButton(buttonP: IPreviousButtonPresenter): void {
     this.clearSocialLogin();
-    this.stepL.onGotoPreviousStep && this.stepL.onGotoPreviousStep(buttonP, this);
+    this.skipFields = false;
+
+    this.stepL.onPreviousButton?.(buttonP, this);
   }
 
-  public onGoForward(buttonP: IAsyncButtonPresenter): void {
+  public onNextButton(buttonP: INextButtonPresenter): void {
     this.clearSocialLogin();
-    this.stepL.onGoForward?.(buttonP, this);
+    this.skipFields = false;
+
+    this.stepL.onNextButton?.(buttonP, this);
+  }
+
+  public onJumpButton(buttonP: IJumpButtonPresenter): void {
+    this.clearSocialLogin();
+    this.skipFields = true;
+
+    this.stepL.onJumpButton?.(buttonP, this);
   }
 
   public onSocialLogin(fieldP: ISocialFieldPresenter): void {
+    this.clearSocialLogin();
+    this.skipFields = false;
+
     this.usedSocialP = fieldP;
+
     this.stepL.onSocialLogin && this.stepL.onSocialLogin(fieldP, this);
   }
 
@@ -335,11 +362,20 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
   }
 
   public fireNextStep(): void {
-    const buttonsP = this.compsP.filter(ForwardButtonPresenter.matches);
+    const fwButtonsP = this.compsP.filter(ComponentHelper.isForwardButton);
 
-    // fire go forward only when ambiguity is impossible
-    if (buttonsP.length === 1) {
-      this.onGoForward(buttonsP[0]);
+    if (fwButtonsP.length !== 1) {
+      return; // abort when ambiguity
+    }
+
+    const buttonP = fwButtonsP[0];
+
+    if (NextButtonPresenter.matches(buttonP)) {
+      this.onNextButton(buttonP);
+    }
+
+    if (JumpButtonPresenter.matches(buttonP)) {
+      this.onJumpButton(buttonP);
     }
   }
 }

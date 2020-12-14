@@ -16,7 +16,7 @@ export class PreviousButtonPresenterImpl extends ButtonPresenterImpl<IPreviousBu
   }
 
   public onClick(this: this): void {
-    this.listeners.forEach((listener) => listener.onGoToPrevious?.(this));
+    this.listeners.forEach((listener) => listener.onPreviousButton?.(this));
   }
 }
 

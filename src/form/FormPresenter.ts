@@ -21,7 +21,8 @@ import { ISocialFieldPresenter } from '../field/presenter/presenter/SocialFieldP
 import { IFormInteractionResponse, EffectType, IFormInteractionRequest } from './FormInteraction';
 import { IPresenter } from '../core/BaseTypes';
 import { StyleHelper } from './view/StyleHelper';
-import { IForwardButtonPresenter } from '../block/navigation/forward/ForwardButton';
+import { INextButtonPresenter } from '../block/navigation/button/NextButton';
+import { IJumpButtonPresenter } from '../block/navigation/button/JumpButton';
 
 export const FormPresenterHelper = {
   getUserValues(stepP: IStepPresenter): Promise<IUserValues> {
@@ -201,20 +202,24 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     return this.formV;
   }
 
-  public onGotoPreviousStep(): void {
+  public onPreviousButton(): void {
     this.gotoPreviousStep();
   }
 
-  public async onSocialLogin(compP: ISocialFieldPresenter, stepP: IStepPresenter): Promise<void> {
-    await this.goForward(compP.getFieldId(), compP, stepP);
+  public onNextButton(buttonP: INextButtonPresenter, stepP: IStepPresenter): void {
+    this.goForward(buttonP.getId(), buttonP, stepP);
+  }
+
+  public onJumpButton(buttonP: IJumpButtonPresenter, stepP: IStepPresenter): void {
+    this.goForward(buttonP.getId(), buttonP, stepP);
   }
 
   public onSubmitForm(): void {
     this.getCurrentStep().fireNextStep();
   }
 
-  public onGoForward(buttonP: IForwardButtonPresenter, stepP: IStepPresenter): void {
-    this.goForward(buttonP.getId(), buttonP, stepP);
+  public async onSocialLogin(compP: ISocialFieldPresenter, stepP: IStepPresenter): Promise<void> {
+    await this.goForward(compP.getFieldId(), compP, stepP);
   }
 
   public async goForward(buttonId: string | undefined, compP: IComponentWithLoader, stepP: IStepPresenter): Promise<void> {
