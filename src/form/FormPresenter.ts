@@ -52,6 +52,12 @@ export interface IFormDeps {
   messages: Messages;
 }
 
+enum ButtonType {
+  NEXT = 'NEXT',
+  JUMP = 'JUMP',
+  SOCIAL = 'SOCIAL',
+}
+
 export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPresenterListener {
   protected readonly formM: IFormModel;
   protected readonly hiddenFields: HiddenFields;
@@ -207,11 +213,11 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
   }
 
   public onNextButton(buttonP: INextButtonPresenter, stepP: IStepPresenter): void {
-    this.goForward(buttonP.getId(), buttonP, stepP);
+    this.goForward(buttonP, stepP, ButtonType.NEXT, buttonP.getId());
   }
 
   public onJumpButton(buttonP: IJumpButtonPresenter, stepP: IStepPresenter): void {
-    this.goForward(buttonP.getId(), buttonP, stepP);
+    this.goForward(buttonP, stepP, ButtonType.JUMP, buttonP.getId());
   }
 
   public onSubmitForm(): void {
@@ -219,10 +225,10 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
   }
 
   public async onSocialLogin(compP: ISocialFieldPresenter, stepP: IStepPresenter): Promise<void> {
-    await this.goForward(compP.getFieldId(), compP, stepP);
+    await this.goForward(compP, stepP, ButtonType.SOCIAL, compP.getFieldId());
   }
 
-  public async goForward(buttonId: string | undefined, compP: IComponentWithLoader, stepP: IStepPresenter): Promise<void> {
+  public async goForward(compP: IComponentWithLoader, stepP: IStepPresenter, buttonType: ButtonType, buttonId: string | undefined): Promise<void> {
     try {
       compP.showLoading();
       stepP.blockComponents();
@@ -233,7 +239,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
         return;
       }
 
-      const flowRes = await this.executeFlow(buttonId, stepP);
+      const flowRes = await this.executeFlow(stepP, buttonType, buttonId);
 
       if (flowRes) {
         return;
@@ -470,8 +476,8 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     }
   }
 
-  public async executeFlow(buttonId: string | undefined, currStep: IStepPresenter): Promise<IFormInteractionResponse | undefined> {
-    if (!currStep.hasFlow()) {
+  public async executeFlow(currStep: IStepPresenter, buttonType: ButtonType, buttonId: string | undefined): Promise<IFormInteractionResponse | undefined> {
+    if (!currStep.hasFlow() && buttonType !== ButtonType.JUMP) {
       return;
     }
 
