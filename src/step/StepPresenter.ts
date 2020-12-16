@@ -237,6 +237,9 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
   }
 
   public onShow(): void {
+    this.clearSocialLogin();
+    this.skipFields = false;
+
     this.compsP.forEach((cP) => cP.onShow && cP.onShow());
   }
 
@@ -328,9 +331,6 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
   }
 
   public onPreviousButton(buttonP: IPreviousButtonPresenter): void {
-    this.clearSocialLogin();
-    this.skipFields = false;
-
     this.stepL.onPreviousButton?.(buttonP, this);
   }
 
