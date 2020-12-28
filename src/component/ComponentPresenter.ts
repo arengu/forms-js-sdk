@@ -11,8 +11,10 @@ export interface IComponentPresenterListener extends IFieldPresenterListener, IB
 export interface IComponentPresenter extends IPresenter, IListenableEntity<IComponentPresenterListener> {
   unblock?(): void;
   block?(): void;
+
   onShow?(): void;
   onHide?(): void;
+
   isDynamic(this: this): boolean;
   updateContent(this: this, data: IRefScope): void;
 }

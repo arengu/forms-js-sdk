@@ -5,15 +5,15 @@ import { IExtendedFormStyle } from "../../form/model/FormStyle";
 export interface IHTMLInputListener {
   onFocus(this: this): void;
   onInput(this: this): void;
-  onChange(this: this): void;
   onBlur(this: this): void;
+  onChange(this: this): void;
 }
 
 export interface IInputViewListener {
   onFocus?(this: this): void;
   onInput?(this: this): void;
-  onChange?(this: this): void;
   onBlur?(this: this): void;
+  onChange?(this: this): void;
 }
 
 export interface IInputView extends IView, IListenableEntity<IInputViewListener> {

@@ -1,19 +1,14 @@
-import { IPaymentFieldValue } from '../../model/FieldModel';
-import { IAsyncValueHandler } from './ValueHandler';
-import { IPaymentInputView } from '../../view/input/PaymentInputView';
+import { ISyncValueHandler } from './ValueHandler';
 
 export const PaymentValueHandler = {
-  create(inputV: IPaymentInputView): IAsyncValueHandler<IPaymentFieldValue> {
+  create(): ISyncValueHandler<undefined> {
     return {
-      async getValue(): Promise<IPaymentFieldValue> {
-        await inputV.processCard();
-        const token = inputV.getToken();
-        return token ? token.id : undefined;
+      getValue(): undefined {
+        return undefined;
       },
 
-      setValue(): Promise<void> {
-        console.error('Setting a card is not allowed.');
-        return Promise.resolve();
+      setValue(): void {
+        return undefined;
       }
     };
   },

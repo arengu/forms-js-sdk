@@ -35,12 +35,16 @@ export enum AppErrorCode {
    * Errors due to very long submission
    */
   SIGNATURE_EXPIRED = 'ERR_SIGNATURE_EXPIRED',
+
+  UNAUTH_PAYMENT = 'ERR_UNAUTH_PAYMENT',
 }
 
 /**
  * Codes generated exclusively by SDK
  */
 export enum SDKErrorCode {
+  ERR_GENERIC_ERROR = 'ERR_GENERIC_ERROR',
+
   /*
    * Invalid params on embed
    */

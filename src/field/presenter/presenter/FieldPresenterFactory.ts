@@ -1,5 +1,5 @@
 import { IFormDeps } from "../../../form/FormPresenter";
-import { IBooleanFieldModel, IChoiceFieldModel, IDateFieldModel, IDropdownFieldModel, IEmailFieldModel, ILegalFieldModel, INumberFieldModel, IPasswordFieldModel, IPaymentFieldModel, ITelFieldModel, ITextFieldModel, IURLFieldModel } from "../../model/FieldModel";
+import { IBooleanFieldModel, IChoiceFieldModel, IDateFieldModel, IDropdownFieldModel, IEmailFieldModel, ILegalFieldModel, INumberFieldModel, IPasswordFieldModel, ITelFieldModel, ITextFieldModel, IURLFieldModel } from "../../model/FieldModel";
 import { BooleanInputView } from "../../view/input/BooleanInputView";
 import { ChoiceInputView } from "../../view/input/ChoiceInputView";
 import { DateInputView } from "../../view/input/DateInputView";
@@ -8,13 +8,11 @@ import { EmailInputView } from "../../view/input/EmailInputView";
 import { LegalInputView } from "../../view/input/LegalInputView";
 import { NumberInputView } from "../../view/input/NumberInputView";
 import { PasswordInputView } from "../../view/input/PasswordInputView";
-import { PaymentInputView } from "../../view/input/PaymentInputView";
 import { TelInputView } from "../../view/input/TelInputView";
 import { TextInputView } from "../../view/input/TextInputView";
 import { URLInputView } from "../../view/input/URLInputView";
 import { DummyValueHandler } from "../handler/DummyValueHandler";
 import { PasswordValueHandler } from "../handler/PasswordValueHandler";
-import { PaymentValueHandler } from "../handler/PaymentValueHandler";
 import { StringValueHandler } from "../handler/StringValueHandler";
 import { UrlValueHandler } from "../handler/UrlValueHandler";
 import { CustomValidations } from "../validator/CustomValidations";
@@ -25,6 +23,7 @@ import { IFieldPresenter } from "./FieldPresenter";
 import { SimpleFieldPresenter } from "./SimpleFieldPresenter";
 import { SocialFieldPresenter } from "./SocialFieldPresenter";
 import { NumberValueHandler } from "../handler/NumberValueHandler";
+import { PaymentFieldPresenter } from "./PaymentFieldPresenter";
 
 export const FieldPresenterFactory = {
   fromBoolean(formD: IFormDeps, fieldM: IBooleanFieldModel): IFieldPresenter {
@@ -130,17 +129,7 @@ export const FieldPresenterFactory = {
     return SimpleFieldPresenter.create(formD, fieldM, inputV, fieldVal, valueH);
   },
 
-  fromPayment(formD: IFormDeps, fieldM: IPaymentFieldModel): IFieldPresenter {
-    const inputV = PaymentInputView.create(formD, fieldM);
-
-    const fieldVal = FieldValidator.create([
-      CustomValidations.payment(fieldM, inputV),
-    ]);
-
-    const valueH = PaymentValueHandler.create(inputV);
-
-    return SimpleFieldPresenter.create(formD, fieldM, inputV, fieldVal, valueH);
-  },
+  fromPayment: PaymentFieldPresenter.create,
 
   fromSocial: SocialFieldPresenter.create,
 

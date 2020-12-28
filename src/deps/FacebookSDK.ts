@@ -74,14 +74,10 @@ export const FacebookSDK = {
       callback(FB);
     }
 
-    const parent = document.querySelector('body');
+    const node = document.createElement('script');
+    node.type = 'text/javascript';
+    node.src = 'https://connect.facebook.net/en_US/sdk.js';
 
-    if (parent) {
-      const node = document.createElement('script');
-      node.type = 'text/javascript';
-      node.src = 'https://connect.facebook.net/en_US/sdk.js';
-
-      parent.appendChild(node);
-    }
+    document.body.appendChild(node);
   }
 };

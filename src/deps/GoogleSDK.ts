@@ -67,14 +67,10 @@ export const GoogleSDK = {
       });
     }
 
-    const parent = document.querySelector('body');
+    const node = document.createElement('script');
+    node.type = 'text/javascript';
+    node.src = 'https://apis.google.com/js/platform.js?onload=_arenguGoogleInit';
 
-    if (parent) {
-      const node = document.createElement('script');
-      node.type = 'text/javascript';
-      node.src = 'https://apis.google.com/js/platform.js?onload=_arenguGoogleInit';
-
-      parent.appendChild(node);
-    }
+    document.body.appendChild(node);
   }
 };

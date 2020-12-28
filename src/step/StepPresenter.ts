@@ -39,22 +39,24 @@ export interface IStepPresenterListener {
 export interface IStepPresenter extends IPresenter {
   getStepId(): string;
 
-  blockComponents(this: this): void;
-  unblockComponents(this: this): void;
+  blockComponents(): void;
+  unblockComponents(): void;
 
-  onShow(this: this): void;
-  onHide(this: this): void;
+  onShow(): void;
+  onHide(): void;
 
-  isDynamic(this: this): boolean;
-  updateStep(this: this, formData: IFormData): void;
+  isDynamic(): boolean;
+  updateStep(formData: IFormData): void;
   onUpdateStyle(style: IExtendedFormStyle): void;
 
-  hasFlow(this: this): boolean;
-  validateFields(this: this): Promise<IStepValidationResult>;
-  getUserValues(this: this): Promise<IUserValues>;
+  getFieldPresenter(fieldId: string): IFieldPresenter | undefined;
 
-  setStepError(msg: string): void;
-  handleAnyError(this: this, err: Error): void;
+  hasFlow(): boolean;
+  validateFields(): Promise<IStepValidationResult>;
+  getUserValues(): Promise<IUserValues>;
+
+  handleAnyError(err: Error): void;
+  handleAnyError(err: string): void;
 
   clearAllErrors(): void;
 
@@ -162,31 +164,27 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
     return this.stepM.id;
   }
 
-  public getFieldPresenter(fieldId: string): IFieldPresenter {
+  public getFieldPresenter(fieldId: string): IFieldPresenter | undefined {
     const fieldP = this.fieldsPI[fieldId];
 
-    if (isNil(fieldP)) {
-      throw new Error('Field not found');
-    }
-
-    return fieldP;
+    return fieldP || undefined;
   }
 
   public render(): HTMLElement {
     return this.stepV.render();
   }
 
-  public isDynamic(this: this): boolean {
+  public isDynamic(): boolean {
     return this.dynComponentsP.length > 0;
   }
 
-  public updateStep(this: this, formData: IFormData): void {
+  public updateStep(formData: IFormData): void {
     // we have to support temporarily both old and new formats to ensure backward compatibility
     const newScope: IRefScope = { field: formData, ...formData };
     this.dynComponentsP.forEach((cP): void => cP.updateContent(newScope));
   }
 
-  public hasFlow(this: this): boolean {
+  public hasFlow(): boolean {
     return this.stepM.onNext;
   }
 
@@ -251,7 +249,7 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
     const { fieldId } = err;
 
     const fieldP = this.getFieldPresenter(fieldId);
-    fieldP.handleFieldError(err);
+    fieldP?.handleFieldError(err);
   }
 
   public handleInvalidFields(err: InvalidFields): void {
@@ -263,13 +261,15 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
     this.setStepError(msg);
   }
 
-  public handleAnyError(err: Error): void {
+  public handleAnyError(err: Error | string): void {
     if (err instanceof InvalidFields) {
       this.handleInvalidFields(err);
     } else if (err instanceof ArenguError) {
       this.handleArenguError(err);
-    } else {
+    } else if (err instanceof Error) {
       this.setStepError(err.message);
+    } else {
+      this.setStepError(err);
     }
   }
 

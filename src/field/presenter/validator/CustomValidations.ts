@@ -7,10 +7,10 @@ import {
 } from '../../model/FieldModel';
 import { FieldError } from '../../../error/InvalidFields';
 import { FieldErrorCode } from '../../../error/ErrorCodes';
-import { IPaymentInputView } from '../../view/input/PaymentInputView';
 import { IPasswordInputView } from '../../view/input/PasswordInputView';
 import { FieldRules } from './FieldRules';
 import { StringValueHandler } from '../handler/StringValueHandler';
+import { PaymentDetailsState, IPaymentProvider } from '../../view/input/payment/PaymentProvider';
 
 const VALID: IFieldValidationResult = { valid: true };
 
@@ -67,9 +67,11 @@ export const CustomValidations = {
     }
   },
 
-  payment(fieldM: IPaymentFieldModel, inputV: IPaymentInputView): IFieldValidationFunction<IPaymentFieldValue> {
+  payment(fieldM: IPaymentFieldModel, paymentP: IPaymentProvider): IFieldValidationFunction<IPaymentFieldValue> {
     return function checkPayment(): IFieldValidationResult {
-      if (inputV.isEmpty()) {
+      const state = paymentP.getState();
+
+      if (state === PaymentDetailsState.EMPTY) {
         if (!fieldM.required) {
           return VALID;
         }
@@ -84,24 +86,24 @@ export const CustomValidations = {
         };
       }
 
-      if (inputV.isInvalid()) {
-        return {
-          valid: false,
-          error: FieldError.create(
-            fieldM.id,
-            FieldErrorCode.INVALID_CARD,
-            'Some details are not valid',
-          ),
-        };
-      }
-
-      if (!inputV.isComplete()) {
+      if (state === PaymentDetailsState.INCOMPLETE) {
         return {
           valid: false,
           error: FieldError.create(
             fieldM.id,
             FieldErrorCode.MISSING_CARD_INFO,
             'Some details are empty',
+          ),
+        };
+      }
+
+      if (state === PaymentDetailsState.INVALID) {
+        return {
+          valid: false,
+          error: FieldError.create(
+            fieldM.id,
+            FieldErrorCode.INVALID_CARD,
+            'Some details are not valid',
           ),
         };
       }

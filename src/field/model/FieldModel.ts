@@ -130,21 +130,40 @@ export interface IPasswordFieldModel extends IBaseFieldModel {
 
 export interface IPaymentCardFieldModel {
   readonly label?: string;
-  readonly placeholder?: string;
+  readonly placeholder: string | null;
+}
+
+export enum PaymentProvider {
+  STRIPE = 'STRIPE',
+}
+
+export enum ChargeType {
+  ONE_OFF = 'ONE_OFF',
+  SUBSCRIPTION = 'SUBSCRIPTION',
+}
+
+export interface IPaymentCardCharge {
+  readonly type: ChargeType;
+}
+
+export interface IPaymentCardCredentials {
+  readonly publicKey: string;
+}
+
+export interface IPaymentCardFieldsConfig {
+  readonly cardNumber: IPaymentCardFieldModel;
+  readonly expirationDate: IPaymentCardFieldModel;
+  readonly securityCode: IPaymentCardFieldModel;
+  readonly trustmarks: boolean;
 }
 
 export interface IPaymentFieldModel extends IBaseFieldModel {
   readonly type: FieldType.PAYMENT;
   readonly config: {
-    readonly credentials: {
-      readonly publicKey: string;
-    };
-    readonly fields: {
-      readonly cardNumber: IPaymentCardFieldModel;
-      readonly expirationDate: IPaymentCardFieldModel;
-      readonly securityCode: IPaymentCardFieldModel;
-      readonly trustmarks: boolean;
-    };
+    readonly provider: PaymentProvider;
+    readonly charge: IPaymentCardCharge;
+    readonly credentials: IPaymentCardCredentials;
+    readonly fields: IPaymentCardFieldsConfig;
   };
 }
 

@@ -18,11 +18,13 @@ import { DOMEvents, EventNames } from '../lib/DOMEvents';
 import { IStepPresenter, IStepPresenterListener, StepPresenter } from '../step/StepPresenter';
 import { NavigationHistory } from '../lib/NavigationHistory';
 import { ISocialFieldPresenter } from '../field/presenter/presenter/SocialFieldPresenter';
-import { IFormInteractionResponse, EffectType, IFormInteractionRequest } from './FormInteraction';
+import { IFormInteractionResponse, EffectType, IFormInteractionRequest, IEffectAuthenticatePayment } from './FormInteraction';
 import { IPresenter } from '../core/BaseTypes';
 import { StyleHelper } from './view/StyleHelper';
 import { INextButtonPresenter } from '../block/navigation/button/NextButton';
 import { IJumpButtonPresenter } from '../block/navigation/button/JumpButton';
+import { IPaymentFieldPresenter, PaymentFieldPresenter } from '../field/presenter/presenter/PaymentFieldPresenter';
+import { IFieldPresenter } from '../field/presenter/presenter/FieldPresenter';
 
 export const FormPresenterHelper = {
   getUserValues(stepP: IStepPresenter): Promise<IUserValues> {
@@ -32,6 +34,24 @@ export const FormPresenterHelper = {
   reset(presenter: IStepPresenter): void {
     return presenter.reset();
   },
+
+  getField(stepsP: IStepPresenter[], fieldId: string): IFieldPresenter | undefined {
+    for (const sP of stepsP) {
+      const fP = sP.getFieldPresenter(fieldId);
+
+      if (fP) {
+        return fP;
+      }
+    }
+  },
+
+  getPaymentField(stepsP: IStepPresenter[], fieldId: string): IPaymentFieldPresenter | undefined {
+    const fieldP = this.getField(stepsP, fieldId);
+
+    if (fieldP && PaymentFieldPresenter.matches(fieldP)) {
+      return fieldP;
+    }
+  }
 };
 
 export interface IFormPresenter extends IPresenter {
@@ -258,6 +278,20 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     }
   }
 
+  public async handlePaymentAuthentication(effect: IEffectAuthenticatePayment): Promise<void> {
+    const pf = FormPresenterHelper.getPaymentField(this.stepsP, effect.fieldId);
+
+    const currStep = this.getCurrentStep();
+
+    try {
+      await pf?.authenticate(effect.data);
+      await this.submitForm(undefined, currStep);
+    } catch (err) {
+      currStep.handleAnyError(err);
+      this.signatures.delete(currStep.getStepId());
+    }
+  }
+
   public async handleFormInteraction(req: IFormInteractionRequest, res: IFormInteractionResponse): Promise<void> {
     const currStep = this.getCurrentStep();
 
@@ -266,6 +300,8 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     const { effect } = res;
 
     if (effect.type === EffectType.ERROR_MESSAGE) {
+      this.signatures.delete(currStep.getStepId());
+
       DOMEvents.emit(
         EventNames.FormEffectErrorMessage,
         {
@@ -274,7 +310,19 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
           message: effect.message,
         },
       );
-      currStep.setStepError(effect.message);
+      currStep.handleAnyError(effect.message);
+      return;
+    }
+
+    if (effect.type === EffectType.AUTHN_PAYMENT) {
+      this.signatures.set(currStep.getStepId(), effect.signature);
+      await this.handlePaymentAuthentication(effect);
+      return;
+    }
+
+    if (effect.type === EffectType.SUBMIT_FORM) {
+      this.signatures.set(currStep.getStepId(), effect.signature);
+      await this.submitForm(undefined, currStep);
       return;
     }
 
