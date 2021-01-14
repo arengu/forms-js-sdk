@@ -14,9 +14,9 @@ export const DEFAULT_MESSAGES: IMessages = {
    * while someone is filling the form.
    */
   [AppErrorCode.VALIDATION_REQUIRED]: 'You have at least one pending validation.',
-  [AppErrorCode.MISSING_VALIDATION]: ' There is at least one step that we did not validate.',
+  [AppErrorCode.MISSING_VALIDATION]: 'There is at least one pending validation.',
   [AppErrorCode.NO_VALIDATION_REQUIRED]: 'The specified step does not have any validation associated.',
-  [AppErrorCode.SIGNATURE_REQUIRED]: ' The form requires at least one validation and no signature was provided.',
+  [AppErrorCode.SIGNATURE_REQUIRED]: 'The form requires at least one validation and no signature was provided.',
   [AppErrorCode.FLOW_NOT_FOUND]: 'There was an internal error executing a flow that does not exist.',
   [AppErrorCode.STEP_NOT_FOUND]: 'The requested step was not found.',
 
@@ -29,7 +29,7 @@ export const DEFAULT_MESSAGES: IMessages = {
   /*
     * Error message when someone spends too much time filling in the form.
     */
-  [AppErrorCode.SIGNATURE_EXPIRED]: 'The provided signature has been expired.',
+  [AppErrorCode.SIGNATURE_EXPIRED]: 'The provided signature has expired.',
 
   /*
     * Validation errors detected either frontend or backend.
