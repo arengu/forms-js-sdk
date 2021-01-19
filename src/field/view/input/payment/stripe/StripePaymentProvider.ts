@@ -19,13 +19,17 @@ export interface IAuthenticationData {
   clientSecret: string;
 }
 
+export interface IAuthenticationResponse {
+  error?: stripe.Error;
+}
+
 export const StripeHelper = {
   translateError(err: stripe.Error): IArenguError {
     if (err.code === 'payment_intent_authentication_failure') {
       return AppError.create({
         code: AppErrorCode.UNAUTH_PAYMENT,
         message: 'Payment was not authenticated by owner.',
-        details: [],
+        details: {},
       })
     }
 
@@ -115,20 +119,29 @@ export class StripePaymentProviderImpl implements IPaymentProvider, IStripeEleme
     this.paymentV.updateStyle(style);
   }
 
-  async authenticate(data: IAuthenticationData): Promise<void> {
+  async confirmPayment(clientSecret: string): Promise<IAuthenticationResponse> {
     if (!this.sdk) {
-      return;
+      return Promise.resolve({});
     }
 
-    const res = await this.sdk.confirmCardPayment(data.clientSecret);
-
-    if (res.paymentIntent) {
-      return;
+    if (clientSecret.startsWith('pi_')) {
+      const pi = await this.sdk.confirmCardPayment(clientSecret);
+      return { error: pi.error };
     }
 
-    this.pmProm = undefined; // declined payment methods cannot be reused on rewind
+    if (clientSecret.startsWith('seti_')) {
+      // setup intents are best effort, we do not stop the process on failure
+      await this.sdk.confirmCardSetup(clientSecret);
+    }
+
+    return Promise.resolve({});
+  }
+
+  async authenticate(data: IAuthenticationData): Promise<void> {
+    const res = await this.confirmPayment(data.clientSecret);
 
     if (res.error) {
+      this.pmProm = undefined; // declined payment methods cannot be reused on rewind
       throw StripeHelper.translateError(res.error);
     }
   }
