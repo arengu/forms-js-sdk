@@ -51,6 +51,7 @@ export interface IExtendedFormStyle extends IFormStyle {
     placeholderFocusFontColor?: string;
     hintFontColor?: string;
     hintFontSize?: string;
+    dividerFontSize?: string;
     legalFontColor?: string;
     legalFontSize?: string;
     fieldErrorFontSize?: string;

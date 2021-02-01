@@ -48,6 +48,7 @@
   --label-font-weight: 500;
   --counter-font-size: 12px;
   --hint-font-size: 14px;
+  --divider-font-size: 13px;
   --button-font-size: 15px;
   --button-font-weight: 500;
   --button-border-radius: 3px;
@@ -801,6 +802,36 @@
   font-family: var(--font-family);
   font-size: var(--font-size);
 }
+
+.af-divider-block {
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-flex: 0;
+  flex: 0;
+  color: var(--hint-font-color);
+  font-size: var(--divider-font-size);
+  margin: 1rem auto;
+  width: 100%;
+}
+
+.af-divider-block::before,
+.af-divider-block::after {
+  content: '';
+  -webkit-box-flex: 1;
+  flex-grow: 1;
+  border-top: var(--input-border-width) solid var(--input-border-color);
+}
+
+.af-divider-block::before {
+  margin-right: .75rem;
+}
+
+.af-divider-block::after {
+  margin-left: .75rem;
+}
+
 
 /*******************************
             States

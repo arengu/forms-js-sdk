@@ -3,6 +3,7 @@ import { PreviousButtonPresenter, IPreviousButtonPresenter } from "./navigation/
 import { IComponentPresenter } from "../component/ComponentPresenter";
 import { HTMLBlockPresenter } from "./HtmlBlockPresenter";
 import { RichTextBlockPresenter } from "./RichTextBlockPresenter";
+import { DividerBlockPresenter } from "./DividerBlockPresenter";
 import { INextButtonPresenter, NextButtonPresenter } from "./navigation/button/NextButton";
 import { IJumpButtonPresenter, JumpButtonPresenter } from "./navigation/button/JumpButton";
 
@@ -27,6 +28,8 @@ export const BlockPresenter = {
         return HTMLBlockPresenter.create(blockM);
       case BlockType.RICH_TEXT:
         return RichTextBlockPresenter.create(blockM);
+      case BlockType.DIVIDER:
+        return DividerBlockPresenter.create(blockM);
     }
   },
 };

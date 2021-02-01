@@ -6,6 +6,7 @@ export enum BlockType {
   JUMP_BUTTON = 'JUMP_BUTTON',
   HTML = 'HTML',
   RICH_TEXT = 'RICH_TEXT',
+  DIVIDER = 'DIVIDER',
 }
 
 interface IBaseBlockModel {
@@ -53,5 +54,12 @@ export interface IRichTextBlockModel extends IBaseBlockModel {
   };
 }
 
+export interface IDividerBlockModel extends IBaseBlockModel {
+  readonly type: BlockType.DIVIDER;
+  readonly config: {
+    readonly text: string;
+  };
+}
+
 export type IBlockModel = IPreviousButtonBlockModel | INextButtonBlockModel | IJumpButtonBlockModel
-  | IHTMLBlockModel | IRichTextBlockModel;
+  | IHTMLBlockModel | IRichTextBlockModel | IDividerBlockModel;
