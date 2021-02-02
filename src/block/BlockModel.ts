@@ -57,7 +57,7 @@ export interface IRichTextBlockModel extends IBaseBlockModel {
 export interface IDividerBlockModel extends IBaseBlockModel {
   readonly type: BlockType.DIVIDER;
   readonly config: {
-    readonly text: string;
+    readonly text?: string;
   };
 }
 

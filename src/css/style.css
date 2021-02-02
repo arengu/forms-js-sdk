@@ -803,33 +803,28 @@
   font-size: var(--font-size);
 }
 
-.af-divider-block {
-  display: -webkit-box;
+.af-divider-block p {
   display: flex;
-  -webkit-box-align: center;
   align-items: center;
-  -webkit-box-flex: 0;
-  flex: 0;
   color: var(--hint-font-color);
   font-size: var(--divider-font-size);
   margin: 1rem auto;
-  width: 100%;
 }
 
-.af-divider-block::before,
-.af-divider-block::after {
-  content: '';
-  -webkit-box-flex: 1;
-  flex-grow: 1;
-  border-top: var(--input-border-width) solid var(--input-border-color);
-}
-
-.af-divider-block::before {
+.af-divider-block p span {
+  white-space: nowrap;
+  max-width: 75%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-left: .75rem;
   margin-right: .75rem;
 }
 
-.af-divider-block::after {
-  margin-left: .75rem;
+.af-divider-block p::before,
+.af-divider-block p::after {
+  content: '';
+  flex-grow: 1;
+  border-top: var(--input-border-width) solid var(--input-border-color);
 }
 
 
