@@ -9,7 +9,7 @@ export type IDividerBlockPresenter = IBlockPresenter;
 
 export interface IDividerParams {
   readonly containerClass: string;
-  readonly text: string;
+  readonly text?: string;
 }
 
 export const DividerRenderer = {
@@ -32,7 +32,7 @@ export const DividerRenderer = {
 }
 
 export class DividerBlockPresenterImpl extends BaseBlockPresenter {
-  protected text: string;
+  protected text?: string;
   protected rootE: HTMLElement;
 
   public constructor(params: IDividerParams) {
@@ -49,7 +49,7 @@ export class DividerBlockPresenterImpl extends BaseBlockPresenter {
 
 export const DividerBlockPresenter = {
   create(blockM: IDividerBlockModel): IDividerBlockPresenter {
-    const text = blockM.config.text || '';
+    const text = blockM.config.text;
 
     return new DividerBlockPresenterImpl({
       containerClass: CONTAINER_CLASS,
