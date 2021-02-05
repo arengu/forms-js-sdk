@@ -3,6 +3,7 @@ import { ISocialInputValue } from "../view/input/SocialInputView";
 
 export enum FieldType {
   BOOLEAN = 'BOOLEAN',
+  CARDS = 'CARDS',
   CHOICE = 'CHOICE',
   DATE = 'DATE',
   DROPDOWN = 'DROPDOWN',
@@ -20,6 +21,10 @@ export enum FieldType {
 export interface IFieldOptionModel {
   readonly value: string;
   readonly label: string;
+}
+
+export interface ICardsOptionModel extends IFieldOptionModel {
+  readonly imageUrl: string;
 }
 
 interface IBaseFieldModel {
@@ -42,6 +47,16 @@ export interface IBooleanFieldModel extends IBaseFieldModel {
   readonly config: {
     readonly defaultValue: string;
     readonly options?: IBooleanOptions;
+  };
+}
+
+export interface ICardsFieldModel extends IBaseFieldModel {
+  readonly type: FieldType.CARDS;
+  readonly config: {
+    readonly multiple: boolean;
+    readonly hideLabels: boolean;
+    readonly options: ICardsOptionModel[];
+    readonly defaultValue?: string | string[];
   };
 }
 
@@ -200,10 +215,22 @@ export interface IURLFieldModel extends IBaseFieldModel {
   };
 }
 
-export type IFieldModel = IBooleanFieldModel | IChoiceFieldModel | IDateFieldModel
-  | IDropdownFieldModel | IEmailFieldModel | ILegalFieldModel | INumberFieldModel
-  | IPasswordFieldModel | IPaymentFieldModel | ISocialFieldModel | ITelFieldModel
-  | ITextFieldModel | IURLFieldModel;
+export type IFieldModel =
+    IBooleanFieldModel
+  | ICardsFieldModel
+  | IChoiceFieldModel
+  | IDateFieldModel
+  | IDropdownFieldModel
+  | IEmailFieldModel
+  | ILegalFieldModel
+  | INumberFieldModel
+  | IPasswordFieldModel
+  | IPaymentFieldModel
+  | ISocialFieldModel
+  | ITelFieldModel
+  | ITextFieldModel
+  | IURLFieldModel
+;
 
 export type IStringFieldValue = string | undefined;
 export type IArrayFieldValue = string[];
@@ -211,6 +238,7 @@ export type IArrayFieldValue = string[];
 export type ISocialFieldValue = ISocialInputValue;
 
 export type IBooleanFieldValue = 'false' | 'true';
+export type ICardsFieldValue = IStringFieldValue | IArrayFieldValue;
 export type IChoiceFieldValue = IStringFieldValue | IArrayFieldValue;
 export type IDateFieldValue = IStringFieldValue;
 export type IDropdownFieldValue = IStringFieldValue | IArrayFieldValue;
@@ -223,7 +251,19 @@ export type ITelFieldValue = IStringFieldValue;
 export type ITextFieldValue = IStringFieldValue;
 export type IURLFieldValue = IStringFieldValue;
 
-export type IFieldValue = IBooleanFieldValue | IChoiceFieldValue | IDateFieldValue
-  | IDropdownFieldValue | IEmailFieldValue | ILegalFieldValue | INumberFieldValue
-  | IPasswordFieldValue | IPaymentFieldValue | ISocialFieldValue | ITelFieldValue
-  | ITextFieldValue | IURLFieldValue;
+export type IFieldValue =
+    IBooleanFieldValue
+  | ICardsFieldValue
+  | IChoiceFieldValue
+  | IDateFieldValue
+  | IDropdownFieldValue
+  | IEmailFieldValue
+  | ILegalFieldValue
+  | INumberFieldValue
+  | IPasswordFieldValue
+  | IPaymentFieldValue
+  | ISocialFieldValue
+  | ITelFieldValue
+  | ITextFieldValue
+  | IURLFieldValue
+;

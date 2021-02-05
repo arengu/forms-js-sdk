@@ -147,6 +147,40 @@
   font-family: var(--font-family);
 }
 
+/* Cards */
+.af-cards-option label {
+  height: 100%;
+  box-sizing: border-box;
+  border: 2px solid transparent;  
+  border-radius: var(--input-border-radius);
+  cursor: pointer;
+  
+  display: block;
+  border: 1px solid var(--input-border-color);
+  padding: 10px;
+}
+
+.af-cards-option-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 0 auto;
+
+  width: 64px;
+  height: 64px;
+}
+
+.af-cards-option-image img {
+  max-width: 64px;
+  max-height: 64px;
+}
+
+.af-cards-option-text p {
+  text-align: center;
+  margin: 10px 0 0;
+}
+
 .af-legal label {
   color: var(--legal-font-color);
   font-size: var(--legal-font-size);
@@ -355,6 +389,7 @@
 }
 
 .af-choice-option input,
+.af-cards-option input,
 .af-legal input,
 .af-boolean input {
   position: absolute;
@@ -792,6 +827,15 @@
   transition: background-image 0.3s ease;
 }
 
+/*--------------------
+        Cards
+---------------------*/
+.af-cards, .af-cards-multiple {
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(125px, 1fr));
+}
+
 /*******************************
             Blocks
 *******************************/
@@ -871,6 +915,12 @@
   background-color: var(--label-hover-background-color);
 }
 
+/* Cards */
+.af-cards-option label:hover {
+  transition: border-color 0.3s ease;
+  border-color: var(--border-focus-color);
+}
+
 /*--------------------
         Checked
 ---------------------*/
@@ -904,6 +954,12 @@
   background-color: var(--primary-color);
   border-color: var(--primary-color);
   color: var(--primary-font-color);
+}
+
+/* Cards */
+
+.af-cards-option input:checked+label {
+  border-color: var(--primary-color);
 }
 
 /*--------------------
