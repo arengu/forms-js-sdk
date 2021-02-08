@@ -151,12 +151,15 @@
 .af-cards-option label {
   height: 100%;
   box-sizing: border-box;
-  border: 2px solid transparent;  
+  border-width: 2px;
+  border-style: solid; 
   border-radius: var(--input-border-radius);
+  border-color: var(--input-border-color);
   cursor: pointer;
+
+  background-color: #fff;
   
   display: block;
-  border: 1px solid var(--input-border-color);
   padding: 10px;
 }
 
@@ -165,20 +168,22 @@
   align-items: center;
   justify-content: center;
 
-  margin: 0 auto;
-
-  width: 64px;
-  height: 64px;
+  margin: 0 auto 10px auto;
 }
 
 .af-cards-option-image img {
-  max-width: 64px;
-  max-height: 64px;
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: var(--input-border-radius);
 }
 
-.af-cards-option-text p {
+.af-cards-option-text {
   text-align: center;
-  margin: 10px 0 0;
+  font-size: var(--label-font-size);
+}
+
+.af-cards-option-text p:last-child {
+  margin-bottom: 0;
 }
 
 .af-legal label {
@@ -905,6 +910,12 @@
   outline: none;
 }
 
+/* Cards */
+.af-cards-option input:focus+label {
+  transition: border-color 0.3s ease;
+  border-color: var(--border-focus-color);
+}
+
 /*--------------------
         Hover
 ---------------------*/
@@ -917,8 +928,8 @@
 
 /* Cards */
 .af-cards-option label:hover {
-  transition: border-color 0.3s ease;
-  border-color: var(--border-focus-color);
+  transition: background-color 0.3s ease;
+  background-color: var(--label-hover-background-color);
 }
 
 /*--------------------
