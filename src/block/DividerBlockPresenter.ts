@@ -1,5 +1,4 @@
 import { BaseBlockPresenter } from "../core/BasePresenters";
-import { HTMLHelper } from "../lib/view/HTMLHelper";
 import { IDividerBlockModel } from "./BlockModel";
 import { IBlockPresenter } from "./BlockPresenter";
 
