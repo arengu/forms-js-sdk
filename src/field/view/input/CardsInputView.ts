@@ -100,10 +100,6 @@ export const CardsInputRenderer = {
     const elem = document.createElement('div');
     elem.classList.add('af-cards-option');
 
-    if (config.hideLabels) {
-      elem.classList.add('af-cards-option-mute');
-    }
-
     const uid = UID.create();
 
     const inputData = { uid, value: option.value };
@@ -130,7 +126,11 @@ export const CardsInputRenderer = {
     const { multiple } = fieldM.config;
 
     const root = document.createElement('div');
-    root.className = multiple ? 'af-cards-multiple' : 'af-cards';
+    root.classList.add('af-cards');
+
+    if(multiple) {
+      root.classList.add('af-cards-multiple');
+    }
 
     const options = this.renderAllOptions(fieldM, inputV);
     options.forEach(HTMLHelper.appendChild(root));
@@ -166,13 +166,13 @@ export class CardsInputView extends BaseInputView implements ICardsInputView {
     return checked ? checked.value : undefined;
   }
 
-  public getAllCardss(): IMultiOptionValue {
+  public getAllCards(): IMultiOptionValue {
     const checked = this.optionsE.filter(InputHelper.isChecked);
     return checked.map(InputHelper.getValue);
   }
 
   public getValue(): ICardsInputValue {
-    return this.multiple ? this.getAllCardss() : this.getFirstCards();
+    return this.multiple ? this.getAllCards() : this.getFirstCards();
   }
 
   public setValue(): void { // eslint-disable-line class-methods-use-this

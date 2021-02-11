@@ -50,15 +50,29 @@ export interface IBooleanFieldModel extends IBaseFieldModel {
   };
 }
 
-export interface ICardsFieldModel extends IBaseFieldModel {
+interface IBaseCardsFieldModel extends IBaseFieldModel {
   readonly type: FieldType.CARDS;
   readonly config: {
-    readonly multiple: boolean;
     readonly hideLabels: boolean;
     readonly options: ICardsOptionModel[];
-    readonly defaultValue?: string | string[];
   };
 }
+
+export type ICardsSingleFieldModel = IBaseCardsFieldModel & {
+  readonly config: {
+    readonly multiple: false;
+    readonly defaultValue?: string;
+  };
+}
+
+export type ICardsMultipleFieldModel = IBaseCardsFieldModel & {
+  readonly config: {
+    readonly multiple: true;
+    readonly defaultValue?: string[];
+  };
+}
+
+export type ICardsFieldModel = ICardsSingleFieldModel | ICardsMultipleFieldModel;
 
 export interface IChoiceFieldModel extends IBaseFieldModel {
   readonly type: FieldType.CHOICE;
