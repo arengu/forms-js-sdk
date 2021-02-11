@@ -155,10 +155,9 @@
   border-radius: var(--input-border-radius);
   cursor: pointer;
   display: block;
-  border: 1px solid var(--input-border-color);
+  border: 2px solid var(--input-border-color);
   padding: 20px 15px;
-  box-shadow: 0 0 4px rgba(0, 0, 0, .08);
-  transition: box-shadow .3s, background-color .3s;
+  transition: background-color .3s;
 }
 
 .af-cards-option-image {
@@ -167,14 +166,12 @@
   justify-content: center;
 
   margin: 0 auto;
-
-  width: 75px;
-  height: 75px;
 }
 
 .af-cards-option-image img {
-  max-width: 75px;
-  max-height: 75px;
+  border-radius: var(--input-border-radius);
+  max-width: 100%;
+  max-height: 100%;
 }
 
 .af-cards-option-text p {
@@ -951,8 +948,7 @@
 
 /* Cards */
 .af-cards-option label:hover {
-  transition: box-shadow .3s, background-color .3s;
-  box-shadow: 0 0 4px rgba(0, 0, 0, .18);
+  transition: background-color .3s;
   background-color: rgba(0, 0, 0, .03);
 }
 
