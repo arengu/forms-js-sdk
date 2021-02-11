@@ -123,6 +123,7 @@ export const FormRendererer = {
       '--legal-font-size': style.calculated?.legalFontSize,
       '--field-error-font-size': style.calculated?.fieldErrorFontSize,
       '--message-fail-font-size': style.calculated?.messageFailFontSize,
+      '--divider-font-size': style.calculated?.dividerFontSize,
 
       '--legal-font-color': style.calculated?.legalFontColor,
       '--label-hover-background-color': style.calculated?.labelHoverBackgroundColor,

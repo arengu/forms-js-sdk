@@ -197,14 +197,16 @@ export const StyleHelper = {
     }
 
     if (style.body?.fontSize) {
-      const smallerBodyFontSize = `calc(${style.body?.fontSize} * .8)`;
+      const bodyFontSize80 = `calc(${style.body?.fontSize} * .8)`;
+      const bodyFontSize70 = `calc(${style.body?.fontSize} * .7)`;
 
       newStyle.calculated = {
         ...newStyle.calculated,
-        hintFontSize: smallerBodyFontSize,
-        legalFontSize: smallerBodyFontSize,
-        fieldErrorFontSize: smallerBodyFontSize,
-        messageFailFontSize: smallerBodyFontSize,
+        hintFontSize: bodyFontSize80,
+        legalFontSize: bodyFontSize80,
+        fieldErrorFontSize: bodyFontSize80,
+        messageFailFontSize: bodyFontSize80,
+        dividerFontSize: bodyFontSize70,
       };
     }
 
