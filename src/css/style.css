@@ -151,13 +151,13 @@
 .af-cards-option label {
   height: 100%;
   box-sizing: border-box;
-  border: 2px solid transparent;  
   border-radius: var(--input-border-radius);
   cursor: pointer;
-  
   display: block;
   border: 1px solid var(--input-border-color);
-  padding: 10px;
+  padding: 20px 15px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, .08);
+  transition: box-shadow .3s, background-color .3s;
 }
 
 .af-cards-option-image {
@@ -167,18 +167,20 @@
 
   margin: 0 auto;
 
-  width: 64px;
-  height: 64px;
+  width: 75px;
+  height: 75px;
 }
 
 .af-cards-option-image img {
-  max-width: 64px;
-  max-height: 64px;
+  max-width: 75px;
+  max-height: 75px;
 }
 
 .af-cards-option-text p {
   text-align: center;
-  margin: 10px 0 0;
+  margin: 10px auto 0;
+  color: var(--label-font-color);
+  font-size: var(--label-font-size);
 }
 
 .af-legal label {
@@ -830,10 +832,10 @@
 /*--------------------
         Cards
 ---------------------*/
-.af-cards, .af-cards-multiple {
+.af-cards {
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: repeat(auto-fill, minmax(125px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
 }
 
 /*******************************
@@ -905,6 +907,12 @@
   outline: none;
 }
 
+/* Cards */
+.af-cards-option input:focus+label {
+  transition: border-color .3s;
+  border-color: var(--border-focus-color);
+}
+
 /*--------------------
         Hover
 ---------------------*/
@@ -917,8 +925,9 @@
 
 /* Cards */
 .af-cards-option label:hover {
-  transition: border-color 0.3s ease;
-  border-color: var(--border-focus-color);
+  transition: box-shadow .3s, background-color .3s;
+  box-shadow: 0 0 4px rgba(0, 0, 0, .18);
+  background-color: rgba(0, 0, 0, .03);
 }
 
 /*--------------------
