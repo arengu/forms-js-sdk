@@ -148,6 +148,39 @@
   font-family: var(--font-family);
 }
 
+/* Cards */
+.af-cards-option label {
+  height: 100%;
+  box-sizing: border-box;
+  border-radius: var(--input-border-radius);
+  cursor: pointer;
+  display: block;
+  border: 2px solid var(--input-border-color);
+  padding: 20px 15px;
+  transition: background-color .3s;
+}
+
+.af-cards-option-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 0 auto;
+}
+
+.af-cards-option-image img {
+  border-radius: var(--input-border-radius);
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.af-cards-option-text p {
+  text-align: center;
+  margin: 10px auto 0;
+  color: var(--label-font-color);
+  font-size: var(--label-font-size);
+}
+
 .af-legal label {
   color: var(--legal-font-color);
   font-size: var(--legal-font-size);
@@ -356,6 +389,7 @@
 }
 
 .af-choice-option input,
+.af-cards-option input,
 .af-legal input,
 .af-boolean input {
   position: absolute;
@@ -793,6 +827,15 @@
   transition: background-image 0.3s ease;
 }
 
+/*--------------------
+        Cards
+---------------------*/
+.af-cards {
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+}
+
 /*******************************
             Blocks
 *******************************/
@@ -887,6 +930,12 @@
   outline: none;
 }
 
+/* Cards */
+.af-cards-option input:focus+label {
+  transition: border-color .3s;
+  border-color: var(--border-focus-color);
+}
+
 /*--------------------
         Hover
 ---------------------*/
@@ -895,6 +944,12 @@
 .af-choice-option label:hover,
 .af-boolean-option label:hover {
   background-color: var(--label-hover-background-color);
+}
+
+/* Cards */
+.af-cards-option label:hover {
+  transition: background-color .3s;
+  background-color: rgba(0, 0, 0, .03);
 }
 
 /*--------------------
@@ -930,6 +985,12 @@
   background-color: var(--primary-color);
   border-color: var(--primary-color);
   color: var(--primary-font-color);
+}
+
+/* Cards */
+
+.af-cards-option input:checked+label {
+  border-color: var(--primary-color);
 }
 
 /*--------------------

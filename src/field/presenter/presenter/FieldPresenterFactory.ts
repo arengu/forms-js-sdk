@@ -1,6 +1,7 @@
 import { IFormDeps } from "../../../form/FormPresenter";
-import { IBooleanFieldModel, IChoiceFieldModel, IDateFieldModel, IDropdownFieldModel, IEmailFieldModel, ILegalFieldModel, INumberFieldModel, IPasswordFieldModel, ITelFieldModel, ITextFieldModel, IURLFieldModel } from "../../model/FieldModel";
+import { IBooleanFieldModel, ICardsFieldModel, IChoiceFieldModel, IDateFieldModel, IDropdownFieldModel, IEmailFieldModel, ILegalFieldModel, INumberFieldModel, IPasswordFieldModel, ITelFieldModel, ITextFieldModel, IURLFieldModel } from "../../model/FieldModel";
 import { BooleanInputView } from "../../view/input/BooleanInputView";
+import { CardsInputView } from "../../view/input/CardsInputView";
 import { ChoiceInputView } from "../../view/input/ChoiceInputView";
 import { DateInputView } from "../../view/input/DateInputView";
 import { DropdownInputView } from "../../view/input/DropdownInputView";
@@ -31,6 +32,18 @@ export const FieldPresenterFactory = {
 
     const fieldVal = FieldValidator.create([
       FieldRules.require(fieldM),
+    ]);
+
+    const valueH = DummyValueHandler.create(inputV, fieldM);
+
+    return SimpleFieldPresenter.create(formD, fieldM, inputV, fieldVal, valueH);
+  },
+
+  fromCards(formD: IFormDeps, fieldM: ICardsFieldModel): IFieldPresenter {
+    const inputV = CardsInputView.create(fieldM);
+
+    const fieldVal = FieldValidator.create([
+      FieldRules.multiple(fieldM),
     ]);
 
     const valueH = DummyValueHandler.create(inputV, fieldM);

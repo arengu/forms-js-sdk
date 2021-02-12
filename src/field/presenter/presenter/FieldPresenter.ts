@@ -30,6 +30,8 @@ export const FieldPresenter = {
     switch (fieldM.type) {
       case FieldType.BOOLEAN:
         return FieldPresenterFactory.fromBoolean(formD, fieldM);
+      case FieldType.CARDS:
+        return FieldPresenterFactory.fromCards(formD, fieldM);
       case FieldType.CHOICE:
         return FieldPresenterFactory.fromChoice(formD, fieldM);
       case FieldType.DATE:
