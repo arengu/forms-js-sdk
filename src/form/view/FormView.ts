@@ -15,6 +15,10 @@ export interface IVisibleArea {
   maxOffset: number;
 }
 
+const BRAND_CLASS = 'af-brand';
+const BRAND_URL = 'https://www.arengu.com/?utm_source=Powered-by&utm_medium=Arengu&utm_content=';
+const BRAND_TEXT = 'Powered by Arengu';
+
 export const FormViewHelper = {
   getVisibleArea(): IVisibleArea {
     const currScroll = window.scrollY;
@@ -179,6 +183,19 @@ export class FormView implements IFormView {
 
     if (this.currE) {
       this.currE.style.display = 'none';
+    } else if (this.formM.branded) {
+      const brand = document.createElement('div');
+      brand.className = BRAND_CLASS;
+
+      const link = document.createElement('a');
+      link.href = `${BRAND_URL}${this.formM.id}`;
+      link.innerText = BRAND_TEXT;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+
+      brand.appendChild(link)
+
+      newPageE.appendChild(brand);
     }
 
     if (isChildren) {

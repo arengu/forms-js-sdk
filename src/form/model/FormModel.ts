@@ -33,6 +33,7 @@ export interface IFormModel {
   readonly steps: IStepModel[];
   readonly social: ISocialProviderConfig[];
   readonly style: IFormStyle;
+  readonly branded?: boolean;
 }
 
 export type IRefScope = {
