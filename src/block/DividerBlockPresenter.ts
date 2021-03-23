@@ -21,10 +21,10 @@ export const DividerRenderer = {
     if (params.text) {
       const span = document.createElement('span');
       span.innerText = params.text;
-      p.append(span);
+      p.appendChild(span);
     }
 
-    root.append(p);
+    root.appendChild(p);
 
     return root;
   },
