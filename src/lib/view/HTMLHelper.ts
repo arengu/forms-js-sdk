@@ -32,5 +32,23 @@ export const HTMLHelper = {
     } else if (force === false) {
       elem.classList.remove(className);
     }
+  },
+
+  /**
+   * Recreate and replace <script> elements found inside a parent element.
+   * Without this, when putting <script> elements inside an innerHTML property
+   * they will not be executed.
+   */
+  recreateScriptElements(container: HTMLElement): void {
+    const scripts = container.querySelectorAll('script');
+
+    scripts.forEach((script) => {
+      const newScript = document.createElement('script');
+
+      newScript.innerText = script.innerText;
+
+      // ChildNode.replaceWith() is not available on legacy browsers
+      script.parentNode?.replaceChild(newScript, script);
+    });
   }
 };
