@@ -35,20 +35,9 @@ export const HTMLHelper = {
   },
 
   /**
-   * Recreate and replace <script> elements found inside a parent element.
-   * Without this, when putting <script> elements inside an innerHTML property
-   * they will not be executed.
+   * Similar to ChildNode.replaceWith() but for legacy browsers.
    */
-  recreateScriptElements(container: HTMLElement): void {
-    const scripts = container.querySelectorAll('script');
-
-    scripts.forEach((script) => {
-      const newScript = document.createElement('script');
-
-      newScript.innerText = script.innerText;
-
-      // ChildNode.replaceWith() is not available on legacy browsers
-      script.parentNode?.replaceChild(newScript, script);
-    });
-  }
+  replaceWith(element: HTMLElement, replacement: HTMLElement): void {
+    element.parentNode?.replaceChild(replacement, element);
+  },
 };

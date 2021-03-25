@@ -6,8 +6,6 @@ import { BaseBlockPresenter } from "../core/BasePresenters";
 import { MagicString } from "../lib/MagicString";
 import { IRefScope } from '../form/model/FormModel';
 
-import { HTMLHelper } from '../lib/view/HTMLHelper';
-
 export type ICodeBlockPresenter = IBlockPresenter;
 
 export interface ICodeBlockParams {
@@ -21,8 +19,6 @@ export const CodeBlockRenderer = {
     root.className = params.containerClass;
 
     root.innerHTML = params.blockContent;
-
-    HTMLHelper.recreateScriptElements(root);
 
     return root;
   },
@@ -52,9 +48,7 @@ export class CodeBlockPresenter extends BaseBlockPresenter implements ICodeBlock
     return MagicString.isDynamic(this.content);
   }
 
-  public updateContent(this: this, data: IRefScope): void {
+  public updateContent(data: IRefScope): void {
     this.rootE.innerHTML = MagicString.render(this.content, data, escapeHE);
-
-    HTMLHelper.recreateScriptElements(this.rootE);
   }
 }
