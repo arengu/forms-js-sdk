@@ -151,6 +151,21 @@ export const FormRendererer = {
 
     return root;
   },
+
+  appendBranding(container: HTMLElement, formId: string): void {
+    const brand = document.createElement('div');
+    brand.className = BRAND_CLASS;
+
+    const link = document.createElement('a');
+    link.href = `${BRAND_URL}${formId}`;
+    link.innerText = BRAND_TEXT;
+    link.target = '_blank';
+    link.rel = 'noopener';
+
+    brand.appendChild(link)
+
+    container.appendChild(brand);
+  }
 };
 
 export class FormView implements IFormView {
@@ -183,19 +198,8 @@ export class FormView implements IFormView {
 
     if (this.currE) {
       this.currE.style.display = 'none';
-    } else if (this.formM.branding) {
-      const brand = document.createElement('div');
-      brand.className = BRAND_CLASS;
-
-      const link = document.createElement('a');
-      link.href = `${BRAND_URL}${this.formM.id}`;
-      link.innerText = BRAND_TEXT;
-      link.target = '_blank';
-      link.rel = 'noopener';
-
-      brand.appendChild(link)
-
-      newPageE.appendChild(brand);
+    } else if (this.formM.branding) { // first screen and branding is enabled
+      FormRendererer.appendBranding(newPageE, this.formM.id);
     }
 
     if (isChildren) {
