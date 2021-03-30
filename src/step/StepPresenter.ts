@@ -19,7 +19,7 @@ import { IComponentModel } from '../component/ComponentModel';
 import { ComponentHelper } from '../component/ComponentHelper';
 import { IFormDeps } from '../form/FormPresenter';
 import { ComponentPresenter, IComponentPresenterListener, IComponentPresenter } from '../component/ComponentPresenter';
-import { ISocialFieldPresenter } from '../field/presenter/presenter/SocialFieldPresenter';
+import { ISocialFieldPresenter, SocialFieldPresenter } from '../field/presenter/presenter/SocialFieldPresenter';
 import { IPresenter } from '../core/BaseTypes';
 import { StepErrorPresenter, IStepErrorPresenter } from './part/StepErrorPresenter';
 import { IExtendedFormStyle } from '../form/model/FormStyle';
@@ -121,10 +121,7 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
   protected readonly stepV: IStepView;
   protected readonly stepL: IStepPresenterListener;
 
-  /** Indicates if social login has been used in this step */
-  protected usedSocialP?: ISocialFieldPresenter;
-
-  protected skipFields: boolean;
+  protected activeFieldsP: IFieldPresenter[]; // fields we have to include/omit based on the trigger
 
   protected constructor(stepM: IStepModel, formD: IFormDeps, stepL: IStepPresenterListener) {
     this.stepM = stepM;
@@ -146,7 +143,7 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
     this.stepV = StepView.create(stepM, compsE);
     this.stepL = stepL;
 
-    this.skipFields = false;
+    this.activeFieldsP = [];
   }
 
   public static create(stepM: IStepModel, formD: IFormDeps, stepL: IStepPresenterListener): IStepPresenter {
@@ -181,22 +178,8 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
     return this.stepM.onNext;
   }
 
-  public getActiveFields(): IFieldPresenter[] {
-    if (this.skipFields) {
-      return [];
-    }
-
-    if (this.usedSocialP) {
-      return [this.usedSocialP]
-    }
-
-    return this.fieldsP;
-  }
-
   public async validateFields(): Promise<IStepValidationResult> {
-    const fieldsP = this.getActiveFields();
-
-    return ValidateFields.execute(fieldsP);
+    return ValidateFields.execute(this.activeFieldsP);
   }
 
   /**
@@ -205,9 +188,7 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
   public async getUserValues(): Promise<IUserValues> {
     const indexedValues: IUserValues = {};
 
-    const fieldsP = this.getActiveFields();
-
-    const proms = fieldsP.map((fP) => StepPresenterHelper.getValue(fP));
+    const proms = this.activeFieldsP.map((fP) => StepPresenterHelper.getValue(fP));
 
     const allValues = await Promise.all(proms);
     const validValues = allValues.filter((v) => StepPresenterHelper.hasValue(v));
@@ -228,8 +209,7 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
   }
 
   public onShow(): void {
-    this.clearSocialLogin();
-    this.skipFields = false;
+    this.activeFieldsP = [];
 
     this.compsP.forEach((cP) => cP.onShow && cP.onShow());
   }
@@ -268,11 +248,6 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
 
   public reset(): void {
     this.compsP.forEach((cP) => cP.reset());
-  }
-
-  public clearSocialLogin(): void {
-    this.usedSocialP?.clearValue();
-    this.usedSocialP = undefined;
   }
 
   public hasInvalidFields(): boolean {
@@ -328,24 +303,19 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
   }
 
   public onNextButton(buttonP: INextButtonPresenter): void {
-    this.clearSocialLogin();
-    this.skipFields = false;
+    this.activeFieldsP = this.fieldsP.filter((fP) => SocialFieldPresenter.matches(fP) === false)
 
     this.stepL.onNextButton?.(buttonP, this);
   }
 
   public onJumpButton(buttonP: IJumpButtonPresenter): void {
-    this.clearSocialLogin();
-    this.skipFields = true;
+    this.activeFieldsP = [];
 
     this.stepL.onJumpButton?.(buttonP, this);
   }
 
   public onSocialLogin(fieldP: ISocialFieldPresenter): void {
-    this.clearSocialLogin();
-    this.skipFields = false;
-
-    this.usedSocialP = fieldP;
+    this.activeFieldsP = [fieldP];
 
     this.stepL.onSocialLogin && this.stepL.onSocialLogin(fieldP, this);
   }

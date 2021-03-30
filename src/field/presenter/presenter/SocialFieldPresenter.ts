@@ -8,12 +8,11 @@ import { BaseFieldPresenter } from "./BaseFieldPresenter";
 import { IValueHandler } from "../handler/ValueHandler";
 import { SocialProviderFactory } from "../../view/input/social/SocialProviderFactory";
 import { ISocialProviderPresenter, ISocialProviderSubscriber } from "../../view/input/social/base/SocialProviderPresenter";
+import { IComponentPresenter } from "../../../component/ComponentPresenter";
 
 export interface ISocialFieldPresenter extends IFieldPresenter {
   showLoading(): void;
   hideLoading(): void;
-
-  clearValue(): void;
 }
 
 export class SocialFieldPresenterImpl extends BaseFieldPresenter<ISocialInputView> implements ISocialFieldPresenter, ISocialProviderSubscriber {
@@ -60,10 +59,6 @@ export class SocialFieldPresenterImpl extends BaseFieldPresenter<ISocialInputVie
     return Promise.resolve(this.usedProvider?.getLoginData());
   }
 
-  public clearValue(): void {
-    this.usedProvider?.clearLoginData();
-  }
-
   public block(): void {
     this.providersP.forEach((p) => p.block());
     super.block();
@@ -95,5 +90,9 @@ export const SocialFieldPresenter = {
     const valueH = DummyValueHandler.create(inputV, fieldM);
 
     return new SocialFieldPresenterImpl(formD, fieldM, inputV, fieldVal, valueH, providersP);
+  },
+
+  matches(compP: IComponentPresenter): compP is ISocialFieldPresenter {
+    return compP instanceof SocialFieldPresenterImpl;
   },
 }

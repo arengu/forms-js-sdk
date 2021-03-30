@@ -15,12 +15,11 @@ export interface ISocialProviderPresenter<P extends SocialProvider = SocialProvi
   subscribe(subscriber: ISocialProviderSubscriber): void;
 
   getLoginData(): ISocialLoginData<P> | undefined;
-  clearLoginData(): void;
 }
 
 export class SocialProviderPresenterImpl<P extends SocialProvider = SocialProvider> extends AsyncButtonPresenterImpl<IAsyncButtonView> implements ISocialProviderPresenter<P> {
   protected readonly provider: P;
-  
+
   protected readonly subscribers: ISocialProviderSubscriber<P>[];
 
   protected loginData?: ISocialLoginData<P>;
@@ -54,9 +53,5 @@ export class SocialProviderPresenterImpl<P extends SocialProvider = SocialProvid
 
   public getLoginData(): ISocialLoginData<P> | undefined {
     return this.loginData;
-  }
-
-  public clearLoginData(): void {
-    this.loginData = undefined;
   }
 }
