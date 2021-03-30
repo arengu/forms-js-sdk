@@ -191,7 +191,7 @@ export class FormView implements IFormView {
       link.href = `${BRAND_URL}${this.formM.id}`;
       link.innerText = BRAND_TEXT;
       link.target = '_blank';
-      link.rel = 'noopener noreferrer';
+      link.rel = 'noopener';
 
       brand.appendChild(link)
 
