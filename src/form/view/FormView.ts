@@ -15,7 +15,7 @@ export interface IVisibleArea {
   maxOffset: number;
 }
 
-const BRAND_CLASS = 'af-brand';
+const BRAND_CLASS = 'af-branding';
 const BRAND_URL = 'https://www.arengu.com/?utm_source=Powered-by&utm_medium=Arengu&utm_content=';
 const BRAND_TEXT = 'Powered by Arengu';
 

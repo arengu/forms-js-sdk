@@ -97,19 +97,19 @@
   max-width: 500px;
 }
 
-.af-brand {
+.af-branding {
   margin: 15px auto;
   text-align: center;
 }
 
-.af-brand a {
+.af-branding a {
   font-size: 13px;
   color: #ababab;
   text-decoration: none;
   cursor: pointer;
 }
 
-.af-brand a:hover {
+.af-branding a:hover {
   text-decoration: underline;
 }
 
