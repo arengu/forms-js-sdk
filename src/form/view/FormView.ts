@@ -183,7 +183,7 @@ export class FormView implements IFormView {
 
     if (this.currE) {
       this.currE.style.display = 'none';
-    } else if (this.formM.branded) {
+    } else if (this.formM.branding) {
       const brand = document.createElement('div');
       brand.className = BRAND_CLASS;
 
