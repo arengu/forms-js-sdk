@@ -6,7 +6,6 @@ import { FieldValidator, IFieldValidator } from "../validator/FieldValidator";
 import { IFieldPresenter } from "./FieldPresenter";
 import { BaseFieldPresenter } from "./BaseFieldPresenter";
 import { IValueHandler } from "../handler/ValueHandler";
-import { IComponentPresenter } from "../../../component/ComponentPresenter";
 import { SocialProviderFactory } from "../../view/input/social/SocialProviderFactory";
 import { ISocialProviderPresenter, ISocialProviderSubscriber } from "../../view/input/social/base/SocialProviderPresenter";
 
@@ -69,7 +68,7 @@ export class SocialFieldPresenterImpl extends BaseFieldPresenter<ISocialInputVie
     this.providersP.forEach((p) => p.block());
     super.block();
   }
-  
+
   public unblock(): void {
     this.providersP.forEach((p) => p.unblock());
     super.unblock();
@@ -96,9 +95,5 @@ export const SocialFieldPresenter = {
     const valueH = DummyValueHandler.create(inputV, fieldM);
 
     return new SocialFieldPresenterImpl(formD, fieldM, inputV, fieldVal, valueH, providersP);
-  },
-
-  matches(compP: IComponentPresenter): compP is ISocialFieldPresenter {
-    return compP instanceof SocialFieldPresenterImpl;
   },
 }

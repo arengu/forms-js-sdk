@@ -1,5 +1,4 @@
 import keyBy from 'lodash/keyBy';
-import findIndex from 'lodash/findIndex';
 import isEmpty from 'lodash/isEmpty';
 import isNil from 'lodash/isNil';
 
@@ -20,14 +19,14 @@ import { IComponentModel } from '../component/ComponentModel';
 import { ComponentHelper } from '../component/ComponentHelper';
 import { IFormDeps } from '../form/FormPresenter';
 import { ComponentPresenter, IComponentPresenterListener, IComponentPresenter } from '../component/ComponentPresenter';
-import { ISocialFieldPresenter, SocialFieldPresenter } from '../field/presenter/presenter/SocialFieldPresenter';
+import { ISocialFieldPresenter } from '../field/presenter/presenter/SocialFieldPresenter';
 import { IPresenter } from '../core/BaseTypes';
 import { StepErrorPresenter, IStepErrorPresenter } from './part/StepErrorPresenter';
 import { IExtendedFormStyle } from '../form/model/FormStyle';
 import { IRefScope } from '../form/model/FormModel';
 import { IPreviousButtonPresenter } from '../block/navigation/button/PreviousButton';
 import { INextButtonPresenter, NextButtonPresenter } from '../block/navigation/button/NextButton';
-import { IJumpButtonPresenter, JumpButtonPresenter } from '../block/navigation/button/JumpButton';
+import { IJumpButtonPresenter } from '../block/navigation/button/JumpButton';
 
 export interface IStepPresenterListener {
   onPreviousButton?(this: this, buttonP: IPreviousButtonPresenter, stepP: IStepPresenter): void;
@@ -95,16 +94,10 @@ export const StepPresenterHelper = {
   },
 
   addError(compsP: IComponentPresenter[], errorP: IStepErrorPresenter): IComponentPresenter[] {
-    const nextIndex = findIndex(compsP, ComponentHelper.isForwardButton);
+    const firstIndex = compsP.findIndex(NextButtonPresenter.matches);
 
-    if (nextIndex >= 0) {
-      return StepPresenterHelper.insertAt(compsP, nextIndex, errorP);
-    }
-
-    const socialIndex = findIndex(compsP, SocialFieldPresenter.matches);
-
-    if (socialIndex >= 0) {
-      return StepPresenterHelper.insertAt(compsP, socialIndex, errorP);
+    if (firstIndex >= 0) {
+      return StepPresenterHelper.insertAt(compsP, firstIndex, errorP);
     }
 
     return [...compsP, errorP];
@@ -362,20 +355,10 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
   }
 
   public fireNextStep(): void {
-    const fwButtonsP = this.compsP.filter(ComponentHelper.isForwardButton);
+    const nextButtonsP = this.compsP.filter(NextButtonPresenter.matches);
 
-    if (fwButtonsP.length !== 1) {
-      return; // abort when ambiguity
-    }
-
-    const buttonP = fwButtonsP[0];
-
-    if (NextButtonPresenter.matches(buttonP)) {
-      this.onNextButton(buttonP);
-    }
-
-    if (JumpButtonPresenter.matches(buttonP)) {
-      this.onJumpButton(buttonP);
+    if (nextButtonsP.length === 1) {
+      this.onNextButton(nextButtonsP[0]);
     }
   }
 }
