@@ -1,50 +1,20 @@
 import { forEach } from 'lodash';
 import { HTMLHelper } from "../lib/view/HTMLHelper";
 
-interface IClassifiedScripts {
-  external: HTMLScriptElement[];
-  async: HTMLScriptElement[];
-  inline: HTMLScriptElement[];
-  withOnload: HTMLScriptElement[];
-}
-
 const HTMLBlockHelperDeps = {
-  classify(scripts: NodeListOf<HTMLScriptElement>): IClassifiedScripts {
-    const output: IClassifiedScripts = {
-      external: [],
-      async: [],
-      inline: [],
-      withOnload: [],
-    };
-
-    forEach(scripts, (script) => {
-      if (script.async || script.defer) {
-        output.async.push(script);
-      } else if (script.src !== '') {
-        const onload = script.getAttribute('onload');
-
-        if (onload) {
-          const deferred = document.createElement('script');
-          deferred.textContent = onload;
-
-          output.inline.push(deferred);
-          output.withOnload.push(script);
-        }
-
-        output.external.push(script);
-      } else {
-        output.inline.push(script);
-      }
-    });
-
-    return output;
-  },
-
+  /**
+   * "Clone" a script by creating a new one and copying manually some of its properties.
+   *
+   * Using Node.cloneNode() would look more reasonable, but that would also copy the
+   * internal "already started" flag so the script would not execute when appended
+   * to the DOM. See https://stackoverflow.com/a/28771829
+   */
   clone(script: HTMLScriptElement): HTMLScriptElement {
-    // cloning with Node.cloneNode() would also clone the internal "already
-    // started" flag so the script would not execute, so clone manually
-    // (see https://stackoverflow.com/a/28771829)
     const newScript = document.createElement('script');
+
+    // script-created scripts are always async! copy values from the original script
+    newScript.async = script.async;
+    newScript.defer = script.defer;
 
     forEach(script.attributes, (attr) => newScript.setAttribute(attr.name, attr.value));
 
@@ -53,30 +23,44 @@ const HTMLBlockHelperDeps = {
     return newScript;
   },
 
-  reinject(script: HTMLScriptElement, beforeAppend?: (newScript: HTMLScriptElement) => void): void {
-    const newScript = HTMLBlockHelperDeps.clone(script);
-
-    if (beforeAppend) {
-      beforeAppend(newScript);
+  /**
+   * Create a Promise that will resolve when the script has finished executing:
+   *  - for inline and async scripts: immediately
+   *  - for external sync scripts: when their onload/onerror event is fired
+   */
+  makePromise(script: HTMLScriptElement): Promise<void> {
+    if (script.src === '' || script.async || script.defer) {
+      return Promise.resolve();
     }
 
-    HTMLHelper.replaceWith(script, newScript);
+    return new Promise((resolve) => {
+      script.addEventListener('load', () => resolve());
+      script.addEventListener('error', () => resolve());
+    });
   },
 
-  buildPromiseChain(scripts: HTMLScriptElement[]): Promise<void> {
-    return scripts.reduce((prom, script) => {
-      return prom.then(() => {
-        return new Promise((res) => {
-          const resolve = (): void => res();
+  /**
+   * Recreate and replace a script element in the DOM and return a Promise that
+   * will resolve when this script finishes executing.
+   */
+  reinject(script: HTMLScriptElement): Promise<void> {
+    const newScript = HTMLBlockHelperDeps.clone(script);
+    HTMLHelper.replaceWith(script, newScript);
 
-          HTMLBlockHelperDeps.reinject(script, (newScript) => {
-            newScript.addEventListener('load', resolve);
-            newScript.addEventListener('error', resolve);
-          });
-        });
-      });
-    }, Promise.resolve());
-  }
+    return HTMLBlockHelperDeps.makePromise(newScript);
+  },
+
+  /**
+   * Reinject script elements sequentially, not injecting a new one until
+   * the previous one allows us to continue, in order to account for
+   * possible dependencies.
+   */
+  reinjectSequentially(scripts: HTMLScriptElement[]): Promise<void> {
+    return scripts.reduce(
+      (prom, script) => prom.then(() => HTMLBlockHelperDeps.reinject(script)),
+      Promise.resolve(),
+    );
+  },
 }
 
 export const HTMLBlockHelper = {
@@ -85,28 +69,8 @@ export const HTMLBlockHelper = {
    * elements inside an innerHTML property they will not be executed.
    */
   reinjectScripts(container: HTMLElement): void {
-    const scripts = HTMLBlockHelperDeps.classify(container.querySelectorAll('script'));
+    const scripts = [...container.querySelectorAll('script')];
 
-    // remove onload events from external scripts, we'll be running those events
-    // after inserting the inline sync scripts, to account for possible dependencies
-    scripts.withOnload.forEach((script) => script.removeAttribute('onload'));
-
-    // external sync scripts: loaded sequentially in a blocking fashion
-    const promise = HTMLBlockHelperDeps.buildPromiseChain(scripts.external);
-
-    // async scripts: loaded whenever, they shouldn't care about order
-    scripts.async.forEach((script) => HTMLBlockHelperDeps.reinject(script));
-
-    // inline sync scripts: loaded directly but only after all external
-    // scripts finished loading, to account for possible dependencies
-    promise.then(() => {
-      scripts.inline.forEach((script) => {
-        if (script.parentNode) {
-          HTMLBlockHelperDeps.reinject(script);
-        } else {
-          container.appendChild(script);
-        }
-      });
-    });
-  }
+    HTMLBlockHelperDeps.reinjectSequentially(scripts);
+  },
 }
