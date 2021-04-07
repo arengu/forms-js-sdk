@@ -24,7 +24,7 @@ const HTMLBlockHelperDeps = {
   },
 
   /**
-   * Create a Promise that will resolve when the script has finished executing:
+   * Create a Promise that will resolve when the script considers execution can continue:
    *  - for inline and async scripts: immediately
    *  - for external sync scripts: when their onload/onerror event is fired
    */
@@ -45,9 +45,14 @@ const HTMLBlockHelperDeps = {
    */
   reinject(script: HTMLScriptElement): Promise<void> {
     const newScript = HTMLBlockHelperDeps.clone(script);
+
+    // order is important here: onload/onerror listeners must
+    // be installed before appending the element to the DOM
+    const promise = HTMLBlockHelperDeps.makePromise(newScript);
+    
     HTMLHelper.replaceWith(script, newScript);
 
-    return HTMLBlockHelperDeps.makePromise(newScript);
+    return promise;
   },
 
   /**
@@ -69,7 +74,7 @@ export const HTMLBlockHelper = {
    * elements inside an innerHTML property they will not be executed.
    */
   reinjectScripts(container: HTMLElement): void {
-    const scripts = [...container.querySelectorAll('script')];
+    const scripts = Array.from(container.querySelectorAll('script'));
 
     HTMLBlockHelperDeps.reinjectSequentially(scripts);
   },
