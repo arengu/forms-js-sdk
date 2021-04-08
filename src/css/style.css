@@ -97,6 +97,22 @@
   max-width: 500px;
 }
 
+.af-branding {
+  margin: 15px auto;
+  text-align: center;
+}
+
+.af-branding a {
+  font-size: 13px;
+  color: #ababab;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.af-branding a:hover {
+  text-decoration: underline;
+}
+
 /*--------------------
         Field
 ---------------------*/
