@@ -1,9 +1,9 @@
-import { forEach } from 'lodash';
+import forEach from 'lodash/forEach';
 import { HTMLHelper } from "../lib/view/HTMLHelper";
 
 const HTMLBlockHelperDeps = {
   /**
-   * "Clone" a script by creating a new one and copying manually some of its properties.
+   * Clones a script by creating a new one and copying manually some of its properties.
    *
    * Using Node.cloneNode() would look more reasonable, but that would also copy the
    * internal "already started" flag so the script would not execute when appended
@@ -24,7 +24,7 @@ const HTMLBlockHelperDeps = {
   },
 
   /**
-   * Create a Promise that will resolve when the script considers execution can continue:
+   * Creates a Promise that will resolve when the script considers execution can continue:
    *  - for inline and async scripts: immediately
    *  - for external sync scripts: when their onload/onerror event is fired
    */
@@ -40,23 +40,22 @@ const HTMLBlockHelperDeps = {
   },
 
   /**
-   * Recreate and replace a script element in the DOM and return a Promise that
-   * will resolve when this script finishes executing.
+   * Recreates and replace a script element in the DOM and return a Promise that
+   * will resolve when dependent scripts can be loaded
    */
   reinject(script: HTMLScriptElement): Promise<void> {
     const newScript = HTMLBlockHelperDeps.clone(script);
 
-    // order is important here: onload/onerror listeners must
-    // be installed before appending the element to the DOM
+    // onload/onerror listeners must be added before appending to the DOM
     const promise = HTMLBlockHelperDeps.makePromise(newScript);
-    
+
     HTMLHelper.replaceWith(script, newScript);
 
     return promise;
   },
 
   /**
-   * Reinject script elements sequentially, not injecting a new one until
+   * Reinjects script elements sequentially, not injecting a new one until
    * the previous one allows us to continue, in order to account for
    * possible dependencies.
    */
@@ -70,7 +69,7 @@ const HTMLBlockHelperDeps = {
 
 export const HTMLBlockHelper = {
   /**
-   * Recreate and replace <script> elements. Without this, when putting <script>
+   * Recreates and replace <script> elements. Without this, when putting <script>
    * elements inside an innerHTML property they will not be executed.
    */
   reinjectScripts(container: HTMLElement): void {
