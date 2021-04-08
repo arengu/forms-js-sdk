@@ -48,7 +48,7 @@ export class CodeBlockPresenter extends BaseBlockPresenter implements ICodeBlock
     return MagicString.isDynamic(this.content);
   }
 
-  public updateContent(this: this, data: IRefScope): void {
+  public updateContent(data: IRefScope): void {
     this.rootE.innerHTML = MagicString.render(this.content, data, escapeHE);
   }
 }

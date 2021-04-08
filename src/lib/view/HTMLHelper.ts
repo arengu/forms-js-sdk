@@ -32,5 +32,12 @@ export const HTMLHelper = {
     } else if (force === false) {
       elem.classList.remove(className);
     }
-  }
+  },
+
+  /**
+   * Similar to ChildNode.replaceWith() but for legacy browsers.
+   */
+  replaceWith(element: HTMLElement, replacement: HTMLElement): void {
+    element.parentNode?.replaceChild(replacement, element);
+  },
 };
