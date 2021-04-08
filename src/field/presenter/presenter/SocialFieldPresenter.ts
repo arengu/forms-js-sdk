@@ -6,15 +6,13 @@ import { FieldValidator, IFieldValidator } from "../validator/FieldValidator";
 import { IFieldPresenter } from "./FieldPresenter";
 import { BaseFieldPresenter } from "./BaseFieldPresenter";
 import { IValueHandler } from "../handler/ValueHandler";
-import { IComponentPresenter } from "../../../component/ComponentPresenter";
 import { SocialProviderFactory } from "../../view/input/social/SocialProviderFactory";
 import { ISocialProviderPresenter, ISocialProviderSubscriber } from "../../view/input/social/base/SocialProviderPresenter";
+import { IComponentPresenter } from "../../../component/ComponentPresenter";
 
 export interface ISocialFieldPresenter extends IFieldPresenter {
   showLoading(): void;
   hideLoading(): void;
-
-  clearValue(): void;
 }
 
 export class SocialFieldPresenterImpl extends BaseFieldPresenter<ISocialInputView> implements ISocialFieldPresenter, ISocialProviderSubscriber {
@@ -61,15 +59,11 @@ export class SocialFieldPresenterImpl extends BaseFieldPresenter<ISocialInputVie
     return Promise.resolve(this.usedProvider?.getLoginData());
   }
 
-  public clearValue(): void {
-    this.usedProvider?.clearLoginData();
-  }
-
   public block(): void {
     this.providersP.forEach((p) => p.block());
     super.block();
   }
-  
+
   public unblock(): void {
     this.providersP.forEach((p) => p.unblock());
     super.unblock();
