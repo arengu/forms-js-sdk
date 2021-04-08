@@ -1,6 +1,8 @@
 import { IFormData } from './model/SubmissionModel';
 import { IMetaDataModel } from './model/MetaDataModel';
 
+export type IReplacements = Record<string, string>;
+
 export enum EffectType {
   NEXT_STEP = 'NEXT_STEP',
   JUMP_TO_STEP = 'JUMP_TO_STEP',
@@ -25,6 +27,7 @@ export interface IEffectAuthenticatePayment {
 export interface IEffectNextStep {
   readonly type: EffectType.NEXT_STEP;
   readonly signature: string;
+  readonly replacements: IReplacements;
 }
 
 export interface IEffectSubmitForm {
@@ -36,6 +39,7 @@ export interface IEffectJumpToStep {
   readonly type: EffectType.JUMP_TO_STEP;
   readonly stepId: string;
   readonly signature: string;
+  readonly replacements: IReplacements;
 }
 
 export interface IEffectThankYou {

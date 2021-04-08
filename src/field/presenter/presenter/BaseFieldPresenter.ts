@@ -3,9 +3,7 @@ import escapeHE from 'lodash/escape';
 
 import { FieldError } from '../../../error/InvalidFields';
 import { IFormDeps } from '../../../form/FormPresenter';
-import { IRefScope } from '../../../form/model/FormModel';
 import { DOMEvents, EventNames } from '../../../lib/DOMEvents';
-import { MagicString } from '../../../lib/MagicString';
 import { Messages } from '../../../lib/Messages';
 import { IFieldModel, IFieldValue } from '../../model/FieldModel';
 import { FieldView, IFieldView } from '../../view/FieldView';
@@ -15,6 +13,8 @@ import { IValueHandler } from '../handler/ValueHandler';
 import { IFieldValidationResult, IFieldValidator } from '../validator/FieldValidator';
 import { BaseComponentPresenter } from '../../../core/BasePresenters';
 import { IExtendedFormStyle } from '../../../form/model/FormStyle';
+import { RefResolver } from '../../../lib/RefResolver';
+import { IMagicResolver } from '../../../lib/MagicResolver';
 
 export abstract class BaseFieldPresenter<IV extends IInputView = IInputView> extends BaseComponentPresenter implements IFieldPresenter, IInputViewListener {
   protected readonly fieldM: IFieldModel;
@@ -134,21 +134,21 @@ export abstract class BaseFieldPresenter<IV extends IInputView = IInputView> ext
 
   public isDynamic(this: this): boolean {
     const { label, hint } = this.fieldM;
-    return MagicString.isDynamic(hint) || MagicString.isDynamic(label);
+    return RefResolver.isDynamic(hint) || RefResolver.isDynamic(label);
   }
 
-  public updateContent(this: this, data: IRefScope): void {
+  public updateContent(this: this, resolver: IMagicResolver): void {
     const initLabel = this.fieldM.label;
 
     if (initLabel) {
-      const dynLabel = MagicString.render(initLabel, data, escapeHE);
+      const dynLabel = resolver.resolve(initLabel, escapeHE);
       this.fieldV.updateLabel(dynLabel);
     }
 
     const initHint = this.fieldM.hint;
 
     if (initHint) {
-      const dynHint = MagicString.render(initHint, data, escapeHE);
+      const dynHint = resolver.resolve(initHint, escapeHE);
       this.fieldV.updateHint(dynHint);
     }
   }

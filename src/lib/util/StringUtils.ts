@@ -18,4 +18,11 @@ export const StringUtils = {
 
     return JSON.stringify(input);
   },
+
+  /**
+   * Alternative to future String.prototype.replaceAll
+   */
+  replaceAll(str: string, searchValue: string, replaceValue: string): string {
+    return str.split(searchValue).join(replaceValue);
+  }
 };
