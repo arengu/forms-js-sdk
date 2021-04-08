@@ -16,7 +16,7 @@ export interface IVisibleArea {
 }
 
 const BRAND_CLASS = 'af-branding';
-const BRAND_URL = 'https://www.arengu.com/?utm_source=Powered-by&utm_medium=Arengu&utm_content=';
+const BRAND_URL = 'https://www.arengu.com/?utm_source=powered-by&utm_medium=arengu&utm_content=';
 const BRAND_TEXT = 'Powered by Arengu';
 
 export const FormViewHelper = {
@@ -162,7 +162,7 @@ export const FormRendererer = {
     link.target = '_blank';
     link.rel = 'noopener';
 
-    brand.appendChild(link)
+    brand.appendChild(link);
 
     container.appendChild(brand);
   }
