@@ -3,7 +3,7 @@ import isNil from 'lodash/isNil';
 import isFinite from 'lodash/isFinite';
 
 export const StringUtils = {
-  stringify(input: string | null | number | object): string {
+  stringify(input: any): string { // eslint-disable-line @typescript-eslint/no-explicit-any
     if (isString(input)) {
       return input;
     }

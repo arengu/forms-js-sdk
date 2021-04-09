@@ -8,7 +8,11 @@ export const StringReplacer = {
   replace(input: string, replacements: IReplacements, escape: IEscapeFunction = identity): string {
     return reduce(
       replacements,
-      (str, replacement, needle) => StringUtils.replaceAll(str, needle, escape(replacement)),
+      (str, replacement, needle) => StringUtils.replaceAll(
+        str,
+        needle,
+        escape(StringUtils.stringify(replacement))
+      ),
       input,
     );
   }

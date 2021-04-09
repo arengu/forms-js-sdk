@@ -1,7 +1,7 @@
 import { IFormData } from './model/SubmissionModel';
 import { IMetaDataModel } from './model/MetaDataModel';
 
-export type IReplacements = Record<string, string>;
+export type IReplacements = Record<string, unknown>;
 
 export enum EffectType {
   NEXT_STEP = 'NEXT_STEP',
