@@ -22,7 +22,7 @@ export const RefResolver = {
   },
 
   getReference(input: string): string {
-    return input.slice(2, -2);
+    return input.slice(2, -2).trim();
   },
 
   resolve(input: string, scope: IRefScope, escape: IEscapeFunction = identity): string {
