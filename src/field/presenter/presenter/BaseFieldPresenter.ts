@@ -152,7 +152,7 @@ export abstract class BaseFieldPresenter<IV extends IInputView = IInputView> ext
       this.fieldV.updateHint(dynHint);
     }
 
-    if (everShown && 'getDefaultValue' in this.valueH && this.valueH.getDefaultValue) {
+    if (!everShown && 'getDefaultValue' in this.valueH && this.valueH.getDefaultValue) {
       const defValue = this.valueH.getDefaultValue();
 
       if(typeof defValue === 'string') {
