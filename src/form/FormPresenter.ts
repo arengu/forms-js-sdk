@@ -3,7 +3,7 @@ import isNil from 'lodash/isNil';
 
 import { HiddenFields, IHiddenFieldValues } from './HiddenFields';
 
-import { IFormModel, IRefScope, ISocialProviderConfig } from './model/FormModel';
+import { IFormModel, ISocialProviderConfig } from './model/FormModel';
 import { IFormStyle, IExtendedFormStyle } from './model/FormStyle';
 
 import { Messages } from '../lib/Messages';
@@ -428,10 +428,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
       const replacements = {}; // no replacements on first step
       const hiddenFields = this.getHiddenFields(); // no user values on first step
 
-      // we have to support temporarily both old and new formats to ensure backward compatibility
-      const scope: IRefScope = { field: hiddenFields, ...hiddenFields };
-
-      const resolver = MagicResolver.create(scope, replacements);
+      const resolver = MagicResolver.create(hiddenFields, replacements);
 
       firstStep.updateStep(resolver);
     }
@@ -474,10 +471,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
       const replacements = this.getReplacementsForNextStep();
       const formValues = await this.getFormValues();
 
-      // we have to support temporarily both old and new formats to ensure backward compatibility
-      const scope: IRefScope = { field: formValues, ...formValues };
-
-      const resolver = MagicResolver.create(scope, replacements);
+      const resolver = MagicResolver.create(formValues, replacements);
 
       nextStep.updateStep(resolver);
     }

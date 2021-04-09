@@ -1,5 +1,6 @@
 export interface ISyncValueHandler<FVA> {
   getValue(): FVA;
+  getDefaultValue?(): FVA;
   setValue(value: FVA): void;
 }
 

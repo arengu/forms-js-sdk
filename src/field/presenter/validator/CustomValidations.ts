@@ -114,7 +114,7 @@ export const CustomValidations = {
 
   passwordMinLength(fieldM: IPasswordFieldModel, inputV: IPasswordInputView): IFieldValidationFunction<IPasswordFieldValue> {
     const validator = FieldRules.minLength(fieldM);
-    const handler = StringValueHandler.create(inputV);
+    const handler = StringValueHandler.create(inputV, fieldM);
 
     return function checkMinLength(): IFieldValidationResult {
       return validator(handler.getValue());

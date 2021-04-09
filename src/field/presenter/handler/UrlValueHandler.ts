@@ -1,5 +1,5 @@
 import { ISyncValueHandler } from './ValueHandler';
-import { IURLFieldValue } from '../../model/FieldModel';
+import { IURLFieldModel, IURLFieldValue } from '../../model/FieldModel';
 import { StringValueHandler } from './StringValueHandler';
 import { IURLInputView } from '../../view/input/URLInputView';
 
@@ -12,8 +12,8 @@ function ensurePrefix(str: string | undefined): string | undefined {
 }
 
 export const UrlValueHandler = {
-  create(inputV: IURLInputView): ISyncValueHandler<IURLFieldValue> {
-    const stringHandler = StringValueHandler.create(inputV);
+  create(inputV: IURLInputView, fieldM: IURLFieldModel): ISyncValueHandler<IURLFieldValue> {
+    const stringHandler = StringValueHandler.create(inputV, fieldM);
 
     return {
       getValue(): IURLFieldValue {

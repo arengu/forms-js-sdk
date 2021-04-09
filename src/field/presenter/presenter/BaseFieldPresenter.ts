@@ -137,7 +137,7 @@ export abstract class BaseFieldPresenter<IV extends IInputView = IInputView> ext
     return RefResolver.isDynamic(hint) || RefResolver.isDynamic(label);
   }
 
-  public updateContent(this: this, resolver: IMagicResolver): void {
+  public updateContent(this: this, resolver: IMagicResolver, everShown: boolean): void {
     const initLabel = this.fieldM.label;
 
     if (initLabel) {
@@ -150,6 +150,14 @@ export abstract class BaseFieldPresenter<IV extends IInputView = IInputView> ext
     if (initHint) {
       const dynHint = resolver.resolve(initHint, escapeHE);
       this.fieldV.updateHint(dynHint);
+    }
+
+    if (everShown && 'getDefaultValue' in this.valueH && this.valueH.getDefaultValue) {
+      const defValue = this.valueH.getDefaultValue();
+
+      if(typeof defValue === 'string') {
+        this.valueH.setValue(resolver.resolve(defValue, escapeHE));
+      }
     }
   }
 
