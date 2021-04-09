@@ -1,7 +1,7 @@
 import { BlockType, IBlockModel } from "./BlockModel";
 import { PreviousButtonPresenter, IPreviousButtonPresenter } from "./navigation/button/PreviousButton";
 import { IComponentPresenter } from "../component/ComponentPresenter";
-import { HTMLBlockPresenter } from "./HtmlBlockPresenter";
+import { HTMLBlockPresenter } from "./HTMLBlockPresenter";
 import { RichTextBlockPresenter } from "./RichTextBlockPresenter";
 import { DividerBlockPresenter } from "./DividerBlockPresenter";
 import { INextButtonPresenter, NextButtonPresenter } from "./navigation/button/NextButton";
