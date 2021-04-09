@@ -1,4 +1,4 @@
-import { IRefScope } from "../form/model/FormModel";
+import { IMagicResolver } from "../lib/MagicResolver";
 import { IHTMLBlockModel } from "./BlockModel";
 import { ICodeBlockPresenter, CodeBlockPresenter, ICodeBlockParams } from "./CodeBlockPresenter";
 import { HTMLBlockHelper } from "./HTMLBlockHelper";
@@ -14,8 +14,8 @@ export class HTMLBlockPresenterImpl extends CodeBlockPresenter implements IHTMLB
     HTMLBlockHelper.reinjectScripts(this.rootE);
   }
 
-  public updateContent(data: IRefScope): void {
-    super.updateContent(data);
+  public updateContent(resolver: IMagicResolver): void {
+    super.updateContent(resolver);
 
     HTMLBlockHelper.reinjectScripts(this.rootE);
   }
