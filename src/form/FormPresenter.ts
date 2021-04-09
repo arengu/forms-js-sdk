@@ -146,9 +146,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
   }
 
   public async getUserValues(): Promise<IFormData> {
-    const currStep = this.getCurrentStep();
-
-    const steps = this.history.getSequence().concat(currStep);
+    const steps = this.history.getSequence().concat(this.getCurrentStep());
 
     const proms = steps.map((sP) => FormPresenterHelper.getUserValues(sP));
     const userValuesPerStep = await Promise.all(proms);
@@ -216,8 +214,8 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     return this.getValidationSignature();
   }
 
-  public getLatestReplacements(): IReplacements {
-    const steps = this.history.getHistory();
+  public getReplacementsForNextStep(): IReplacements {
+    const steps = [this.getCurrentStep(), ...this.history.getHistory()];
 
     for (const step of steps) {
       const stepId = step.getStepId();
@@ -473,7 +471,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     const currStep = this.getCurrentStep();
 
     if (nextStep.isDynamic()) {
-      const replacements = this.getLatestReplacements();
+      const replacements = this.getReplacementsForNextStep();
       const formValues = await this.getFormValues();
 
       // we have to support temporarily both old and new formats to ensure backward compatibility
