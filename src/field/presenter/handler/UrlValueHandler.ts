@@ -26,7 +26,7 @@ export const UrlValueHandler = {
       setDefaultValue(resolver: IMagicResolver): void {
         const defValue = fieldM.config.defaultValue;
 
-        if(defValue) {
+        if (defValue) {
           this.setValue(resolver.resolve(defValue));
         }
       },

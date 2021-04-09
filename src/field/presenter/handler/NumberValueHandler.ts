@@ -22,7 +22,7 @@ export const NumberValueHandler = {
       setDefaultValue(): void {
         const defValue = fieldM.config.defaultValue;
 
-        if(defValue) {
+        if (defValue) {
           inputV.setValue(defValue.toString());
         }
       },

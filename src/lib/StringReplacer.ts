@@ -11,7 +11,8 @@ export const StringReplacer = {
       (str, replacement, needle) => StringUtils.replaceAll(
         str,
         needle,
-        escape(StringUtils.stringify(replacement))
+        // we're escaping even before knowing there were any matches, this should be improved
+        escape(StringUtils.stringify(replacement)),
       ),
       input,
     );
