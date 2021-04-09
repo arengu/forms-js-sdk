@@ -1,6 +1,8 @@
+import { IMagicResolver } from "../../../lib/MagicResolver";
+
 export interface ISyncValueHandler<FVA> {
   getValue(): FVA;
-  getDefaultValue?(): FVA;
+  setDefaultValue(resolver: IMagicResolver): void;
   setValue(value: FVA): void;
 }
 

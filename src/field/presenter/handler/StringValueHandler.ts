@@ -3,6 +3,7 @@ import isNil from 'lodash/isNil';
 import { IFieldModel, IStringFieldValue } from '../../model/FieldModel';
 import { ISyncValueHandler } from './ValueHandler';
 import { IStringInputView } from '../../view/input/StringInputView';
+import { IMagicResolver } from '../../../lib/MagicResolver';
 
 type IStringFieldModel = IFieldModel & {
   config: {
@@ -23,10 +24,12 @@ export const StringValueHandler = {
         return value === '' ? undefined : value;
       },
 
-      getDefaultValue(): IStringFieldValue {
+      setDefaultValue(resolver: IMagicResolver): void {
         const defValue = fieldM.config.defaultValue;
 
-        return defValue === '' ? undefined : defValue;
+        if(defValue) {
+          this.setValue(resolver.resolve(defValue));
+        }
       },
 
       setValue(value: IStringFieldValue): void {

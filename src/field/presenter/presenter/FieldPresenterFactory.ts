@@ -75,7 +75,6 @@ export const FieldPresenterFactory = {
     return SimpleFieldPresenter.create(formD, fieldM, inputV, fieldVal, valueH);
   },
 
-
   fromDropdown(formD: IFormDeps, fieldM: IDropdownFieldModel): IFieldPresenter {
     const inputV = DropdownInputView.create(fieldM);
 
@@ -123,7 +122,7 @@ export const FieldPresenterFactory = {
       FieldRules.maxValue(fieldM),
     ]);
 
-    const valueH = NumberValueHandler.create(inputV);
+    const valueH = NumberValueHandler.create(inputV, fieldM);
 
     return SimpleFieldPresenter.create(formD, fieldM, inputV, fieldVal, valueH);
   },

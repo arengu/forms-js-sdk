@@ -13,7 +13,6 @@ import { IValueHandler } from '../handler/ValueHandler';
 import { IFieldValidationResult, IFieldValidator } from '../validator/FieldValidator';
 import { BaseComponentPresenter } from '../../../core/BasePresenters';
 import { IExtendedFormStyle } from '../../../form/model/FormStyle';
-import { RefResolver } from '../../../lib/RefResolver';
 import { IMagicResolver } from '../../../lib/MagicResolver';
 
 export abstract class BaseFieldPresenter<IV extends IInputView = IInputView> extends BaseComponentPresenter implements IFieldPresenter, IInputViewListener {
@@ -147,12 +146,8 @@ export abstract class BaseFieldPresenter<IV extends IInputView = IInputView> ext
       this.fieldV.updateHint(dynHint);
     }
 
-    if (!everShown && 'getDefaultValue' in this.valueH && this.valueH.getDefaultValue) {
-      const defValue = this.valueH.getDefaultValue();
-
-      if(typeof defValue === 'string') {
-        this.valueH.setValue(resolver.resolve(defValue, escapeHE));
-      }
+    if (!everShown && 'setDefaultValue' in this.valueH) {
+      this.valueH.setDefaultValue(resolver);
     }
   }
 

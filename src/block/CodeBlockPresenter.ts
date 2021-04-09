@@ -3,7 +3,6 @@ import escapeHE from 'lodash/escape';
 import { IBlockPresenter } from "./BlockPresenter";
 import { BaseBlockPresenter } from "../core/BasePresenters";
 
-import { RefResolver } from '../lib/RefResolver';
 import { IMagicResolver } from '../lib/MagicResolver';
 
 export type ICodeBlockPresenter = IBlockPresenter;

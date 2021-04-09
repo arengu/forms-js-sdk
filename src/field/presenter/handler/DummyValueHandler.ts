@@ -13,6 +13,10 @@ export const DummyValueHandler = {
         return inputV.getValue();
       },
 
+      setDefaultValue(): void {
+        // nothing to do
+      },
+
       setValue(): void {
         console.warn(`Setting a value for ${fieldM.id} field is not supported`);
       }

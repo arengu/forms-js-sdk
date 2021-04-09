@@ -2,6 +2,7 @@ import { ISyncValueHandler } from './ValueHandler';
 import { IURLFieldModel, IURLFieldValue } from '../../model/FieldModel';
 import { StringValueHandler } from './StringValueHandler';
 import { IURLInputView } from '../../view/input/URLInputView';
+import { IMagicResolver } from '../../../lib/MagicResolver';
 
 function ensurePrefix(str: string | undefined): string | undefined {
   if (!str) {
@@ -20,6 +21,14 @@ export const UrlValueHandler = {
         const cleanValue = stringHandler.getValue();
 
         return ensurePrefix(cleanValue);
+      },
+
+      setDefaultValue(resolver: IMagicResolver): void {
+        const defValue = fieldM.config.defaultValue;
+
+        if(defValue) {
+          this.setValue(resolver.resolve(defValue));
+        }
       },
 
       setValue(value: IURLFieldValue): void {
