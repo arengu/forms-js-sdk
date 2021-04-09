@@ -7,6 +7,10 @@ export const PaymentValueHandler = {
         return undefined;
       },
 
+      setDefaultValue(): void {
+        // no default value for payment fields
+      },
+
       setValue(): void {
         return undefined;
       }

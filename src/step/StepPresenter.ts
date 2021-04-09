@@ -44,7 +44,6 @@ export interface IStepPresenter extends IPresenter {
   onShow(): void;
   onHide(): void;
 
-  isDynamic(): boolean;
   updateStep(resolver: IMagicResolver): void;
   onUpdateStyle(style: IExtendedFormStyle): void;
 
@@ -114,8 +113,6 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
   protected readonly fieldsP: IFieldPresenter[];
   protected readonly fieldsPI: Record<string, IFieldPresenter>; // indexed by fieldId
 
-  protected readonly dynComponentsP: IComponentPresenter[];
-
   protected readonly errorP: IStepErrorPresenter;
 
   protected readonly stepV: IStepView;
@@ -135,8 +132,6 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
     this.invalidFields = new Set();
     this.fieldsP = this.compsP.filter(ComponentHelper.isFieldPresenter);
     this.fieldsPI = keyBy(this.fieldsP, (fP) => fP.getFieldId());
-
-    this.dynComponentsP = this.compsP.filter((cP): boolean => cP.isDynamic());
 
     this.errorP = StepErrorPresenter.create();
 
@@ -168,12 +163,8 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
     return this.stepV.render();
   }
 
-  public isDynamic(): boolean {
-    return this.dynComponentsP.length > 0;
-  }
-
   public updateStep(resolver: IMagicResolver): void {
-    this.dynComponentsP.forEach((cP): void => cP.updateContent(resolver, this.everShown));
+    this.compsP.forEach((cP): void => cP.updateContent(resolver, this.everShown));
   }
 
   public hasFlow(): boolean {

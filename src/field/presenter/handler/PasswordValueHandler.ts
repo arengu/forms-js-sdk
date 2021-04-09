@@ -40,6 +40,10 @@ export const PasswordValueHandler = {
         return hash;
       },
 
+      setDefaultValue(): void {
+        // no default value for password fields
+      },
+
       setValue(): void {
         console.error('Setting a password is not allowed.');
       }

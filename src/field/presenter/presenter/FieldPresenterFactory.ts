@@ -70,11 +70,10 @@ export const FieldPresenterFactory = {
       FieldRules.require(fieldM),
     ]);
 
-    const valueH = StringValueHandler.create(inputV);
+    const valueH = StringValueHandler.create(inputV, fieldM);
 
     return SimpleFieldPresenter.create(formD, fieldM, inputV, fieldVal, valueH);
   },
-
 
   fromDropdown(formD: IFormDeps, fieldM: IDropdownFieldModel): IFieldPresenter {
     const inputV = DropdownInputView.create(fieldM);
@@ -96,7 +95,7 @@ export const FieldPresenterFactory = {
       FieldFormats.email(fieldM),
     ]);
 
-    const valueH = StringValueHandler.create(inputV);
+    const valueH = StringValueHandler.create(inputV, fieldM);
 
     return SimpleFieldPresenter.create(formD, fieldM, inputV, fieldVal, valueH);
   },
@@ -123,7 +122,7 @@ export const FieldPresenterFactory = {
       FieldRules.maxValue(fieldM),
     ]);
 
-    const valueH = NumberValueHandler.create(inputV);
+    const valueH = NumberValueHandler.create(inputV, fieldM);
 
     return SimpleFieldPresenter.create(formD, fieldM, inputV, fieldVal, valueH);
   },
@@ -155,7 +154,7 @@ export const FieldPresenterFactory = {
       FieldRules.maxLength(fieldM),
     ]);
 
-    const valueH = StringValueHandler.create(inputV);
+    const valueH = StringValueHandler.create(inputV, fieldM);
 
     return SimpleFieldPresenter.create(formD, fieldM, inputV, fieldVal, valueH);
   },
@@ -169,7 +168,7 @@ export const FieldPresenterFactory = {
       FieldRules.maxLength(fieldM),
     ]);
 
-    const valueH = StringValueHandler.create(inputV);
+    const valueH = StringValueHandler.create(inputV, fieldM);
 
     return SimpleFieldPresenter.create(formD, fieldM, inputV, fieldVal, valueH);
   },
@@ -182,7 +181,7 @@ export const FieldPresenterFactory = {
       FieldFormats.url(fieldM),
     ]);
 
-    const valueH = UrlValueHandler.create(inputV);
+    const valueH = UrlValueHandler.create(inputV, fieldM);
 
     return SimpleFieldPresenter.create(formD, fieldM, inputV, fieldVal, valueH);
   },

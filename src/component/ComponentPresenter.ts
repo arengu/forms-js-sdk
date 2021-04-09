@@ -15,7 +15,6 @@ export interface IComponentPresenter extends IPresenter, IListenableEntity<IComp
   onShow?(): void;
   onHide?(): void;
 
-  isDynamic(this: this): boolean;
   updateContent(this: this, resolver: IMagicResolver, everShown: boolean): void;
 }
 

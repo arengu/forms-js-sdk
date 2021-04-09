@@ -1,11 +1,11 @@
 import isNil from 'lodash/isNil';
 
 import { ISyncValueHandler } from './ValueHandler';
-import { INumberFieldValue } from '../../model/FieldModel';
+import { INumberFieldModel, INumberFieldValue } from '../../model/FieldModel';
 import { INumberInputView } from '../../view/input/NumberInputView';
 
 export const NumberValueHandler = {
-  create(inputV: INumberInputView): ISyncValueHandler<INumberFieldValue> {
+  create(inputV: INumberInputView, fieldM: INumberFieldModel): ISyncValueHandler<INumberFieldValue> {
     return {
       getValue(): INumberFieldValue {
         const strValue = inputV.getValue().trim();
@@ -17,6 +17,14 @@ export const NumberValueHandler = {
         const value = strValue.replace(',', '.');
 
         return value;
+      },
+
+      setDefaultValue(): void {
+        const defValue = fieldM.config.defaultValue;
+
+        if (defValue) {
+          inputV.setValue(defValue.toString());
+        }
       },
 
       setValue(custValue: INumberFieldValue): void {

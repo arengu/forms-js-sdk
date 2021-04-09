@@ -76,7 +76,7 @@ export const CardsInputRenderer = {
     imageContainer.appendChild(image);
     elem.appendChild(imageContainer);
 
-    if(!hideLabel) {
+    if (!hideLabel) {
       const textContainer = document.createElement('div');
       textContainer.classList.add('af-cards-option-text');
 
@@ -128,7 +128,7 @@ export const CardsInputRenderer = {
     const root = document.createElement('div');
     root.classList.add('af-cards');
 
-    if(multiple) {
+    if (multiple) {
       root.classList.add('af-cards-multiple');
     }
 

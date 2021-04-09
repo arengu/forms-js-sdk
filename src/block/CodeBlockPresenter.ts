@@ -3,7 +3,6 @@ import escapeHE from 'lodash/escape';
 import { IBlockPresenter } from "./BlockPresenter";
 import { BaseBlockPresenter } from "../core/BasePresenters";
 
-import { RefResolver } from '../lib/RefResolver';
 import { IMagicResolver } from '../lib/MagicResolver';
 
 export type ICodeBlockPresenter = IBlockPresenter;
@@ -42,10 +41,6 @@ export class CodeBlockPresenter extends BaseBlockPresenter implements ICodeBlock
 
   public reset(): void {
     // nothing to do here
-  }
-
-  public isDynamic(this: this): boolean {
-    return RefResolver.isDynamic(this.content);
   }
 
   public updateContent(resolver: IMagicResolver): void {

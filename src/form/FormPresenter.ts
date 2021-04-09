@@ -3,7 +3,7 @@ import isNil from 'lodash/isNil';
 
 import { HiddenFields, IHiddenFieldValues } from './HiddenFields';
 
-import { IFormModel, IRefScope, ISocialProviderConfig } from './model/FormModel';
+import { IFormModel, ISocialProviderConfig } from './model/FormModel';
 import { IFormStyle, IExtendedFormStyle } from './model/FormStyle';
 
 import { Messages } from '../lib/Messages';
@@ -424,17 +424,12 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
       return;
     }
 
-    if (firstStep.isDynamic()) {
-      const replacements = {}; // no replacements on first step
-      const hiddenFields = this.getHiddenFields(); // no user values on first step
+    const replacements = {}; // no replacements on first step
+    const hiddenFields = this.getHiddenFields(); // no user values on first step
 
-      // we have to support temporarily both old and new formats to ensure backward compatibility
-      const scope: IRefScope = { field: hiddenFields, ...hiddenFields };
+    const resolver = MagicResolver.create(hiddenFields, replacements);
 
-      const resolver = MagicResolver.create(scope, replacements);
-
-      firstStep.updateStep(resolver);
-    }
+    firstStep.updateStep(resolver);
 
     this.setCurrentStep(firstStep);
   }
@@ -470,17 +465,12 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
   public async jumpToStep(nextStep: IStepPresenter): Promise<void> {
     const currStep = this.getCurrentStep();
 
-    if (nextStep.isDynamic()) {
-      const replacements = this.getReplacementsForNextStep();
-      const formValues = await this.getFormValues();
+    const replacements = this.getReplacementsForNextStep();
+    const formValues = await this.getFormValues();
 
-      // we have to support temporarily both old and new formats to ensure backward compatibility
-      const scope: IRefScope = { field: formValues, ...formValues };
+    const resolver = MagicResolver.create(formValues, replacements);
 
-      const resolver = MagicResolver.create(scope, replacements);
-
-      nextStep.updateStep(resolver);
-    }
+    nextStep.updateStep(resolver);
 
     this.setCurrentStep(nextStep);
 

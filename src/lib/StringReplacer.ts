@@ -8,7 +8,12 @@ export const StringReplacer = {
   replace(input: string, replacements: IReplacements, escape: IEscapeFunction = identity): string {
     return reduce(
       replacements,
-      (str, replacement, needle) => StringUtils.replaceAll(str, needle, escape(replacement)),
+      (str, replacement, needle) => StringUtils.replaceAll(
+        str,
+        needle,
+        // we're escaping even before knowing there were any matches, this should be improved
+        escape(StringUtils.stringify(replacement)),
+      ),
       input,
     );
   }

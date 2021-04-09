@@ -13,7 +13,6 @@ import { IValueHandler } from '../handler/ValueHandler';
 import { IFieldValidationResult, IFieldValidator } from '../validator/FieldValidator';
 import { BaseComponentPresenter } from '../../../core/BasePresenters';
 import { IExtendedFormStyle } from '../../../form/model/FormStyle';
-import { RefResolver } from '../../../lib/RefResolver';
 import { IMagicResolver } from '../../../lib/MagicResolver';
 
 export abstract class BaseFieldPresenter<IV extends IInputView = IInputView> extends BaseComponentPresenter implements IFieldPresenter, IInputViewListener {
@@ -132,12 +131,7 @@ export abstract class BaseFieldPresenter<IV extends IInputView = IInputView> ext
     this.listeners.forEach((listener) => listener.onValidField && listener.onValidField(this));
   }
 
-  public isDynamic(this: this): boolean {
-    const { label, hint } = this.fieldM;
-    return RefResolver.isDynamic(hint) || RefResolver.isDynamic(label);
-  }
-
-  public updateContent(this: this, resolver: IMagicResolver): void {
+  public updateContent(this: this, resolver: IMagicResolver, everShown: boolean): void {
     const initLabel = this.fieldM.label;
 
     if (initLabel) {
@@ -150,6 +144,10 @@ export abstract class BaseFieldPresenter<IV extends IInputView = IInputView> ext
     if (initHint) {
       const dynHint = resolver.resolve(initHint, escapeHE);
       this.fieldV.updateHint(dynHint);
+    }
+
+    if (!everShown && 'setDefaultValue' in this.valueH) {
+      this.valueH.setDefaultValue(resolver);
     }
   }
 
