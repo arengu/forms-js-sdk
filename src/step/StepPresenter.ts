@@ -147,7 +147,7 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
 
     this.activeFieldsP = [];
 
-    this.everShown = true;
+    this.everShown = false;
   }
 
   public static create(stepM: IStepModel, formD: IFormDeps, stepL: IStepPresenterListener): IStepPresenter {
@@ -215,7 +215,7 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
 
     this.compsP.forEach((cP) => cP.onShow?.());
 
-    this.everShown = false;
+    this.everShown = true;
   }
 
   public onHide(): void {
