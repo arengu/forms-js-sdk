@@ -424,14 +424,12 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
       return;
     }
 
-    if (firstStep.isDynamic()) {
-      const replacements = {}; // no replacements on first step
-      const hiddenFields = this.getHiddenFields(); // no user values on first step
+    const replacements = {}; // no replacements on first step
+    const hiddenFields = this.getHiddenFields(); // no user values on first step
 
-      const resolver = MagicResolver.create(hiddenFields, replacements);
+    const resolver = MagicResolver.create(hiddenFields, replacements);
 
-      firstStep.updateStep(resolver);
-    }
+    firstStep.updateStep(resolver);
 
     this.setCurrentStep(firstStep);
   }
@@ -467,14 +465,12 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
   public async jumpToStep(nextStep: IStepPresenter): Promise<void> {
     const currStep = this.getCurrentStep();
 
-    if (nextStep.isDynamic()) {
-      const replacements = this.getReplacementsForNextStep();
-      const formValues = await this.getFormValues();
+    const replacements = this.getReplacementsForNextStep();
+    const formValues = await this.getFormValues();
 
-      const resolver = MagicResolver.create(formValues, replacements);
+    const resolver = MagicResolver.create(formValues, replacements);
 
-      nextStep.updateStep(resolver);
-    }
+    nextStep.updateStep(resolver);
 
     this.setCurrentStep(nextStep);
 

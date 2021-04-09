@@ -19,6 +19,10 @@ export const MagicResolver = {
 
     return {
       resolve(input: string, escape?: IEscapeFunction): string {
+        if (!input.includes('{{')) {
+          return input;
+        }
+
         const replaced = StringReplacer.replace(input, replacements, escape);
         const resolved = RefResolver.resolve(replaced, scope, escape);
 

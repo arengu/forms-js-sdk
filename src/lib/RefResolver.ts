@@ -9,10 +9,6 @@ const TOKENIZE_REGEX = /({{\s*[a-z0-9_-]+(?:\.[a-z0-9_-]+)*\s*}})/i;
 const REFERENCE_REGEX = /^({{\s*[a-z0-9_-]+(?:\.[a-z0-9_-]+)*\s*}})$/i;
 
 export const RefResolver = {
-  isDynamic(input: string | undefined): boolean {
-    return typeof input === 'string' && TOKENIZE_REGEX.test(input);
-  },
-
   tokenize(input: string): string[] {
     return input.split(TOKENIZE_REGEX);
   },

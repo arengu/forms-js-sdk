@@ -44,10 +44,6 @@ export class CodeBlockPresenter extends BaseBlockPresenter implements ICodeBlock
     // nothing to do here
   }
 
-  public isDynamic(this: this): boolean {
-    return RefResolver.isDynamic(this.content);
-  }
-
   public updateContent(resolver: IMagicResolver): void {
     this.rootE.innerHTML = resolver.resolve(this.content, escapeHE);
   }

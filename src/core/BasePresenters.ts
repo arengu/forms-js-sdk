@@ -3,10 +3,6 @@ import { IComponentPresenter, IComponentPresenterListener } from "../component/C
 import { IMagicResolver } from "../lib/MagicResolver";
 
 export abstract class BaseComponentPresenter extends ListenableEntity<IComponentPresenterListener> implements IComponentPresenter {
-  public isDynamic(): boolean {
-    return false;
-  }
-
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public updateContent(this: this, resolver: IMagicResolver, everShown: boolean): void {
     // nothing to do

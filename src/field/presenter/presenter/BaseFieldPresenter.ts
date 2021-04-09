@@ -132,11 +132,6 @@ export abstract class BaseFieldPresenter<IV extends IInputView = IInputView> ext
     this.listeners.forEach((listener) => listener.onValidField && listener.onValidField(this));
   }
 
-  public isDynamic(this: this): boolean {
-    const { label, hint } = this.fieldM;
-    return RefResolver.isDynamic(hint) || RefResolver.isDynamic(label);
-  }
-
   public updateContent(this: this, resolver: IMagicResolver, everShown: boolean): void {
     const initLabel = this.fieldM.label;
 
