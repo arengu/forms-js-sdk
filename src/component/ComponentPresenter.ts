@@ -4,7 +4,7 @@ import { IFormDeps } from '../form/FormPresenter';
 import { IListenableEntity } from '../lib/ListenableEntity';
 import { ComponentCategory, IComponentModel } from './ComponentModel';
 import { IPresenter } from '../core/BaseTypes';
-import { IRefScope } from '../form/model/FormModel';
+import { IMagicResolver } from '../lib/MagicResolver';
 
 export interface IComponentPresenterListener extends IFieldPresenterListener, IBlockPresenterListener { }
 
@@ -16,7 +16,7 @@ export interface IComponentPresenter extends IPresenter, IListenableEntity<IComp
   onHide?(): void;
 
   isDynamic(this: this): boolean;
-  updateContent(this: this, data: IRefScope): void;
+  updateContent(this: this, resolver: IMagicResolver, everShown: boolean): void;
 }
 
 export const ComponentPresenter = {

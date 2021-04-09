@@ -3,7 +3,7 @@ import isNil from 'lodash/isNil';
 
 import { HiddenFields, IHiddenFieldValues } from './HiddenFields';
 
-import { IFormModel, ISocialProviderConfig } from './model/FormModel';
+import { IFormModel, IRefScope, ISocialProviderConfig } from './model/FormModel';
 import { IFormStyle, IExtendedFormStyle } from './model/FormStyle';
 
 import { Messages } from '../lib/Messages';
@@ -18,13 +18,14 @@ import { DOMEvents, EventNames } from '../lib/DOMEvents';
 import { IStepPresenter, IStepPresenterListener, StepPresenter } from '../step/StepPresenter';
 import { NavigationHistory } from '../lib/NavigationHistory';
 import { ISocialFieldPresenter } from '../field/presenter/presenter/SocialFieldPresenter';
-import { IFormInteractionResponse, EffectType, IFormInteractionRequest, IEffectAuthenticatePayment } from './FormInteraction';
+import { IFormInteractionResponse, EffectType, IFormInteractionRequest, IEffectAuthenticatePayment, IReplacements } from './FormInteraction';
 import { IPresenter } from '../core/BaseTypes';
 import { StyleHelper } from './view/StyleHelper';
 import { INextButtonPresenter } from '../block/navigation/button/NextButton';
 import { IJumpButtonPresenter } from '../block/navigation/button/JumpButton';
 import { IPaymentFieldPresenter, PaymentFieldPresenter } from '../field/presenter/presenter/PaymentFieldPresenter';
 import { IFieldPresenter } from '../field/presenter/presenter/FieldPresenter';
+import { MagicResolver } from '../lib/MagicResolver';
 
 export const FormPresenterHelper = {
   getUserValues(stepP: IStepPresenter): Promise<IUserValues> {
@@ -92,6 +93,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
 
   protected readonly history: NavigationHistory;
   protected readonly signatures: Map<string, string>;
+  protected readonly replacements: Map<string, IReplacements>;
 
   protected constructor(formM: IFormModel) {
     this.formM = formM;
@@ -114,6 +116,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
 
     this.history = NavigationHistory.create();
     this.signatures = new Map();
+    this.replacements = new Map();
   }
 
   public static create(model: IFormModel): IFormPresenter {
@@ -178,7 +181,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
   /**
    * Returns the final data we have to send to the server on form submission
    */
-  public async getSubmissionData(buttonId: string | undefined): Promise<ISubmissionData> {
+  public async getSubmissionData(buttonId?: string): Promise<ISubmissionData> {
     return {
       buttonId,
       formData: await this.getFormValues(),
@@ -211,6 +214,21 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     }
 
     return this.getValidationSignature();
+  }
+
+  public getLatestReplacements(): IReplacements {
+    const steps = this.history.getHistory();
+
+    for (const step of steps) {
+      const stepId = step.getStepId();
+      const repls = this.replacements.get(stepId);
+
+      if (repls) {
+        return repls;
+      }
+    }
+
+    return {};
   }
 
   /**
@@ -248,7 +266,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     await this.goForward(compP, stepP, ButtonType.SOCIAL, compP.getFieldId());
   }
 
-  public async goForward(compP: IComponentWithLoader, stepP: IStepPresenter, buttonType: ButtonType, buttonId: string | undefined): Promise<void> {
+  public async goForward(compP: IComponentWithLoader, stepP: IStepPresenter, buttonType: ButtonType, buttonId?: string): Promise<void> {
     try {
       compP.showLoading();
       stepP.blockComponents();
@@ -266,7 +284,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
       }
 
       if (this.isLastStep()) {
-        await this.submitForm(buttonId, stepP);
+        await this.submitForm(stepP, buttonId);
       } else {
         await this.gotoNextStep();
       }
@@ -278,26 +296,26 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     }
   }
 
-  public async handlePaymentAuthentication(effect: IEffectAuthenticatePayment): Promise<void> {
+  public async handlePaymentAuthentication(currStep: IStepPresenter, effect: IEffectAuthenticatePayment): Promise<void> {
     const pf = FormPresenterHelper.getPaymentField(this.stepsP, effect.fieldId);
-
-    const currStep = this.getCurrentStep();
 
     try {
       await pf?.authenticate(effect.data);
-      await this.submitForm(undefined, currStep);
+      await this.submitForm(currStep);
     } catch (err) {
       currStep.handleAnyError(err);
       this.signatures.delete(currStep.getStepId());
     }
   }
 
-  public async handleFormInteraction(req: IFormInteractionRequest, res: IFormInteractionResponse): Promise<void> {
-    const currStep = this.getCurrentStep();
-
+  public async handleFormInteraction(currStep: IStepPresenter, req: IFormInteractionRequest, res: IFormInteractionResponse): Promise<void> {
     FormView.setCookies(res.cookies);
 
     const { effect } = res;
+
+    if ('replacements' in effect) {
+      this.replacements.set(currStep.getStepId(), effect.replacements);
+    }
 
     if (effect.type === EffectType.ERROR_MESSAGE) {
       this.signatures.delete(currStep.getStepId());
@@ -316,13 +334,13 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
 
     if (effect.type === EffectType.AUTHN_PAYMENT) {
       this.signatures.set(currStep.getStepId(), effect.signature);
-      await this.handlePaymentAuthentication(effect);
+      await this.handlePaymentAuthentication(currStep, effect);
       return;
     }
 
     if (effect.type === EffectType.SUBMIT_FORM) {
       this.signatures.set(currStep.getStepId(), effect.signature);
-      await this.submitForm(undefined, currStep);
+      await this.submitForm(currStep);
       return;
     }
 
@@ -365,7 +383,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
       this.signatures.set(currStep.getStepId(), effect.signature);
 
       if (this.isLastStep()) {
-        await this.submitForm(req.buttonId, currStep);
+        await this.submitForm(currStep, req.buttonId);
       } else {
         await this.gotoNextStep();
       }
@@ -385,7 +403,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     }
   }
 
-  public setContent(newStep: IStepPresenter): void {
+  public setCurrentStep(newStep: IStepPresenter): void {
     const oldStep = this.currentStep;
 
     newStep.onShow();
@@ -396,6 +414,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
 
     if (oldStep) {
       oldStep.onHide();
+      this.history.pushStep(oldStep);
       this.formV.scrollTopIfNeeded(); // do not scroll on first content
     }
   }
@@ -408,24 +427,32 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     }
 
     if (firstStep.isDynamic()) {
+      const replacements = {}; // no replacements on first step
       const hiddenFields = this.getHiddenFields(); // no user values on first step
-      firstStep.updateStep(hiddenFields);
+
+      // we have to support temporarily both old and new formats to ensure backward compatibility
+      const scope: IRefScope = { field: hiddenFields, ...hiddenFields };
+
+      const resolver = MagicResolver.create(scope, replacements);
+
+      firstStep.updateStep(resolver);
     }
 
-    this.setContent(firstStep);
+    this.setCurrentStep(firstStep);
   }
 
   public gotoPreviousStep(): void {
-    const currStep = this.getCurrentStep();
     const prevStep = this.history.popStep();
 
-    if (isNil(currStep) || isNil(prevStep)) {
+    if (isNil(prevStep)) {
       return;
     }
 
+    const currStep = this.getCurrentStep();
+
     currStep.clearAllErrors();
 
-    this.setContent(prevStep);
+    this.setCurrentStep(prevStep);
 
     DOMEvents.emit(EventNames.PreviousStep, {
       formId: this.formM.id,
@@ -437,24 +464,27 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
   public async gotoNextStep(): Promise<void> {
     const nextStep = this.getNextStep();
 
-    if (isNil(nextStep)) {
-      return;
+    if (nextStep) {
+      await this.jumpToStep(nextStep);
     }
-
-    await this.jumpToStep(nextStep);
   }
 
   public async jumpToStep(nextStep: IStepPresenter): Promise<void> {
     const currStep = this.getCurrentStep();
 
-    this.history.pushStep(currStep);
-
     if (nextStep.isDynamic()) {
+      const replacements = this.getLatestReplacements();
       const formValues = await this.getFormValues();
-      nextStep.updateStep(formValues);
+
+      // we have to support temporarily both old and new formats to ensure backward compatibility
+      const scope: IRefScope = { field: formValues, ...formValues };
+
+      const resolver = MagicResolver.create(scope, replacements);
+
+      nextStep.updateStep(resolver);
     }
 
-    this.setContent(nextStep);
+    this.setCurrentStep(nextStep);
 
     DOMEvents.emit(EventNames.NextStep, {
       formId: this.formM.id,
@@ -484,7 +514,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     this.gotoFirstStep();
   }
 
-  public async submitForm(buttonId: string | undefined, currStep: IStepPresenter): Promise<void> {
+  public async submitForm(currStep: IStepPresenter, buttonId?: string): Promise<void> {
     const formId = this.getFormId();
     const stepId = currStep.getStepId();
     const submission = await this.getSubmissionData(buttonId);
@@ -511,7 +541,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     try {
       DOMEvents.emit(EventNames.SubmitForm, eventData);
       const interRes = await FormRepository.submitForm(repoParams);
-      await this.handleFormInteraction(interReq, interRes);
+      await this.handleFormInteraction(currStep, interReq, interRes);
     } catch (err) {
       if (err instanceof InvalidFields) {
         console.error('Some values are not valid:', err.fields);
@@ -549,7 +579,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
 
     const interRes = await FormRepository.validateStep(repoParams);
 
-    await this.handleFormInteraction(interReq, interRes);
+    await this.handleFormInteraction(currStep, interReq, interRes);
 
     return interRes;
   }

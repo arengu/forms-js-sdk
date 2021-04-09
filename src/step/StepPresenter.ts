@@ -14,7 +14,7 @@ import { IFieldPresenter } from '../field/presenter/presenter/FieldPresenter';
 import { IStepView, StepView } from './view/StepView';
 import { AppErrorCode } from '../error/ErrorCodes';
 import { ArenguError } from '../error/ArenguError';
-import { IUserValues, IFormData } from '../form/model/SubmissionModel';
+import { IUserValues } from '../form/model/SubmissionModel';
 import { IComponentModel } from '../component/ComponentModel';
 import { ComponentHelper } from '../component/ComponentHelper';
 import { IFormDeps } from '../form/FormPresenter';
@@ -23,10 +23,10 @@ import { ISocialFieldPresenter, SocialFieldPresenter } from '../field/presenter/
 import { IPresenter } from '../core/BaseTypes';
 import { StepErrorPresenter, IStepErrorPresenter } from './part/StepErrorPresenter';
 import { IExtendedFormStyle } from '../form/model/FormStyle';
-import { IRefScope } from '../form/model/FormModel';
 import { IPreviousButtonPresenter } from '../block/navigation/button/PreviousButton';
 import { INextButtonPresenter, NextButtonPresenter } from '../block/navigation/button/NextButton';
 import { IJumpButtonPresenter } from '../block/navigation/button/JumpButton';
+import { IMagicResolver } from '../lib/MagicResolver';
 
 export interface IStepPresenterListener {
   onPreviousButton?(this: this, buttonP: IPreviousButtonPresenter, stepP: IStepPresenter): void;
@@ -45,7 +45,7 @@ export interface IStepPresenter extends IPresenter {
   onHide(): void;
 
   isDynamic(): boolean;
-  updateStep(formData: IFormData): void;
+  updateStep(resolver: IMagicResolver): void;
   onUpdateStyle(style: IExtendedFormStyle): void;
 
   getFieldPresenter(fieldId: string): IFieldPresenter | undefined;
@@ -123,6 +123,8 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
 
   protected activeFieldsP: IFieldPresenter[]; // fields we have to include/omit based on the trigger
 
+  protected everShown: boolean;
+
   protected constructor(stepM: IStepModel, formD: IFormDeps, stepL: IStepPresenterListener) {
     this.stepM = stepM;
     this.messages = formD.messages;
@@ -144,6 +146,8 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
     this.stepL = stepL;
 
     this.activeFieldsP = [];
+
+    this.everShown = false;
   }
 
   public static create(stepM: IStepModel, formD: IFormDeps, stepL: IStepPresenterListener): IStepPresenter {
@@ -168,10 +172,8 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
     return this.dynComponentsP.length > 0;
   }
 
-  public updateStep(formData: IFormData): void {
-    // we have to support temporarily both old and new formats to ensure backward compatibility
-    const newScope: IRefScope = { field: formData, ...formData };
-    this.dynComponentsP.forEach((cP): void => cP.updateContent(newScope));
+  public updateStep(resolver: IMagicResolver): void {
+    this.dynComponentsP.forEach((cP): void => cP.updateContent(resolver, this.everShown));
   }
 
   public hasFlow(): boolean {
@@ -201,21 +203,23 @@ export class StepPresenter implements IStepPresenter, IComponentPresenterListene
   }
 
   public unblockComponents(): void {
-    this.compsP.forEach((cP) => cP.unblock && cP.unblock());
+    this.compsP.forEach((cP) => cP.unblock?.());
   }
 
   public blockComponents(): void {
-    this.compsP.forEach((cP) => cP.block && cP.block());
+    this.compsP.forEach((cP) => cP.block?.());
   }
 
   public onShow(): void {
     this.activeFieldsP = [];
 
-    this.compsP.forEach((cP) => cP.onShow && cP.onShow());
+    this.compsP.forEach((cP) => cP.onShow?.());
+
+    this.everShown = true;
   }
 
   public onHide(): void {
-    this.compsP.forEach((cP) => cP.onHide && cP.onHide());
+    this.compsP.forEach((cP) => cP.onHide?.());
   }
 
   public handleFieldError(err: FieldError): void {

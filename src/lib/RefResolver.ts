@@ -1,18 +1,14 @@
-import getValue from 'lodash/get';
 import identity from 'lodash/identity';
+import getValue from 'lodash/get';
 
 import { IRefScope } from '../form/model/FormModel';
+import { IEscapeFunction } from './MagicResolver';
 import { StringUtils } from './util/StringUtils';
 
-const TOKENIZE_REGEX = /({{[a-z0-9_-]+(?:\.[a-z0-9_-]+)*}})/i;
+const TOKENIZE_REGEX = /({{\s*[a-z0-9_-]+(?:\.[a-z0-9_-]+)*\s*}})/i;
+const REFERENCE_REGEX = /^({{\s*[a-z0-9_-]+(?:\.[a-z0-9_-]+)*\s*}})$/i;
 
-const REFERENCE_REGEX = /^({{[a-z0-9_-]+(?:\.[a-z0-9_-]+)*}})$/i;
-
-export interface IEscapeFunction {
-  (str: string): string;
-}
-
-export const MagicString = {
+export const RefResolver = {
   isDynamic(input: string | undefined): boolean {
     return typeof input === 'string' && TOKENIZE_REGEX.test(input);
   },
@@ -29,21 +25,21 @@ export const MagicString = {
     return input.slice(2, -2);
   },
 
-  render(input: string, data: IRefScope, escape: IEscapeFunction = identity): string {
-    const tokens = MagicString.tokenize(input);
+  resolve(input: string, scope: IRefScope, escape: IEscapeFunction = identity): string {
+    const tokens = RefResolver.tokenize(input);
 
     if (tokens.length === 1) {
       return input;
     }
 
     const parts = tokens.map((str): string => {
-      if (MagicString.isVariable(str) === false) {
+      if (RefResolver.isVariable(str) === false) {
         return str;
       }
 
-      const ref = MagicString.getReference(str);
+      const ref = RefResolver.getReference(str);
 
-      const rawValue = getValue(data, ref);
+      const rawValue = getValue(scope, ref);
       const strValue = StringUtils.stringify(rawValue);
       const escValue = escape(strValue);
 
