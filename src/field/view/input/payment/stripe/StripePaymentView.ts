@@ -34,10 +34,22 @@ export interface IStripeFields {
 export type IStripeStyle = stripe.elements.ElementsOptions['style'] & object;
 
 export const StripePaymentViewHelper = {
-  renderRoot(fields: IStripeFields): HTMLElement {
+  renderTrustmarks(): HTMLElement {
+    const node = document.createElement('div');
+    node.classList.add('af-payment-trustmarks');
+
+    return node;
+  },
+
+  renderRoot(fields: IStripeFields, trustmarks: boolean): HTMLElement {
     const node = document.createElement('div');
 
     forEach(fields, (f) => node.appendChild(f.render()));
+
+    if (trustmarks) {
+      const trustmarksE = StripePaymentViewHelper.renderTrustmarks();
+      node.appendChild(trustmarksE);
+    }
 
     return node;
   },
@@ -95,7 +107,7 @@ export class StripePaymentViewImpl implements IStripePaymentView {
       securityCode: SecurityCodeView.create(config.securityCode, required, uid),
     }
 
-    this.rootE = StripePaymentViewHelper.renderRoot(this.fieldsV);
+    this.rootE = StripePaymentViewHelper.renderRoot(this.fieldsV, config.trustmarks);
   }
 
   init(elems: stripe.elements.Elements): stripe.elements.Element {
