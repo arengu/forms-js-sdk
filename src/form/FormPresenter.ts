@@ -115,6 +115,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     this.confV = ThankYouView.create();
 
     this.history = NavigationHistory.create();
+
     this.signatures = new Map();
     this.replacements = new Map();
   }
@@ -412,7 +413,6 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
 
     if (oldStep) {
       oldStep.onHide();
-      this.history.pushStep(oldStep);
       this.formV.scrollTopIfNeeded(); // do not scroll on first content
     }
   }
@@ -464,6 +464,8 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
 
   public async jumpToStep(nextStep: IStepPresenter): Promise<void> {
     const currStep = this.getCurrentStep();
+
+    this.history.pushStep(currStep);
 
     const replacements = this.getReplacementsForNextStep();
     const formValues = await this.getFormValues();
