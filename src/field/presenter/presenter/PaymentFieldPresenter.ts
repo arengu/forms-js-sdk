@@ -10,6 +10,7 @@ import { CustomValidations } from "../validator/CustomValidations";
 import { IExtendedFormStyle } from "../../../form/model/FormStyle";
 import { PaymentValueHandler } from "../handler/PaymentValueHandler";
 import { IInputViewListener } from "../../view/InputView";
+import { IMagicResolver } from "../../../lib/MagicResolver";
 
 export interface IPaymentFieldPresenter extends IFieldPresenter {
   authenticate(data: object): Promise<void>;
@@ -49,6 +50,12 @@ export class PaymentFieldPresenterImpl extends BaseFieldPresenter<IPaymentInputV
 
   authenticate(data: object): Promise<void> {
     return this.providerP.authenticate(data);
+  }
+
+  public updateContent(resolver: IMagicResolver, everShown: boolean): void {
+    super.updateContent(resolver, everShown);
+
+    this.providerP.updateContent(resolver);
   }
 }
 

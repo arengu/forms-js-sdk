@@ -131,7 +131,7 @@ export abstract class BaseFieldPresenter<IV extends IInputView = IInputView> ext
     this.listeners.forEach((listener) => listener.onValidField && listener.onValidField(this));
   }
 
-  public updateContent(this: this, resolver: IMagicResolver, everShown: boolean): void {
+  public updateContent(resolver: IMagicResolver, everShown: boolean): void {
     const initLabel = this.fieldM.label;
 
     if (initLabel) {

@@ -1,3 +1,4 @@
+import escapeHE from 'lodash/escape';
 import every from 'lodash/every';
 import some from 'lodash/some';
 
@@ -7,6 +8,7 @@ import { IArenguError } from "../../../../../error/ArenguError";
 import { AppErrorCode, SDKErrorCode } from "../../../../../error/ErrorCodes";
 import { SDKError } from "../../../../../error/SDKError";
 import { IExtendedFormStyle } from "../../../../../form/model/FormStyle";
+import { IMagicResolver } from '../../../../../lib/MagicResolver';
 import { IPaymentFieldModel, IPaymentFieldValue } from "../../../../model/FieldModel";
 import { IInputViewListener } from "../../../InputView";
 import { PaymentDetailsState, IPaymentProvider } from "../PaymentProvider";
@@ -88,6 +90,8 @@ export class StripePaymentProviderImpl implements IPaymentProvider, IStripeEleme
 
   protected state: PaymentDetailsState;
 
+  protected fieldM: IPaymentFieldModel;
+
   constructor(fieldM: IPaymentFieldModel, style: IExtendedFormStyle) {
     const { required, config } = fieldM;
 
@@ -98,6 +102,8 @@ export class StripePaymentProviderImpl implements IPaymentProvider, IStripeEleme
     this.paymentV.listen(this);
 
     this.state = PaymentDetailsState.EMPTY;
+
+    this.fieldM = fieldM;
 
     this.init();
   }
@@ -201,6 +207,26 @@ export class StripePaymentProviderImpl implements IPaymentProvider, IStripeEleme
 
   reset(): void {
     // nothing to do here
+  }
+
+  updateContent(resolver: IMagicResolver): void {
+    const { fields: fieldsC } = this.fieldM.config;
+    const fieldsV = this.paymentV.getFields();
+
+    if (fieldsC.cardNumber.label) {
+      const label = resolver.resolve(fieldsC.cardNumber.label, escapeHE);
+      fieldsV.cardNumber.updateLabel(label);
+    }
+
+    if (fieldsC.expirationDate.label) {
+      const label = resolver.resolve(fieldsC.expirationDate.label, escapeHE);
+      fieldsV.expirationDate.updateLabel(label);
+    }
+
+    if (fieldsC.securityCode.label) {
+      const label = resolver.resolve(fieldsC.securityCode.label, escapeHE);
+      fieldsV.securityCode.updateLabel(label);
+    }
   }
 }
 

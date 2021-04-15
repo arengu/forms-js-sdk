@@ -50,6 +50,7 @@ export interface IStripeElementView extends IView {
   listen(listener: IStripeElementListener): void;
 
   updateStyle(style: IStripeStyle): void;
+  updateLabel(label: string): void;
 }
 
 export class StripeElementViewImpl implements IStripeElementView {
@@ -166,5 +167,11 @@ export class StripeElementViewImpl implements IStripeElementView {
 
   updateStyle(style: IStripeStyle): void {
     this.stripe?.update({ style });
+  }
+
+  updateLabel(label: string): void {
+    if (this.labelE) {
+      this.labelE.innerHTML = label;
+    }
   }
 }
