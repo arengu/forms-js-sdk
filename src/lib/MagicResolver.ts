@@ -14,8 +14,11 @@ export interface IMagicResolver {
 
 export const MagicResolver = {
   create(formValues: IFormData, replacements: IReplacements): IMagicResolver {
-    // we have to support temporarily both old and new formats to ensure backward compatibility
-    const scope: IRefScope = { field: formValues, ...formValues };
+    const scope: IRefScope = {
+      field: formValues,
+      fields: formValues,
+      ...formValues, // support references without namespace to ensure backward compatibility
+    };
 
     return {
       resolve(input: string, escape?: IEscapeFunction): string {

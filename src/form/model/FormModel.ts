@@ -36,7 +36,10 @@ export interface IFormModel {
   readonly branding?: boolean;
 }
 
-export type IRefScope = {
+export interface IRefScope {
+  /** @deprecated fields is the new recommended namespace */
   readonly field: IFormData;
+  readonly fields: IFormData;
+  /** @deprecated old references without namespace are not recommended anymore */
   readonly [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
