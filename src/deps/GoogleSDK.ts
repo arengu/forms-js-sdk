@@ -63,14 +63,17 @@ export const GoogleSDK = {
             GoogleAuth = auth2;
 
             callbacks.forEach((cb) => cb(GoogleAuth))
+          })
+          .catch((err) => {
+            console.error('Google SDK could not be initialized', err);
           });
       });
     }
 
-    const node = document.createElement('script');
-    node.type = 'text/javascript';
-    node.src = 'https://apis.google.com/js/platform.js?onload=_arenguGoogleInit';
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = 'https://apis.google.com/js/platform.js?onload=_arenguGoogleInit';
 
-    document.body.appendChild(node);
+    document.body.appendChild(script);
   }
 };
