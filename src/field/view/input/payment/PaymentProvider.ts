@@ -1,5 +1,6 @@
 import { IPresenter } from "../../../../core/BaseTypes";
 import { IExtendedFormStyle } from "../../../../form/model/FormStyle";
+import { IMagicResolver } from "../../../../lib/MagicResolver";
 import { IPaymentFieldModel, IPaymentFieldValue } from "../../../model/FieldModel";
 import { IInputViewListener } from "../../InputView";
 import { StripePaymentProvider } from "./stripe/StripePaymentProvider";
@@ -14,6 +15,7 @@ export enum PaymentDetailsState {
 
 export interface IPaymentProvider extends IPresenter {
   onUpdateStyle(style: IExtendedFormStyle): void;
+  updateContent(resolver: IMagicResolver): void;
 
   getState(): PaymentDetailsState;
   getValue(): Promise<IPaymentFieldValue>;
