@@ -1,21 +1,29 @@
 import isNil from 'lodash/isNil';
 import isFinite from 'lodash/isFinite';
+import isObject from 'lodash/isObject';
 
 export const StringUtils = {
-  stringify(input: unknown): string {
+  stringify<T>(input: unknown, fallback: T): string | T {
+    if (isNil(input)) {
+      return fallback;
+    }
+
     if (typeof input === 'string') {
       return input;
     }
 
-    if (isNil(input)) {
-      return '';
+    if (typeof input === 'boolean') {
+      return input.toString();
     }
 
     if (typeof input === 'number') {
-      return isFinite(input) ? input.toString() : '';
+      return isFinite(input) ? input.toString() : fallback;
     }
 
-    return JSON.stringify(input);
+    return JSON.stringify(
+      input,
+      (_k, v) => isObject(v) ? v : StringUtils.stringify(v, fallback),
+    );
   },
 
   /**

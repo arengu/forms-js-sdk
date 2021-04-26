@@ -1,12 +1,11 @@
 import isNil from 'lodash/isNil';
-import isFinite from 'lodash/isFinite';
-import isObject from 'lodash/isObject';
 import keyBy from 'lodash/keyBy';
 import includes from 'lodash/includes';
 import mapValues from 'lodash/mapValues';
 
 import { SDKErrorCode } from '../error/ErrorCodes';
 import { SDKError } from '../error/SDKError';
+import { StringUtils } from '../lib/util/StringUtils';
 
 const MISSING_KEY_ERROR = 'The provided key does not belong to a hidden field';
 
@@ -20,31 +19,6 @@ export interface IHiddenFieldItem {
 }
 
 export type IHiddenFieldsDef = IHiddenFieldItem[];
-
-const HiddenFieldsHelper = {
-  serialize(value: unknown): IHiddenFieldValue {
-    if (isNil(value)) {
-      return undefined;
-    }
-
-    if (typeof value === 'string') {
-      return value;
-    }
-
-    if (typeof value === 'number') {
-      return isFinite(value) ? value.toString() : undefined;
-    }
-
-    if (typeof value === 'boolean') {
-      return value.toString();
-    }
-
-    return JSON.stringify(
-      value,
-      (_k, v) => isObject(v) ? v : HiddenFieldsHelper.serialize(v),
-    );
-  }
-};
 
 export class HiddenFields {
   protected readonly fields: IHiddenFieldValues;
@@ -79,7 +53,7 @@ export class HiddenFields {
       throw SDKError.create(SDKErrorCode.UNDEFINED_KEY, MISSING_KEY_ERROR);
     }
 
-    this.fields[key] = HiddenFieldsHelper.serialize(newValue);
+    this.fields[key] = StringUtils.stringify(newValue, undefined);
   }
 
   public getAll(): IHiddenFieldValues {
