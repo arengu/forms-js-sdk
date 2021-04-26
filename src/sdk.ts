@@ -2,7 +2,7 @@ import includes from 'lodash/includes';
 import isNil from 'lodash/isNil';
 import toLower from 'lodash/toLower';
 
-import { FormPresenter, IFormPresenter } from './form/FormPresenter';
+import { FormPresenter, IArenguForm } from './form/FormPresenter';
 
 import { FormRepository } from './repository/FormRepository';
 
@@ -14,8 +14,6 @@ import { SDKError } from './error/SDKError';
 import { SDKErrorCode } from './error/ErrorCodes';
 import { IFormModel } from './form/model/FormModel';
 import { FormProcessor } from './form/model/FormProcessor';
-import { IFormStyle } from './form/model/FormStyle';
-import { IHiddenFieldValue } from './form/HiddenFields';
 
 declare const SDK_VERSION: string;
 
@@ -33,28 +31,6 @@ export interface ISDK {
   embed(form: string | IFormModel, parent: string | Element,
     customValues?: ICustomValues): Promise<IArenguForm>;
 }
-
-export interface IArenguForm {
-  getId(): string;
-  setHiddenField(key: string, value: unknown): IHiddenFieldValue;
-  updateStyle(style: IFormStyle): void;
-}
-
-export const ArenguForm = {
-  create(formP: IFormPresenter): IArenguForm {
-    return {
-      getId(): string {
-        return formP.getFormId();
-      },
-      setHiddenField(fieldId: string, value: string): IHiddenFieldValue {
-        return formP.setHiddenField(fieldId, value);
-      },
-      updateStyle(style: IFormStyle): void {
-        formP.updateStyle(style);
-      },
-    };
-  },
-};
 
 export const SDKHelper = {
   findNode(selector: string): Element {
@@ -158,7 +134,7 @@ export const SDK: ISDK = {
 
       parentNode.appendChild(formNode);
 
-      const formInstance = ArenguForm.create(presenter);
+      const formInstance = presenter.getPublicInstance();
 
       DOMEvents.emit(EventNames.EmbedFormSuccess, { ...eventData, parent: parentNode, node: formNode, helper: formInstance });
 

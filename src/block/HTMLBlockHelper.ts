@@ -1,5 +1,13 @@
 import forEach from 'lodash/forEach';
 import { HTMLHelper } from "../lib/view/HTMLHelper";
+import { IArenguForm } from '../form/FormPresenter';
+
+const FORM_INSTANCE_NAME = '__arenguForm__'
+const FORM_ARG_NAME = '$form';
+
+declare const window: {
+  [FORM_INSTANCE_NAME]?: IArenguForm;
+};
 
 const HTMLBlockHelperDeps = {
   /**
@@ -29,7 +37,7 @@ const HTMLBlockHelperDeps = {
    *  - for external sync scripts: when their onload/onerror event is fired
    */
   makePromise(script: HTMLScriptElement): Promise<void> {
-    if (script.src === '' || script.async || script.defer) {
+    if (HTMLBlockHelperDeps.isInline(script) || script.async || script.defer) {
       return Promise.resolve();
     }
 
@@ -39,17 +47,43 @@ const HTMLBlockHelperDeps = {
     });
   },
 
+
+  isInline(script: HTMLScriptElement): boolean {
+    return script.src === '';
+  },
+
+  wrapWithSdk(oldScript: HTMLScriptElement): HTMLScriptElement {
+    const newScript = HTMLBlockHelperDeps.clone(oldScript);
+
+    if (newScript.textContent) {
+      newScript.textContent = `(function(${FORM_ARG_NAME}){${newScript.textContent}}(window['${FORM_INSTANCE_NAME}']))`;
+    }
+
+    return newScript;
+  },
+
   /**
    * Recreates and replace a script element in the DOM and return a Promise that
    * will resolve when dependent scripts can be loaded
    */
-  reinject(script: HTMLScriptElement): Promise<void> {
-    const newScript = HTMLBlockHelperDeps.clone(script);
+  reinject(oldScript: HTMLScriptElement, formI: IArenguForm): Promise<void> {
+    const isInline = HTMLBlockHelperDeps.isInline(oldScript);
+
+    if (isInline) {
+      window[FORM_INSTANCE_NAME] = formI;
+    }
+
+    const newScript = HTMLBlockHelperDeps.wrapWithSdk(oldScript);
 
     // onload/onerror listeners must be added before appending to the DOM
     const promise = HTMLBlockHelperDeps.makePromise(newScript);
 
-    HTMLHelper.replaceWith(script, newScript);
+    HTMLHelper.replaceWith(oldScript, newScript);
+
+    if (isInline) {
+      // avoid the temptation of using this global directly from a script
+      delete window[FORM_INSTANCE_NAME];
+    }
 
     return promise;
   },
@@ -59,9 +93,9 @@ const HTMLBlockHelperDeps = {
    * the previous one allows us to continue, in order to account for
    * possible dependencies.
    */
-  reinjectSequentially(scripts: HTMLScriptElement[]): Promise<void> {
+  reinjectSequentially(scripts: HTMLScriptElement[], formI: IArenguForm): Promise<void> {
     return scripts.reduce(
-      (prom, script) => prom.then(() => HTMLBlockHelperDeps.reinject(script)),
+      (prom, script) => prom.then(() => HTMLBlockHelperDeps.reinject(script, formI)),
       Promise.resolve(),
     );
   },
@@ -72,9 +106,9 @@ export const HTMLBlockHelper = {
    * Recreates and replace <script> elements. Without this, when putting <script>
    * elements inside an innerHTML property they will not be executed.
    */
-  reinjectScripts(container: HTMLElement): void {
+  reinjectScripts(container: HTMLElement, formI: IArenguForm): void {
     const scripts = Array.from(container.querySelectorAll('script'));
 
-    HTMLBlockHelperDeps.reinjectSequentially(scripts);
+    HTMLBlockHelperDeps.reinjectSequentially(scripts, formI);
   },
 }

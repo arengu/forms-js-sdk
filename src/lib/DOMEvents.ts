@@ -1,10 +1,11 @@
-import { ISDK, IArenguForm } from '../sdk';
+import { ISDK } from '../sdk';
 import { IFormModel } from '../form/model/FormModel';
 import { IMetaDataModel } from '../form/model/MetaDataModel';
 import { FieldError } from '../error/InvalidFields';
 import { IFieldValue } from '../field/model/FieldModel';
 import { IFormData } from '../form/model/SubmissionModel';
 import { IConfirmationModel } from '../form/model/ConfirmationModel';
+import { IArenguForm } from '../form/FormPresenter';
 
 export enum EventNames {
   SDKInit = 'af-init',
