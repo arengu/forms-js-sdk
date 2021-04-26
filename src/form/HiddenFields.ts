@@ -1,4 +1,6 @@
 import isNil from 'lodash/isNil';
+import isFinite from 'lodash/isFinite';
+import isObject from 'lodash/isObject';
 import keyBy from 'lodash/keyBy';
 import includes from 'lodash/includes';
 import mapValues from 'lodash/mapValues';
@@ -18,6 +20,31 @@ export interface IHiddenFieldItem {
 }
 
 export type IHiddenFieldsDef = IHiddenFieldItem[];
+
+const HiddenFieldsHelper = {
+  serialize(value: unknown): IHiddenFieldValue {
+    if (isNil(value)) {
+      return undefined;
+    }
+
+    if (typeof value === 'string') {
+      return value;
+    }
+
+    if (typeof value === 'number') {
+      return isFinite(value) ? value.toString() : undefined;
+    }
+
+    if (typeof value === 'boolean') {
+      return value.toString();
+    }
+
+    return JSON.stringify(
+      value,
+      (_k, v) => isObject(v) ? v : HiddenFieldsHelper.serialize(v),
+    );
+  }
+};
 
 export class HiddenFields {
   protected readonly fields: IHiddenFieldValues;
@@ -47,12 +74,12 @@ export class HiddenFields {
     return value;
   }
 
-  public setValue(key: string, newValue: IHiddenFieldValue): void {
+  public setValue(key: string, newValue: unknown): void {
     if (!this.hasKey(key)) {
       throw SDKError.create(SDKErrorCode.UNDEFINED_KEY, MISSING_KEY_ERROR);
     }
 
-    this.fields[key] = newValue;
+    this.fields[key] = HiddenFieldsHelper.serialize(newValue);
   }
 
   public getAll(): IHiddenFieldValues {

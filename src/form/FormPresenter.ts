@@ -57,7 +57,7 @@ export const FormPresenterHelper = {
 
 export interface IFormPresenter extends IPresenter {
   getFormId(): string;
-  setHiddenField(fieldId: string, value: string): void;
+  setHiddenField(fieldId: string, value: unknown): void;
   render(): HTMLElement;
   updateStyle(style: IFormStyle): void;
 }
@@ -161,7 +161,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     return this.hiddenFields.getAll();
   }
 
-  public setHiddenField(fieldId: string, value: string): void {
+  public setHiddenField(fieldId: string, value: unknown): void {
     this.hiddenFields.setValue(fieldId, value);
   }
 

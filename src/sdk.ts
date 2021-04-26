@@ -45,7 +45,7 @@ export const ArenguForm = {
       getId(): string {
         return formP.getFormId();
       },
-      setHiddenField(fieldId: string, value: string): void {
+      setHiddenField(fieldId: string, value: unknown): void {
         formP.setHiddenField(fieldId, value);
       },
       updateStyle(style: IFormStyle): void {

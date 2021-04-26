@@ -1,10 +1,9 @@
-import isString from 'lodash/isString';
 import isNil from 'lodash/isNil';
 import isFinite from 'lodash/isFinite';
 
 export const StringUtils = {
-  stringify(input: any): string { // eslint-disable-line @typescript-eslint/no-explicit-any
-    if (isString(input)) {
+  stringify(input: unknown): string {
+    if (typeof input === 'string') {
       return input;
     }
 
@@ -12,8 +11,8 @@ export const StringUtils = {
       return '';
     }
 
-    if (isFinite(input)) {
-      return input.toString();
+    if (typeof input === 'number') {
+      return isFinite(input) ? input.toString() : '';
     }
 
     return JSON.stringify(input);
