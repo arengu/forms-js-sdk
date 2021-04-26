@@ -57,7 +57,7 @@ export const FormPresenterHelper = {
 
 export interface IFormPresenter extends IPresenter {
   getFormId(): string;
-  setHiddenField(fieldId: string, value: unknown): void;
+  setHiddenField(fieldId: string, value: string): void;
   render(): HTMLElement;
   updateStyle(style: IFormStyle): void;
 }
