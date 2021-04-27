@@ -1,6 +1,7 @@
 import isNil from 'lodash/isNil';
 import isFinite from 'lodash/isFinite';
-import isObject from 'lodash/isObject';
+import isPlainObject from 'lodash/isPlainObject';
+import isArray from 'lodash/isArray';
 
 export const StringUtils = {
   stringify<T>(input: unknown, fallback: T): string | T {
@@ -20,9 +21,16 @@ export const StringUtils = {
       return isFinite(input) ? input.toString() : fallback;
     }
 
+    if (typeof input === 'bigint' || typeof input === 'symbol' || typeof input === 'function') {
+      return fallback;
+    }
+
     return JSON.stringify(
       input,
-      (_k, v) => isObject(v) ? v : StringUtils.stringify(v, fallback),
+      (_k, v) =>
+        isPlainObject(v) || isArray(v)
+          ? v // keep traversing the input
+          : StringUtils.stringify(v, fallback), // handle this case ourselves before continuing
     );
   },
 
