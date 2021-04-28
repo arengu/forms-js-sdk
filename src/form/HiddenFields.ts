@@ -9,7 +9,7 @@ import { StringUtils } from '../lib/util/StringUtils';
 
 const MISSING_KEY_ERROR = 'The provided key does not belong to a hidden field';
 
-export type IHiddenFieldValue = string | undefined;
+export type IHiddenFieldValue = string;
 
 export type IHiddenFieldValues = Record<string, IHiddenFieldValue>;
 
@@ -53,7 +53,7 @@ export class HiddenFields {
       throw SDKError.create(SDKErrorCode.UNDEFINED_KEY, MISSING_KEY_ERROR);
     }
 
-    const strValue = StringUtils.stringify(newValue, undefined);
+    const strValue = StringUtils.stringify(newValue);
 
     this.fields[key] = strValue;
 

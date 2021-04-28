@@ -1,37 +1,24 @@
 import isNil from 'lodash/isNil';
 import isFinite from 'lodash/isFinite';
-import isPlainObject from 'lodash/isPlainObject';
-import isArray from 'lodash/isArray';
 
 export const StringUtils = {
-  stringify<T>(input: unknown, fallback: T): string | T {
-    if (isNil(input)) {
-      return fallback;
-    }
-
+  stringify(input: unknown): string {
     if (typeof input === 'string') {
       return input;
     }
 
-    if (typeof input === 'boolean') {
-      return input.toString();
+    if (isNil(input)) {
+      return '';
     }
 
     if (typeof input === 'number') {
-      return isFinite(input) ? input.toString() : fallback;
+      return isFinite(input) ? input.toString() : '';
     }
 
-    if (typeof input === 'bigint' || typeof input === 'symbol' || typeof input === 'function') {
-      return fallback;
-    }
+    // https://github.com/microsoft/TypeScript/issues/18879
+    const output = JSON.stringify(input) as string | undefined;
 
-    return JSON.stringify(
-      input,
-      (_k, v) =>
-        isPlainObject(v) || isArray(v)
-          ? v // keep traversing the input
-          : StringUtils.stringify(v, fallback), // handle this case ourselves before continuing
-    );
+    return isNil(output) ? '' : output;
   },
 
   /**
