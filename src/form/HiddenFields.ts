@@ -48,12 +48,16 @@ export class HiddenFields {
     return value;
   }
 
-  public setValue(key: string, newValue: unknown): void {
+  public setValue(key: string, newValue: unknown): IHiddenFieldValue {
     if (!this.hasKey(key)) {
       throw SDKError.create(SDKErrorCode.UNDEFINED_KEY, MISSING_KEY_ERROR);
     }
 
-    this.fields[key] = StringUtils.stringify(newValue, undefined);
+    const strValue = StringUtils.stringify(newValue, undefined);
+
+    this.fields[key] = strValue;
+
+    return strValue;
   }
 
   public getAll(): IHiddenFieldValues {

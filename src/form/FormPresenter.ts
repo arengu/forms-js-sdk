@@ -1,7 +1,7 @@
 import find from 'lodash/find';
 import isNil from 'lodash/isNil';
 
-import { HiddenFields, IHiddenFieldValues } from './HiddenFields';
+import { HiddenFields, IHiddenFieldValue, IHiddenFieldValues } from './HiddenFields';
 
 import { IFormModel, ISocialProviderConfig } from './model/FormModel';
 import { IFormStyle, IExtendedFormStyle } from './model/FormStyle';
@@ -57,7 +57,7 @@ export const FormPresenterHelper = {
 
 export interface IFormPresenter extends IPresenter {
   getFormId(): string;
-  setHiddenField(fieldId: string, value: string): void;
+  setHiddenField(fieldId: string, value: unknown): IHiddenFieldValue;
   render(): HTMLElement;
   updateStyle(style: IFormStyle): void;
 }
@@ -161,8 +161,8 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     return this.hiddenFields.getAll();
   }
 
-  public setHiddenField(fieldId: string, value: unknown): void {
-    this.hiddenFields.setValue(fieldId, value);
+  public setHiddenField(fieldId: string, value: unknown): IHiddenFieldValue {
+    return this.hiddenFields.setValue(fieldId, value);
   }
 
   /**

@@ -15,6 +15,7 @@ import { SDKErrorCode } from './error/ErrorCodes';
 import { IFormModel } from './form/model/FormModel';
 import { FormProcessor } from './form/model/FormProcessor';
 import { IFormStyle } from './form/model/FormStyle';
+import { IHiddenFieldValue } from './form/HiddenFields';
 
 declare const SDK_VERSION: string;
 
@@ -35,7 +36,7 @@ export interface ISDK {
 
 export interface IArenguForm {
   getId(): string;
-  setHiddenField(key: string, value: string): void;
+  setHiddenField(key: string, value: unknown): IHiddenFieldValue;
   updateStyle(style: IFormStyle): void;
 }
 
@@ -45,8 +46,8 @@ export const ArenguForm = {
       getId(): string {
         return formP.getFormId();
       },
-      setHiddenField(fieldId: string, value: string): void {
-        formP.setHiddenField(fieldId, value);
+      setHiddenField(fieldId: string, value: string): IHiddenFieldValue {
+        return formP.setHiddenField(fieldId, value);
       },
       updateStyle(style: IFormStyle): void {
         formP.updateStyle(style);
