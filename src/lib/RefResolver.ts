@@ -36,7 +36,7 @@ export const RefResolver = {
       const ref = RefResolver.getReference(str);
 
       const rawValue = getValue(scope, ref);
-      const strValue = StringUtils.stringify(rawValue);
+      const strValue = StringUtils.stringify(rawValue, '');
       const escValue = escape(strValue);
 
       return escValue;

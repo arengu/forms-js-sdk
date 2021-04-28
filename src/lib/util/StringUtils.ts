@@ -1,22 +1,37 @@
-import isString from 'lodash/isString';
 import isNil from 'lodash/isNil';
 import isFinite from 'lodash/isFinite';
+import isPlainObject from 'lodash/isPlainObject';
+import isArray from 'lodash/isArray';
 
 export const StringUtils = {
-  stringify(input: any): string { // eslint-disable-line @typescript-eslint/no-explicit-any
-    if (isString(input)) {
+  stringify<T>(input: unknown, fallback: T): string | T {
+    if (isNil(input)) {
+      return fallback;
+    }
+
+    if (typeof input === 'string') {
       return input;
     }
 
-    if (isNil(input)) {
-      return '';
-    }
-
-    if (isFinite(input)) {
+    if (typeof input === 'boolean') {
       return input.toString();
     }
 
-    return JSON.stringify(input);
+    if (typeof input === 'number') {
+      return isFinite(input) ? input.toString() : fallback;
+    }
+
+    if (typeof input === 'bigint' || typeof input === 'symbol' || typeof input === 'function') {
+      return fallback;
+    }
+
+    return JSON.stringify(
+      input,
+      (_k, v) =>
+        isPlainObject(v) || isArray(v)
+          ? v // keep traversing the input
+          : StringUtils.stringify(v, fallback), // handle this case ourselves before continuing
+    );
   },
 
   /**

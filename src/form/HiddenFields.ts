@@ -5,6 +5,7 @@ import mapValues from 'lodash/mapValues';
 
 import { SDKErrorCode } from '../error/ErrorCodes';
 import { SDKError } from '../error/SDKError';
+import { StringUtils } from '../lib/util/StringUtils';
 
 const MISSING_KEY_ERROR = 'The provided key does not belong to a hidden field';
 
@@ -47,12 +48,16 @@ export class HiddenFields {
     return value;
   }
 
-  public setValue(key: string, newValue: IHiddenFieldValue): void {
+  public setValue(key: string, newValue: unknown): IHiddenFieldValue {
     if (!this.hasKey(key)) {
       throw SDKError.create(SDKErrorCode.UNDEFINED_KEY, MISSING_KEY_ERROR);
     }
 
-    this.fields[key] = newValue;
+    const strValue = StringUtils.stringify(newValue, undefined);
+
+    this.fields[key] = strValue;
+
+    return strValue;
   }
 
   public getAll(): IHiddenFieldValues {
