@@ -6,6 +6,7 @@ import { RichTextBlockPresenter } from "./RichTextBlockPresenter";
 import { DividerBlockPresenter } from "./DividerBlockPresenter";
 import { INextButtonPresenter, NextButtonPresenter } from "./navigation/button/NextButton";
 import { IJumpButtonPresenter, JumpButtonPresenter } from "./navigation/button/JumpButton";
+import { IFormDeps } from "../form/FormPresenter";
 
 export type IBlockPresenter = IComponentPresenter;
 
@@ -16,7 +17,7 @@ export interface IBlockPresenterListener {
 }
 
 export const BlockPresenter = {
-  create(blockM: IBlockModel): IBlockPresenter {
+  create(formD: IFormDeps, blockM: IBlockModel): IBlockPresenter {
     switch (blockM.type) {
       case BlockType.PREVIOUS_BUTTON:
         return PreviousButtonPresenter.create(blockM);
@@ -25,7 +26,7 @@ export const BlockPresenter = {
       case BlockType.JUMP_BUTTON:
         return JumpButtonPresenter.create(blockM);
       case BlockType.HTML:
-        return HTMLBlockPresenter.create(blockM);
+        return HTMLBlockPresenter.create(formD, blockM);
       case BlockType.RICH_TEXT:
         return RichTextBlockPresenter.create(blockM);
       case BlockType.DIVIDER:

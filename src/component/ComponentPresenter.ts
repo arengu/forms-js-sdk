@@ -24,7 +24,7 @@ export const ComponentPresenter = {
       case ComponentCategory.FIELD:
         return FieldPresenter.create(formD, compM);
       case ComponentCategory.BLOCK:
-        return BlockPresenter.create(compM);
+        return BlockPresenter.create(formD, compM);
     }
   },
 }

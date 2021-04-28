@@ -27,6 +27,28 @@ import { IPaymentFieldPresenter, PaymentFieldPresenter } from '../field/presente
 import { IFieldPresenter } from '../field/presenter/presenter/FieldPresenter';
 import { MagicResolver } from '../lib/MagicResolver';
 
+export interface IArenguForm {
+  getId(): string;
+  setHiddenField(key: string, value: unknown): IHiddenFieldValue;
+  updateStyle(style: IFormStyle): void;
+}
+
+export const ArenguForm = {
+  create(formP: IFormPresenter): IArenguForm {
+    return {
+      getId(): string {
+        return formP.getFormId();
+      },
+      setHiddenField(fieldId: string, value: unknown): IHiddenFieldValue {
+        return formP.setHiddenField(fieldId, value);
+      },
+      updateStyle(style: IFormStyle): void {
+        formP.updateStyle(style);
+      },
+    };
+  },
+};
+
 export const FormPresenterHelper = {
   getUserValues(stepP: IStepPresenter): Promise<IUserValues> {
     return stepP.getUserValues();
@@ -60,6 +82,7 @@ export interface IFormPresenter extends IPresenter {
   setHiddenField(fieldId: string, value: unknown): IHiddenFieldValue;
   render(): HTMLElement;
   updateStyle(style: IFormStyle): void;
+  getPublicInstance(): IArenguForm;
 }
 
 interface IComponentWithLoader {
@@ -71,6 +94,7 @@ export interface IFormDeps {
   style: IExtendedFormStyle;
   social: ISocialProviderConfig[];
   messages: Messages;
+  instance: IArenguForm;
 }
 
 enum ButtonType {
@@ -81,6 +105,7 @@ enum ButtonType {
 
 export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPresenterListener {
   protected readonly formM: IFormModel;
+  protected readonly formI: IArenguForm;
   protected readonly hiddenFields: HiddenFields;
 
   protected readonly formV: IFormView;
@@ -97,6 +122,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
 
   protected constructor(formM: IFormModel) {
     this.formM = formM;
+    this.formI = ArenguForm.create(this);
     this.hiddenFields = HiddenFields.create(formM.hiddenFields);
 
     this.style = StyleHelper.extendStyle(formM.style);
@@ -105,6 +131,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
       style: this.style,
       social: formM.social,
       messages: Messages.create(formM.messages),
+      instance: this.formI,
     };
 
     this.formV = FormView.create(formM, this);
@@ -589,5 +616,9 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
 
     this.formV.setStyle(extendedStyle);
     this.stepsP.forEach((stepP) => stepP.onUpdateStyle(extendedStyle));
+  }
+
+  public getPublicInstance(): IArenguForm {
+    return this.formI;
   }
 }
