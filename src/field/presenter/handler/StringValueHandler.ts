@@ -17,6 +17,8 @@ type IStringFieldModel = IFieldModel & {
  */
 export const StringValueHandler = {
   create(inputV: IStringInputView, fieldM: IStringFieldModel): ISyncValueHandler<IStringFieldValue> {
+    let latestDefValue: string | undefined = undefined;
+
     return {
       getValue(): IStringFieldValue {
         const value = inputV.getValue().trim();
@@ -27,9 +29,22 @@ export const StringValueHandler = {
       setDefaultValue(resolver: IMagicResolver): void {
         const defValue = fieldM.config.defaultValue;
 
-        if (defValue) {
-          this.setValue(resolver.resolve(defValue));
+        if (!defValue) {
+          return;
         }
+
+        const currValue = this.getValue();
+
+        // after the first time, do not set the default value if the field was modified
+        if (latestDefValue && currValue !== latestDefValue) {
+          return;
+        }
+
+        const resDefValue = resolver.resolve(defValue);
+
+        this.setValue(resDefValue);
+
+        latestDefValue = resDefValue;
       },
 
       setValue(value: IStringFieldValue): void {

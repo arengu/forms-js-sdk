@@ -131,7 +131,7 @@ export abstract class BaseFieldPresenter<IV extends IInputView = IInputView> ext
     this.listeners.forEach((listener) => listener.onValidField && listener.onValidField(this));
   }
 
-  public updateContent(resolver: IMagicResolver, everShown: boolean): void {
+  public updateContent(resolver: IMagicResolver): void {
     const initLabel = this.fieldM.label;
 
     if (initLabel) {
@@ -146,7 +146,7 @@ export abstract class BaseFieldPresenter<IV extends IInputView = IInputView> ext
       this.fieldV.updateHint(dynHint);
     }
 
-    if (!everShown && 'setDefaultValue' in this.valueH) {
+    if ('setDefaultValue' in this.valueH) {
       this.valueH.setDefaultValue(resolver);
     }
   }
