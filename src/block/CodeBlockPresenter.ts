@@ -24,13 +24,13 @@ export const CodeBlockRenderer = {
 }
 
 export class CodeBlockPresenter extends BaseBlockPresenter implements ICodeBlockPresenter {
-  protected content: string;
+  protected source: string;
   protected rootE: HTMLElement;
 
   public constructor(params: ICodeBlockParams) {
     super();
 
-    this.content = params.blockContent;
+    this.source = params.blockContent;
 
     this.rootE = CodeBlockRenderer.renderRoot(params);
   }
@@ -45,10 +45,10 @@ export class CodeBlockPresenter extends BaseBlockPresenter implements ICodeBlock
 
   public updateContent(resolver: IMagicResolver, everShown: boolean): void {
     // on subsequent calls skip rendering unless there are references inside
-    if(everShown && !resolver.isDynamic(this.content)) {
+    if(everShown && !resolver.isDynamic(this.source)) {
       return;
     }
 
-    this.rootE.innerHTML = resolver.resolve(this.content, escapeHE);
+    this.rootE.innerHTML = resolver.resolve(this.source, escapeHE);
   }
 }
