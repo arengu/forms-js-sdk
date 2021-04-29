@@ -24,17 +24,15 @@ export const UrlValueHandler = {
       },
 
       setDefaultValue(resolver: IMagicResolver): void {
-        const defValue = fieldM.config.defaultValue;
-
-        if (defValue) {
-          this.setValue(resolver.resolve(defValue));
-        }
+        stringHandler.setDefaultValue(resolver);
       },
 
-      setValue(value: IURLFieldValue): void {
+      setValue(value: IURLFieldValue): IURLFieldValue {
         const newValue = ensurePrefix(value);
 
         stringHandler.setValue(newValue);
+
+        return newValue;
       }
     };
   },

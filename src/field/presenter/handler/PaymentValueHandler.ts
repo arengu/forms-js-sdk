@@ -11,7 +11,7 @@ export const PaymentValueHandler = {
         // no default value for payment fields
       },
 
-      setValue(): void {
+      setValue(): undefined {
         return undefined;
       }
     };

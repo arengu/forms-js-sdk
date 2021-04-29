@@ -44,8 +44,8 @@ export const PasswordValueHandler = {
         // no default value for password fields
       },
 
-      setValue(): void {
-        console.error('Setting a password is not allowed.');
+      setValue(): IPasswordFieldValue {
+        throw new Error('Setting a password is not allowed.');
       }
     };
   },

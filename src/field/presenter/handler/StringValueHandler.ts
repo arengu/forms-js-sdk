@@ -35,20 +35,22 @@ export const StringValueHandler = {
 
         const currValue = this.getValue();
 
-        // after the first time, do not set the default value if the field was modified
+        // on subsequent calls do not set the default value if the field was modified
         if (latestDefValue && currValue !== latestDefValue) {
           return;
         }
 
         const resDefValue = resolver.resolve(defValue);
 
-        this.setValue(resDefValue);
-
-        latestDefValue = resDefValue;
+        latestDefValue = this.setValue(resDefValue);
       },
 
-      setValue(value: IStringFieldValue): void {
-        inputV.setValue(isNil(value) ? '' : value.trim());
+      setValue(value: IStringFieldValue): IStringFieldValue {
+        const newValue = isNil(value) ? '' : value.trim();
+
+        inputV.setValue(newValue);
+
+        return newValue;
       }
     };
   },
