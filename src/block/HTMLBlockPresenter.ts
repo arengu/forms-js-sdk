@@ -19,8 +19,8 @@ export class HTMLBlockPresenterImpl extends CodeBlockPresenter implements IHTMLB
     HTMLBlockHelper.reinjectScripts(this.rootE, this.formI);
   }
 
-  public updateContent(resolver: IMagicResolver): void {
-    super.updateContent(resolver);
+  public updateContent(resolver: IMagicResolver, everShown: boolean): void {
+    super.updateContent(resolver, everShown);
 
     HTMLBlockHelper.reinjectScripts(this.rootE, this.formI);
   }

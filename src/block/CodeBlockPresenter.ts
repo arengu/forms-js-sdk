@@ -43,7 +43,12 @@ export class CodeBlockPresenter extends BaseBlockPresenter implements ICodeBlock
     // nothing to do here
   }
 
-  public updateContent(resolver: IMagicResolver): void {
+  public updateContent(resolver: IMagicResolver, everShown: boolean): void {
+    // on subsequent calls skip rendering unless there are references inside
+    if(everShown && !resolver.isDynamic(this.content)) {
+      return;
+    }
+
     this.rootE.innerHTML = resolver.resolve(this.content, escapeHE);
   }
 }

@@ -4,11 +4,14 @@ import { StringReplacer } from './StringReplacer';
 import { RefResolver } from "./RefResolver";
 import { IFormData } from "../form/model/SubmissionModel";
 
+const DYNAMIC_REGEX = /{{\s*[a-z0-9_-]+(?:\.[a-z0-9_-]+)*\s*}}/i;
+
 export interface IEscapeFunction {
   (str: string): string;
 }
 
 export interface IMagicResolver {
+  isDynamic(input: string): boolean;
   resolve(input: string, escape?: IEscapeFunction): string;
 }
 
@@ -21,8 +24,10 @@ export const MagicResolver = {
     };
 
     return {
+      isDynamic: DYNAMIC_REGEX.test.bind(DYNAMIC_REGEX),
+
       resolve(input: string, escape?: IEscapeFunction): string {
-        if (!input.includes('{{')) {
+        if (!this.isDynamic(input)) {
           return input;
         }
 
