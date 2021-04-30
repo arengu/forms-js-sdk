@@ -19,8 +19,8 @@ export class HTMLBlockPresenterImpl extends CodeBlockPresenter implements IHTMLB
     HTMLBlockHelper.reinjectScripts(this.rootE, this.formI);
   }
 
-  public updateContent(resolver: IMagicResolver): void {
-    super.updateContent(resolver);
+  public updateContent(resolver: IMagicResolver, everShown: boolean): void {
+    super.updateContent(resolver, everShown);
 
     HTMLBlockHelper.reinjectScripts(this.rootE, this.formI);
   }
@@ -32,7 +32,7 @@ export const HTMLBlockPresenter = {
       formD.instance,
       {
         containerClass: CONTAINER_CLASS,
-        blockContent: blockM.config.content,
+        blockContent: blockM.config.content || '',
       }
     )
   },

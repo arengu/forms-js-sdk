@@ -9,6 +9,7 @@ export interface IEscapeFunction {
 }
 
 export interface IMagicResolver {
+  isDynamic(input: string): boolean;
   resolve(input: string, escape?: IEscapeFunction): string;
 }
 
@@ -21,8 +22,12 @@ export const MagicResolver = {
     };
 
     return {
+      isDynamic(input: string): boolean {
+        return input.includes('{{');
+      },
+
       resolve(input: string, escape?: IEscapeFunction): string {
-        if (!input.includes('{{')) {
+        if (!this.isDynamic(input)) {
           return input;
         }
 
