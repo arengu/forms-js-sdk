@@ -32,7 +32,7 @@ export const HTMLBlockPresenter = {
       formD.instance,
       {
         containerClass: CONTAINER_CLASS,
-        blockContent: blockM.config.content,
+        blockContent: blockM.config.content || '',
       }
     )
   },

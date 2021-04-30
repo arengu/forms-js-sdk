@@ -43,14 +43,14 @@ export interface IJumpButtonBlockModel extends IBaseBlockModel {
 export interface IHTMLBlockModel extends IBaseBlockModel {
   readonly type: BlockType.HTML;
   readonly config: {
-    readonly content: string;
+    readonly content?: string;
   };
 }
 
 export interface IRichTextBlockModel extends IBaseBlockModel {
   readonly type: BlockType.RICH_TEXT;
   readonly config: {
-    readonly content: string;
+    readonly content?: string;
   };
 }
 
