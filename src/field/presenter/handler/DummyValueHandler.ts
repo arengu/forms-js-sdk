@@ -17,8 +17,8 @@ export const DummyValueHandler = {
         // nothing to do
       },
 
-      setValue(): void {
-        console.warn(`Setting a value for ${fieldM.id} field is not supported`);
+      setValue(): FV {
+        throw new Error(`Setting a value for ${fieldM.id} field is not supported`);
       }
     };
   },

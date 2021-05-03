@@ -52,8 +52,8 @@ export class PaymentFieldPresenterImpl extends BaseFieldPresenter<IPaymentInputV
     return this.providerP.authenticate(data);
   }
 
-  public updateContent(resolver: IMagicResolver, everShown: boolean): void {
-    super.updateContent(resolver, everShown);
+  public updateContent(resolver: IMagicResolver): void {
+    super.updateContent(resolver);
 
     this.providerP.updateContent(resolver);
   }
