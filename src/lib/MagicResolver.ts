@@ -16,9 +16,10 @@ export interface IMagicResolver {
 export const MagicResolver = {
   create(formValues: IFormData, replacements: IReplacements): IMagicResolver {
     const scope: IRefScope = {
+      ...formValues, // support references without namespace to ensure backward compatibility
+      // reserved words for namespaces have more priority than field identifiers
       field: formValues,
       fields: formValues,
-      ...formValues, // support references without namespace to ensure backward compatibility
     };
 
     return {
