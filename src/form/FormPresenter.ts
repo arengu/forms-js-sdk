@@ -95,6 +95,7 @@ export interface IFormDeps {
   social: ISocialProviderConfig[];
   messages: Messages;
   instance: IArenguForm;
+  root: HTMLElement;
 }
 
 enum ButtonType {
@@ -127,14 +128,15 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
 
     this.style = StyleHelper.extendStyle(formM.style);
 
+    this.formV = FormView.create(formM, this);
+
     const formD: IFormDeps = {
       style: this.style,
       social: formM.social,
       messages: Messages.create(formM.messages),
       instance: this.formI,
+      root: this.formV.render(),
     };
-
-    this.formV = FormView.create(formM, this);
 
     this.currentStep = undefined;
     this.stepsP = formM.steps.map((sM): IStepPresenter => StepPresenter.create(sM, formD, this));
