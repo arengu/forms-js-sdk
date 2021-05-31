@@ -12,6 +12,7 @@ export enum HeaderName {
   Authorization = 'Authorization',
   // User-Agent header is still a forbidden header for some browsers
   SDKVersion = 'X-SDK-Version',
+  Location = 'X-Location',
 }
 
 export enum ContentType {

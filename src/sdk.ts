@@ -49,7 +49,7 @@ export const SDKHelper = {
     }
 
     DOMEvents.emit(EventNames.GetForm, { formId });
-    return Repository.getForm((formId))
+    return Repository.getForm({ formId })
       .catch((err): never => {
         DOMEvents.emit(EventNames.GetFormError, { formId, error: err });
         throw err;

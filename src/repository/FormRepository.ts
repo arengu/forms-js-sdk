@@ -10,6 +10,10 @@ import { IFormInteractionResponse } from '../form/FormInteraction';
 
 declare const API_URL: string;
 
+export interface IGetFormParams {
+  readonly formId: string;
+}
+
 export interface ISubmitFormParams {
   readonly formId: string;
   readonly signature?: string;
@@ -20,10 +24,24 @@ export interface IValidateStepParams extends ISubmitFormParams {
   readonly stepId: string;
 }
 
+export const RepositoryHelper = {
+  getLocation(): string {
+    const url = new URL(document.location.href);
+    return url.origin + url.pathname;
+  },
+};
+
 export const FormRepository = {
-  async getForm(formId: string): Promise<IFormModel> {
+  async getForm(params: IGetFormParams): Promise<IFormModel> {
+    const { formId } = params;
+
     const reqUrl = `${API_URL}/forms/${formId}`;
-    const res = await HTTPClient.get(reqUrl);
+
+    const headers: IHeaders = {
+      [HeaderName.Location]: RepositoryHelper.getLocation(),
+    };
+
+    const res = await HTTPClient.get(reqUrl, headers);
 
     const { status, body } = res;
 
@@ -37,7 +55,9 @@ export const FormRepository = {
 
   async submitForm(params: ISubmitFormParams): Promise<IFormInteractionResponse> {
     const reqUrl = `${API_URL}/forms/${params.formId}/submissions/`;
-    const headers: IHeaders = {};
+    const headers: IHeaders = {
+      [HeaderName.Location]: RepositoryHelper.getLocation(),
+    };
 
     if (params.signature) {
       headers[HeaderName.Authorization] = AuthHelper.bearer(params.signature);
@@ -63,7 +83,9 @@ export const FormRepository = {
 
   async validateStep(params: IValidateStepParams): Promise<IFormInteractionResponse> {
     const reqUrl = `${API_URL}/forms/${params.formId}/validations/${params.stepId}`;
-    const headers: IHeaders = {};
+    const headers: IHeaders = {
+      [HeaderName.Location]: RepositoryHelper.getLocation(),
+    };
 
     if (params.signature) {
       headers[HeaderName.Authorization] = AuthHelper.bearer(params.signature);
