@@ -8,23 +8,37 @@ const CONTAINER_CLASS = 'af-html-block';
 
 export type IHTMLBlockPresenter = ICodeBlockPresenter;
 
+export interface IHTMLBlockParams extends ICodeBlockParams {
+  readonly disableScripts: boolean;
+}
+
 export class HTMLBlockPresenterImpl extends CodeBlockPresenter implements IHTMLBlockPresenter {
   protected readonly formI: IArenguForm;
   protected readonly formE: HTMLElement;
+  protected readonly disableScripts: boolean;
 
-  public constructor(formI: IArenguForm, formE: HTMLElement, params: ICodeBlockParams) {
+  public constructor(formI: IArenguForm, formE: HTMLElement, params: IHTMLBlockParams) {
     super(params);
 
     this.formI = formI;
     this.formE = formE;
+    this.disableScripts = params.disableScripts;
 
-    HTMLBlockHelper.reinjectScripts(this.rootE, this.formI, this.formE);
+    this.handleScripts();
   }
 
   public updateContent(resolver: IMagicResolver, everShown: boolean): void {
     super.updateContent(resolver, everShown);
 
-    HTMLBlockHelper.reinjectScripts(this.rootE, this.formI, this.formE);
+    this.handleScripts();
+  }
+
+  private handleScripts(): void {
+    if (this.disableScripts) {
+      HTMLBlockHelper.disableScripts(this.rootE);
+    } else {
+      HTMLBlockHelper.reinjectScripts(this.rootE, this.formI, this.formE);
+    }
   }
 }
 
@@ -36,6 +50,7 @@ export const HTMLBlockPresenter = {
       {
         containerClass: CONTAINER_CLASS,
         blockContent: blockM.config.content || '',
+        disableScripts: formD.embedOpts.disableScripts || false,
       }
     )
   },

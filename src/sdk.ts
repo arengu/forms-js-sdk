@@ -25,11 +25,17 @@ const Repository = FormRepository;
 
 export type ICustomValues = Record<string, string>;
 
+// TODO: break BC and nest ICustomValues in a prop inside IEmbedOpts
+export type IEmbedOpts =
+  ICustomValues & {
+    disableScripts?: boolean;
+  };
+
 export interface ISDK {
   VERSION: string;
 
   embed(form: string | IFormModel, parent: string | Element,
-    customValues?: ICustomValues): Promise<IArenguForm>;
+    embedOpts?: IEmbedOpts): Promise<IArenguForm>;
 }
 
 export const SDKHelper = {
@@ -105,7 +111,7 @@ export const SDK: ISDK = {
   VERSION: SDK_VERSION,
 
   async embed(form: string | IFormModel, parent: string | Element,
-    customValues: Record<string, string> = {}): Promise<IArenguForm> {
+    embedOpts: IEmbedOpts = {}): Promise<IArenguForm> {
     if (isNil(form)) {
       throw SDKError.create(SDKErrorCode.MISSING_FORM_ID, 'Specify the form you want to embed');
     }
@@ -124,11 +130,11 @@ export const SDK: ISDK = {
 
     try {
       const initFormData = await SDKHelper.getForm(form);
-      const procFormData = FormProcessor.overwriteForm(initFormData, customValues);
+      const procFormData = FormProcessor.overwriteForm(initFormData, embedOpts);
 
       DOMEvents.emit(EventNames.EmbedForm, eventData);
 
-      const presenter = FormPresenter.create(procFormData);
+      const presenter = FormPresenter.create(procFormData, embedOpts);
 
       const formNode = presenter.render();
 

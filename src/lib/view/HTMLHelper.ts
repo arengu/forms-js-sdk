@@ -37,7 +37,7 @@ export const HTMLHelper = {
   /**
    * Similar to ChildNode.replaceWith() but for legacy browsers.
    */
-  replaceWith(element: HTMLElement, replacement: HTMLElement): void {
+  replaceWith(element: Node, replacement: Node): void {
     element.parentNode?.replaceChild(replacement, element);
   },
 };
