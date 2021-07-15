@@ -2,7 +2,7 @@ import includes from 'lodash/includes';
 import isNil from 'lodash/isNil';
 import toLower from 'lodash/toLower';
 
-import { FormPresenter, IArenguForm } from './form/FormPresenter';
+import { FormPresenter, IArenguForm, IFormOptions } from './form/FormPresenter';
 
 import { FormRepository } from './repository/FormRepository';
 
@@ -25,17 +25,15 @@ const Repository = FormRepository;
 
 export type ICustomValues = Record<string, string>;
 
-// TODO: break BC and nest ICustomValues in a prop inside IEmbedOpts
-export type IEmbedOpts =
-  ICustomValues & {
-    disableScripts?: boolean;
-  };
+// this structure is weird in order to avoid breaking backwards compatibility:
+// we plan on nesting ICustomValues in a prop inside IFormOptions
+export type IEmbedOptions = ICustomValues & IFormOptions;
 
 export interface ISDK {
   VERSION: string;
 
   embed(form: string | IFormModel, parent: string | Element,
-    embedOpts?: IEmbedOpts): Promise<IArenguForm>;
+    embedOpts?: IEmbedOptions): Promise<IArenguForm>;
 }
 
 export const SDKHelper = {
@@ -111,7 +109,7 @@ export const SDK: ISDK = {
   VERSION: SDK_VERSION,
 
   async embed(form: string | IFormModel, parent: string | Element,
-    embedOpts: IEmbedOpts = {}): Promise<IArenguForm> {
+    embedOpts: IEmbedOptions = {}): Promise<IArenguForm> {
     if (isNil(form)) {
       throw SDKError.create(SDKErrorCode.MISSING_FORM_ID, 'Specify the form you want to embed');
     }
