@@ -27,6 +27,10 @@ import { IPaymentFieldPresenter, PaymentFieldPresenter } from '../field/presente
 import { IFieldPresenter } from '../field/presenter/presenter/FieldPresenter';
 import { MagicResolver } from '../lib/MagicResolver';
 
+export interface IFormOptions {
+  disableScripts?: boolean;
+}
+
 export interface IArenguForm {
   getId(): string;
   setHiddenField(key: string, value: unknown): IHiddenFieldValue;
@@ -96,6 +100,7 @@ export interface IFormDeps {
   messages: Messages;
   instance: IArenguForm;
   root: HTMLElement;
+  options: IFormOptions;
 }
 
 enum ButtonType {
@@ -121,7 +126,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
   protected readonly signatures: Map<string, string>;
   protected readonly replacements: Map<string, IReplacements>;
 
-  protected constructor(formM: IFormModel) {
+  protected constructor(formM: IFormModel, options: IFormOptions) {
     this.formM = formM;
     this.formI = ArenguForm.create(this);
     this.hiddenFields = HiddenFields.create(formM.hiddenFields);
@@ -136,6 +141,7 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
       messages: Messages.create(formM.messages),
       instance: this.formI,
       root: this.formV.render(),
+      options,
     };
 
     this.currentStep = undefined;
@@ -149,8 +155,8 @@ export class FormPresenter implements IFormPresenter, IFormViewListener, IStepPr
     this.replacements = new Map();
   }
 
-  public static create(model: IFormModel): IFormPresenter {
-    return new this(model);
+  public static create(model: IFormModel, formOpts: IFormOptions): IFormPresenter {
+    return new this(model, formOpts);
   }
 
   public getFormId(): string {

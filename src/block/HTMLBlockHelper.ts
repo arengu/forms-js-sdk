@@ -66,6 +66,14 @@ const HTMLBlockHelperDeps = {
     return newScript;
   },
 
+  disable(scripts: HTMLScriptElement[]): void {
+    const comment = document.createComment(
+      'Script disabled by the disableScripts option'
+    );
+
+    scripts.forEach((script) => HTMLHelper.replaceWith(script, comment));
+  },
+
   /**
    * Recreates and replace a script element in the DOM and return a Promise that
    * will resolve when dependent scripts can be loaded
@@ -109,12 +117,21 @@ const HTMLBlockHelperDeps = {
 
 export const HTMLBlockHelper = {
   /**
-   * Recreates and replace <script> elements. Without this, when putting <script>
+   * Recreates and replaces <script> elements. Without this, when putting <script>
    * elements inside an innerHTML property they will not be executed.
    */
   reinjectScripts(container: HTMLElement, formI: IArenguForm, formE: HTMLElement): void {
     const scripts = Array.from(container.querySelectorAll('script'));
 
     HTMLBlockHelperDeps.reinjectSequentially(scripts, formI, formE);
+  },
+
+  /**
+   * Replaces <script> elements with a commented out text node.
+   */
+  disableScripts(container: HTMLElement): void {
+    const scripts = Array.from(container.querySelectorAll('script'));
+
+    HTMLBlockHelperDeps.disable(scripts);
   },
 }
