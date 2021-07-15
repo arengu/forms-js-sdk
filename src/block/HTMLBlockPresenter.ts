@@ -50,7 +50,7 @@ export const HTMLBlockPresenter = {
       {
         containerClass: CONTAINER_CLASS,
         blockContent: blockM.config.content || '',
-        disableScripts: formD.embedOpts.disableScripts || false,
+        disableScripts: formD.options.disableScripts || false,
       }
     )
   },
